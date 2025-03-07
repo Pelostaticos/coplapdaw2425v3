@@ -1,0 +1,116 @@
+/*--------------------------------------------------------------
+Portal web público de la plataforma Correplayas
+Proyecto DAW2425 - I.E.S Aguadulce
+Versión: 1.0
+Autor: Sergio Garcia Butron <sergio.garciabutron@gmail.com>
+Tutor: José Antonio Morales 
+Fecha: 07-03-2025
+--------------------------------------------------------------*/
+
+/*--------------------------------------------------------------
+Tabla de contenido
+--------------------------------------------------------------*/
+
+/*
+0. Configuraciones previas de la hoja de estilos
+1. Estilos generales
+2. Encabezado
+3. Navegación
+4. Contenido principal
+5. Pie de página
+6. Medios de consulta (responsive design)
+*/
+
+/*--------------------------------------------------------------
+0. Configuraciones previas de la hoja de estilos
+--------------------------------------------------------------*/
+
+/* Fuentes importadas */
+
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap');
+
+/* Variables de estilos */ 
+:root {
+    --color-primario: #fff;
+    --color-secundario: #000;
+    --color-destacado: crimson;    
+}
+
+/* Configuración por defecto */
+* {
+    margin:0;
+    padding:0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+    scroll-behavior: smooth;
+}
+
+/* Definición de animaciones */
+@keyframes aparicion {
+    0% {opacity:0; filter:grayscale(100%);}
+    50% {opacity:1;}
+    100% {filter:grayscale(0%);}
+}
+
+/*--------------------------------------------------------------
+1. Estilos generales
+--------------------------------------------------------------*/
+
+/* Estilos para el cuerpo del documento, tipografía base, etc. */
+
+body {
+
+  }
+  
+  /*--------------------------------------------------------------
+  2. Encabezado
+  --------------------------------------------------------------*/
+  
+  /* Estilos para el encabezado del sitio web, logo, etc. */
+  
+  header {
+
+  }
+  
+  /*--------------------------------------------------------------
+  3. Navegación
+  --------------------------------------------------------------*/
+  
+  /* Estilos para el menú de navegación, enlaces, etc. */
+  
+  nav ul {
+
+  }
+  
+  /*--------------------------------------------------------------
+  4. Contenido principal
+  --------------------------------------------------------------*/
+  
+  /* Estilos para el contenido principal de las páginas, secciones, etc. */
+  
+  main {
+    
+  }
+  
+  /*--------------------------------------------------------------
+  5. Pie de página
+  --------------------------------------------------------------*/
+  
+  /* Estilos para el pie de página del sitio web, información de contacto, etc. */
+  
+  footer {
+
+  }
+  
+  /*--------------------------------------------------------------
+  6. Medios de consulta (responsive design)
+  --------------------------------------------------------------*/
+  
+  /* Estilos para diferentes tamaños de pantalla, adaptabilidad, etc. */
+  
+  @media (max-width: 768px) {
+    /* Estilos para pantallas pequeñas */
+    nav {
+      display: none;
+    }
+  }
