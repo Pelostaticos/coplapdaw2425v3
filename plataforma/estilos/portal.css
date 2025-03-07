@@ -3,7 +3,7 @@ Portal web público de la plataforma Correplayas
 Proyecto DAW2425 - I.E.S Aguadulce
 Versión: 1.0
 Autor: Sergio Garcia Butron <sergio.garciabutron@gmail.com>
-Tutor: José Antonio Morales 
+Tutor: José Antonio Morales Alvarez
 Fecha: 07-03-2025
 --------------------------------------------------------------*/
 
@@ -27,13 +27,42 @@ Tabla de contenido
 
 /* Fuentes importadas */
 
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&display=swap');
 
 /* Variables de estilos */ 
 :root {
-    --color-primario: #fff;
-    --color-secundario: #000;
-    --color-destacado: crimson;    
+    /* Nuestra paleta de colores */
+    --color-primario: #87CEEB;
+    --color-secundario: #D2B48C;
+    --color-verde-oliva: #736F3D;
+    --color-gris-azulado-oscuro: #3F4C54;
+    --color-destacado: #FFB347;
+    --color-textos-principal: #002637;
+    --color-textos-auxiliar: #F5F5DC;
+
+    /* Nuestros margenes y relleno */ 
+    --margen-general-moviles: 20px;
+    --margen-general-escritorio: 40px;
+    --factor-entre-secciones: 2;
+    --margen-secciones-moviles: calc(var(--factor-entre-secciones)*var(--margen-general-moviles));
+    --margen-secciones-escritorio: calc(var(--factor-entre-secciones)*var(--margen-general-escritorio));
+    --factor-relleno-botones: 0.5;
+    --relleno-botones-izquierda-derecha: 20px;
+    --relleno-formularios-global: 15px;
+
+    /* Nuestros tamaños de fuentes */
+    --tamaño-fuente-h1-escritorio: 36px;
+    --tamaño-fuente-h2-escritorio: 32px;
+    --tamaño-fuente-h3-escritorio: 28px;
+    --tamaño-fuente-h4-escritorio: 24px;
+    --tamaño-fuente-h5-escritorio: 20px;
+    --tamaño-fuente-h6-escritorio: 18px;
+    --tamaño-fuente-p-escritorio: 16px;
+    --tamaño-fuente-small-escritorio: 14px;
+    --tamaño-fuente-button-escritorio: 16px;
+    --factor-ajuste-tabletas: 1px;
+    --factor-ajuste-moviles: 2px;
 }
 
 /* Configuración por defecto */
@@ -41,8 +70,8 @@ Tabla de contenido
     margin:0;
     padding:0;
     box-sizing: border-box;
-    font-family: 'Poppins', sans-serif;
-    scroll-behavior: smooth;
+    font-family: 'Poppins', 'Open sans';
+    scroll-behavior: smooth;    
 }
 
 /* Definición de animaciones */
@@ -56,61 +85,132 @@ Tabla de contenido
 1. Estilos generales
 --------------------------------------------------------------*/
 
-/* Estilos para el cuerpo del documento, tipografía base, etc. */
+/* Estilos para el cuerpo, encabezados, párrafos, textos secundario, botones y formularios */
 
 body {
+    display:flex;
+    flex-direction: column;
+    animation: aparicion 4s; 
+}
 
-  }
-  
-  /*--------------------------------------------------------------
-  2. Encabezado
-  --------------------------------------------------------------*/
-  
-  /* Estilos para el encabezado del sitio web, logo, etc. */
-  
-  header {
+h1 {
+ font-family: 'Poppins', 'Open sans';
+ font-size: var(--tamaño-fuente-h1-escritorio);
+ font-weight: 600;
+}
 
-  }
-  
-  /*--------------------------------------------------------------
-  3. Navegación
-  --------------------------------------------------------------*/
-  
-  /* Estilos para el menú de navegación, enlaces, etc. */
-  
-  nav ul {
+h2 {
+    font-family: 'Poppins', 'Open sans';
+    font-size: var(--tamaño-fuente-h2-escritorio);
+    font-weight: 600;
+}
 
-  }
+h3 {
+    font-family: 'Poppins', 'Open sans';
+    font-size: var(--tamaño-fuente-h3-escritorio);
+    font-weight: 600;
+}
+
+h4 { 
+    font-family: 'Poppins', 'Open sans';
+    font-size: var(--tamaño-fuente-h4-escritorio);
+    font-weight: 600;
+}
+
+h5 {
+    font-family: 'Poppins', 'Open sans';
+    font-size: var(--tamaño-fuente-h5-escritorio);
+    font-weight: 600;
+}
+
+h6 {
+    font-family: 'Poppins', 'Open sans';
+    font-size: var(--tamaño-fuente-h16escritorio);
+    font-weight: 600;
+}
+
+p {
+    font-family: 'Poppins', 'Open sans';
+    font-size: var(--tamaño-fuente-p-escritorio);
+    font-weight: 400;
+}
+
+small {
+    font-family: 'Poppins', 'Open sans';
+    font-size: var(--tamaño-fuente-small-escritorio);
+    font-weight: 400;
+}
+
+button {
+    font-family: 'Poppins', 'Open sans';
+    font-size: var(--tamaño-fuente-button-escritorio);
+    font-weight: 600;    
+}
+
+button:hover {
+    /* ... */
+}
   
-  /*--------------------------------------------------------------
-  4. Contenido principal
-  --------------------------------------------------------------*/
+a {
+    font-family: 'Poppins', 'Open sans';
+    font-size: var(--tamaño-fuente-p-escritorio);
+    font-weight: 400; 
+}
+
+a:hover {
+    color: var(--color-destacado);
+    /* ... */
+}
+
+/*--------------------------------------------------------------
+2. Encabezado
+--------------------------------------------------------------*/
   
-  /* Estilos para el contenido principal de las páginas, secciones, etc. */
+/* Estilos para el encabezado del sitio web, logo, etc. */
   
-  main {
+header {
+
+}
+  
+/*--------------------------------------------------------------
+3. Navegación
+--------------------------------------------------------------*/
+  
+/* Estilos para el menú de navegación, enlaces, etc. */
+  
+nav ul {
+
+}
+  
+/*--------------------------------------------------------------
+4. Contenido principal
+--------------------------------------------------------------*/
+  
+/* Estilos para el contenido principal de las páginas, secciones, etc. */
+  
+main {
     
-  }
+}
   
-  /*--------------------------------------------------------------
-  5. Pie de página
-  --------------------------------------------------------------*/
+/*--------------------------------------------------------------
+5. Pie de página
+--------------------------------------------------------------*/
   
-  /* Estilos para el pie de página del sitio web, información de contacto, etc. */
+/* Estilos para el pie de página del sitio web, información de contacto, etc. */
   
-  footer {
+footer {
 
-  }
+}
   
-  /*--------------------------------------------------------------
-  6. Medios de consulta (responsive design)
-  --------------------------------------------------------------*/
+/*--------------------------------------------------------------
+6. Medios de consulta (responsive design)
+--------------------------------------------------------------*/
   
-  /* Estilos para diferentes tamaños de pantalla, adaptabilidad, etc. */
+/* Estilos para diferentes tamaños de pantalla, adaptabilidad, etc. */
   
-  @media (max-width: 768px) {
+@media (max-width: 768px) {
     /* Estilos para pantallas pequeñas */
     nav {
       display: none;
     }
-  }
+}
