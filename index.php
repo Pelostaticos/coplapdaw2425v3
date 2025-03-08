@@ -10,7 +10,7 @@
     <!-- Cabecera del sisito web -->
     <header>
         <!-- Logotipo del sitio web -->
-        <img src="" alt="logotipo del portal web correplayas"/>
+        <img src="plataforma/imagenes/correplayas.png" alt="logotipo del portal web correplayas"/>
         <!-- Menú del sitio web -->
         <ul>
             <!-- Entrada del menu para concoer la plaatforma correplayas -->

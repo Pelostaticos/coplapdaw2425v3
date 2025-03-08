@@ -27,8 +27,8 @@ Tabla de contenido
 
 /* Fuentes importadas */
 
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&display=swap');
+/*@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&display=swap');*/
 
 /* Variables de estilos */ 
 :root {
@@ -79,6 +79,22 @@ Tabla de contenido
     0% {opacity:0; filter:grayscale(100%);}
     50% {opacity:1;}
     100% {filter:grayscale(0%);}
+}
+
+/* Definición fondos de secciones */
+#correplayas {
+    background-image: url('../imagenes/correplayas.jpg');
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    z-index: 100;    
+}
+#voluntariado {
+    background-image: url('../imagenes/vountariado.jpg');
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    z-index: 100;    
 }
 
 /*--------------------------------------------------------------
