@@ -14,13 +14,13 @@
         <!-- Menú del sitio web -->
         <ul>
             <!-- Entrada del menu para concoer la plaatforma correplayas -->
-            <li><a herf="#correplayas">Correplayas</a></li>
+            <li><a href="#correplayas">Correplayas</a></li>
             <!-- Entrada de menu para saber más sobre los observatorios -->
-            <li><a herf="#observatorios">Observatorios</a></li>
+            <li><a href="#observatorios">Observatorios</a></li>
             <!-- Entrada del menu para saber más sobre el voluntariado -->
-            <li><a herf="#voluntariado">Voluntariado</a></li>
+            <li><a href="#voluntariado">Voluntariado</a></li>
             <!-- Entrada del menu para solicitar más información sobre el proyecto    -->
-            <li><a herf="#contacto">Contacto</a></li>
+            <li><a href="#contacto">Contacto</a></li>
             <!-- Entrada para volver al inicio  -->
             <li><a href="#inicio"><span>Corre</span>playas.es</a></li>
         </ul>
@@ -69,7 +69,7 @@
         <!-- Seccion para contactar con administradores de la plataforma -->
          <section id="contacto">
             <!-- Información introductoria al formualrio de contacto -->
-            <h1>El voluntariado</h1>
+            <h1>Contáctenos</h1>
             <h2>¿En qué podemos ayudarte?</h2>
             <p>¡Nos encantaría saber de ti! Si tienes alguna pregunta, comentario o simplemente quieres ponerte en contacto con nosotros, rellena el siguiente formulario y te responderemos lo antes posible.</p>
             <!-- Formulario de contacto de la plataforma -->
