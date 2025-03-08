@@ -146,20 +146,11 @@ button {
     font-size: var(--tamaño-fuente-button-escritorio);
     font-weight: 600;    
 }
-
-button:hover {
-    /* ... */
-}
-  
+ 
 a {
     font-family: 'Poppins', 'Open sans';
     font-size: var(--tamaño-fuente-p-escritorio);
     font-weight: 400; 
-}
-
-a:hover {
-    color: var(--color-destacado);
-    /* ... */
 }
 
 /*--------------------------------------------------------------
