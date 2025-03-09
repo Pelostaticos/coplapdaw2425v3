@@ -81,22 +81,6 @@ Tabla de contenido
     100% {filter:grayscale(0%);}
 }
 
-/* Definición fondos de secciones */
-#correplayas {
-    background-image: url('../imagenes/correplayas.jpg');
-    background-size: cover;
-    background-repeat: no-repeat;
-    background-position: center;
-    z-index: 100;    
-}
-#voluntariado {
-    background-image: url('../imagenes/vountariado.jpg');
-    background-size: cover;
-    background-repeat: no-repeat;
-    background-position: center;
-    z-index: 100;    
-}
-
 /*--------------------------------------------------------------
 1. Estilos generales
 --------------------------------------------------------------*/
