@@ -74,6 +74,7 @@ Tabla de contenido
     margin:0;
     padding:0;
     box-sizing: border-box;
+    color:#002637;
     font-family: 'Poppins', 'Open sans';
     scroll-behavior: smooth;    
 }
@@ -103,47 +104,55 @@ h1 {
  font-size: var(--tamaño-fuente-h1-escritorio);
  font-weight: 600;
 }
-
 h2 {
     font-family: 'Poppins', 'Open sans';
     font-size: var(--tamaño-fuente-h2-escritorio);
     font-weight: 600;
 }
-
 h3 {
     font-family: 'Poppins', 'Open sans';
     font-size: var(--tamaño-fuente-h3-escritorio);
     font-weight: 600;
 }
-
 h4 { 
     font-family: 'Poppins', 'Open sans';
     font-size: var(--tamaño-fuente-h4-escritorio);
     font-weight: 600;
 }
-
 h5 {
     font-family: 'Poppins', 'Open sans';
     font-size: var(--tamaño-fuente-h5-escritorio);
     font-weight: 600;
 }
-
 h6 {
     font-family: 'Poppins', 'Open sans';
     font-size: var(--tamaño-fuente-h16escritorio);
     font-weight: 600;
 }
+.titulo {
+    text-decoration:underline;
+    text-decoration-color: var(--color-secundario);
+}
+.subtitulo {
+    font-size: var(--tamaño-fuente-h4-escritorio);
+    text-decoration:underline;
+    text-decoration-color: var(--color-secundario);
+}
+
 
 p {
     font-family: 'Poppins', 'Open sans';
     font-size: var(--tamaño-fuente-p-escritorio);
     font-weight: 400;
+    margin-top: 0.75em;
+    margin-bottom: 0.75em;
+    line-height: 1.5em;    
 }
 
 small {
     font-family: 'Poppins', 'Open sans';
     font-size: var(--tamaño-fuente-small-escritorio);
-    font-weight: 400;
+    font-weight: 600;
 }
 
 button {
@@ -153,9 +162,29 @@ button {
 }
  
 a {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
     font-family: 'Poppins', 'Open sans';
     font-size: var(--tamaño-fuente-p-escritorio);
+    text-decoration: none;
     font-weight: 400; 
+}
+.boton {
+    border-radius: 5px;
+    margin-top: 5px;
+    padding: 10px;
+    background-color: var(--color-textos-principal);
+    color: var(--color-destacado);    
+    font-weight: 600;
+}
+.boton:hover {
+    background-color: var(--color-destacado);
+    color: var(--color-textos-principal);
+
+}
+.cta {
+    text-align: center;
 }
 
 /*--------------------------------------------------------------
@@ -211,7 +240,6 @@ main {
     display: flex;
     flex-direction: column;
     flex-grow: 1;
-    padding-top: var(--altura-cabecera-global);
 }
 
 section {
@@ -219,12 +247,14 @@ section {
     min-height: 100vh;
     display: flex;
     flex-direction: column;
-    flex-grow: 1;    
+    flex-grow: 1;
 }
 section:nth-child(odd) {
+    padding-top: var(--altura-cabecera-global);
     background-color: var(--color-primario);
 }
 section:nth-child(even) {
+    padding-top: var(--altura-cabecera-global);
     background-color: var(--color-verde-claro);
 }
 article {
