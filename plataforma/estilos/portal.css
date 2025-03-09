@@ -35,7 +35,7 @@ Tabla de contenido
     /* Nuestra paleta de colores */
     --color-primario: #87CEEB;
     --color-secundario: #D2B48C;
-    --color-verde-oliva: #736F3D;
+    --color-verde-claro: #A7C4BC;
     --color-gris-azulado-oscuro: #3F4C54;
     --color-destacado: #FFB347;
     --color-textos-principal: #002637;
@@ -63,6 +63,10 @@ Tabla de contenido
     --tamaño-fuente-button-escritorio: 16px;
     --factor-ajuste-tabletas: 1px;
     --factor-ajuste-moviles: 2px;
+
+    /* Nuestros tamaños para elementos especificos */
+    --altura-cabecera-global: 100px;
+    --altura-pie-pagina-global: 50px;
 }
 
 /* Configuración por defecto */
@@ -90,6 +94,7 @@ Tabla de contenido
 body {
     display:flex;
     flex-direction: column;
+    min-height: 100vh;
     animation: aparicion 4s; 
 }
 
@@ -160,7 +165,20 @@ a {
 /* Estilos para el encabezado del sitio web, logo, etc. */
   
 header {
-
+    position: fixed;   
+    top: 0;
+    left: 0;
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    height: var(--altura-cabecera-global);
+    background-color: var(--color-secundario);
+}
+header img {
+    width: var(--altura-cabecera-global);
+    padding: 5px 5px 5px 20px;
 }
   
 /*--------------------------------------------------------------
@@ -168,9 +186,19 @@ header {
 --------------------------------------------------------------*/
   
 /* Estilos para el menú de navegación, enlaces, etc. */
-  
+nav {
+    width: 75%;
+}  
 nav ul {
-
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    padding: 10px;
+}
+nav li {
+    list-style-type: none;
+    padding: 20px;
 }
   
 /*--------------------------------------------------------------
@@ -180,9 +208,39 @@ nav ul {
 /* Estilos para el contenido principal de las páginas, secciones, etc. */
   
 main {
-    
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    padding-top: var(--altura-cabecera-global);
 }
-  
+
+section {
+    width: 100%;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;    
+}
+section:nth-child(odd) {
+    background-color: var(--color-primario);
+}
+section:nth-child(even) {
+    background-color: var(--color-verde-claro);
+}
+article {
+    width: 60%;
+    margin: 50px 20%;
+    display: flex;
+    flex-direction: column;
+    padding: var(--relleno-formularios-global);
+    border-radius: 10px;
+    background-color: var(--color-textos-auxiliar);
+}
+article img {
+    align-self: center;
+    border-radius: 20px;
+    width: 45%;
+}
 /*--------------------------------------------------------------
 5. Pie de página
 --------------------------------------------------------------*/
@@ -190,7 +248,17 @@ main {
 /* Estilos para el pie de página del sitio web, información de contacto, etc. */
   
 footer {
-
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;    
+    height: var(--altura-pie-pagina-global);
+    background-color: var(--color-secundario);
+    padding: 15px;
 }
   
 /*--------------------------------------------------------------

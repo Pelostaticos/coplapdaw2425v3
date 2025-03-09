@@ -5,28 +5,32 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Portal web Correplayas</title>
     <link rel="stylesheet" href="plataforma/estilos/portal.css">
+    <link rel="icon" href="plataforma/imagenes/correplayas.png" type="image/x-icon">
 </head>
 <body>
     <!-- Cabecera del sisito web -->
     <header>
         <!-- Logotipo del sitio web -->
-        <img src="plataforma/imagenes/correplayas.png" alt="logotipo del portal web correplayas"/>
-        <!-- Menú del sitio web -->
-        <ul>
-            <!-- Entrada del menu para concoer la plaatforma correplayas -->
-            <li><a href="#correplayas">Correplayas</a></li>
-            <!-- Entrada de menu para saber más sobre los observatorios -->
-            <li><a href="#observatorios">Observatorios</a></li>
-            <!-- Entrada del menu para saber más sobre el voluntariado -->
-            <li><a href="#voluntariado">Voluntariado</a></li>
-            <!-- Entrada del menu para solicitar más información sobre el proyecto    -->
-            <li><a href="#contacto">Contacto</a></li>
-            <!-- Entrada para volver al inicio  -->
-            <li><a href="#inicio"><span>Corre</span>playas.es</a></li>
-        </ul>
+        <img src="plataforma/imagenes/correplayas.png" alt="logotipo del portal web correplayas"/>        
+        <!-- Zona de navegación -->
+        <nav>
+            <!-- Menú del sitio web -->
+            <ul>
+                <!-- Entrada del menu para concoer la plaatforma correplayas -->
+                <li><a href="#correplayas">Correplayas</a></li>
+                <!-- Entrada de menu para saber más sobre los observatorios -->
+                <li><a href="#observatorios">Observatorios</a></li>
+                <!-- Entrada del menu para saber más sobre el voluntariado -->
+                <li><a href="#voluntariado">Voluntariado</a></li>
+                <!-- Entrada del menu para solicitar más información sobre el proyecto    -->
+                <li><a href="#contacto">Contacto</a></li>
+                <!-- Entrada para volver al inicio  -->
+                <li><a href="#inicio"><span>Corre</span>playas.es</a></li>
+            </ul>
+        </nav>
     </header>
     <!-- Contenidos del sitio web -->
-    <main id="inicio">
+    <main id="contenido">
         <!-- Sección para hablar de la plataforma correplayas -->
          <section id="correplayas">
             <!-- Artículo que describe el proyecto de la plataforma correplayas -->
