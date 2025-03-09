@@ -30,7 +30,7 @@
         </nav>
     </header>
     <!-- Contenidos del sitio web -->
-    <main id="contenido">
+    <main id="inicio">
         <!-- Sección para hablar de la plataforma correplayas -->
          <section id="correplayas">
             <!-- Artículo que describe el proyecto de la plataforma correplayas -->
