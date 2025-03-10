@@ -35,6 +35,7 @@ Tabla de contenido
     /* Nuestra paleta de colores */
     --color-primario: #87CEEB;
     --color-secundario: #D2B48C;
+    --color-verde-oliva: #736F3D;
     --color-verde-claro: #A7C4BC;
     --color-gris-azulado-oscuro: #3F4C54;
     --color-destacado: #FFB347;
@@ -79,13 +80,6 @@ Tabla de contenido
     scroll-behavior: smooth;    
 }
 
-/* Definición de animaciones */
-@keyframes aparicion {
-    0% {opacity:0; filter:grayscale(100%);}
-    50% {opacity:1;}
-    100% {filter:grayscale(0%);}
-}
-
 /*--------------------------------------------------------------
 1. Estilos generales
 --------------------------------------------------------------*/
@@ -96,13 +90,12 @@ body {
     display:flex;
     flex-direction: column;
     min-height: 100vh;
-    animation: aparicion 4s; 
 }
 
 h1 {
- font-family: 'Poppins', 'Open sans';
- font-size: var(--tamaño-fuente-h1-escritorio);
- font-weight: 600;
+   font-family: 'Poppins', 'Open sans';
+   font-size: var(--tamaño-fuente-h1-escritorio);
+   font-weight: 600;
 }
 h2 {
     font-family: 'Poppins', 'Open sans';
@@ -130,13 +123,13 @@ h6 {
     font-weight: 600;
 }
 .titulo {
-    text-decoration:underline;
-    text-decoration-color: var(--color-secundario);
+    border-bottom: 5px solid var(--color-secundario);
 }
 .subtitulo {
+    align-self: flex-start;
+    padding-top: 10px;
     font-size: var(--tamaño-fuente-h4-escritorio);
-    text-decoration:underline;
-    text-decoration-color: var(--color-secundario);
+    border-bottom: 3px solid var(--color-secundario);
 }
 
 
@@ -171,6 +164,7 @@ a {
     font-weight: 400; 
 }
 .boton {
+    align-self: center;
     border-radius: 5px;
     margin-top: 5px;
     padding: 10px;
@@ -181,10 +175,15 @@ a {
 .boton:hover {
     background-color: var(--color-destacado);
     color: var(--color-textos-principal);
-
 }
 .cta {
     text-align: center;
+}
+.botonera {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
 }
 
 /*--------------------------------------------------------------
@@ -209,6 +208,19 @@ header img {
     width: var(--altura-cabecera-global);
     padding: 5px 5px 5px 20px;
 }
+header a p {
+    align-self: center;
+    font-size: var(--tamaño-fuente-h4-escritorio);
+    font-weight: 900;
+    color: var(--color-textos-principal);    
+}
+header a p:hover {
+    border-bottom: 5px solid var(--color-destacado);
+}
+header a span {
+    color: var(--color-verde-oliva);
+}
+
   
 /*--------------------------------------------------------------
 3. Navegación
@@ -223,11 +235,28 @@ nav ul {
     flex-direction: row;
     flex-wrap: wrap;
     justify-content: flex-end;
+    align-items: center;
     padding: 10px;
 }
-nav li {
+nav ul li {   
     list-style-type: none;
     padding: 20px;
+}
+nav ul li a {
+    font-size: var(--tamaño-fuente-h4-escritorio);
+    color: var(--color-textos-principal);
+}
+nav ul li a:hover {
+    font-size: var(--tamaño-fuente-h4-escritorio);
+    color: var(--color-textos-principal);
+    border-bottom: 5px solid var(--color-destacado);
+}
+
+/* Estilos requeridos por el menú responsive en dispositivos moviles*/
+.material-icons {
+    font-size: 4px;
+    color: var(--color-textos-auxiliar);
+    cursor: pointer;
 }
   
 /*--------------------------------------------------------------
@@ -271,6 +300,27 @@ article img {
     border-radius: 20px;
     width: 45%;
 }
+
+/* Estilos para el formualrio de contacto */
+section#contacto form {
+    display: flex;
+    flex-direction: column;
+
+}
+.boton-enviar {
+    align-self: flex-start;
+    border-radius: 5px;
+    margin-top: 5px;
+    padding: 10px 50px;
+    background-color: var(--color-textos-principal);
+    color: var(--color-destacado);    
+    font-weight: 600;
+}
+.boton-enviar:hover {
+    background-color: var(--color-destacado);
+    color: var(--color-textos-principal);
+}
+
 /*--------------------------------------------------------------
 5. Pie de página
 --------------------------------------------------------------*/
