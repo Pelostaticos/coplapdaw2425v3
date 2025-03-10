@@ -27,8 +27,8 @@ Tabla de contenido
 
 /* Fuentes importadas */
 
-/*@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&display=swap');*/
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&display=swap');
 
 /* Variables de estilos */ 
 :root {
@@ -208,19 +208,27 @@ header img {
     width: var(--altura-cabecera-global);
     padding: 5px 5px 5px 20px;
 }
-header a p {
-    align-self: center;
+header a div p {
     font-size: var(--tamaño-fuente-h4-escritorio);
     font-weight: 900;
     color: var(--color-textos-principal);    
 }
-header a p:hover {
+header a div p:hover {
     border-bottom: 5px solid var(--color-destacado);
 }
 header a span {
     color: var(--color-verde-oliva);
 }
-
+.sitioweb {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+}
+.titulositioweb {
+    margin: 0;
+    line-height: 1em;
+}
   
 /*--------------------------------------------------------------
 3. Navegación
@@ -306,6 +314,18 @@ section#contacto form {
     display: flex;
     flex-direction: column;
 
+}
+section#contacto form label {
+    font-size: var(--tamaño-fuente-h6-escritorio);
+    font-weight: 600;
+}
+section#contacto form input {
+    font-size: var(--tamaño-fuente-p-escritorio);
+    font-weight: 400;
+}
+section#contacto form textarea {
+    font-size: var(--tamaño-fuente-p-escritorio);
+    font-weight: 400;
 }
 .boton-enviar {
     align-self: flex-start;

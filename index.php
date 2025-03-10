@@ -14,7 +14,11 @@
         <!-- Logotipo y titulo del sitio web -->
         <a href="#inicio">
             <img src="plataforma/imagenes/correplayas.png" alt="logotipo del portal web correplayas"/>
-            <p><span> Corre</span>playas.es</p>
+            <div class="sitioweb">
+                <small>Plataforma</small>
+                <p class="titulositioweb"><span>Corre</span>playas.es</p>
+            </div>            
+        </a>
         <!-- Zona de navegación -->
         <nav>
             <!-- Menú del sitio web -->
@@ -58,7 +62,6 @@
                 <p>Nuestra amplia red de observatorios constituye nuestras zonas estratégicas para la observación y censos de aves. Desde torres vigías del siglo XVI, donde se observaba la llegada de los temidos piratas berberiscos o del atún para la colocación de las almadrabas, un arte de pesca con mucha tradición en nuestra provincia.</p>
                 <img src="plataforma/imagenes/observatorios.jpg" alt="Foto del observatorio Torre del Puerco" />
                 <p>Hasta el inhóspito y, a la vez, rico terreno de marismas y salinas abandonadas, que tanto auge tuvieron en épocas pasadas hasta la llegada de otros métodos de conservación de alimentos, vinculadas a la industria del salazón y hechos históricos como la invasión napoleónica o testigos de importantes batallas.</p>
-                <p>Vinculadas a la industria del salazón y hechos históricos como la invasión napoleónica o escenarios de importantes batallas.</p>
                 <h3 class="cta">¿Te apetece participar?</h3>
                 <a class="boton" href="#voluntariado">Nuestro voluntariado</a>
             </article>
@@ -94,7 +97,7 @@
                     <label for="frm-telefono">Teléfono de contacto:</label>
                     <input type="phone" name="telefono" id="telefono" placeholder="Dejanós tu teleféno..." require>                    
                     <label for="frm-mensaje">Mensajes:</label>
-                    <textarea name="frm-mensaje" id="frm-mensaje" rows="5" placeholder="Dejanós tu consulta (Opcional)"></textarea>
+                    <textarea name="frm-mensaje" id="frm-mensaje" rows="3" placeholder="Dejanós tu consulta (Opcional)"></textarea>
                     <button type="submit" class="boton-enviar">Enviar</button>
                 </form>
                 <!-- Invitación a unirse a la plataforma -->
