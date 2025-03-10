@@ -95,7 +95,7 @@
                     <label for="frm-nombre">Nombre y apellidos:</label>
                     <input type="text" name="frm-nombre" id="frm-nombre" placeholder="Dejanós tu nombre..." require>
                     <label for="frm-telefono">Teléfono de contacto:</label>
-                    <input type="phone" name="telefono" id="telefono" placeholder="Dejanós tu teleféno..." require>                    
+                    <input type="phone" name="frm-telefono" id="frm-telefono" placeholder="Dejanós tu teleféno..." require>                    
                     <label for="frm-mensaje">Mensajes:</label>
                     <textarea name="frm-mensaje" id="frm-mensaje" rows="3" placeholder="Dejanós tu consulta (Opcional)"></textarea>
                     <button type="submit" class="boton-enviar">Enviar</button>
@@ -117,5 +117,7 @@
          <small>Proyecto DAW2425 - I.E.S AGUADULCE</small>
          <small>Sergio García Butrón</small>
     </footer>
+    Incluyo los script de javascript requeridos por el portal web público
+    <script src="plataforma/javascript/correplayas.js"></script>
 </body>
 </html>
