@@ -53,17 +53,29 @@ Tabla de contenido
     --relleno-formularios-global: 15px;
 
     /* Nuestros tamaños de fuentes */
+    --factor-ajuste-tabletas: 2px;
+    --factor-ajuste-moviles: 6px;
     --tamaño-fuente-h1-escritorio: 36px;
     --tamaño-fuente-h2-escritorio: 32px;
     --tamaño-fuente-h3-escritorio: 28px;
     --tamaño-fuente-h4-escritorio: 24px;
     --tamaño-fuente-h5-escritorio: 20px;
     --tamaño-fuente-h6-escritorio: 18px;
+    --tamaño-fuente-h1-moviles: calc(var(--tamaño-fuente-h1-escritorio) - var(--factor-ajuste-moviles));
+    --tamaño-fuente-h2-moviles: calc(var(--tamaño-fuente-h2-escritorio) - var(--factor-ajuste-moviles));
+    --tamaño-fuente-h3-moviles: calc(var(--tamaño-fuente-h3-escritorio) - var(--factor-ajuste-moviles));
+    --tamaño-fuente-h4-moviles: calc(var(--tamaño-fuente-h4-escritorio) - var(--factor-ajuste-moviles));
+    --tamaño-fuente-h5-moviles: calc(var(--tamaño-fuente-h5-escritorio) - var(--factor-ajuste-moviles));
+    --tamaño-fuente-h6-moviles: calc(var(--tamaño-fuente-h6-escritorio) - var(--factor-ajuste-moviles));
+    --tamaño-fuente-h1-tabletas: calc(var(--tamaño-fuente-h1-escritorio) - var(--factor-ajuste-tabletas));
+    --tamaño-fuente-h2-tabletas: calc(var(--tamaño-fuente-h2-escritorio) - var(--factor-ajuste-tabletas));
+    --tamaño-fuente-h3-tabletas: calc(var(--tamaño-fuente-h3-escritorio) - var(--factor-ajuste-tabletas));
+    --tamaño-fuente-h4-tabletas: calc(var(--tamaño-fuente-h4-escritorio) - var(--factor-ajuste-tabletas));
+    --tamaño-fuente-h5-tabletas: calc(var(--tamaño-fuente-h5-escritorio) - var(--factor-ajuste-tabletas));
+    --tamaño-fuente-h6-tabletas: calc(var(--tamaño-fuente-h6-escritorio) - var(--factor-ajuste-tabletas));
     --tamaño-fuente-p-escritorio: 16px;
     --tamaño-fuente-small-escritorio: 14px;
     --tamaño-fuente-button-escritorio: 16px;
-    --factor-ajuste-tabletas: 1px;
-    --factor-ajuste-moviles: 2px;
 
     /* Nuestros tamaños para elementos especificos */
     --altura-cabecera-global: 100px;
@@ -119,10 +131,11 @@ h5 {
 }
 h6 {
     font-family: 'Poppins', 'Open sans';
-    font-size: var(--tamaño-fuente-h16escritorio);
+    font-size: var(--tamaño-fuente-h6-escritorio);
     font-weight: 600;
 }
 .titulo {
+    font-size: var(--tamaño-fuente-h1-escritorio);
     border-bottom: 5px solid var(--color-secundario);
 }
 .subtitulo {
@@ -177,6 +190,7 @@ a {
     color: var(--color-textos-principal);
 }
 .cta {
+    font-size: var(--tamaño-fuente-h3-escritorio)
     text-align: center;
 }
 .botonera {
@@ -257,11 +271,11 @@ nav {
     margin: 0 15px;
 }
 .menu a {
-    font-size: var(--tamaño-fuente-h4-escritorio);
+    font-size: var(--tamaño-fuente-h5-escritorio);
     color: var(--color-textos-principal);
 }
 .menu a:hover {
-    font-size: var(--tamaño-fuente-h4-escritorio);
+    font-size: var(--tamaño-fuente-h5-escritorio);
     color: var(--color-textos-principal);
     border-bottom: 5px solid var(--color-destacado);
 }
@@ -279,14 +293,12 @@ nav {
 4. Contenido principal
 --------------------------------------------------------------*/
   
-/* Estilos para el contenido principal de las páginas, secciones, etc. */
-  
+/* Estilos para el contenido principal de las páginas, secciones, etc. */ 
 main {
     display: flex;
     flex-direction: column;
     flex-grow: 1;
 }
-
 section {
     width: 100%;
     min-height: 100vh;
@@ -353,8 +365,7 @@ section#contacto form textarea {
 5. Pie de página
 --------------------------------------------------------------*/
   
-/* Estilos para el pie de página del sitio web, información de contacto, etc. */
-  
+/* Estilos para el pie de página del sitio web, información de contacto, etc. */  
 footer {
     position: fixed;
     bottom: 0;
@@ -368,14 +379,22 @@ footer {
     background-color: var(--color-secundario);
     padding: 15px;
 }
+.copyright {
+    display: block;
+}
+.copyleft {
+    font-size: calc(var(--tamaño-fuente-p-escritorio) - var(--factor-ajuste-moviles));
+    font-weight: 900;
+    text-transform: uppercase;    
+    display: none;
+}
   
 /*--------------------------------------------------------------
 6. Medios de consulta (responsive design)
 --------------------------------------------------------------*/
-  
-/* Estilos para pantallas pequeñas */
-@media (max-width: 768px) {
-    /* Menú responsive para dispositivos móviles */
+
+/* Menú responsive para dispositivos móviles y tabletas */
+@media (max-width: 1024px) {
     nav {
         justify-content: flex-end;
         margin-right: 15px;
@@ -400,4 +419,165 @@ footer {
     .menu li {
         margin: 10px 15px;
     }
+}
+
+/* Estilos para móviles gama baja */
+@media (max-width: 479px) {
+    /* Oculto el titulo del sitio web  */
+    div.sitioweb {
+        display: none;
+    } 
+}
+
+/* Ajuste de pie de página para determinados dispositivos moviles */
+@media (max-width: 480px) {
+    footer {
+        position: unset;
+        justify-content: center;
+    }     
+    .copyright {
+        display: none;
+    }
+    .copyleft {
+        display: block;
+    }
+}
+@media (min-width: 481px) and (max-width: 809px) {
+    footer {
+        position: unset;
+        justify-content: center;
+    }     
+    .copyright {
+        display: none;
+    }    
+    .copyleft {
+        display: block;
+        font-size: var(--tamaño-fuente-small-escritorio);
+    }
+}
+@media (min-width: 810px) {
+    footer {
+        position: unset;
+        justify-content: space-around;
+    }     
+    .copyright {
+        display: block;
+    }
+    .copyleft {
+        display: none;
+    }
+}
+
+/* Estilos para móviles normales */
+@media (max-width: 768px) {
+    /* Ajusto los tamaños de letras */
+    h1 {
+        font-size: var(--tamaño-fuente-h1-moviles);
+    }
+    h2 {
+        font-size: var(--tamaño-fuente-h2-moviles);
+    }
+    h3 {
+        font-size: var(--tamaño-fuente-h3-moviles);
+    }
+    h4 {
+        font-size: var(--tamaño-fuente-h4-moviles);
+    }
+    h5 {
+        font-size: var(--tamaño-fuente-h5-moviles);
+    }
+    h6 {
+        font-size: var(--tamaño-fuente-h6-moviles);
+    }
+    p {
+        text-align: justify;
+    }
+    .titulo {
+        font-size: var(--tamaño-fuente-h3-moviles);
+    }
+    .subtitulo {
+        font-size: var(--tamaño-fuente-h5-moviles);
+    }
+    .boton {
+        align-self: normal;
+    }
+    .boton-enviar {
+        align-self: normal;
+    }
+    .botonera {
+        flex-direction: column;
+    }
+    .cta {
+        font-size: var(--tamaño-fuente-h4-moviles);
+        text-align: center;
+    }    
+
+    /* Ajusto estilos de la zona de contenidos */
+    article {
+        width: 90%;
+        margin: 25px auto;
+    
+    }
+    article img {
+        align-self: center;
+        border-radius: 20px;
+        width: 100%;
+    }     
+}
+
+/* Estilos para tabletas */
+@media (min-width: 768px) and (max-width: 1024px) {
+    /* Ajusto los tamaños de letras */
+    h1 {
+        font-size: var(--tamaño-fuente-h1-tabletas);
+    }
+    h2 {
+        font-size: var(--tamaño-fuente-h2-tabletas);
+    }
+    h3 {
+        font-size: var(--tamaño-fuente-h3-tabletas);
+    }
+    h4 {
+        font-size: var(--tamaño-fuente-h4-tabletas);
+    }
+    h5 {
+        font-size: var(--tamaño-fuente-h5-tabletas);
+    }
+    h6 {
+        font-size: var(--tamaño-fuente-h6-tabletas);
+    }
+    p {
+        text-align: justify;
+    }
+    .titulo {
+        font-size: var(--tamaño-fuente-h3-tabletas);
+    }
+    .subtitulo {
+        font-size: var(--tamaño-fuente-h5-tabletas);
+    }
+    .boton {
+        align-self: center;
+    }
+    .boton-enviar {
+        align-self: flex-start;
+    }    
+    .botonera {
+        flex-direction: row;
+    }
+    .cta {
+        font-size: var(--tamaño-fuente-h4-tabletas);
+        text-align: center;
+    }    
+
+    /* Ajusto estilos de la zona de contenidos */
+    article {
+        width: 90%;
+        margin: 25px auto;
+    
+    }
+    article img {
+        align-self: center;
+        border-radius: 20px;
+        width: 100%;
+    } 
 }

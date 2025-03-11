@@ -54,4 +54,9 @@ const menu = document.querySelector('.menu');
 
 menuIcono.addEventListener('click', () => {
   menu.classList.toggle('show');
+  if (menuIcono.textContent === 'menu') {
+    menuIcono.textContent = 'close';    
+  } else {
+    menuIcono.textContent = 'menu';
+  }
 });

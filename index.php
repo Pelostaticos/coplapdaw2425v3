@@ -113,11 +113,12 @@
     <!-- Pie de página del sitio web -->
     <footer>
         <!-- Todos los derechos reservados -->
-         <small>Correplayas &#169;<?php echo date('Y'); ?> Todos los derechos reservados</small>
-         <small>Proyecto DAW2425 - I.E.S AGUADULCE</small>
-         <small>Sergio García Butrón</small>
+         <small class="copyright">Correplayas &#169;<?php echo date('Y'); ?> Todos los derechos reservados</small>
+         <small class="copyright">Proyecto DAW2425 - I.E.S AGUADULCE</small>
+         <small class="copyright">Sergio García Butrón</small>
+         <small class="copyleft">PDAW2425 AGUADULCE - Sergio García Butrón</small>
     </footer>
-    Incluyo los script de javascript requeridos por el portal web público
+    <!-- Incluyo los script de javascript requeridos por el portal web público -->
     <script src="plataforma/javascript/correplayas.js"></script>
 </body>
 </html>
