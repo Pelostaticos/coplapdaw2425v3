@@ -236,34 +236,42 @@ header a span {
   
 /* Estilos para el menú de navegación, enlaces, etc. */
 nav {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    align-items: center;
     width: 75%;
 }  
-nav ul {
+.menu {
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
     justify-content: flex-end;
     align-items: center;
-    padding: 10px;
-}
-nav ul li {   
     list-style-type: none;
-    padding: 20px;
+    margin: 0;
+    padding: 0;
 }
-nav ul li a {
+.menu li {
+    margin: 0 15px;
+}
+.menu a {
     font-size: var(--tamaño-fuente-h4-escritorio);
     color: var(--color-textos-principal);
 }
-nav ul li a:hover {
+.menu a:hover {
     font-size: var(--tamaño-fuente-h4-escritorio);
     color: var(--color-textos-principal);
     border-bottom: 5px solid var(--color-destacado);
 }
 
 /* Estilos requeridos por el menú responsive en dispositivos moviles*/
-.material-icons {
-    font-size: 4px;
-    color: var(--color-textos-auxiliar);
+.menu-icono {
+    display: none;
+    font-family: 'Material Icons';
+    font-size: 48px;
+    color: var(--color-textos-principal);
     cursor: pointer;
 }
   
@@ -365,11 +373,31 @@ footer {
 6. Medios de consulta (responsive design)
 --------------------------------------------------------------*/
   
-/* Estilos para diferentes tamaños de pantalla, adaptabilidad, etc. */
-  
+/* Estilos para pantallas pequeñas */
 @media (max-width: 768px) {
-    /* Estilos para pantallas pequeñas */
+    /* Menú responsive para dispositivos móviles */
     nav {
-      display: none;
+        justify-content: flex-end;
+        margin-right: 15px;
+    }
+    .menu-icono {
+        display: block;
+        margin-right: 15px;
+    }
+    .menu {
+        display: none;
+        flex-direction: column;
+        align-items: flex-start;
+        width: 100%;
+        background-color: var(--color-textos-auxiliar);
+        position: absolute;
+        top: var(--altura-cabecera-global); 
+        left: 0;        
+    }
+    .menu.show {
+        display: flex;
+    }
+    .menu li {
+        margin: 10px 15px;
     }
 }

@@ -8,13 +8,12 @@
  *
  */
 
-// Función para obtener parámetros de la URL
-function obtenerParametroUrl(nombre) {
-    const urlParams = new URLSearchParams(window.location.search);
-    return urlParams.get(nombre);
-}
+  //A) Manipulador de eventos para cuando la página carga completamente
+  document.body.addEventListener('load', function() {
+    document.getElementById('contactenos').reset();
+  });
 
-// Manipulador de evento para validar del formulario de contacto previo a su envio.
+// B) Manipulador de evento para validar del formulario de contacto previo a su envio.
 document.getElementById('contactenos').addEventListener('submit', function(event) {
     let nombreApellidos = document.getElementById('frm-nombre').value;
     let email = document.getElementById('frm-email').value;
@@ -49,7 +48,10 @@ document.getElementById('contactenos').addEventListener('submit', function(event
     }
   });
 
-  //Manipulador de eventos para cuando la página carga completamente
-  document.body.addEventListener('load', function() {
-    document.getElementById('contactenos').reset();
-  });
+// C) Control del menú responsiev para dispositivos móviles
+const menuIcono = document.querySelector('.menu-icono');
+const menu = document.querySelector('.menu');
+
+menuIcono.addEventListener('click', () => {
+  menu.classList.toggle('show');
+});

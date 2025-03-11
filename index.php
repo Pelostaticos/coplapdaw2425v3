@@ -22,7 +22,7 @@
         <!-- Zona de navegación -->
         <nav>
             <!-- Menú del sitio web -->
-            <ul>
+            <ul class="menu">
                 <!-- Entrada del menu para concoer la plaatforma correplayas -->
                 <li><a href="#correplayas">Correplayas</a></li>
                 <!-- Entrada de menu para saber más sobre los observatorios -->
@@ -31,11 +31,11 @@
                 <li><a href="#voluntariado">Voluntariado</a></li>
                 <!-- Entrada del menu para solicitar más información sobre el proyecto    -->
                 <li><a href="#contacto">Contacto</a></li>
-                <!-- Entrada del menu para el responsive -->
-                 <li><span class="material-icons">menu</span><span class="material-icons">close</span></li>
-                <!-- Entrada para llevar al visitantes a los medios de participación  -->
-                <li><a href="#participa" class="boton">¡Participa!</a></li>
             </ul>
+            <!-- Hamburguesa del menú responsive -->
+            <span class="menu-icono">menu</span>
+            <!-- Botón CTA invitando a la participación -->
+            <a href="#participa" class="boton">¡Participa!</a>
         </nav>
     </header>
     <!-- Contenidos del sitio web -->
