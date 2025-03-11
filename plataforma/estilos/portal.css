@@ -457,7 +457,7 @@ footer {
 }
 @media (min-width: 810px) {
     footer {
-        position: unset;
+        position: fixed;
         justify-content: space-around;
     }     
     .copyright {
