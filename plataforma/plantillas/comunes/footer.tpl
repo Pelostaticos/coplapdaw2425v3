@@ -7,6 +7,6 @@
          <small class="copyleft">PDAW2425 AGUADULCE - Sergio García Butrón</small>
     </footer>
     <!-- Incluyo los script de javascript requeridos por el portal web público -->
-    <script src="plataforma/javascript/correplayas.js"></script>
+    <script src="/plataforma/javascript/correplayas.js"></script>
 </body>
 </html>

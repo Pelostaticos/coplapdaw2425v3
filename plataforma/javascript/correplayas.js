@@ -8,6 +8,8 @@
  *
  */
 
+// Voy a intentar cargar los manejadores de eventos del formulario de contactp
+try {
   //A) Manipulador de eventos para cuando la página carga completamente
   document.body.addEventListener('load', function() {
     document.getElementById('contactenos').reset();
@@ -47,6 +49,10 @@ document.getElementById('contactenos').addEventListener('submit', function(event
       alert('Formulario enviado correctamente');
     }
   });
+} catch (error) {
+  console.error("Ocurrió un error:", error.message);
+}
+
 
 // C) Control del menú responsiev para dispositivos móviles
 const menuIcono = document.querySelector('.menu-icono');

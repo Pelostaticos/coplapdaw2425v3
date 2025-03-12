@@ -6,6 +6,7 @@ $smarty->setTemplateDir("../plataforma/plantillas");
 $smarty->setCompileDir("../plataforma/vistas");
 $smarty->setCacheDir("../plataforma/cache");
 $smarty->setConfigDir("../plataforma/config");
-$smarty->assign('name', 'Ned');
+$smarty->assign('usuario', 'Pelostaticos');
+$smarty->assign('anyo', date('Y'));
 $smarty->display('comunes/backoffice.tpl');
 ?>

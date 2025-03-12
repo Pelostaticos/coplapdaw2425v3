@@ -190,7 +190,7 @@ a {
     color: var(--color-textos-principal);
 }
 .cta {
-    font-size: var(--tamaño-fuente-h3-escritorio)
+    font-size: var(--tamaño-fuente-h3-escritorio);
     text-align: center;
 }
 .botonera {
