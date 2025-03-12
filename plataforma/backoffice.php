@@ -25,9 +25,9 @@ require_once(__DIR__ . '/config/config-inc.php');
 
 // 2º) Cargo las librerias requeridas por la plataforma web
 require_once(__DIR__ . SMARTY_LIB);
+use Smarty\Smarty;
 use correplayas\controladores\ErrorController;
 use correplayas\excepciones\AppException;
-use Smarty\Smarty;
 
 // 3º) Inicio la sesion web en la plataforma web
 session_start();

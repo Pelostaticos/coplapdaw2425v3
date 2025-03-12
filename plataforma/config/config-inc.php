@@ -18,8 +18,8 @@
 // Datos de configuración del motor de plantillas Smarty
 define('SMARTY_LIB', '/librerias/smarty/libs/Smarty.class.php');
 define('TEMPLATE_DIR', '/plantillas');
-define('COMPILE_DIR', '/templates_c');
+define('COMPILE_DIR', '/vistas');
 define('CACHE_DIR', '/cache');
-define('CONFIGS_DIR', '/configs');
+define('CONFIGS_DIR', '/config');
 
  ?>

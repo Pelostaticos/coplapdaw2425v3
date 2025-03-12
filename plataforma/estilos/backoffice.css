@@ -1,0 +1,583 @@
+/*--------------------------------------------------------------
+Portal web público de la plataforma Correplayas
+Proyecto DAW2425 - I.E.S Aguadulce
+Versión: 1.0
+Autor: Sergio Garcia Butron <sergio.garciabutron@gmail.com>
+Tutor: José Antonio Morales Alvarez
+Fecha: 07-03-2025
+--------------------------------------------------------------*/
+
+/*--------------------------------------------------------------
+Tabla de contenido
+--------------------------------------------------------------*/
+
+/*
+0. Configuraciones previas de la hoja de estilos
+1. Estilos generales
+2. Encabezado
+3. Navegación
+4. Contenido principal
+5. Pie de página
+6. Medios de consulta (responsive design)
+*/
+
+/*--------------------------------------------------------------
+0. Configuraciones previas de la hoja de estilos
+--------------------------------------------------------------*/
+
+/* Fuentes importadas */
+
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&display=swap');
+
+/* Variables de estilos */ 
+:root {
+    /* Nuestra paleta de colores */
+    --color-primario: #87CEEB;
+    --color-secundario: #D2B48C;
+    --color-verde-oliva: #736F3D;
+    --color-verde-claro: #A7C4BC;
+    --color-gris-azulado-oscuro: #3F4C54;
+    --color-destacado: #FFB347;
+    --color-textos-principal: #002637;
+    --color-textos-auxiliar: #F5F5DC;
+
+    /* Nuestros margenes y relleno */ 
+    --margen-general-moviles: 20px;
+    --margen-general-escritorio: 40px;
+    --factor-entre-secciones: 2;
+    --margen-secciones-moviles: calc(var(--factor-entre-secciones)*var(--margen-general-moviles));
+    --margen-secciones-escritorio: calc(var(--factor-entre-secciones)*var(--margen-general-escritorio));
+    --factor-relleno-botones: 0.5;
+    --relleno-botones-izquierda-derecha: 20px;
+    --relleno-formularios-global: 15px;
+
+    /* Nuestros tamaños de fuentes */
+    --factor-ajuste-tabletas: 2px;
+    --factor-ajuste-moviles: 6px;
+    --tamaño-fuente-h1-escritorio: 36px;
+    --tamaño-fuente-h2-escritorio: 32px;
+    --tamaño-fuente-h3-escritorio: 28px;
+    --tamaño-fuente-h4-escritorio: 24px;
+    --tamaño-fuente-h5-escritorio: 20px;
+    --tamaño-fuente-h6-escritorio: 18px;
+    --tamaño-fuente-h1-moviles: calc(var(--tamaño-fuente-h1-escritorio) - var(--factor-ajuste-moviles));
+    --tamaño-fuente-h2-moviles: calc(var(--tamaño-fuente-h2-escritorio) - var(--factor-ajuste-moviles));
+    --tamaño-fuente-h3-moviles: calc(var(--tamaño-fuente-h3-escritorio) - var(--factor-ajuste-moviles));
+    --tamaño-fuente-h4-moviles: calc(var(--tamaño-fuente-h4-escritorio) - var(--factor-ajuste-moviles));
+    --tamaño-fuente-h5-moviles: calc(var(--tamaño-fuente-h5-escritorio) - var(--factor-ajuste-moviles));
+    --tamaño-fuente-h6-moviles: calc(var(--tamaño-fuente-h6-escritorio) - var(--factor-ajuste-moviles));
+    --tamaño-fuente-h1-tabletas: calc(var(--tamaño-fuente-h1-escritorio) - var(--factor-ajuste-tabletas));
+    --tamaño-fuente-h2-tabletas: calc(var(--tamaño-fuente-h2-escritorio) - var(--factor-ajuste-tabletas));
+    --tamaño-fuente-h3-tabletas: calc(var(--tamaño-fuente-h3-escritorio) - var(--factor-ajuste-tabletas));
+    --tamaño-fuente-h4-tabletas: calc(var(--tamaño-fuente-h4-escritorio) - var(--factor-ajuste-tabletas));
+    --tamaño-fuente-h5-tabletas: calc(var(--tamaño-fuente-h5-escritorio) - var(--factor-ajuste-tabletas));
+    --tamaño-fuente-h6-tabletas: calc(var(--tamaño-fuente-h6-escritorio) - var(--factor-ajuste-tabletas));
+    --tamaño-fuente-p-escritorio: 16px;
+    --tamaño-fuente-small-escritorio: 14px;
+    --tamaño-fuente-button-escritorio: 16px;
+
+    /* Nuestros tamaños para elementos especificos */
+    --altura-cabecera-global: 100px;
+    --altura-pie-pagina-global: 50px;
+}
+
+/* Configuración por defecto */
+* {
+    margin:0;
+    padding:0;
+    box-sizing: border-box;
+    color:#002637;
+    font-family: 'Poppins', 'Open sans';
+    scroll-behavior: smooth;    
+}
+
+/*--------------------------------------------------------------
+1. Estilos generales
+--------------------------------------------------------------*/
+
+/* Estilos para el cuerpo, encabezados, párrafos, textos secundario, botones y formularios */
+
+body {
+    display:flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+h1 {
+   font-family: 'Poppins', 'Open sans';
+   font-size: var(--tamaño-fuente-h1-escritorio);
+   font-weight: 600;
+}
+h2 {
+    font-family: 'Poppins', 'Open sans';
+    font-size: var(--tamaño-fuente-h2-escritorio);
+    font-weight: 600;
+}
+h3 {
+    font-family: 'Poppins', 'Open sans';
+    font-size: var(--tamaño-fuente-h3-escritorio);
+    font-weight: 600;
+}
+h4 { 
+    font-family: 'Poppins', 'Open sans';
+    font-size: var(--tamaño-fuente-h4-escritorio);
+    font-weight: 600;
+}
+h5 {
+    font-family: 'Poppins', 'Open sans';
+    font-size: var(--tamaño-fuente-h5-escritorio);
+    font-weight: 600;
+}
+h6 {
+    font-family: 'Poppins', 'Open sans';
+    font-size: var(--tamaño-fuente-h6-escritorio);
+    font-weight: 600;
+}
+.titulo {
+    font-size: var(--tamaño-fuente-h1-escritorio);
+    border-bottom: 5px solid var(--color-secundario);
+}
+.subtitulo {
+    align-self: flex-start;
+    padding-top: 10px;
+    font-size: var(--tamaño-fuente-h4-escritorio);
+    border-bottom: 3px solid var(--color-secundario);
+}
+
+
+p {
+    font-family: 'Poppins', 'Open sans';
+    font-size: var(--tamaño-fuente-p-escritorio);
+    font-weight: 400;
+    margin-top: 0.75em;
+    margin-bottom: 0.75em;
+    line-height: 1.5em;    
+}
+
+small {
+    font-family: 'Poppins', 'Open sans';
+    font-size: var(--tamaño-fuente-small-escritorio);
+    font-weight: 600;
+}
+
+button {
+    font-family: 'Poppins', 'Open sans';
+    font-size: var(--tamaño-fuente-button-escritorio);
+    font-weight: 600;    
+}
+ 
+a {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    font-family: 'Poppins', 'Open sans';
+    font-size: var(--tamaño-fuente-p-escritorio);
+    text-decoration: none;
+    font-weight: 400; 
+}
+.boton {
+    align-self: center;
+    border-radius: 5px;
+    margin-top: 5px;
+    padding: 10px;
+    background-color: var(--color-textos-principal);
+    color: var(--color-destacado);    
+    font-weight: 600;
+}
+.boton:hover {
+    background-color: var(--color-destacado);
+    color: var(--color-textos-principal);
+}
+.cta {
+    font-size: var(--tamaño-fuente-h3-escritorio)
+    text-align: center;
+}
+.botonera {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
+}
+
+/*--------------------------------------------------------------
+2. Encabezado
+--------------------------------------------------------------*/
+  
+/* Estilos para el encabezado del sitio web, logo, etc. */
+  
+header {
+    position: fixed;   
+    top: 0;
+    left: 0;
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    height: var(--altura-cabecera-global);
+    background-color: var(--color-secundario);
+}
+header img {
+    width: var(--altura-cabecera-global);
+    padding: 5px 5px 5px 20px;
+}
+header a div p {
+    font-size: var(--tamaño-fuente-h4-escritorio);
+    font-weight: 900;
+    color: var(--color-textos-principal);    
+}
+header a div p:hover {
+    border-bottom: 5px solid var(--color-destacado);
+}
+header a span {
+    color: var(--color-verde-oliva);
+}
+.sitioweb {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+}
+.titulositioweb {
+    margin: 0;
+    line-height: 1em;
+}
+  
+/*--------------------------------------------------------------
+3. Navegación
+--------------------------------------------------------------*/
+  
+/* Estilos para el menú de navegación, enlaces, etc. */
+nav {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    align-items: center;
+    width: 75%;
+}  
+.menu {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    align-items: center;
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}
+.menu li {
+    margin: 0 15px;
+}
+.menu a {
+    font-size: var(--tamaño-fuente-h5-escritorio);
+    color: var(--color-textos-principal);
+}
+.menu a:hover {
+    font-size: var(--tamaño-fuente-h5-escritorio);
+    color: var(--color-textos-principal);
+    border-bottom: 5px solid var(--color-destacado);
+}
+
+/* Estilos requeridos por el menú responsive en dispositivos moviles*/
+.menu-icono {
+    display: none;
+    font-family: 'Material Icons';
+    font-size: 48px;
+    color: var(--color-textos-principal);
+    cursor: pointer;
+}
+  
+/*--------------------------------------------------------------
+4. Contenido principal
+--------------------------------------------------------------*/
+  
+/* Estilos para el contenido principal de las páginas, secciones, etc. */ 
+main {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+}
+section {
+    width: 100%;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+}
+section:nth-child(odd) {
+    padding-top: var(--altura-cabecera-global);
+    background-color: var(--color-primario);
+}
+section:nth-child(even) {
+    padding-top: var(--altura-cabecera-global);
+    background-color: var(--color-verde-claro);
+}
+article {
+    width: 60%;
+    margin: 50px 20%;
+    display: flex;
+    flex-direction: column;
+    padding: var(--relleno-formularios-global);
+    border-radius: 10px;
+    background-color: var(--color-textos-auxiliar);
+}
+article img {
+    align-self: center;
+    border-radius: 20px;
+    width: 45%;
+}
+
+/* Estilos para el formualrio de contacto */
+section#contacto form {
+    display: flex;
+    flex-direction: column;
+
+}
+section#contacto form label {
+    font-size: var(--tamaño-fuente-h6-escritorio);
+    font-weight: 600;
+}
+section#contacto form input {
+    font-size: var(--tamaño-fuente-p-escritorio);
+    font-weight: 400;
+}
+section#contacto form textarea {
+    font-size: var(--tamaño-fuente-p-escritorio);
+    font-weight: 400;
+}
+.boton-enviar {
+    align-self: flex-start;
+    border-radius: 5px;
+    margin-top: 5px;
+    padding: 10px 50px;
+    background-color: var(--color-textos-principal);
+    color: var(--color-destacado);    
+    font-weight: 600;
+}
+.boton-enviar:hover {
+    background-color: var(--color-destacado);
+    color: var(--color-textos-principal);
+}
+
+/*--------------------------------------------------------------
+5. Pie de página
+--------------------------------------------------------------*/
+  
+/* Estilos para el pie de página del sitio web, información de contacto, etc. */  
+footer {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;    
+    height: var(--altura-pie-pagina-global);
+    background-color: var(--color-secundario);
+    padding: 15px;
+}
+.copyright {
+    display: block;
+}
+.copyleft {
+    font-size: calc(var(--tamaño-fuente-p-escritorio) - var(--factor-ajuste-moviles));
+    font-weight: 900;
+    text-transform: uppercase;    
+    display: none;
+}
+  
+/*--------------------------------------------------------------
+6. Medios de consulta (responsive design)
+--------------------------------------------------------------*/
+
+/* Menú responsive para dispositivos móviles y tabletas */
+@media (max-width: 1024px) {
+    nav {
+        justify-content: flex-end;
+        margin-right: 15px;
+    }
+    .menu-icono {
+        display: block;
+        margin-right: 15px;
+    }
+    .menu {
+        display: none;
+        flex-direction: column;
+        align-items: flex-start;
+        width: 100%;
+        background-color: var(--color-textos-auxiliar);
+        position: absolute;
+        top: var(--altura-cabecera-global); 
+        left: 0;        
+    }
+    .menu.show {
+        display: flex;
+    }
+    .menu li {
+        margin: 10px 15px;
+    }
+}
+
+/* Estilos para móviles gama baja */
+@media (max-width: 479px) {
+    /* Oculto el titulo del sitio web  */
+    div.sitioweb {
+        display: none;
+    } 
+}
+
+/* Ajuste de pie de página para determinados dispositivos moviles */
+@media (max-width: 480px) {
+    footer {
+        position: unset;
+        justify-content: center;
+    }     
+    .copyright {
+        display: none;
+    }
+    .copyleft {
+        display: block;
+    }
+}
+@media (min-width: 481px) and (max-width: 809px) {
+    footer {
+        position: unset;
+        justify-content: center;
+    }     
+    .copyright {
+        display: none;
+    }    
+    .copyleft {
+        display: block;
+        font-size: var(--tamaño-fuente-small-escritorio);
+    }
+}
+@media (min-width: 810px) {
+    footer {
+        position: fixed;
+        justify-content: space-around;
+    }     
+    .copyright {
+        display: block;
+    }
+    .copyleft {
+        display: none;
+    }
+}
+
+/* Estilos para móviles normales */
+@media (max-width: 768px) {
+    /* Ajusto los tamaños de letras */
+    h1 {
+        font-size: var(--tamaño-fuente-h1-moviles);
+    }
+    h2 {
+        font-size: var(--tamaño-fuente-h2-moviles);
+    }
+    h3 {
+        font-size: var(--tamaño-fuente-h3-moviles);
+    }
+    h4 {
+        font-size: var(--tamaño-fuente-h4-moviles);
+    }
+    h5 {
+        font-size: var(--tamaño-fuente-h5-moviles);
+    }
+    h6 {
+        font-size: var(--tamaño-fuente-h6-moviles);
+    }
+    p {
+        text-align: justify;
+    }
+    .titulo {
+        font-size: var(--tamaño-fuente-h3-moviles);
+    }
+    .subtitulo {
+        font-size: var(--tamaño-fuente-h5-moviles);
+    }
+    .boton {
+        align-self: normal;
+    }
+    .boton-enviar {
+        align-self: normal;
+    }
+    .botonera {
+        flex-direction: column;
+    }
+    .cta {
+        font-size: var(--tamaño-fuente-h4-moviles);
+        text-align: center;
+    }    
+
+    /* Ajusto estilos de la zona de contenidos */
+    article {
+        width: 90%;
+        margin: 25px auto;
+    
+    }
+    article img {
+        align-self: center;
+        border-radius: 20px;
+        width: 100%;
+    }     
+}
+
+/* Estilos para tabletas */
+@media (min-width: 768px) and (max-width: 1024px) {
+    /* Ajusto los tamaños de letras */
+    h1 {
+        font-size: var(--tamaño-fuente-h1-tabletas);
+    }
+    h2 {
+        font-size: var(--tamaño-fuente-h2-tabletas);
+    }
+    h3 {
+        font-size: var(--tamaño-fuente-h3-tabletas);
+    }
+    h4 {
+        font-size: var(--tamaño-fuente-h4-tabletas);
+    }
+    h5 {
+        font-size: var(--tamaño-fuente-h5-tabletas);
+    }
+    h6 {
+        font-size: var(--tamaño-fuente-h6-tabletas);
+    }
+    p {
+        text-align: justify;
+    }
+    .titulo {
+        font-size: var(--tamaño-fuente-h3-tabletas);
+    }
+    .subtitulo {
+        font-size: var(--tamaño-fuente-h5-tabletas);
+    }
+    .boton {
+        align-self: center;
+    }
+    .boton-enviar {
+        align-self: flex-start;
+    }    
+    .botonera {
+        flex-direction: row;
+    }
+    .cta {
+        font-size: var(--tamaño-fuente-h4-tabletas);
+        text-align: center;
+    }    
+
+    /* Ajusto estilos de la zona de contenidos */
+    article {
+        width: 90%;
+        margin: 25px auto;
+    
+    }
+    article img {
+        align-self: center;
+        border-radius: 20px;
+        width: 100%;
+    } 
+}
