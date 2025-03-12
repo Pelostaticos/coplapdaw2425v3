@@ -89,7 +89,7 @@
                 <p>¡Nos encantaría saber de ti! Si tienes alguna pregunta, comentario o simplemente quieres ponerte en contacto con nosotros, rellena el siguiente formulario y te responderemos lo antes posible.</p>
                 <!-- Formulario de contacto de la plataforma -->
                 <!-- REVISARLO Y DEJARLO CONFIGURADO PARA HTML5  -->
-                <form id="contactenos" method="post" action="plataforma/backoffice.php?comando=CORE:EMAIL">
+                <form id="contactenos" method="post" action="plataforma/backoffice.php?comando=core:email">
                     <label for="frm-email">Correo electrónico:</label>
                     <input type="email" name="frm-email" id="frm-email" placeholder="Dejanós tu correo..." require>
                     <label for="frm-nombre">Nombre y apellidos:</label>
@@ -104,8 +104,8 @@
                 <h2 id="participa" class="subtitulo">¡Únete a nosotros!</h2>
                 <p>El voluntariado en nuestro proyecto es una experiencia enriquecedora que trasciende la mera recopilación de datos. Es una oportunidad para conectar con la naturaleza, aprender sobre la biodiversidad local y formar parte de una comunidad comprometida con su conservación. Juntos, voluntarios y científicos, construimos un futuro más sostenible, donde la ciencia y la ciudadanía se unen para proteger nuestro patrimonio natural.</p>
                 <div class="botonera">
-                    <a class="boton" href="plataforma/backoffice.php?comando=CORE:SIGNUP">Únete al proyecto</a>
-                    <a class="boton" href="plataforma/backoffice.php?comando=CORE:LOGIN">Accede a la plataforma</a>
+                    <a class="boton" href="plataforma/backoffice.php?comando=core:signup:vista">Únete al proyecto</a>
+                    <a class="boton" href="plataforma/backoffice.php?comando=core:login:vista">Accede a la plataforma</a>
                 </div>
             </article>       
          </section>
