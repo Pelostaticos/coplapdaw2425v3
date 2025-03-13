@@ -1,4 +1,17 @@
-    {include file="comunes/header.tpl" titulo="Inicio del Backoffice"}
+{* Pantilla Smarty para página inicio del backoffice de la plataforma correplayas
+* Proyecto DAW Cursos 2024/25 - I.E.S AGUADULCE
+* Nombre del proyecto: Plataforma Correplayas
+* Tutor PDAW: Jośe Antonio Morales Álvarez.
+* Autor: Sergio García Butrón 
+* 
+* Parámetros de plantilla:
+*
+*   >> usuario: Nombre del usuario logueado.
+*   >> anyo: Año en curso para copyright y copyleft del sitio web.
+*
+*}
+
+{include file="comunes/header.tpl" titulo="Inicio del Backoffice" usuario="Pelostaticos"}
     <!-- Contenidos de la página de backoffice de la plataforma correplayas -->
     <main id="inicio">
         <!-- Sección para hablar de la plataforma correplayas -->

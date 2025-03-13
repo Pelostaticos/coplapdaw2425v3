@@ -207,6 +207,14 @@ a {
     color: var(--color-textos-auxiliar);
     cursor: pointer;
 }
+.iconos-notificacion {
+    align-self: center;
+    font-family: 'Material Icons';
+    font-size: 96px;
+    color: var(--color-azul-cielo);
+    cursor: pointer;
+
+}
 
 /*--------------------------------------------------------------
 2. Encabezado
