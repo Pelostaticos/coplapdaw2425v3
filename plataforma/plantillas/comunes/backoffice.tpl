@@ -11,7 +11,7 @@
 *
 *}
 
-{include file="comunes/header.tpl" titulo="Inicio del Backoffice" usuario="Pelostaticos"}
+{include file="comunes/header.tpl" titulo="Inicio del Backoffice" usuario=$usuario}
     <!-- Contenidos de la página de backoffice de la plataforma correplayas -->
     <main id="inicio">
         <!-- Sección para hablar de la plataforma correplayas -->

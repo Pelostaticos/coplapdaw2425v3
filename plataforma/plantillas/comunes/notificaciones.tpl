@@ -16,23 +16,33 @@
 *
 *}
 
-{include file="comunes/header.tpl" titulo="Notificaciones backoffice" usuario="Pelostaticos"}
+{include file="comunes/header.tpl" titulo="Notificaciones backoffice" usuario=$usuario}
     <!-- Contenidos de la página de backoffice de la plataforma correplayas -->
     <main id="inicio">
         <!-- Sección para hablar de la plataforma correplayas -->
-         <section id="notificaciones">
+         <section>
             <!-- Artículo que describe el proyecto de la plataforma correplayas -->
-             <article>
+             <article id="notificaciones">
                 <h1 class="titulo">Notificaciones del Backoffice</h1>
                 <p>{$usuario}, este es tu centro de notificaciones donde mantenerte al tanto de todo lo importante en tiempo real. Aquí, recibirás alertas instantáneas sobre sucesos relevantes del programa, advertencias para que no te pierdas nada y, en caso de que ocurra, información clara sobre cualquier error.</p>
-                <span class="iconos-notificacion">{$tipo}</span>                
-                <h3 class="cta">¡¡¡Oooohhh!!! ¿Qué ha sucedido?</h3>
-                <p>{$mensaje}</p>
-                <h3 class="cta">{$pregunta}</h3>
-                <div class="botonera">
-                    <a class="boton" href="{$cancelar}">Cancelar</a>
-                    <a class="boton" href="{$aceptar}">Aceptar</a>
-                </div>
+                <span class="iconos-notificacion">{$tipo}</span>
+                {if $tipo eq 'warning'}
+                    <h3 class="cta">Antes de proceder necesitamos que confirmes tu acción</h3>
+                {elseif $tipo eq 'error'}
+                    <h3 class="cta">¡¡¡Oooohhh!!! ¿Qué ha sucedido aquí?</h3>
+                {else}
+                    <h3 class="cta">Aquí te informamos del resultado de tu acción</h3>
+                {/if}
+                <p class="mensaje-notificacion">{$mensaje}</p>
+                {if $tipo eq 'warning'}
+                    <h3 class="cta">{$pregunta}</h3>
+                    <div class="botonera-notificacion">
+                        <a class="boton-notificacion" href="{$cancelar}">Cancelar</a>
+                        <a class="boton-notificacion" href="{$aceptar}">Aceptar</a>
+                    </div>
+                {else}
+                    <a class="boton-notificacion" href="{$aceptar}">Aceptar</a>
+                {/if}
             </article>
         </section>
     </main> 

@@ -213,7 +213,6 @@ a {
     font-size: 96px;
     color: var(--color-azul-cielo);
     cursor: pointer;
-
 }
 
 /*--------------------------------------------------------------
@@ -360,20 +359,20 @@ article img {
 }
 
 /* Estilos para el formualrio de contacto */
-section#contacto form {
+section#formulario form {
     display: flex;
     flex-direction: column;
-
 }
-section#contacto form label {
+section#formulario form label {
+    margin-top: 20px;
     font-size: var(--tamaño-fuente-h6-escritorio);
     font-weight: 600;
 }
-section#contacto form input {
+section#formulario form input {
     font-size: var(--tamaño-fuente-p-escritorio);
     font-weight: 400;
 }
-section#contacto form textarea {
+section#formulario form textarea {
     font-size: var(--tamaño-fuente-p-escritorio);
     font-weight: 400;
 }
@@ -389,6 +388,42 @@ section#contacto form textarea {
 .boton-enviar:hover {
     background-color: var(--color-destacado);
     color: var(--color-textos-principal);
+}
+
+/* Estilos para vista de notificaciones */
+article#notificaciones {
+    margin: auto auto;
+}
+.boton-notificacion {
+    align-self: center;
+    border-radius: 5px;
+    margin-top: 5px;
+    min-width: 100px;
+    padding: 10px;
+    margin: 20px 20px;
+    background-color: var(--color-primario);
+    color: var(--color-azul-cielo);    
+    font-weight: 600;
+}
+.boton-notificacion:hover {
+    background-color: var(--color-azul-cielo);
+    color: var(--color-textos-principal);
+}
+.botonera-notificacion {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+}
+.mensaje-notificacion {
+    width: 80%;
+    border-radius: 10px;
+    margin: 10px auto;
+    padding: 10px;
+    font-size: var(--tamaño-fuente-h4-escritorio);
+    text-align: center;
+    color: var(--color-primario);
+    background-color: var(--color-azul-cielo);
 }
 
 /*--------------------------------------------------------------
@@ -567,7 +602,20 @@ footer {
         align-self: center;
         border-radius: 20px;
         width: 100%;
-    }     
+    }
+
+    /* Ajustp estilos para vista de notificación */
+    .mensaje-notificacion {
+        width: 80%;
+        border-radius: 10px;
+        margin: 10px auto;
+        padding: 10px;
+        font-size: var(--tamaño-fuente-h4-moviles);
+        text-align: center;
+        color: var(--color-primario);
+        background-color: var(--color-azul-cielo);
+    }
+    
 }
 
 /* Estilos para tabletas */
@@ -624,5 +672,17 @@ footer {
         align-self: center;
         border-radius: 20px;
         width: 100%;
-    } 
+    }
+
+    /* Ajustp estilos para vista de notificación */
+    .mensaje-notificacion {
+        width: 80%;
+        border-radius: 10px;
+        margin: 10px auto;
+        padding: 10px;
+        font-size: var(--tamaño-fuente-h4-tabletas);
+        text-align: center;
+        color: var(--color-primario);
+        background-color: var(--color-azul-cielo);
+    }    
 }
