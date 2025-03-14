@@ -85,6 +85,7 @@ try {
             case "core:email":
                 echo "Enviando formulario de contacto a los administradores de la plataforma...";
                 var_dump($_POST);
+                echo '<a href="/">Volver al inicio</a>';
                 break;
             // Por defecto para un usuario no logueado y comando desconocido se le lleva al inicio de sesión
             default:
