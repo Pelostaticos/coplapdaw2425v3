@@ -1,4 +1,11 @@
-    <!-- Pie de página del sitio web -->
+{* Pantilla Smarty para pie de página común del backoffice de la plataforma correplayas
+    * Proyecto DAW Cursos 2024/25 - I.E.S AGUADULCE
+    * Nombre del proyecto: Plataforma Correplayas
+    * Tutor PDAW: Jośe Antonio Morales Álvarez.
+    * Autor: Sergio García Butrón 
+*}
+
+<!-- Pie de página del sitio web -->
     <footer>
         <!-- Todos los derechos reservados -->
          <small class="copyright">Correplayas &#169 {$anyo} Todos los derechos reservados</small>

@@ -1,3 +1,13 @@
+{* Pantilla Smarty para cabecera común del backoffice de la plataforma correplayas
+    * Proyecto DAW Cursos 2024/25 - I.E.S AGUADULCE
+    * Nombre del proyecto: Plataforma Correplayas
+    * Tutor PDAW: Jośe Antonio Morales Álvarez.
+    * Autor: Sergio García Butrón 
+*}
+
+<!-- {$usuarioLogueado=isset($marty.session.usuario)} -->
+ {$usuarioLogueado=false}
+
 <!DOCTYPE html>
 <html lang="sp">
 <head>
@@ -21,28 +31,32 @@
         </a>
         <!-- Zona de navegación -->
         <nav>
-            <!-- Menú del sitio web -->
-            <ul class="menu">
-                <!-- Entrada del menu para el acceso al gestor de usuarios -->
-                <li><a href="#">Usuarios</a></li>
-                <!-- Entrada de menu para el acceso al gestor de participantes -->
-                <li><a href="#">Participación</a></li>
-                <!-- Entrada del menu para el acceso al gestor de jornadas -->
-                <li><a href="#">Jornadas</a></li>
-                <!-- Entrada del menu para el acceso al gestor de censos    -->
-                <li><a href="#">Censos</a></li>
-                <!-- Entrada del menú para el acceso al gestor de aves -->
-                <li><a href="#">Aves</a></li>
-                <!-- Entrada del menú para el acceso al gestor de observatorios -->
-                <li><a href="#">Observatorios</a></li>
-            </ul>
-            <!-- Hamburguesa del menú responsive -->
-            <span class="menu-icono">menu</span>
-            <!-- Separador entre botones y menú de navegación -->
-            <span class="separador-nav"></span>
-            <!-- Nombre del usuario logeado -->
-            <a href="/plataforma/backoffice.php?comando=usuario:default" class="boton-nav"><span class="iconos-nav-backoffice">account_circle</span> {$usuario}</a>
-            <!-- Botón de salida de la plataforma -->
-            <a href="/plataforma/backoffice.php?comando=core:logout" class="boton-nav"><span class="iconos-nav-backoffice">logout</span> Salir</a>
+            {if $usuarioLogueado}
+                <!-- Menú del sitio web -->
+                <ul class="menu">
+                    <!-- Entrada del menu para el acceso al gestor de usuarios -->
+                    <li><a href="#">Usuarios</a></li>
+                    <!-- Entrada de menu para el acceso al gestor de participantes -->
+                    <li><a href="#">Participación</a></li>
+                    <!-- Entrada del menu para el acceso al gestor de jornadas -->
+                    <li><a href="#">Jornadas</a></li>
+                    <!-- Entrada del menu para el acceso al gestor de censos    -->
+                    <li><a href="#">Censos</a></li>
+                    <!-- Entrada del menú para el acceso al gestor de aves -->
+                    <li><a href="#">Aves</a></li>
+                    <!-- Entrada del menú para el acceso al gestor de observatorios -->
+                    <li><a href="#">Observatorios</a></li>
+                </ul>
+                <!-- Hamburguesa del menú responsive -->
+                <span class="menu-icono">menu</span>
+                <!-- Separador entre botones y menú de navegación -->
+                <span class="separador-nav"></span>
+                <!-- Nombre del usuario logeado -->
+                <a href="/plataforma/backoffice.php?comando=usuario:default" class="boton-nav"><span class="iconos-nav-backoffice">account_circle</span> {$usuario}</a>
+                <!-- Botón de salida de la plataforma -->
+                <a href="/plataforma/backoffice.php?comando=core:logout" class="boton-nav"><span class="iconos-nav-backoffice">logout</span> Salir</a>
+            {else}
+                <h1 class="titulo-navegacion">Backoffice</h1>
+            {/if}
         </nav>
     </header>

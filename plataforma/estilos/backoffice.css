@@ -314,6 +314,10 @@ nav {
     background-color: var(--color-destacado);
     color: var(--color-textos-principal);
 }
+.titulo-navegacion {
+    color: var(--color-textos-principal);
+    margin-right: 40px;
+}
 
 /* Estilos requeridos por el menú responsive en dispositivos moviles*/
 .menu-icono {
@@ -365,16 +369,29 @@ section#formulario form {
 }
 section#formulario form label {
     margin-top: 20px;
+    margin-right: 5px;
     font-size: var(--tamaño-fuente-h6-escritorio);
     font-weight: 600;
 }
 section#formulario form input {
+    margin-top: 20px;
+    margin-right: 5px;
     font-size: var(--tamaño-fuente-p-escritorio);
     font-weight: 400;
 }
 section#formulario form textarea {
     font-size: var(--tamaño-fuente-p-escritorio);
     font-weight: 400;
+}
+.campos-formulario {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    flex-wrap: wrap;
+    align-items: center;
+}
+.campos-formulario input {
+    flex-grow: 1;
 }
 .boton-enviar {
     align-self: flex-start;

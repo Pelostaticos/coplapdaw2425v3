@@ -24,16 +24,36 @@
              <article>
                 <!-- Información introductoria al formualrio de contacto -->
                 <h1 class="titulo">Registro de usuario</h1>
-                <p>Parece que has llegado a la página de inicio de sesión. Si eres nuevo aquí, te invitamos a registrarte para unirte a nuestra comunidad. Si ya tienes una cuenta, por favor verifica tus datos de acceso. Si tienes algún problema, no dudes en contactarnos.</p>
+                <p>Parece que has llegado a la página de registro de usuario. Si no eres nuevo aquí, te invitamos a que inicies de sesión para participar en nuestra comunidad. Si ya tienes una cuenta, por favor verifica tus datos de acceso. Si tienes algún problema, no dudes en contactarnos.</p>
                 <!-- Formulario de contacto de la plataforma -->
                 <!-- REVISARLO Y DEJARLO CONFIGURADO PARA HTML5  -->
-                <form id="login" method="post" action="/plataforma/backoffice.php?comando=core:login">
+                <form id="signup" method="post" action="/plataforma/backoffice.php?comando=core:signup:procesa">
                     <h2 class="subtitulo">Datos de usuario:</h2>
-                    <label for="frm-usuario">Nombre de usuario:</label>
-                    <input type="text" name="frm-usuario" id="frm-usuario" placeholder="Escribe tu nombre de usuario..." require>
-                    <label for="frm-pasword">Contraseña:</label>
-                    <input type="password" name="frm-password" id="frm-password" placeholder="Escribe tu contraseña..." require>
+                    <div class="campos-formulario">
+                        <label for="frm-usuario">Nombre de usuario:</label>
+                        <input type="text" name="frm-usuario" id="frm-usuario" placeholder="Escribe tu nombre de usuario..." require>
+                        <label for="frm-pasword">Contraseña:</label>
+                        <input type="password" name="frm-password" id="frm-password" placeholder="Escribe tu contraseña..." require>
+                    </div>
                     <h2 class="subtitulo">Datos de personales:</h2>
+                    <div class="campos-formulario">
+                        <label for="frm-dni">Documento de identidad:</label>
+                        <input type="text" name="frm-dni" id="frm-dni" placeholder="Escribe tu DNI.." require>    
+                        <label for="frm-nombre">Tu Nombre:</label>
+                        <input type="text" name="frm-nombre" id="frm-nombre" placeholder="Escribe tu nombre..." require>                        
+                    </div>                        
+                    <div class="campos-formulario">
+                        <label for="frm-apellido1">Tu primer apellido:</label>
+                        <input type="text" name="frm-apellido1" id="frm-apellido1" placeholder="Escribe tu primer apellido..." require>
+                        <label for="frm-apellido2">Tu segundo apellido:</label>
+                        <input type="text" name="frm-apellido2" id="frm-apellido2" placeholder="Escribe tu primer apellido..." require>    
+                    </div>
+                    <div class="campos-formulario">
+                        <label for="frm-email">Tu correo electrónico:</label>
+                        <input type="email" name="frm-email" id="frm-email" placeholder="Escribe tu correo electrónico..." require>
+                        <label for="frm-localidad">Tu localidad:</label>
+                        <input type="text" name="frm-localidad" id="frm-localidad" placeholder="Escribe tu localidad..." require>
+                    </div>
                     <button type="submit" class="boton-enviar">Registrarme</button>
                 </form>
                 <!-- Invitación a unirse a la plataforma -->

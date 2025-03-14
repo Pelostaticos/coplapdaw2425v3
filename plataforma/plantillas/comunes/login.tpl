@@ -27,7 +27,7 @@
                 <p>Parece que has llegado a la página de inicio de sesión. Si eres nuevo aquí, te invitamos a registrarte para unirte a nuestra comunidad. Si ya tienes una cuenta, por favor verifica tus datos de acceso. Si tienes algún problema, no dudes en contactarnos.</p>
                 <!-- Formulario de contacto de la plataforma -->
                 <!-- REVISARLO Y DEJARLO CONFIGURADO PARA HTML5  -->
-                <form id="login" method="post" action="/plataforma/backoffice.php?comando=core:login">
+                <form id="login" method="post" action="/plataforma/backoffice.php?comando=core:login:procesa">
                     <label for="frm-usuario">Nombre de usuario:</label>
                     <input type="text" name="frm-usuario" id="frm-usuario" placeholder="Escribe tu nombre de usuario..." require>
                     <label for="frm-pasword">Contraseña:</label>

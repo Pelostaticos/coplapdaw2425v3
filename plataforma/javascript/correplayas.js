@@ -54,7 +54,7 @@ document.getElementById('contactenos').addEventListener('submit', function(event
 }
 
 
-// C) Control del menú responsiev para dispositivos móviles
+// C) Control del menú responsive para dispositivos móviles
 const menuIcono = document.querySelector('.menu-icono');
 const menu = document.querySelector('.menu');
 

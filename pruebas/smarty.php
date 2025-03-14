@@ -12,6 +12,7 @@ echo $vista;
 
 switch ($vista) {
     case '1':
+        $smarty->assign('titulo', 'Notificaciones backoffice');
         $smarty->assign('usuario', 'Pelostaticos');
         $smarty->assign('anyo', date('Y'));
         $smarty->assign('tipo', 'warning');
@@ -22,6 +23,7 @@ switch ($vista) {
         $smarty->display('comunes/notificaciones.tpl');
         break;
     case '2':
+        $smarty->assign('titulo', 'Notificaciones backoffice');
         $smarty->assign('usuario', 'Pelostaticos');
         $smarty->assign('anyo', date('Y'));
         $smarty->assign('tipo', 'info');
@@ -31,6 +33,7 @@ switch ($vista) {
         $smarty->display('comunes/notificaciones.tpl');        
         break;
     case '3':
+        $smarty->assign('titulo', 'Notificaciones backoffice');
         $smarty->assign('usuario', 'Pelostaticos');
         $smarty->assign('anyo', date('Y'));
         $smarty->assign('tipo', 'error');

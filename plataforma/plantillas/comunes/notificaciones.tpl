@@ -16,14 +16,14 @@
 *
 *}
 
-{include file="comunes/header.tpl" titulo="Notificaciones backoffice" usuario=$usuario}
+{include file="comunes/header.tpl" titulo=$titulo usuario=$usuario}
     <!-- Contenidos de la página de backoffice de la plataforma correplayas -->
     <main id="inicio">
         <!-- Sección para hablar de la plataforma correplayas -->
          <section>
             <!-- Artículo que describe el proyecto de la plataforma correplayas -->
              <article id="notificaciones">
-                <h1 class="titulo">Notificaciones del Backoffice</h1>
+                <h1 class="titulo">{$titulo}</h1>
                 <p>{$usuario}, este es tu centro de notificaciones donde mantenerte al tanto de todo lo importante en tiempo real. Aquí, recibirás alertas instantáneas sobre sucesos relevantes del programa, advertencias para que no te pierdas nada y, en caso de que ocurra, información clara sobre cualquier error.</p>
                 <span class="iconos-notificacion">{$tipo}</span>
                 {if $tipo eq 'warning'}
