@@ -22,12 +22,14 @@ namespace correplayas;
 
 // 1º) Cargo el fichero de configuración de la plataforma web
 require_once(__DIR__ . '/config/config-inc.php');
+require_once(__DIR__ . '/nucleo/Core.php');
 
 // 2º) Cargo las librerias requeridas por la plataforma web
 require_once(__DIR__ . SMARTY_LIB);
 use Smarty\Smarty;
 use correplayas\controladores\ErrorController;
 use correplayas\excepciones\AppException;
+use correplayas\nucleo\Core;
 
 // 3º) Inicio la sesion web en la plataforma web
 session_start();
@@ -65,16 +67,24 @@ try {
         switch ($comando) {
             // Solicita el inicio de sesión en la plataforma
             case "core:login:vista":
-                echo "Te muestro el formulario de inicio de sesión...";                
+                Core::mostrarInicioSesion($smarty);
                 break;
             // Inicio el proceso de autenticación del usuario en la plataforma            
             case "core:login:procesa":
                 echo "Inicio tu autenticación en la plataforma...";
                 var_dump($_POST);
                 break;
+            // Solicita el cierre de sesión en la plataforma
+            case "core:logout:vista":
+                Core::mostrarCierreSesion($smarty);
+                break;
+            // Cierro la sesión del usuario en la plataforma
+            case "core:logout:procesa":
+                echo "Cierto tu sesión de usuario en la plataforma...";
+                break;            
             // Un usuario visitante quiere registrarse en la plataforma
             case "core:signup:vista":
-                echo "Te muestro el formulario de registro...";
+                Core::mostrarRegistroVoluntario($smarty);
                 break;
             // Completo el proceso de registro de un nuevo usuario en la plataforma
             case "core:signup:procesa":
