@@ -368,13 +368,13 @@ section#formulario form {
     flex-direction: column;
 }
 section#formulario form label {
-    margin-top: 20px;
+    margin-top: 10px;
     margin-right: 5px;
     font-size: var(--tamaño-fuente-h6-escritorio);
     font-weight: 600;
 }
 section#formulario form input {
-    margin-top: 20px;
+    margin-top: 10px;
     margin-right: 5px;
     font-size: var(--tamaño-fuente-p-escritorio);
     font-weight: 400;

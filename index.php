@@ -45,7 +45,7 @@
             <!-- Artículo que describe el proyecto de la plataforma correplayas -->
              <article>
                 <h1 class="titulo">Correplayas</h1>
-                <h2 class="subtitulo">¿Qué significa esta palabreja?</h2>
+                <h2 class="subtitulo">¿Qué significa esta palabra?</h2>
                 <p>Los correplayas es, en el habla popular de Cádiz, como se conoce al correlimos tridáctilo. Se trata de una pequeña ave limícola muy típica de las costas gaditanas, cuya velocidad corriendo por las orillas de nuestras playas para dar caza a su alimento da la sensación de levitar sobre la arena. Este animal da nombre a nuestra asociación, forma nuestro logotipo y recoge toda la esencia de nuestro proyecto de ciencia ciudadana bajo la plataforma web que actualmente visitas.</p>
                 <img src="plataforma/imagenes/correplayas.jpg" alt="Foto del correlimos común con triactilo al fondo" />
                 <p>Nuestro proyecto consiste en censar aves a lo largo de nuestras costas y ricos espacios de marisma que nos brinda nuestra provincia. Los datos ayudan a la comunidad científica a tener una evaluación constante de la evolución de las especies en la zona. La provincia de Cádiz es un enclave de importancia ornitológica a nivel internacional, debido a su ubicación estratégica en la ruta migratoria entre África y Europa, así como a la diversidad de sus hábitats.</p>
