@@ -23,9 +23,8 @@ define('CACHE_DIR', '/cache');
 define('CONFIGS_DIR', '/config');
 
 // Datos de configuración de la base de datos
-define('DB_SERVERNAME', 'http://sergiopdaw.xampp.local:3306');
-define('DB_NAME','correplayas');
+define('DB_DSN', 'mysql:host=http://sergiopdaw.xampp.local:3306;dbname=correplayas');
 define('DB_USER','pelostaticos');
-define('DB_PASOWRD','S04#G07#B80');
+define('DB_PASSWORD','S04#G07#B80');
 
  ?>

@@ -31,12 +31,15 @@ use \correplayas\nucleo\Core;
 class Rol {
 
     // A) Defino los atributos de la clase auxiliar Rol
+    private $rol;
     private $permisos;
 
     // B) Defino el constructor privado de la clase Usuario
     private function __construct($rol) {
         // Inicializo el atributo permisos con el valor del paŕametro rol.
         $this->permisos=$rol;
+        // Inicializo el atributo rol con el valor disponibe en el parámetro rol
+        $this->rol=$rol['rol'];
         // Eliminio del atributo permisos el nombre del rol asociado.
         unset($this->permisos['rol']);
     }
@@ -183,7 +186,275 @@ class Rol {
         return $this->permisos['permiso14'];
     }      
 
+     /**
+     * Método GET para obtener el permiso para inscribirse a jornadas censales en la plataforma (D1)
+     *
+     * @return boolean Estado del permiso para inscribirse jornadas censales en la plataforma
+     */
+    public function getPermisoInscribirseJornadas() {
+        // Devuelvo del atributo permisos el estado correspondiente al campo permiso15 de la tabla Roles.
+        return $this->permisos['permiso15'];
+    } 
 
+     /**
+     * Método GET para obtener el permiso para consultar inscripción a jornadas censales en la plataforma (D2)
+     *
+     * @return boolean Estado del permiso para consultar inscripción jornadas censales en la plataforma
+     */
+    public function getPermisoConsultarInscripcion() {
+        // Devuelvo del atributo permisos el estado correspondiente al campo permiso16 de la tabla Roles.
+        return $this->permisos['permiso16'];
+    } 
+
+     /**
+     * Método GET para obtener el permiso para actualizar inscripción a jornadas censales en la plataforma (D3)
+     *
+     * @return boolean Estado del permiso para actualizar inscripción jornadas censales en la plataforma
+     */
+    public function getPermisoActualizarInscripcion() {
+        // Devuelvo del atributo permisos el estado correspondiente al campo permiso17 de la tabla Roles.
+        return $this->permisos['permiso17'];
+    }
+
+     /**
+     * Método GET para obtener el permiso para eliminar inscripción a jornadas censales en la plataforma (D4)
+     *
+     * @return boolean Estado del permiso para eliminar inscripción jornadas censales en la plataforma
+     */
+    public function getPermisoEliminarInscripcion() {
+        // Devuelvo del atributo permisos el estado correspondiente al campo permiso18 de la tabla Roles.
+        return $this->permisos['permiso18'];
+    }
+
+     /**
+     * Método GET para obtener el permiso para listar inscripciones a jornadas censales en la plataforma (D5.1)
+     *
+     * @return boolean Estado del permiso para listar inscripciones jornadas censales en la plataforma
+     */
+    public function getPermisoListarInscripciones() {
+        // Devuelvo del atributo permisos el estado correspondiente al campo permiso19 de la tabla Roles.
+        return $this->permisos['permiso19'];
+    }
+    
+     /**
+     * Método GET para obtener el permiso para listar paerticipantes a jornadas censales en la plataforma (D5.2)
+     *
+     * @return boolean Estado del permiso para listar participantes jornadas censales en la plataforma
+     */
+    public function getPermisoListarParticipantes() {
+        // Devuelvo del atributo permisos el estado correspondiente al campo permiso20 de la tabla Roles.
+        return $this->permisos['permiso20'];
+    }       
+
+     /**
+     * Método GET para obtener el permiso para buscar inscripciones a jornadas censales en la plataforma (D6)
+     *
+     * @return boolean Estado del permiso para buscar inscripciones jornadas censales en la plataforma
+     */
+    public function getPermisoBuscarInscripciones() {
+        // Devuelvo del atributo permisos el estado correspondiente al campo permiso21 de la tabla Roles.
+        return $this->permisos['permiso21'];
+    }   
+
+     /**
+     * Método GET para obtener el permiso para buscar participantes a jornadas censales en la plataforma (D6)
+     *
+     * @return boolean Estado del permiso para buscar particpantes jornadas censales en la plataforma
+     */
+    public function getPermisoBuscarParticipantes() {
+        // Devuelvo del atributo permisos el estado correspondiente al campo permiso22 de la tabla Roles.
+        return $this->permisos['permiso22'];
+    }   
+
+     /**
+     * Método GET para obtener el permiso para confirmar asistencia participantes a jornadas censales en la plataforma (E0)
+     *
+     * @return boolean Estado del permiso para confirmar asistencia particpantes jornadas censales en la plataforma
+     */
+    public function getPermisoConfirmarAsistencia() {
+        // Devuelvo del atributo permisos el estado correspondiente al campo permiso23 de la tabla Roles.
+        return $this->permisos['permiso23'];
+    }
+
+     /**
+     * Método GET para obtener el permiso para registrar censos en la plataforma (E1)
+     *
+     * @return boolean Estado del permiso para registrar censos en la plataforma
+     */
+    public function getPermisoRegistrarCenso() {
+        // Devuelvo del atributo permisos el estado correspondiente al campo permiso24 de la tabla Roles.
+        return $this->permisos['permiso24'];
+    }
+    
+     /**
+     * Método GET para obtener el permiso para consultar censos en la plataforma (E2)
+     *
+     * @return boolean Estado del permiso para consultar censos en la plataforma
+     */
+    public function getPermisoConsultarCenso() {
+        // Devuelvo del atributo permisos el estado correspondiente al campo permiso25 de la tabla Roles.
+        return $this->permisos['permiso25'];
+    }    
+
+     /**
+     * Método GET para obtener el permiso para actualizar censos en la plataforma (E3)
+     *
+     * @return boolean Estado del permiso para actualizar censos en la plataforma
+     */
+    public function getPermisoActualizarCenso() {
+        // Devuelvo del atributo permisos el estado correspondiente al campo permiso26 de la tabla Roles.
+        return $this->permisos['permiso26'];
+    }   
+    
+     /**
+     * Método GET para obtener el permiso para eliminar censos en la plataforma (E4)
+     *
+     * @return boolean Estado del permiso para eliminar censos en la plataforma
+     */
+    public function getPermisoEliminarCenso() {
+        // Devuelvo del atributo permisos el estado correspondiente al campo permiso27 de la tabla Roles.
+        return $this->permisos['permiso27'];
+    }
+    
+     /**
+     * Método GET para obtener el permiso para listar censos en la plataforma (E5)
+     *
+     * @return boolean Estado del permiso para listar censos en la plataforma
+     */
+    public function getPermisoListarCensos() {
+        // Devuelvo del atributo permisos el estado correspondiente al campo permiso28 de la tabla Roles.
+        return $this->permisos['permiso28'];
+    }   
+    
+     /**
+     * Método GET para obtener el permiso para buscar censos en la plataforma (E6)
+     *
+     * @return boolean Estado del permiso para buscar censos en la plataforma
+     */
+    public function getPermisoBuscarCensos() {
+        // Devuelvo del atributo permisos el estado correspondiente al campo permiso29 de la tabla Roles.
+        return $this->permisos['permiso29'];
+    }
+    
+     /**
+     * Método GET para obtener el permiso para registrar ave en la plataforma (F1)
+     *
+     * @return boolean Estado del permiso para registrar ave en la plataforma
+     */
+    public function getPermisoRegistrarAve() {
+        // Devuelvo del atributo permisos el estado correspondiente al campo permiso30 de la tabla Roles.
+        return $this->permisos['permiso30'];
+    }
+    
+     /**
+     * Método GET para obtener el permiso para consultar ave en la plataforma (F2)
+     *
+     * @return boolean Estado del permiso para consultar ave en la plataforma
+     */
+    public function getPermisoConsultarAve() {
+        // Devuelvo del atributo permisos el estado correspondiente al campo permiso31 de la tabla Roles.
+        return $this->permisos['permiso31'];
+    }
+    
+     /**
+     * Método GET para obtener el permiso para actualizar ave en la plataforma (F3)
+     *
+     * @return boolean Estado del permiso para actualizar ave en la plataforma
+     */
+    public function getPermisoActualizarAve() {
+        // Devuelvo del atributo permisos el estado correspondiente al campo permiso32 de la tabla Roles.
+        return $this->permisos['permiso32'];
+    }
+    
+     /**
+     * Método GET para obtener el permiso para eliminar ave en la plataforma (F4)
+     *
+     * @return boolean Estado del permiso para eliminar ave en la plataforma
+     */
+    public function getPermisoEliminarAve() {
+        // Devuelvo del atributo permisos el estado correspondiente al campo permiso33 de la tabla Roles.
+        return $this->permisos['permiso33'];
+    }
+
+     /**
+     * Método GET para obtener el permiso para listar aves en la plataforma (F5)
+     *
+     * @return boolean Estado del permiso para listar aves en la plataforma
+     */
+    public function getPermisoListarAves() {
+        // Devuelvo del atributo permisos el estado correspondiente al campo permiso34 de la tabla Roles.
+        return $this->permisos['permiso34'];
+    }
+
+     /**
+     * Método GET para obtener el permiso para buscar aves en la plataforma (F6)
+     *
+     * @return boolean Estado del permiso para buscar aves en la plataforma
+     */
+    public function getPermisoBuscarAves() {
+        // Devuelvo del atributo permisos el estado correspondiente al campo permiso35 de la tabla Roles.
+        return $this->permisos['permiso35'];
+    }
+
+     /**
+     * Método GET para obtener el permiso para registrar observatorio en la plataforma (G1)
+     *
+     * @return boolean Estado del permiso para registrar observatorio en la plataforma
+     */
+    public function getPermisoRegistrarObservatorio() {
+        // Devuelvo del atributo permisos el estado correspondiente al campo permiso36 de la tabla Roles.
+        return $this->permisos['permiso36'];
+    }
+    
+     /**
+     * Método GET para obtener el permiso para consultar observatorio en la plataforma (G2)
+     *
+     * @return boolean Estado del permiso para consultar observatorio en la plataforma
+     */
+    public function getPermisoConsultarObservatorio() {
+        // Devuelvo del atributo permisos el estado correspondiente al campo permiso37 de la tabla Roles.
+        return $this->permisos['permiso37'];
+    }
+    
+     /**
+     * Método GET para obtener el permiso para actualizar observatorio en la plataforma (G3)
+     *
+     * @return boolean Estado del permiso para actualizar observatorio en la plataforma
+     */
+    public function getPermisoActualizarObservatorio() {
+        // Devuelvo del atributo permisos el estado correspondiente al campo permiso38 de la tabla Roles.
+        return $this->permisos['permiso38'];
+    }
+    
+     /**
+     * Método GET para obtener el permiso para eliminar observatorio en la plataforma (G4)
+     *
+     * @return boolean Estado del permiso para eliminar observatorio en la plataforma
+     */
+    public function getPermisoEliminarObservatorio() {
+        // Devuelvo del atributo permisos el estado correspondiente al campo permiso39 de la tabla Roles.
+        return $this->permisos['permiso39'];
+    }
+
+     /**
+     * Método GET para obtener el permiso para listar observatorios en la plataforma (G5)
+     *
+     * @return boolean Estado del permiso para listar observatorios en la plataforma
+     */
+    public function getPermisoListarObservatorios() {
+        // Devuelvo del atributo permisos el estado correspondiente al campo permiso40 de la tabla Roles.
+        return $this->permisos['permiso40'];
+    }
+
+     /**
+     * Método GET para obtener el permiso para buscar observatorios en la plataforma (G6)
+     *
+     * @return boolean Estado del permiso para buscar observatorios en la plataforma
+     */
+    public function getPermisoBuscarObservatorio() {
+        // Devuelvo del atributo permisos el estado correspondiente al campo permiso41 de la tabla Roles.
+        return $this->permisos['permiso41'];
+    }
 
     // D) Defino los métodos estáticos de la clase auxiliar Rol
     
@@ -228,7 +499,7 @@ class Rol {
         {
             // Proceso los resultados para obtener los roles disponibles en la plataforma
             foreach ($res as $rol) {
-                $roles=[] = $rol['rol'];
+                $roles[] = $rol['rol'];
             }
             // Devuelvo el array con los roles disponibles en la plataforma
             return $roles;

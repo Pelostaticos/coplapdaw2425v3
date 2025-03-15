@@ -41,22 +41,22 @@ class Core {
      */
     public static function abrirConexionDB ()
     {
-        if (!(static::$conn instanceof \PDO))
+        if (!(static::$connDB instanceof \PDO))
         {            
             try {
-                static::$conn = new \PDO(\DB_DSN, \DB_USER, \DB_PASSWD, 
+                static::$connDB = new \PDO(\DB_DSN, \DB_USER, \DB_PASSWORD, 
                     array(\PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION));
             } 
             catch (\PDOException $e)
             {
-                static::$conn=false;
+                static::$connDB=false;
                 throw new AppException
-                    ('Error DB. No se puede continuar. Revisa el valor de las constantes DB_USER y DB_PASSWD en el archivo conf.php.',
+                    ('Error DB. No se puede continuar. Revisa el valor de las constantes DB_USER y DB_PASSWORD en el archivo conf.php.',
                       AppException::DB_UNABLE_TO_CONNECT);                                
             }
 
         }
-        return static::$conn;
+        return static::$connDB;
     }     
 
     /**
@@ -65,7 +65,7 @@ class Core {
 
     public static function cerrarConexionDB()
     {
-        static::$conn=null;
+        static::$connDB=null;
     }
 
     /**
