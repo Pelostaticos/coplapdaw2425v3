@@ -63,7 +63,7 @@ class Core {
      * Método estático para cerrar la conexión con la base de datos
      */
 
-    public static function cerarConexionDB()
+    public static function cerrarConexionDB()
     {
         static::$conn=null;
     }
@@ -72,13 +72,13 @@ class Core {
      * Método estático para ejecutar una sentencia SQL (Conforme sentencias preparadas PDO)
      *
      * @param $sql sentencia SQL (Conforme a PDO Prepared Statement)
-     * @param array $data array asociativo con los datos a reemplazar en la consulta (conforme a PDO Prepared Statement)
+     * @param array $data array asociativo opcional con los datos a reemplazar en la consulta (conforme a PDO Prepared Statement)
      * @return mixed Si la consulta es tipo SELECT se obtendrá un array asociativo con todos los registros
      *               Si la consulta es tipo INSERT/UPDATE/DELETE se obtendrá el número de registros afectados.
      * @throws AppException Si algo en la consulta va mal eleva una excepción tipo AppException con
      * uno de los códigos disponibles en función del problema producido.
      */
-    public static function doSQL($sql, $datos = [])
+    public static function ejecutarSql($sql, $datos = [])
     {
         $ret = false;
         $pdo = self::abrirConexionDB();
