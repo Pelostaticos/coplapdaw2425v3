@@ -456,6 +456,16 @@ class Rol {
         return $this->permisos['permiso41'];
     }
 
+    /**
+     * Método para comprobar que un usuario tiene rol administrador para ejecutar un gestor.
+     *
+     * @return boolean Verdadero para permitir el acceso al gestor restringido al rol administrador
+     *                 Falso para no permitir el acceso al gesor al resto de roles
+     */
+    public function hasPermisoAdministradorGestor() {
+        return $this->rol === 'administrador' ? true : false;
+    }
+
     // D) Defino los métodos estáticos de la clase auxiliar Rol
     
     /**

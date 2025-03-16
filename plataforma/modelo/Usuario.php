@@ -34,7 +34,6 @@ class Usuario {
     private $usuario;
     private $estado;
     private $rol;
-    private $permisos;
 
     // B) Defino el constructor privado de la clase Usuario
     private function __construct($usuario) {
@@ -44,8 +43,6 @@ class Usuario {
         $this->estado=$usuario['estado'];
         $this->rol=$usuario['rol'];
 
-        // Asigno los permisos del usuario en la plataforma en base a su rol
-        $this->permisos=Rol::asignarPermisos($this->rol);
     }
 
     // C) Defino los métodos propios de la clase Usuario
@@ -144,7 +141,7 @@ class Usuario {
     public static function autenticarUsuario($usuario, $password): ?Usuario
     {   
         // Construyo la sentencia SQL para recuperar al usuario de la base de datos     
-        $sql="SELECT * from pdaw_usuarios where nombre=:usuario and contraseña=:password";
+        $sql="SELECT * from pdaw_usuarios where nombre=:usuario and contraseña=SHA2(CONCAT(:usuario,:password),256)";
         // Ejecuto la sentencia SQL para recuperar al usuario de la base de datos
         $res=Core::ejecutarSql($sql,[':usuario'=>$usuario,':password'=>$password]);
         // Si el resultado devuelto tras ejecución contiene un array de un elemento
@@ -158,11 +155,11 @@ class Usuario {
             return null;
     }
 
-
+    // REVISARLA PARA ADPATAR A LA GENERACIÓN SHA2 DEL CÓDIGO USUARIO Y NOMBRE PARAMETROS ARRAY $DATOS DEL FORMUALRIO
     public static function crearUsuario ($datos): ?Usuario
     {
         // Construyo la sentencia SQL para añadir un nuevo usuario a la tabla Usuarios de la base datos
-        $sql="INSERT INTO pdaw_usuarios (codigo, nombre, contraseña, estado, rol) VALUES (:codigo, :usuario, :password, :estado, :rol)";
+        $sql="INSERT INTO pdaw_usuarios (codigo, nombre, contraseña, estado, rol) VALUES (:codigo, :usuario, SHA2(CONCAT(:usuario,:password),256)), :estado, :rol)";
         // Si al ejecutar la sentencia SQL me devuelve uno
         if (Core::ejecutarSql($sql,$datos)===1)
         {
@@ -171,7 +168,7 @@ class Usuario {
         }        
         // De lo contrario devuelvo nulo porque no se pudo añadir al nuuevo usuario
         else return null;
-    }    
+    }
 
 }
 
