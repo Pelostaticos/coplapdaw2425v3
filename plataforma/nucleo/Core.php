@@ -23,6 +23,9 @@ namespace correplayas\nucleo;
 // 1º) Defino los espacios de nombres que voy a utilizar en esta clase
 use PDO;
 use PDOException;
+use correplayas\modelo\Usuario;
+use correplayas\modelo\Persona;
+use correplayas\controladores\Usuarios;
 use correplayas\excepciones\AppException;
 
 // 2º) Defino la clase del nucleo de la plataforma correplayas
@@ -126,9 +129,27 @@ class Core {
         $smarty->display('comunes/login.tpl');
     }
 
-
-    public static function iniciarSesion() {
-
+    // REVISAR EL FUNCIONAMIENTO DE LAS EXCEPCIONES PARA AJUSTAR EL CÓDIGO
+    public static function iniciarSesion($smarty) {
+        $usuario=filter_input(INPUT_POST,'username');
+        $password=filter_input(INPUT_POST,'password');
+        if (!empty($usuario) && !empty($password))
+        {   
+            $u=Usuario::autenticarUsuario($usuario,$password);
+            if($u instanceof Usuario)
+                $_SESSION['usuario']=$u;
+            else
+            {
+                $notificaciones=['El usuario o password indicado no es válido'];
+                $smarty->assign('notificaciones',$notificaciones);
+            }
+        }
+        else
+            {
+                $notificaciones=['No se han indicado el usuario o el password'];
+                $smarty->assign('notificaciones',$notificaciones);
+            }
+        Usuarios::default($smarty);
     }
 
     /**
