@@ -118,16 +118,6 @@ class Usuario {
         $this->rol=$rol;
     }
 
-    /**
-     * Método GET para obtener todos los permisos del usuario en la plataforma.
-     *
-     * @return Rol Devuelve un objeto rol que contiene todos los pemrisos del usuario
-     */
-    public function getPermisos() {
-        // Devuelvo los permisos del usuario en la plataforma conforme a su rol
-        return $this->permisos;
-    }
-
     // E) Defino los métodos estáticos de la clase Usuario
 
     /**
