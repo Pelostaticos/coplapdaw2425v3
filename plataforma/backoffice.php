@@ -28,6 +28,7 @@ require_once(__DIR__ . '/nucleo/Core.php');
 require_once(__DIR__ . SMARTY_LIB);
 use Smarty\Smarty;
 use correplayas\controladores\ErrorController;
+use correplayas\controladores\Usuarios;
 use correplayas\excepciones\AppException;
 use correplayas\nucleo\Core;
 
@@ -59,7 +60,8 @@ try {
         switch ($comando) {
             // Por defecto si estas logueado y no solicitas nada te muestro la página de inicio del backoffice.
             default:
-                echo "Por defecto siempre te mostraré la página de inicio del backoffice";
+                // Solicito que se muestre la página de inicio del backoffice dela plataforma.
+                Usuarios::default($smarty);
                 break;
         }
     } else {
