@@ -61,7 +61,7 @@ try {
             // Por defecto si estas logueado y no solicitas nada te muestro la página de inicio del backoffice.
             default:
                 // Solicito que se muestre la página de inicio del backoffice dela plataforma.
-                Usuarios::default($smarty);
+                Core::default($smarty);
                 break;
         }
     } else {

@@ -29,19 +29,7 @@ use Smarty\Smarty;
  */
 class Usuarios {
 
-    /**
-     * Método por DEFECTO para mostrar la página de inicio del backoffice de la plataforma
-     *
-     * @param Smarty $smarty Objeto del motor de plantillas Samrty
-     * @return void No devuelve valor alguno
-     */
-    public static function default(Smarty $smarty) {
-        // Asigno las variables de la plantilla para la página de inicio del backoffice
-        $smarty->assign('usuario', 'Pelostaticos');
-        $smarty->assign('anyo', date('Y'));
-        // Muestro la plantilla de la página de inicio del backoffice
-        $smarty->display('comunes/backoffice.tpl');
-    }
+
 
 }
 

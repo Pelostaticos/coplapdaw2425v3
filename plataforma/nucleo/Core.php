@@ -25,16 +25,32 @@ use PDO;
 use PDOException;
 use correplayas\modelo\Usuario;
 use correplayas\modelo\Persona;
-use correplayas\controladores\Usuarios;
+use correplayas\modelo\Rol;
 use correplayas\excepciones\AppException;
+use correplayas\controladores\ErrorController;
+use Smarty\Smarty;
 
 // 2º) Defino la clase del nucleo de la plataforma correplayas
 class Core {
-
-    // Bloque-A: Definición de atributos de la clase.
+    
+    // Definición de atributos y método por defecto de la clase.
     private static $connDB=null;
 
-    // Bloque-B: Base de datos.
+    /**
+     * Método por DEFECTO para mostrar la página de inicio del backoffice de la plataforma
+     *
+     * @param Smarty $smarty Objeto del motor de plantillas Samrty
+     * @return void No devuelve valor alguno
+     */
+    public static function default(Smarty $smarty) {
+        // Asigno las variables de la plantilla para la página de inicio del backoffice
+        $smarty->assign('usuario', 'Pelostaticos');
+        $smarty->assign('anyo', date('Y'));
+        // Muestro la plantilla de la página de inicio del backoffice
+        $smarty->display('comunes/backoffice.tpl');
+    }    
+
+    // Bloque-A: Base de datos.
 
     /**
      * Método estático para abrir una conexión con la base de datos
@@ -129,27 +145,54 @@ class Core {
         $smarty->display('comunes/login.tpl');
     }
 
-    // REVISAR EL FUNCIONAMIENTO DE LAS EXCEPCIONES PARA AJUSTAR EL CÓDIGO
+    /**
+     * Método estático que procesa el inicio de sesion d eun usuario en la plataforma
+     *
+     * @param Smarty $smarty Contiene el objeto del motor del plantillas Smarty
+     * @return void No devuelve valor alguno
+     */
     public static function iniciarSesion($smarty) {
-        $usuario=filter_input(INPUT_POST,'username');
-        $password=filter_input(INPUT_POST,'password');
+        // Recupero los datos proporcionados en el formulario de inicio de sesión
+        $usuario=filter_input(INPUT_POST,'frm-usuario');
+        $password=filter_input(INPUT_POST,'frm-password');
+        // Compruebo que los campos usuario y contraseña no estén vacios
         if (!empty($usuario) && !empty($password))
         {   
+            // Recupero el usuario de las credenciales aportadas
             $u=Usuario::autenticarUsuario($usuario,$password);
-            if($u instanceof Usuario)
-                $_SESSION['usuario']=$u;
+            // Compruebo que $u sea una instancia de la clase Usuario
+            if($u instanceof Usuario) {
+                // Compruebo que el estado de usuario es activo
+                if ($u->getEstado() === 'ACTIVO') {
+                    // Recupero los permisos del usuario a partir de su rol
+                    $p=Rol::asignarPermisos($u->getRol());
+                    // Compruebo que $p sea una instancia de la clase Rol
+                    if ($p instanceof Rol) {
+                        // Guardo en la sesión al usuario peropietario
+                        $_SESSION['usuario']=$u;
+                        // Guardp en la sesión los permisos del usuario propietario
+                        $_SESSION['permisos']=$p;
+                    } else {
+                        // Lanzo excepción para notificar que el rol del usuario es desconocido
+                        throw new AppException('El rol del usuario es desconocido en la plataforma');
+                    }
+                } else {
+                    // Lanzo excepción para notificar que el usuario no se encuentra activo en la plataforma.
+                    throw new AppException('Su usuario presenta una incidencia!! Por favor, contacté con los administradores del sitio');
+                }
+            }
             else
             {
-                $notificaciones=['El usuario o password indicado no es válido'];
-                $smarty->assign('notificaciones',$notificaciones);
+                // Lanzo excepción para notificar que usuario o contraseña no son válidos
+                throw new AppException('El usuario o password indicado no es válido');
             }
         }
         else
-            {
-                $notificaciones=['No se han indicado el usuario o el password'];
-                $smarty->assign('notificaciones',$notificaciones);
-            }
-        Usuarios::default($smarty);
+        {
+            // Lanzo excepción para notificar que no se han indicado el usuario o contraseña
+            throw new AppException('No se han indicado el usuario o el password');
+        }
+        Core::default($smarty);
     }
 
     /**
@@ -166,7 +209,25 @@ class Core {
         $smarty->display('comunes/logout.tpl');
     }
 
+    /** 
+     * Método estático que procesa el cierre de sesión de un usuario
+     */
     public static function cerrarSesion() {
+
+        // Recupero la sesión del usuario actual
+        session_start();
+
+        // Elimino todas las variables de la sesión actual
+        session_unset();
+
+        // Elimino la cookie de sesion del navegador
+        setcookie(session_name(), '', time() - 3600, "/");
+
+        // Redirigo al usuario a la vista de inicio de sesión
+        header("Location: " . $_SERVER['SERVER_NAME'] . "/plataforma/backoffice.php");
+
+        // Salgo de la ejecución del presente script PHP
+        exit;
 
     }
 
@@ -184,12 +245,54 @@ class Core {
         $smarty->display('comunes/signup.tpl');        
     }
 
-    public static function registrarVoluntario() {
+    public static function registrarVoluntario($smarty) {
+        // Recupero los datos del formulario de registro de un nuevo usuario: Datos de usuario
+        $datosUsuario = ['codigo' => '',
+        'nombre' => filter_input(INPUT_POST,'frm-usuario'),
+        'contraseña' => filter_input(INPUT_POST,'frm-password'),
+        'estado' => 'ACTIVO',
+        'rol' => 'voluntario'];
+
+        // Recupero los datos del formulario de registro de un nuevo usuario: Datos de persona usuaria
+        $datosPersona = ['documento' => filter_input(INPUT_POST,'frm-dni'),
+        'tipo' => 'DNI',
+        'nombre' => filter_input(INPUT_POST,'frm-nombre'),
+        'apellido1' => filter_input(INPUT_POST,'frm-apellido1'),
+        'apellido2' => filter_input(INPUT_POST,'frm-apellido2'),
+        'email' => filter_input(INPUT_POST,'frm-email'),
+        'telefono' => '-',
+        'direccion' => '-',
+        'localidad' => filter_input(INPUT_POST,'frm-localidad'),
+        'codigoPostal' => '-',
+        'usuario' => ''];
+
+        // Genero el hash de usuario que identica a la persona usuaria
+        $hashUsuario = $datosUsuario['nombre'] . $datosPersona['documento'] . $datosPersona['nombre'] . $datosPersona['apellido1'] . $datosPersona['apellido2'];
+        $hashUsuario = hash('sha256', $hashUsuario);
+
+        // Asigno el hash de usuario generado a los datos de usuario y de la persona usuaria
+        $datosUsuario['codigo'] = $hashUsuario;
+        $datosPersona['usuario'] = $hashUsuario;
+
+        // Intento registrar al usuario y su persona usuaria asociada
+        try {
+
+        // Manejo la excepción que se haya producido para notificarla al usuario
+        } catch (AppException $ae) {
+            // Si se produce una violación de restricción al registrarlos
+            if ($ae->getCode() === AppException::DB_CONSTRAINT_VIOLATION_IN_QUERY)
+            {
+                ErrorController::handleException($ae, $smarty, '/plataforma/backoffice.php?comando=core:login:vista', "Este usuario ya esta registrado!!");
+            }
+            else
+                ErrorController::handleException($ae, $smarty, '/plataforma/backoffice.php?comando=core:signup:vista');
+        }
+
 
     }
 
     // Bloque-E: Ayuda de la plataforma.
-
+    
 
 }
 
