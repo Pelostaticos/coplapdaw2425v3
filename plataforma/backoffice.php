@@ -20,12 +20,20 @@
 // 0º) Defino el espacio de nombre del fichero
 namespace correplayas;
 
-// 1º) Cargo el fichero de configuración de la plataforma web
+// 1º) Cargo el fichero de configuración y clases de la plataforma web
 require_once(__DIR__ . '/config/config-inc.php');
+require_once(__DIR__ . '/excepciones/AppException.php');
+require_once(__DIR__ . '/modelo/Persona.php');
+require_once(__DIR__ . '/modelo/Usuario.php');
+require_once(__DIR__ . '/modelo/Rol.php');
+require_once(__DIR__ . '/controladores/ErrorController.php');
 require_once(__DIR__ . '/nucleo/Core.php');
 
-// 2º) Cargo las librerias requeridas por la plataforma web
+
+// 2.1º) Cargo las librerias requeridas por la plataforma web
 require_once(__DIR__ . SMARTY_LIB);
+
+// 2.2º) Establezco los espacio de nombre que voy a utilizar
 use Smarty\Smarty;
 use correplayas\controladores\ErrorController;
 use correplayas\controladores\Usuarios;
@@ -73,8 +81,7 @@ try {
                 break;
             // Inicio el proceso de autenticación del usuario en la plataforma            
             case "core:login:procesa":
-                echo "Inicio tu autenticación en la plataforma...";
-                var_dump($_POST);
+                Core::iniciarSesion($smarty);
                 break;
             // Solicita el cierre de sesión en la plataforma
             case "core:logout:vista":
@@ -82,7 +89,7 @@ try {
                 break;
             // Cierro la sesión del usuario en la plataforma
             case "core:logout:procesa":
-                echo "Cierto tu sesión de usuario en la plataforma...";
+                Core::cerrarSesion();
                 break;            
             // Un usuario visitante quiere registrarse en la plataforma
             case "core:signup:vista":
@@ -90,8 +97,7 @@ try {
                 break;
             // Completo el proceso de registro de un nuevo usuario en la plataforma
             case "core:signup:procesa":
-                echo "Bienvenido! Completo tu registro en nuestra plataforma...";
-                var_dump($_POST);
+                Core::registrarVoluntario($smarty);
                 break;
             // Un usuario visitante quiere contactar con los administradores por email
             case "core:email":

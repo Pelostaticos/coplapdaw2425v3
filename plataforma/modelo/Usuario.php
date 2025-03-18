@@ -22,7 +22,6 @@ namespace correplayas\modelo;
 use \PDO;
 use \PDOException;
 use \correplayas\nucleo\Core;
-use \correplayas\modelo\Rol;
 
 /**
  * Clase del modelo de datos para trabajar con Usuarios
@@ -37,7 +36,9 @@ class Usuario {
 
     // B) Defino el constructor privado de la clase Usuario
     private function __construct($usuario) {
+        var_dump($usuario);
         // Defino los atributos de la clase Usuario
+
         $this->codigo=$usuario['codigo'];
         $this->usuario=$usuario['nombre'];
         $this->estado=$usuario['estado'];
@@ -131,7 +132,7 @@ class Usuario {
     public static function autenticarUsuario($usuario, $password): ?Usuario
     {   
         // Construyo la sentencia SQL para recuperar al usuario de la base de datos     
-        $sql="SELECT * from pdaw_usuarios where nombre=:usuario and contraseña=SHA2(CONCAT(:usuario,:password),256)";
+        $sql="SELECT * from pdaw_usuarios where nombre=:usuario and contrasenya=SHA2(CONCAT(:usuario,:password),256)";
         // Ejecuto la sentencia SQL para recuperar al usuario de la base de datos
         $res=Core::ejecutarSql($sql,[':usuario'=>$usuario,':password'=>$password]);
         // Si el resultado devuelto tras ejecución contiene un array de un elemento
@@ -146,18 +147,21 @@ class Usuario {
     }
 
     // REVISARLA PARA ADPATAR A LA GENERACIÓN SHA2 DEL CÓDIGO USUARIO Y NOMBRE PARAMETROS ARRAY $DATOS DEL FORMUALRIO
-    public static function crearUsuario ($datos): ?Usuario
+    public static function crearUsuario ($datos)
     {
         // Construyo la sentencia SQL para añadir un nuevo usuario a la tabla Usuarios de la base datos
-        $sql="INSERT INTO pdaw_usuarios (codigo, nombre, contraseña, estado, rol) VALUES (:codigo, :usuario, SHA2(CONCAT(:usuario,:password),256)), :estado, :rol)";
+        $sql="INSERT INTO pdaw_usuarios (codigo, nombre, contrasenya, estado, rol) VALUES (:codigo, :nombre, :contrasenya, :estado, :rol)";
         // Si al ejecutar la sentencia SQL me devuelve uno
         if (Core::ejecutarSql($sql,$datos)===1)
         {
+            
+            // Estandarizo 
+
             // Entonces devuelvo un objeto Usuario con su datos recientemente creados.
-            return new Usuario($datos);
+            return true;
         }        
         // De lo contrario devuelvo nulo porque no se pudo añadir al nuuevo usuario
-        else return null;
+        else return false;
     }
 
 }

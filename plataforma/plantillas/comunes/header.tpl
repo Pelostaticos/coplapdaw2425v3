@@ -6,7 +6,7 @@
 *}
 
 <!-- {$usuarioLogueado=isset($marty.session.usuario)} -->
- {$usuarioLogueado=false}
+ {$usuarioLogueado=isset($smarty.session.usuario)}
 
 <!DOCTYPE html>
 <html lang="sp">
@@ -54,7 +54,7 @@
                 <!-- Nombre del usuario logeado -->
                 <a href="/plataforma/backoffice.php?comando=usuario:default" class="boton-nav"><span class="iconos-nav-backoffice">account_circle</span> {$usuario}</a>
                 <!-- Botón de salida de la plataforma -->
-                <a href="/plataforma/backoffice.php?comando=core:logout" class="boton-nav"><span class="iconos-nav-backoffice">logout</span> Salir</a>
+                <a href="/plataforma/backoffice.php?comando=core:logout:vista" class="boton-nav"><span class="iconos-nav-backoffice">logout</span> Salir</a>
             {else}
                 <h1 class="titulo-navegacion">Backoffice</h1>
             {/if}

@@ -255,20 +255,20 @@ class Persona {
     }
 
     // REVISARLA PARA ADPATAR A LA GENERACIÓN SHA2 DEL CÓDIGO USUARIO Y NOMBRE PARAMETROS ARRAY $DATOS DEL FORMUALRIO
-    public static function crearUsuario ($datos): ?Persona
+    public static function crearPersona ($datos)
     {
         // Construyo la sentencia SQL para añadir un nuevo usuario a la tabla Usuarios de la base datos
-        $sql="INSERT INTO pdaw_persona (documento, tipo, nombre, apellido1, apellido2, email, telefono
+        $sql="INSERT INTO pdaw_personas (documento, tipo, nombre, apellido1, apellido2, email, telefono
         , direccion, localidad, codigo_postal, usuario) VALUES (:documento, :tipo, :nombre, :apellido1
-        , :apellido2, :email, :telefono, :dirección, :localidad, :codigoPostal, :usuario)";
+        , :apellido2, :email, :telefono, :direccion, :localidad, :codigoPostal, :usuario)";
         // Si al ejecutar la sentencia SQL me devuelve uno
         if (Core::ejecutarSql($sql,$datos)===1)
         {
             // Entonces devuelvo un objeto Usuario con su datos recientemente creados.
-            return new Persona($datos);
+            return true;
         }        
         // De lo contrario devuelvo nulo porque no se pudo añadir al nuuevo usuario
-        else return null;
+        else return false;
     }    
 
 }
