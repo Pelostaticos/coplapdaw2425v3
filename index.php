@@ -96,8 +96,11 @@
                     <input type="text" name="frm-nombre" id="frm-nombre" placeholder="Dejanós tu nombre..." require>
                     <label for="frm-telefono">Teléfono de contacto:</label>
                     <input type="phone" name="frm-telefono" id="frm-telefono" placeholder="Dejanós tu teleféno..." require>                    
+                    <label for="frm-asunto">Asunto:</label>
+                    <input name="frm-asunto" id="frm-asunto" placeholder="Dejanós tu asunto de contactarnos..." require></input>                                    
                     <label for="frm-mensaje">Mensajes:</label>
                     <textarea name="frm-mensaje" id="frm-mensaje" rows="3" placeholder="Dejanós tu consulta (Opcional)"></textarea>
+                    <inpuy type="hidden" id="frm-origen" name="frm-origen" value="portal">
                     <button type="submit" class="boton-enviar">Enviar</button>
                 </form>
                 <!-- Invitación a unirse a la plataforma -->

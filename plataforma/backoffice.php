@@ -32,9 +32,15 @@ require_once(__DIR__ . '/nucleo/Core.php');
 
 // 2.1º) Cargo las librerias requeridas por la plataforma web
 require_once(__DIR__ . SMARTY_LIB);
+require_once(__DIR__ . PHPMAILER_LIB);
+require_once(__DIR__ . PHPMAILER_SMTP);
+require_once(__DIR__ . PHPMAILER_EXCEPTION);
 
 // 2.2º) Establezco los espacio de nombre que voy a utilizar
 use Smarty\Smarty;
+use PHPMailer\PHPMailer\SMTP;
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception; 
 use correplayas\controladores\ErrorController;
 use correplayas\controladores\Usuarios;
 use correplayas\excepciones\AppException;
@@ -43,12 +49,24 @@ use correplayas\nucleo\Core;
 // 3º) Inicio la sesion web en la plataforma web
 session_start();
 
-// 4º) Configuro el motor de plantillas Smarty
+// 4.1º) Configuro el motor de plantillas Smarty
 $smarty = new Smarty();
 $smarty->setTemplateDir(__DIR__ . TEMPLATE_DIR);
 $smarty->setCompileDir(__DIR__ . COMPILE_DIR);
 $smarty->setCacheDir(__DIR__ . CACHE_DIR);
 $smarty->setConfigDir(__DIR__ . CONFIGS_DIR);
+
+// 4.2) Configuro el servidor SMTP para envío de correo electrónico
+$mail = new PHPMailer(true);
+$mail->SMTPDebug = SMTP::DEBUG_SERVER;
+$mail->isSMTP();
+$mail->Host = SMTP_HOST;
+$mail->SMTPAuth = true;
+$mail->Username = SMTP_USER;
+$mail->Password = SMTP_PASS;
+$mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;
+$mail->Port = SMTP_PORT;
+$mail->setFrom(SMTP_FROM, 'Plataforma Correplayas');
 
 // 5º) Obtengo el comando de acción requerida por el usuario.
 $comando = filter_input(INPUT_GET, 'comando', FILTER_SANITIZE_SPECIAL_CHARS);

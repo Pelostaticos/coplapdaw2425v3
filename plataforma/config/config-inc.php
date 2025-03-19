@@ -27,7 +27,17 @@ define('DB_DSN', 'mysql:host=sergiopdaw.xampp.local:3306;dbname=sergiodaw;charse
 define('DB_USER','pelostaticos');
 define('DB_PASSWORD','S04#G07#B80');
 
-// Datos del fichero PDF de ayuda en linea de la plataforma
-define ('AYUDA_PDF','http://' . $_SERVER['SERVER_NAME'] . '/plataforma/tutorial.pdf');
+// Datos de configuración de la libreria PHPMailer para envío de correc electrónico
+define('PHPMAILER_LIB','/librerias/phpmailer/PHPMailer.php');
+define('PHPMAILER_SMTP','/librerias/phpmailer/SMTP.php');
+define('PHPMAILER_EXCEPTION','/librerias/phpmailer/Exception.php');
+
+// Datos de configuración del servidor SMTP para envío de formualrios de contacto
+define('SMTP_HOST','mail.sergiofct.bitgarcia.es');
+define('SMTP_USER','webmaster@sergiofct.bitgarcia.es');
+define('SMTP_PASS','qN5]gyT5*');
+define('SMTP_PORT','465');
+define('SMTP_FROM','webmaster@sergiofct.bitgarcia.es');
+define('SMTP_BCC','sgarbut482@g.educaand.es');
 
  ?>

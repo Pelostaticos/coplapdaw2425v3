@@ -133,6 +133,72 @@ class Core {
 
     // Bloque-C: Correo electrónico.
 
+    public static function enviarEmail($smarty, $mail) {
+
+        // Intento enviar el formulario de contacto a los administrador de la plataforma web
+        try {
+
+            // Recupero los datos del formulario de contacto
+            $email = filter_input(INPUT_POST,'frm-email');
+            $nombre = filter_input(INPUT_POST,'frm-nombre');
+            $telefono = filter_input(INPUT_POST,'frm-telefono');
+            $asunto = filter_input(INPUT_POST,'frm-asunto');
+            $mensaje = filter_input(INPUT_POST,'frm-mensaje');
+            $origen = filter_input(INPUT_POST,'frm-origen');            
+
+            // Establezco el mensaje por defecto si no se relleno en el formulario
+            if ($mensaje === null || $mensaje==="") {
+                $mensaje="Necesito resolver algunas dudas. Por favor, contactenme. Gracias!";
+            }
+
+            // Establezo quién recibirá el mensaje directamente.
+            $mail->addAdress(SMTP_FROM, 'Administradores Plataforma Correplayas');
+            // Establezco a quién se le envía la respuesta.
+            $mail->addReplyTo($email, $nombre);
+            // Establezco quién recibirá copia visible del mensaje
+            $mail->addCC($email, $nombre);
+            // Establezco quién recibirá una copia oculta del mensaje
+            $mail->addBCC(SMTP_BCC, 'Almuno PDAW2425');
+
+            // Establezco el contenido del mensaje a enviar a los administradores de la plataforma: HTML
+            $contenido = "<p>Hola,<br/><p>Has recibido un nuevo mensaje desde el formulario de contacto de la 
+            Plataforma Corerplayas. Aquí te dejo los detalles:</p></p><br/><br/>
+            <ul><li><b>Nombre: </b>" . $nombre . "</li><li><b>Correo electrónico: </b>" . $email . "</li>
+            <li><b>Teléfono: </b>" . $telefono  ."</li><li><b>Asunto: </b>" . $asunto . "</li>
+            <li><b>Mensaje:</b><br/><br/>" . $mensaje . "<br/>En breve antenderemos tu consulta.<br/><br/>Gracias,
+            <br/><br/> El equipo de Plataforma Correplayas";
+
+            // Establezco el contenido del mensaje a enviar a los administradores de la plataforma: Texto plano
+            $altContenido = "Hola, has recibido un nuevo mensaje desde el formualrio de contacto de la Plataforma
+            Correplayas. Aquí te dejo los detalles:\n\n>> Nombre: " . $nombre . "\n>>Correo electrónico:" .
+            $email . "\n>> Teléfono: " . $telefono . "\n>> Asunto: " . $asunto . "\n>> Mensaje: " . $mensaje . 
+            "\n\n En breve atenderemos tu consulta, \n Gracias, \n El equipo de Plataforma Corerplayas." ;
+
+            // Configuro el mensaje a enviar a los administradores de la plataforma
+            $mail->isHTML(true);
+            $mail->Subject = $asunto;
+            $mail->Body = $contenido;
+            $mail->AltBody = $altContenido;
+
+            // Envio el mensaje a los administradores de la plataforma
+            $mail->send();
+
+            /* Estblezco la URL a la que se dirige al usuario al aceptar el mensaje informativo
+                >> Si el origen es el portal web se le redirige a su página de inicio
+                >> Si el origen es el backoffice se le redirige a su página de inicio */
+            $urlAceptar = ($origen === "portal" ? "/index.php" : "/plataforma/backoffice.php");
+
+            // Notifico al usuario que el envío se realizó correctamente            
+            ErrorController::mostrarMensajeInformativo($smarty, "Mensaje enviado correctamente!!", $urlAceptar);
+
+        } 
+        // Manejo las posibles excepciones que pueda surgir durante el envio del formulario de contacto
+        catch (AppException $ae) {
+            ErrorController::handleException($ae, $smarty, "/plataforma/backoffice.php");
+        }
+
+    }
+
     // Bloque-D: Control de acceso a la plataforma.
     
     /**
