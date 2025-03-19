@@ -66,6 +66,14 @@ try {
         // 6.1º) Gestiono la petición como un comando del backoffice para un usuario logueado
         echo "Hola! Esta funciones no están disponible por el momento... Gracias!";
         switch ($comando) {
+            // Solicita el cierre de sesión en la plataforma
+            case "core:logout:vista":
+                Core::mostrarCierreSesion($smarty);
+                break;
+            // Cierro la sesión del usuario en la plataforma
+            case "core:logout:procesa":
+                Core::cerrarSesion();
+                break;
             // Por defecto si estas logueado y no solicitas nada te muestro la página de inicio del backoffice.
             default:
                 // Solicito que se muestre la página de inicio del backoffice dela plataforma.
@@ -82,15 +90,7 @@ try {
             // Inicio el proceso de autenticación del usuario en la plataforma            
             case "core:login:procesa":
                 Core::iniciarSesion($smarty);
-                break;
-            // Solicita el cierre de sesión en la plataforma
-            case "core:logout:vista":
-                Core::mostrarCierreSesion($smarty);
-                break;
-            // Cierro la sesión del usuario en la plataforma
-            case "core:logout:procesa":
-                Core::cerrarSesion();
-                break;            
+                break;          
             // Un usuario visitante quiere registrarse en la plataforma
             case "core:signup:vista":
                 Core::mostrarRegistroVoluntario($smarty);
@@ -111,9 +111,8 @@ try {
                 break;
         }
     }    
-} catch (AppException $excepcion) {
-    echo "No se ha podido ejecutar el comando solicitado!!";
-    // ErrorController::handleException($e, $smarty);
+} catch (AppException $ae) {
+    ErrorController::handleException($ae, $smarty);
 }
 
 ?>

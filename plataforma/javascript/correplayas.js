@@ -89,12 +89,10 @@ function validarLogin(event) {
     errores.push('Por favor, introduce tu contraeña de acceso.');
   }
 
-  // Mostrar errores o enviar el formulario
+  // Si se detectan error detengo el envio del formulario y los notifico al usuario
   if (errores.length > 0) {
     event.preventDefault();
     alert(errores.join('\n'));
-  } else {              
-    alert('Formulario enviado correctamente');
   }
 }
 // C.2) Funcíon para validar el formulario de contacto.
@@ -126,12 +124,10 @@ function validarContactenos(event) {
     errores.push('Por favor, introduce un número de teléfono válido (9 dígitos).');
   }
 
-  // Mostrar errores o enviar el formulario
+  // Si existen errores detengo el envio del formualrio y se los notifico al usuario
   if (errores.length > 0) {
     event.preventDefault();
     alert(errores.join('\n'));
-  } else {              
-    alert('Formulario enviado correctamente');
   }
 }
 // C.3) Funcíon para validar el formulario de registro de usuario.
@@ -191,12 +187,10 @@ function validarSignup(event) {
     errores.push('Por favor, introduce tu localidad.');
   }
 
-  // Mostrar errores o enviar el formulario
+  // Si se detectan error detengo el envio del formulario y se los notifico al usuario.
   if (errores.length > 0) {
     event.preventDefault();
     alert(errores.join('\n'));
-  } else {              
-    alert('Formulario enviado correctamente');
   }
 }
 

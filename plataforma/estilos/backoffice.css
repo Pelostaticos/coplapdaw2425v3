@@ -408,9 +408,9 @@ section#formulario form textarea {
 }
 
 /* Estilos para vista de notificaciones */
-article#notificaciones {
+/*article#notificaciones { No me gusta el resultado
     margin: auto auto;
-}
+}*/
 .boton-notificacion {
     align-self: center;
     border-radius: 5px;

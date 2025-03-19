@@ -27,4 +27,7 @@ define('DB_DSN', 'mysql:host=sergiopdaw.xampp.local:3306;dbname=sergiodaw;charse
 define('DB_USER','pelostaticos');
 define('DB_PASSWORD','S04#G07#B80');
 
+// Datos del fichero PDF de ayuda en linea de la plataforma
+define ('AYUDA_PDF','http://' . $_SERVER['SERVER_NAME'] . '/plataforma/tutorial.pdf');
+
  ?>

@@ -228,7 +228,7 @@ class Core {
         setcookie(session_name(), '', time() - 3600, "/");
 
         // Redirigo al usuario a la vista de inicio de sesión
-        header("Location: " . $_SERVER['SERVER_NAME'] . "/plataforma/backoffice.php");
+        header("Location: http://" . $_SERVER['SERVER_NAME']);
 
         // Salgo de la ejecución del presente script PHP
         exit;
@@ -315,11 +315,7 @@ class Core {
                 ErrorController::handleException($ae, $smarty, '/plataforma/backoffice.php?comando=core:signup:vista');
         }
 
-
     }
-
-    // Bloque-E: Ayuda de la plataforma.
-    
 
 }
 

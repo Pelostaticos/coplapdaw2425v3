@@ -36,12 +36,16 @@ class ErrorController {
      * @param string $mensaje Mensaje de error que se le notifica al usuario
      * @return void No devuelve valor alguno
      */
-    public static function handleException (AppException $ae, Smarty $smarty, string $aceptar, ?string $mensaje = null)
+    public static function handleException (AppException $ae, Smarty $smarty, ?string $aceptar=null, ?string $mensaje = null)
     {
         // Establezco el mennsaje por defecto de la excepción a manejar.
         if ($mensaje === null) {
             $mensaje = $ae->getMessage();
-        }        
+        }
+        // Establezco la url para redirigir al aceptar el usuario la notificación
+        if ($aceptar === null) {
+            $aceptar = $ae->getUrlAceptar();
+        }
         // Establezco las variables de la plantilla para las notificaciones
         $smarty->assign('titulo', 'Notificaciones backoffice');
         if (!isset($_SESSION['usuario']))

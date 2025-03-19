@@ -23,8 +23,8 @@
                 <img src="/plataforma/imagenes/correplayas.jpg" alt="Foto del correlimos común con triactilo al fondo" />
                 <p>Con tu valiosa contribución, monitoreamos especies, detectamos amenazas y tomamos decisiones para la conservación. Cada observación y censo que realizas es vital. Juntos, ciencia y ciudadanía, construimos un futuro sostenible.</p>
                 <h3 class="cta">¿Cómo poddemos ayudarte?</h3>
-                <div class="botonera">
-                    <a class="boton" href="/plataforma/backoffice.php?comnado=core:ayuda">Ayuda plataforma</a>
+                <div class="botonera">                    
+                    <a class="boton" href="/plataforma/tutorial.pdf" target="_blank">Ayuda plataforma</a>
                     <a class="boton" href="/plataforma/backoffice.php?comando=core:email:vista">Tengo una duda</a>
                 </div>
             </article>

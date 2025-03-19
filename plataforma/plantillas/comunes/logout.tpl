@@ -12,5 +12,5 @@
     mensaje="Has solicitado cerrar tu sesión de usuario en la plataforma"
     pregunta="¿Quieres salir de la plataforma?"
     cancelar="/plataforma/backoffice.php"
-    aceptar="/index.php"
+    aceptar="/plataforma/backoffice.php?comando=core:logout:procesa"
 }
