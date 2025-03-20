@@ -177,6 +177,7 @@ a {
     font-weight: 400; 
 }
 .boton {
+    justify-self: center;
     align-self: center;
     border-radius: 5px;
     margin-top: 5px;
@@ -198,6 +199,15 @@ a {
     flex-direction: row;
     justify-content: space-around;
     align-items: center;
+}
+
+/* Iconos utilizados en el backoffice */ 
+.iconos-nav-portal {
+    padding-right: 10px;
+    font-family: 'Material Icons';
+    font-size: var(--tamaño-fuente-p-escritorio);
+    color: var(--color-textos-auxiliar);
+    cursor: pointer;
 }
 
 /*--------------------------------------------------------------

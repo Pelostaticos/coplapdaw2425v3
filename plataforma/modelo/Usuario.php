@@ -159,9 +159,6 @@ class Usuario {
         // Si al ejecutar la sentencia SQL me devuelve uno
         if (Core::ejecutarSql($sql,$datos)===1)
         {
-            
-            // Estandarizo 
-
             // Entonces devuelvo un objeto Usuario con su datos recientemente creados.
             return true;
         }        

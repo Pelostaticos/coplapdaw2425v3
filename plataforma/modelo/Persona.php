@@ -1,6 +1,6 @@
 <?php
 /**
- * Clase del modelo para trabajar con la tabla Personas de la base de datos.
+ * Clase auxiliar del modelo para trabajar con la tabla Personas de la base de datos.
  * Proyecto DAW Cursos 2024/25 - I.E.S AGUADULCE
  * Nombre del proyecto: Plataforma Correplayas
  * Tutor PDAW: Jośe Antonio Morales Álvarez.
@@ -24,11 +24,11 @@ use \PDOException;
 use \correplayas\nucleo\Core;
 
 /**
- *  Clase del modelo de datos para trabajar con Personas
+ *  Clase auxiliar del modelo de datos para trabajar con Personas
  */
 class Persona {
 
-    // A) Defino los atributos de la clase Persona
+    // A) Defino los atributos de la clase auxiliar Persona
     private $documento;
     private $tipo;
     private $nombre;
@@ -41,9 +41,9 @@ class Persona {
     private $codigoPostal;
     private $usuario;
 
-    // B) Defino el constructor privado de la clase Persona
+    // B) Defino el constructor privado de la clase auxiliar Persona
     private function __construct($persona) {
-        // Defino los atributos de la clase Persona
+        // Defino los atributos de la clase auxiliar Persona
         $this->documento=$persona['documento'];
         $this->tipo=$persona['tipo'];
         $this->nombre=$persona['nombre'];
@@ -58,10 +58,10 @@ class Persona {
 
     }
 
-    // C) Defino los métodos propios de la clase Usuario
+    // C) Defino los métodos propios de la clase auxiliar Persona
 
 
-    // D) Defino los métodos getter y setter de la clase Usuario
+    // D) Defino los métodos getter y setter de la clase auxiliar Persona
 
     /**
      * Método GET para obtener el documento de identidad de la persona usuaria
@@ -228,21 +228,21 @@ class Persona {
         return $this->usuario;
     }   
 
-    // E) Defino los métodos estáticos de la clase Usuario
+    // E) Defino los métodos estáticos de la clase auxiliar Persona 
 
     /**
      * Método que realiza la identificación de un usuario como persona
      *
-     * @param string $usuario Código de la usuario al que se desea identificar como persona
+     * @param string $hashUsuario Código del usuario al que se desea identificar como persona
      * @return Persona|null Devuelve un objeto Persona con todos sus datos si es identificado
      *                      Devuelve nulo si no es posibler autenticar al usuario indicado por parámetros
      */
-    public static function identificarPersona($usuario): ?Persona
+    public static function identificarPersona($hashUsuario): ?Persona
     {   
         // Construyo la sentencia SQL para recuperar al usuario de la base de datos     
         $sql="SELECT * from pdaw_personas where usuario=:usuario";
         // Ejecuto la sentencia SQL para recuperar al usuario de la base de datos
-        $res=Core::ejecutarSql($sql,[':usuario'=>$usuario]);
+        $res=Core::ejecutarSql($sql,[':usuario'=>$hashUsuario]);
         // Si el resultado devuelto tras ejecución contiene un array de un elemento
         if (is_array($res) && count($res)===1)        
         {

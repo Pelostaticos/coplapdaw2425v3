@@ -34,7 +34,7 @@ class Rol {
     private $rol;
     private $permisos;
 
-    // B) Defino el constructor privado de la clase Usuario
+    // B) Defino el constructor privado de la clase auxiliar Rol
     private function __construct($rol) {
         // Inicializo el atributo permisos con el valor del paŕametro rol.
         $this->permisos=$rol;
@@ -477,14 +477,14 @@ class Rol {
      */
     public static function asignarPermisos($rol): ?Rol
     {   
-        // Construyo la sentencia SQL para recuperar al usuario de la base de datos     
+        // Construyo la sentencia SQL para recuperar al rol del usuario de la base de datos     
         $sql="SELECT * from pdaw_roles where rol=:rol";
-        // Ejecuto la sentencia SQL para recuperar al usuario de la base de datos
+        // Ejecuto la sentencia SQL para recuperar al rol del usuario de la base de datos
         $res=Core::ejecutarSql($sql,[':rol'=>$rol]);
         // Si el resultado devuelto tras ejecución contiene un array de un elemento
         if (is_array($res) && count($res)===1)        
         {
-            // Devuelvo al usuario recuperado de la base de datos
+            // Devuelvo al rol de usuario recuperado de la base de datos
             return new Rol($res[0]);
         }
         else
@@ -500,9 +500,9 @@ class Rol {
     public static function listarRoles(): ?Array{
         // Defino el array roles que contendra todos los disponibles para la paltaforma
         $roles = [];
-        // Construyo la sentencia SQL para recuperar al usuario de la base de datos     
+        // Construyo la sentencia SQL para recuperar a los roles de usuario de la base de datos     
         $sql="SELECT rol from pdaw_roles";
-        // Ejecuto la sentencia SQL para recuperar al usuario de la base de datos
+        // Ejecuto la sentencia SQL para recuperar a los roles de usuario de la base de datos
         $res=Core::ejecutarSql($sql);
         // Si el resultado devuelto tras ejecución contiene un array de un elemento
         if (is_array($res) && count($res)===1)        
