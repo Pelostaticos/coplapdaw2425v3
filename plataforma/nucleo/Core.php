@@ -162,7 +162,7 @@ class Core {
         try {
 
             // Recupero los datos del formulario de contacto
-            $email = filter_input(INPUT_POST,'frm-email');
+            $email = filter_input(INPUT_POST,'frm-email', FILTER_SANITIZE_EMAIL);
             $nombre = filter_input(INPUT_POST,'frm-nombre');
             $telefono = filter_input(INPUT_POST,'frm-telefono');
             $asunto = filter_input(INPUT_POST,'frm-asunto');
@@ -186,7 +186,7 @@ class Core {
             // Establezco quién recibirá copia visible del mensaje
             $mail->addCC($email, $nombre);
             // Establezco quién recibirá una copia oculta del mensaje
-            $mail->addBCC(SMTP_BCC, 'Almuno PDAW2425');
+            $mail->addBCC(SMTP_BCC, SMTP_NOMBRE_BCC);
 
             // Establezco el contenido del mensaje a enviar a los administradores de la plataforma: HTML
             $contenido = "<p>Hola,<br/><p>Has recibido un nuevo mensaje desde el formulario de contacto de la 

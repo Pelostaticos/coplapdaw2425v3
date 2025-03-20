@@ -39,5 +39,6 @@ define('SMTP_PASS','qN5]gyT5*');
 define('SMTP_PORT','25');
 define('SMTP_FROM','webmaster@sergiofct.bitgarcia.es');
 define('SMTP_BCC','sgarbut482@g.educaand.es');
+define('SMTP_NOMBRE_BCC','Almuno PDAW2425');
 
  ?>
