@@ -146,7 +146,12 @@ class Usuario {
             return null;
     }
 
-    // REVISARLA PARA ADPATAR A LA GENERACIÓN SHA2 DEL CÓDIGO USUARIO Y NOMBRE PARAMETROS ARRAY $DATOS DEL FORMUALRIO
+    /**
+     * Método estático para crear un nuevo usuario en la plataforma
+     *
+     * @param Array $datos Conjunto de datos del usuario a crear en la plataforma
+     * @return void No devuelve valor alguno
+     */
     public static function crearUsuario ($datos)
     {
         // Construyo la sentencia SQL para añadir un nuevo usuario a la tabla Usuarios de la base datos

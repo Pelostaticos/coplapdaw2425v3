@@ -46,11 +46,27 @@ class Core {
      */
     public static function default(Smarty $smarty) {
         // Asigno las variables de la plantilla para la página de inicio del backoffice
-        $smarty->assign('usuario', 'Pelostaticos');
+        $smarty->assign('usuario', Core::nombreUsuario());
         $smarty->assign('anyo', date('Y'));
         // Muestro la plantilla de la página de inicio del backoffice
         $smarty->display('comunes/backoffice.tpl');
-    }    
+    }
+
+    /**
+     * Método estático privado para establecer el nombre del usuario en la plataforma
+     *  >> Su nombre de usuario real si está logueado.
+     *  >> Se muestra "Desconocido" si el usuario aún no a iniciado sesión.
+     *
+     * @return void No devuelve valor alguno
+     */
+    private static function nombreUsuario() {
+        // Si la sesión está NO está establecida devuelvo el nombre de usuario por defecto
+        if (!isset($_SESSION['usuario']))
+            return  'Desconocido';
+        // De lo contario establezco devuelvo el nombre de usuario logueado
+        else
+            return $_SESSION['usuario']->getUsuario();
+    }
 
     // Bloque-A: Base de datos.
 
@@ -143,7 +159,7 @@ class Core {
      */
     public static function mostrarFormularioContacto($smarty) {
         // Asigno las variables de la plantilla del formulario de contacto
-        $smarty->assign('usuario', 'Pelostaticos');
+        $smarty->assign('usuario', Core::nombreUsuario());
         $smarty->assign('anyo', date('Y'));
         // Muestro la plantilla de inicio de sesión
         $smarty->display('comunes/contacto.tpl');        
@@ -234,7 +250,7 @@ class Core {
      */
     public static function mostrarInicioSesion($smarty) {
         // Asigno las variables de la plantilla de inicio de seesión
-        $smarty->assign('usuario', 'Pelostaticos');
+        $smarty->assign('usuario', Core::nombreUsuario());
         $smarty->assign('anyo', date('Y'));
         // Muestro la plantilla de inicio de sesión
         $smarty->display('comunes/login.tpl');
@@ -298,7 +314,7 @@ class Core {
      */
     public static function mostrarCierreSesion($smarty) {
         // Asigno las variables de la plantilla de cierre de sesión
-        $smarty->assign('usuario', 'Pelostaticos');
+        $smarty->assign('usuario', Core::nombreUsuario());
         $smarty->assign('anyo', date('Y'));
         // Muestro la plantilla del cierre de sesión
         $smarty->display('comunes/logout.tpl');
@@ -334,7 +350,7 @@ class Core {
      */
     public static function mostrarRegistroVoluntario($smarty) {
         // Asigno las variables de la plantilla de registro de voluntario
-        $smarty->assign('usuario', 'Pelostaticos');
+        $smarty->assign('usuario', Core::nombreUsuario());
         $smarty->assign('anyo', date('Y'));
         // Muestro la plantilla para el registro de un nuevo voluntario
         $smarty->display('comunes/signup.tpl');        

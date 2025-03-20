@@ -254,7 +254,12 @@ class Persona {
             return null;
     }
 
-    // REVISARLA PARA ADPATAR A LA GENERACIÓN SHA2 DEL CÓDIGO USUARIO Y NOMBRE PARAMETROS ARRAY $DATOS DEL FORMUALRIO
+    /**
+     * Método estático para crear una nueva persona usuaria en la plataforma
+     *
+     * @param Array $datos Conjunto de datos d ela persna usuario a cerar en la plataforma
+     * @return void No devuelve valor alguno
+     */
     public static function crearPersona ($datos)
     {
         // Construyo la sentencia SQL para añadir un nuevo usuario a la tabla Usuarios de la base datos
