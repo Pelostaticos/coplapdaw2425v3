@@ -89,7 +89,7 @@
                 <p>¡Nos encantaría saber de ti! Si tienes alguna pregunta, comentario o simplemente quieres ponerte en contacto con nosotros, rellena el siguiente formulario y te responderemos lo antes posible.</p>
                 <!-- Formulario de contacto de la plataforma -->
                 <!-- REVISARLO Y DEJARLO CONFIGURADO PARA HTML5  -->
-                <form id="contactenos" method="post" action="plataforma/backoffice.php?comando=core:email">
+                <form id="contactenos" method="post" action="plataforma/backoffice.php?comando=core:email:procesa">
                     <label for="frm-email">Correo electrónico:</label>
                     <input type="email" name="frm-email" id="frm-email" placeholder="Dejanós tu correo..." require>
                     <label for="frm-nombre">Nombre y apellidos:</label>
@@ -100,7 +100,7 @@
                     <input name="frm-asunto" id="frm-asunto" placeholder="Dejanós tu asunto de contactarnos..." require></input>                                    
                     <label for="frm-mensaje">Mensajes:</label>
                     <textarea name="frm-mensaje" id="frm-mensaje" rows="3" placeholder="Dejanós tu consulta (Opcional)"></textarea>
-                    <inpuy type="hidden" id="frm-origen" name="frm-origen" value="portal">
+                    <input type="hidden" id="frm-origen" name="frm-origen" value="portal">
                     <button type="submit" class="boton-enviar">Enviar</button>
                 </form>
                 <!-- Invitación a unirse a la plataforma -->

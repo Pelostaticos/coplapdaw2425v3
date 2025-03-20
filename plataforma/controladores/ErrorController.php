@@ -111,4 +111,27 @@ class ErrorController {
 
     }
 
+    /**
+     * Método estático que muestra al usuario un mensaje de error genérico
+     *
+     * @param Smarty $smarty Objeto que contiene al motor de plantillas Smarty
+     * @param string $mensaje Mensaje genérico de error que se le notifica al usuario
+     * @param string $urlAceptar URL a donde se le redirige al usuario tras aceptar notificación
+     * @return void No devuelve valor alguno
+     */
+    public static function mostrarMensajeError(Smarty $smarty, $mensaje="", $urlAceptar="/plataforma/backoffice.php") {
+        // Establezco las variables para la plantilla de notificaciones en versión advertencia
+        $smarty->assign('titulo', 'Notificaciones backoffice');
+        if (!isset($_SESSION['usuario']))
+            $smarty->assign('usuario', 'Quierido/a voluntario/a');
+        else
+            $smarty->assign('usuario', $_SESSION['usuario']->getUsuario());
+        $smarty->assign('anyo', date('Y'));
+        $smarty->assign('tipo', 'error');
+        $smarty->assign('mensaje', $mensaje);
+        $smarty->assign('aceptar', $urlAceptar);
+        // Muestro la plantilla con la vista de notificaciones al usuario en modo mensaje error generico
+        $smarty->display('comunes/notificaciones.tpl');           
+    }
+
 }

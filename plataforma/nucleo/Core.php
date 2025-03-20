@@ -28,6 +28,8 @@ use correplayas\modelo\Persona;
 use correplayas\modelo\Rol;
 use correplayas\excepciones\AppException;
 use correplayas\controladores\ErrorController;
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception; 
 use Smarty\Smarty;
 
 // 2º) Defino la clase del nucleo de la plataforma correplayas
@@ -133,6 +135,27 @@ class Core {
 
     // Bloque-C: Correo electrónico.
 
+    /**
+     * Método estático para mostrarle al usuario el formulario de contacto del backoffice
+     *
+     * @param Smarty $smarty Objeto que contiene al motor de plantillas Smarty
+     * @return void No devuelve valor alguno
+     */
+    public static function mostrarFormularioContacto($smarty) {
+        // Asigno las variables de la plantilla del formulario de contacto
+        $smarty->assign('usuario', 'Pelostaticos');
+        $smarty->assign('anyo', date('Y'));
+        // Muestro la plantilla de inicio de sesión
+        $smarty->display('comunes/contacto.tpl');        
+    }
+
+    /**
+     * Método estático para enviar por email el formulario de contacto
+     *
+     * @param Smarty $smarty Objeto que contiene al motor de plantilla Smarty
+     * @param PHPMailer $mail Objeto que contiene a la librería de correo electrónico PHPMailer
+     * @return void No devuekve valor alguno
+     */
     public static function enviarEmail($smarty, $mail) {
 
         // Intento enviar el formulario de contacto a los administrador de la plataforma web
@@ -151,8 +174,13 @@ class Core {
                 $mensaje="Necesito resolver algunas dudas. Por favor, contactenme. Gracias!";
             }
 
+            /* Estblezco la URL a la que se dirige al usuario al aceptar el mensaje informativo
+                >> Si el origen es el portal web se le redirige a su página de inicio
+                >> Si el origen es el backoffice se le redirige a su página de inicio */
+            $urlAceptar = ($origen === "portal" ? "/index.php" : "/plataforma/backoffice.php");
+
             // Establezo quién recibirá el mensaje directamente.
-            $mail->addAdress(SMTP_FROM, 'Administradores Plataforma Correplayas');
+            $mail->addAddress(SMTP_FROM, 'Administradores Plataforma Correplayas');
             // Establezco a quién se le envía la respuesta.
             $mail->addReplyTo($email, $nombre);
             // Establezco quién recibirá copia visible del mensaje
@@ -181,12 +209,7 @@ class Core {
             $mail->AltBody = $altContenido;
 
             // Envio el mensaje a los administradores de la plataforma
-            $mail->send();
-
-            /* Estblezco la URL a la que se dirige al usuario al aceptar el mensaje informativo
-                >> Si el origen es el portal web se le redirige a su página de inicio
-                >> Si el origen es el backoffice se le redirige a su página de inicio */
-            $urlAceptar = ($origen === "portal" ? "/index.php" : "/plataforma/backoffice.php");
+            $mail->send();           
 
             // Notifico al usuario que el envío se realizó correctamente            
             ErrorController::mostrarMensajeInformativo($smarty, "Mensaje enviado correctamente!!", $urlAceptar);
@@ -194,7 +217,9 @@ class Core {
         } 
         // Manejo las posibles excepciones que pueda surgir durante el envio del formulario de contacto
         catch (AppException $ae) {
-            ErrorController::handleException($ae, $smarty, "/plataforma/backoffice.php");
+            ErrorController::handleException($ae, $smarty, "/plataforma/backoffice.php");            
+        } catch (Exception $me) {         
+            ErrorController::mostrarMensajeError($smarty, $me->getMessage(), $urlAceptar);
         }
 
     }

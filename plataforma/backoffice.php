@@ -58,13 +58,12 @@ $smarty->setConfigDir(__DIR__ . CONFIGS_DIR);
 
 // 4.2) Configuro el servidor SMTP para envío de correo electrónico
 $mail = new PHPMailer(true);
-$mail->SMTPDebug = SMTP::DEBUG_SERVER;
 $mail->isSMTP();
 $mail->Host = SMTP_HOST;
 $mail->SMTPAuth = true;
 $mail->Username = SMTP_USER;
 $mail->Password = SMTP_PASS;
-$mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;
+$mail->CharSet = PHPMailer::CHARSET_UTF8;
 $mail->Port = SMTP_PORT;
 $mail->setFrom(SMTP_FROM, 'Plataforma Correplayas');
 
@@ -92,9 +91,17 @@ try {
             case "core:logout:procesa":
                 Core::cerrarSesion();
                 break;
+            // Muestro el formulario de contacto
+            case "core:email:vista":
+                Core::mostrarFormularioContacto($smarty);
+                break;
+            // Proceso el formulario de contacto
+            case "core:email:procesa":
+                Core::enviarEmail($smarty, $mail);                
+                break;
             // Por defecto si estas logueado y no solicitas nada te muestro la página de inicio del backoffice.
             default:
-                // Solicito que se muestre la página de inicio del backoffice dela plataforma.
+                // Solicito que se muestre la página de inicio del backoffice de la plataforma.
                 Core::default($smarty);
                 break;
         }
@@ -118,14 +125,12 @@ try {
                 Core::registrarVoluntario($smarty);
                 break;
             // Un usuario visitante quiere contactar con los administradores por email
-            case "core:email":
-                echo "Enviando formulario de contacto a los administradores de la plataforma...";
-                var_dump($_POST);
-                echo '<a href="/">Volver al inicio</a>';
-                break;
+            case "core:email:procesa":
+                Core::enviarEmail($smarty, $mail);
+                break;    
             // Por defecto para un usuario no logueado y comando desconocido se le lleva al inicio de sesión
             default:
-                echo "No estas logueado! Te llevo al inicio del sesión...";
+                Core::mostrarInicioSesion($smarty);
                 break;
         }
     }    
