@@ -237,12 +237,12 @@ class Usuario {
      */
     public static function listarUsuarios(): ?Array {
         // Construyo la sentencia SQL para recuperar al usuario de la base de datos     
-        $sql="SELECT u.nombre as usuario, CONCAT(p.apellido1, ' ', p.apellido2, ' ,', p.nombre) as nombre, u.estado as estado, u.rol as rol  FROM pdaw_usuarios u 
+        $sql="SELECT u.codigo as hashusuario, u.nombre as usuario, CONCAT(p.apellido1, ' ', p.apellido2, ' ,', p.nombre) as nombre, u.estado as estado, u.rol as rol  FROM pdaw_usuarios u 
             INNER JOIN pdaw_personas p ON u.codigo=p.usuario";
         // Ejecuto la sentencia SQL para recuperar al usuario de la base de datos
         $res=Core::ejecutarSql($sql);
         // Si el resultado devuelto tras ejecución contiene un array de un elemento
-        if (is_array($res) && count($res)===1)        
+        if (is_array($res) && count($res)>0)        
         {
             // Devuelvo al usuario recuperado de la base de datos
             return $res;

@@ -108,6 +108,12 @@ try {
             case "usuarios:consultar":
                 Usuarios::consultarPerfil($smarty);
                 break;
+            case "usuarios:listar":
+                Usuarios::listarUsuariosPlataforma($smarty);
+                break;                    
+            case "usuarios:filtrar":
+                var_dump($_POST);
+                break;                
             // Por defecto si estas logueado y no solicitas nada te muestro la página de inicio del backoffice.
             default:
                 // Solicito que se muestre la página de inicio del backoffice de la plataforma.

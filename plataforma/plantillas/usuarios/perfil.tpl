@@ -1,4 +1,4 @@
-{* Pantilla Smarty para página inicio del backoffice de la plataforma correplayas
+{* Pantilla Smarty para página del perfil de usuario de la plataforma correplayas
 * Proyecto DAW Cursos 2024/25 - I.E.S AGUADULCE
 * Nombre del proyecto: Plataforma Correplayas
 * Tutor PDAW: Jośe Antonio Morales Álvarez.
@@ -7,6 +7,7 @@
 * Parámetros de plantilla:
 *
 *   >> usuario: Nombre del usuario logueado.
+*   >> perfil: Datos del perfil de usuario.
 *   >> anyo: Año en curso para copyright y copyleft del sitio web.
 *
 *}
@@ -14,7 +15,7 @@
 {include file="comunes/header.tpl" titulo="Perfil de usuario" usuario=$usuario}
     <!-- Contenidos de la página de backoffice de la plataforma correplayas -->
     <main id="inicio">        
-        <!-- Sección para hablar de la plataforma correplayas -->
+        <!-- Sección para el gestor de Usuarios de la plataforma correplayas -->
          <section id="correplayas">
             <!-- Artículo que describe el proyecto de la plataforma correplayas -->
              <article>
@@ -30,7 +31,7 @@
                 <!-- Información del gestor de usuarios  -->
                 <div class="contenido-gestor">
                     <div class="campos-gestor">
-                        <p class="corto"><span>Usuario</span>:&nbsp;{$usuario}</p>
+                        <p class="corto"><span>Usuario</span>:&nbsp;{$perfil.usuario}</p>
                         <p class="largo"><span>Nombre</span>:&nbsp;{$perfil.nombre}</p>
                         <p class="corto"><span>{$perfil.tipo}</span>:&nbsp;{$perfil.documento}</p>
                     </div> 

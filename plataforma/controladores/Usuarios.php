@@ -42,7 +42,7 @@ class Usuarios {
         // Si el usuario logueado tiene rol de administrador entonces:
         if ($usuarioLogueado->getRol() === "administrador") {
             // Muestro la vista del gestor de usuario para administradores
-            echo "Aquí te muestro el listado de usuarios disponibles en la plataforma...";
+            Usuarios::listarUsuariosPlataforma($smarty);
         } else {
             // De lo contrario muestro la vista del gestor de usuario para el resto de roles
             Usuarios::consultarPerfil($smarty);
@@ -77,7 +77,8 @@ class Usuarios {
                 // Genero el nombtre completo de la persona usuaria
                 $nombrePersonaUsuaria = $personaUsuaria->getNombrePersona() . " " . $personaUsuaria->getPrimerApellido() . " " . $personaUsuaria->getSegundoApellido();
                 // Recopilo información del perfil de usuario para la plantilla
-                $perfil = ['nombre' => $nombrePersonaUsuaria,
+                $perfil = ['usuario' => $usuario->getUsuario(),
+                'nombre' => $nombrePersonaUsuaria,
                 'tipo' => $personaUsuaria->getTipoDocumento(),
                 'documento' => $personaUsuaria->getDocumento(),
                 'direccion' => $personaUsuaria->getDireccionPersona(),
@@ -104,11 +105,35 @@ class Usuarios {
 
     }
 
-    public static function modificarPassword($passwordActual, $passwordNueva)
-    {
-        // $sql="UPDATE usuarios SET password=SHA2(CONCAT(:username,:newpassword),256) WHERE username=:username and password=SHA2(CONCAT(:username,:currentpassword),256)";
-        // return DB::doSql($sql,[':usuario'=>$this->usuario,':currentpassword'=>$currentpassword,':newpassword'=>$newpassword]);        
+    // FUNCION TEMPORAL PARA IR PROBANDO LA VISTA
+    public static function listarUsuariosPlataforma($smarty) {
+
+        // Obtengo al usuario de la sesión del navegacion
+        $usuario = $_SESSION['usuario'];
+
+        // Simulo una entrada de contenidos de base de datos
+        $datos = Usuario::listarUsuarios();
+        // var_dump($datos);
+        // exit;
+
+        // Asigno las variables requeridas por la plantila del listado de usuarios
+        $smarty->assign('usuario', $usuario->getUsuario());
+        $smarty->assign('filas', $datos);
+        $smarty->assign('anyo', date('Y'));
+        // Muestro la plantilla del listado de usuarios
+        $smarty->display('usuarios/listado.tpl');      
+
     }
+
+    public static function filtrarUsuariosPlataforma($smarty) {
+
+    }
+
+    // public static function modificarPassword($passwordActual, $passwordNueva)
+    // {
+    //     // $sql="UPDATE usuarios SET password=SHA2(CONCAT(:username,:newpassword),256) WHERE username=:username and password=SHA2(CONCAT(:username,:currentpassword),256)";
+    //     // return DB::doSql($sql,[':usuario'=>$this->usuario,':currentpassword'=>$currentpassword,':newpassword'=>$newpassword]);        
+    // }
     
 
 }

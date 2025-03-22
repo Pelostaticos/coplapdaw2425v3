@@ -36,10 +36,10 @@
                 <ul class="menu">
                     <!-- Entrada del menu para el acceso al gestor de usuarios -->
                     <li><a href="/plataforma/backoffice.php?comando=usuarios:default">Usuarios</a></li>
-                    <!-- Entrada de menu para el acceso al gestor de participantes -->
-                    <li><a href="#">Participación</a></li>
                     <!-- Entrada del menu para el acceso al gestor de jornadas -->
                     <li><a href="#">Jornadas</a></li>
+                    <!-- Entrada de menu para el acceso al gestor de participantes -->
+                    <li><a href="#">Participación</a></li>
                     <!-- Entrada del menu para el acceso al gestor de censos    -->
                     <li><a href="#">Censos</a></li>
                     <!-- Entrada del menú para el acceso al gestor de aves -->
@@ -52,9 +52,9 @@
                 <!-- Separador entre botones y menú de navegación -->
                 <span class="separador-nav"></span>
                 <!-- Nombre del usuario logeado -->
-                <a href="/plataforma/backoffice.php?comando=usuarios:consultar" class="boton-nav"><span class="iconos-nav-backoffice">account_circle</span> {$usuario}</a>
+                <a href="/plataforma/backoffice.php?comando=usuarios:consultar" class="boton-nav" title="Ver mi perfil de usuario"><span class="iconos-nav-backoffice">account_circle</span> {$usuario}</a>
                 <!-- Botón de salida de la plataforma -->
-                <a href="/plataforma/backoffice.php?comando=core:logout:vista" class="boton-nav"><span class="iconos-nav-backoffice">logout</span> Salir</a>
+                <a href="/plataforma/backoffice.php?comando=core:logout:vista" class="boton-nav" title="Salir de la plataforma"><span class="iconos-nav-backoffice">logout</span> Salir</a>
             {else}
                 <h1 class="titulo-navegacion">Backoffice</h1>
             {/if}
