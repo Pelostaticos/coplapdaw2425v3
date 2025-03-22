@@ -29,7 +29,12 @@ use Smarty\Smarty;
  */
 class Usuarios {
 
-
+    public function modificarPassword($passwordActual, $passwordNueva)
+    {
+        // $sql="UPDATE usuarios SET password=SHA2(CONCAT(:username,:newpassword),256) WHERE username=:username and password=SHA2(CONCAT(:username,:currentpassword),256)";
+        // return DB::doSql($sql,[':usuario'=>$this->usuario,':currentpassword'=>$currentpassword,':newpassword'=>$newpassword]);        
+    }
+    
 
 }
 

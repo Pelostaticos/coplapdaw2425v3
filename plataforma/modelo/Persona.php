@@ -60,6 +60,52 @@ class Persona {
 
     // C) Defino los métodos propios de la clase auxiliar Persona
 
+    /**
+     * Método para actualizar datos de una persona usuaria en la plataforma
+     *
+     * @param Array $datos Conjunto de datos requeridos para actualiza a la persona usuario
+     * @return boolean Devuelve verdadero si se actualizó a la persona usuaria
+     *                 Devuelve falso si NO se actualizó a la persona usuaria 
+     */
+    public function actualizarPersona($datos): ?bool {
+        // Construyo la sentencia SQL para actualizar a la persona usuaria de la base de datos     
+        $sql="UPDATE pdaw_personas SET email=:email, telefono=:telefono, direccion=:direccion, localidad=:localidad, codigo_postal=:codigoPostal where usuario=:usuario";
+        // Ejecuto la sentencia SQL para actualizar a la `persona usuaria de la base de datos
+        $res=Core::ejecutarSql($sql,$datos);
+        // Si el resultado es mayor de cero entonces:
+        if ($res > 0)        
+        {
+            // Devuelvo verdadero para indicar que la persona usuaria se ha actualizado
+            return true;
+        }
+        else
+            // De lo contario devuelvo falso para indicar que la persona usuaria no se ha actualizado
+            return false;
+    }
+
+    /**
+     * Método para eliminar a una persona usuaria de la base de datos
+     *
+     * @param Array $codigo Conjunto de datos requeridos para eliminar a la persona usuaria
+     * @return boolean Devuelve verdadero si se eliminó a la persona usuaria
+     *                 Devuelve falso si NO se eliminó a la persona usuaria
+     */
+    public function eliminarPersona($codigo): ?bool {
+        // Construyo la sentencia SQL para eliminar a la persona usuaria de la base de datos     
+        $sql="DELETE FROM pdaw_personas WHERE usuario=:usuario";
+        // Ejecuto la sentencia SQL para eliminar a la persona usuaria de la base de datos
+        $res=Core::ejecutarSql($sql,$codigo);
+        // Si el resultado es mayor que cero entonces:
+        if ($res > 0)        
+        {
+            // Devuelvo verdadero para indicar que la persona usuaria se ha eliminado
+            return true;
+        }
+        else
+            // De lo contario devuelvo falso para indicar que la persona usuaria NO se ha eliminado
+            return false;        
+    }
+
 
     // D) Defino los métodos getter y setter de la clase auxiliar Persona
 

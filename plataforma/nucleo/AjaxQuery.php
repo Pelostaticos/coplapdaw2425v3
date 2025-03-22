@@ -24,6 +24,10 @@ use PDO;
 use PDOException;
 
 // 2º) Defino la clase del nucleo AJAX de la plataforma correplayas
+
+/**
+ * Clase del núcleo AJAX de la plataforma correplayas para el intercambio asíncrono de datos
+ */
 class AjaxQuery {
 
     // Definición de atributos y método por defecto de la clase.

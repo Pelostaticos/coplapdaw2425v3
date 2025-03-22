@@ -48,12 +48,74 @@ class Usuario {
 
     // C) Defino los métodos propios de la clase Usuario
 
-    public function modificarPassword($passwordActual, $passwordNueva)
-    {
-        // $sql="UPDATE usuarios SET password=SHA2(CONCAT(:username,:newpassword),256) WHERE username=:username and password=SHA2(CONCAT(:username,:currentpassword),256)";
-        // return DB::doSql($sql,[':usuario'=>$this->usuario,':currentpassword'=>$currentpassword,':newpassword'=>$newpassword]);        
+    /**
+    * Método para actualizar los datos del usuario en la base de datos
+    *
+    * @param Array $datos Conjunto de datos para actualizar al usuario
+    * @return boolean Devuelve verdadero si se actualizo al usuario
+    *                 Devuelve falso si no se pudo actualizar al usuario  
+    */
+    public function actualizarUsuario($datos): ?bool {       
+        // Construyo la sentencia SQL para actualizar al usuario de la base de datos     
+        $sql="UPDATE pdaw_usuarios SET estado=:estado, rol=:rol where codigo=:codigo";
+        // Ejecuto la sentencia SQL para actualizar al usuario de la base de datos
+        $res=Core::ejecutarSql($sql,$datos);
+        // Si el resultado es mayor de cero entonces:
+        if ($res > 0)        
+        {
+            // Devuelvo verdadero para indicar que el usuario se ha actualizado
+            return true;
+        }
+        else
+            // De lo contario devuelvo falso para indicar que el usuario no se ha actualizado
+            return false;
     }
-    
+
+     /**
+      * Método para cambiar la contraseña del usuario en la base de datos
+      *
+      * @param Array $datos Conjunto de datos para actualizar contraseña al usuario
+      * @return boolean Devuelve verdadero si se actualizo contraseña al usuario
+      *                 Devuelve falso si no se pudo actualizar contraseña al usuario  
+      */
+    public function cambiarContraseñaUsuario($datos) {
+        // Construyo la sentencia SQL para actualizar contraseña del usuario de la base de datos     
+        $sql="UPDATE pdaw_usuarios SET contrasenya=:contrasenya where codigo=:codigo";
+        // Ejecuto la sentencia SQL para actualizar contraseña del usuario de la base de datos
+        $res=Core::ejecutarSql($sql,$datos);
+        // Si el resultado es mayor que cero entonces:
+        if ($res > 0)        
+        {
+            // Devuelvo verdadero para indicar que la contraseña de usuario se ha actualizado
+            return true;
+        }
+        else
+            // De lo contario devuelvo falso para indicar que la contraseña de usuario NO se ha actualizado
+            return false;
+    }
+
+    /**
+     * Método para eliminar a un usuario de la base de datos
+     *
+     * @param Array $codigo Conjunto de datos requeridos para eliminar al usuario
+     * @return boolean Devuelve verdadero si se eliminó al usuario d ela base de datos
+     *                 Devuelve falso si NO se eliminó al usuario de la base de datos
+     */
+    public function eliminarUsuario($codigo): ?bool {
+        // Construyo la sentencia SQL para eliminar al usuario de la base de datos     
+        $sql="DELETE FROM pdaw_usuarios WHERE codigo=:codigo";
+        // Ejecuto la sentencia SQL para eliminar al usuario de la base de datos
+        $res=Core::ejecutarSql($sql,$codigo);
+        // Si el resultado es mayor que cero entonces:
+        if ($res > 0)        
+        {
+            // Devuelvo verdadero para indicar que el usuario se ha eliminado
+            return true;
+        }
+        else
+            // De lo contario devuelvo falso para indicar que el usuario NO se ha eliminado
+            return false;
+    }
 
     // D) Defino los métodos getter y setter de la clase Usuario
 
@@ -147,12 +209,13 @@ class Usuario {
     }
 
     /**
-     * Método estático para crear un nuevo usuario en la plataforma
+     * Método estático para crear un nuevo usuario en la base de datos
      *
-     * @param Array $datos Conjunto de datos del usuario a crear en la plataforma
-     * @return void No devuelve valor alguno
+     * @param Array $datos Conjunto de datos del usuario a crear en la base de datos
+     * @return boolean Devuelve verdadero si el nuevo usuario se creó
+     *                 Devuelve falso si el nuevo usuario NO se creó
      */
-    public static function crearUsuario ($datos)
+    public static function crearUsuario($datos): ?bool
     {
         // Construyo la sentencia SQL para añadir un nuevo usuario a la tabla Usuarios de la base datos
         $sql="INSERT INTO pdaw_usuarios (codigo, nombre, contrasenya, estado, rol) VALUES (:codigo, :nombre, :contrasenya, :estado, :rol)";
@@ -164,6 +227,87 @@ class Usuario {
         }        
         // De lo contrario devuelvo nulo porque no se pudo añadir al nuuevo usuario
         else return false;
+    }
+
+    /**
+     * Método estático para listar a todos los usuarios disponibles en la base de datos
+     *
+     * @return Array|null Devuelve un array asociativo con el listado completo de usuarios en la base de datos
+     *                    Devuelve nulo si no pudo obtnerse un listado completo de usuarios en la base de datos
+     */
+    public static function listarUsuarios(): ?Array {
+        // Construyo la sentencia SQL para recuperar al usuario de la base de datos     
+        $sql="SELECT u.nombre as usuario, CONCAT(p.apellido1, ' ', p.apellido2, ' ,', p.nombre) as nombre, u.estado as estado, u.rol as rol  FROM pdaw_usuarios u 
+            INNER JOIN pdaw_personas p ON u.codigo=p.usuario";
+        // Ejecuto la sentencia SQL para recuperar al usuario de la base de datos
+        $res=Core::ejecutarSql($sql);
+        // Si el resultado devuelto tras ejecución contiene un array de un elemento
+        if (is_array($res) && count($res)===1)        
+        {
+            // Devuelvo al usuario recuperado de la base de datos
+            return $res;
+        }
+        else
+            // De lo contario devolveré nulo
+            return null;
+    }
+
+    /**
+     * Método estático para buscar Usuarios en la base de datos.
+     *
+     * @param string $busqueda
+     * @param string $ordenarPor
+     * @param string $orden
+     * @return Array|null Devuelve un array con los resultados de la búsqueda de Usuarios
+     *                    Devuelve nulo si el criterio de búsqueda no ha encontrado Usuarios
+     */
+    public static function buscarUsuarios($busqueda, $ordenarPor, $orden) {
+
+        // Defino las columnas de busqueda para encontrar usuarios
+        $columnas = ['usuario', 'nombre','estado', 'rol'];
+
+        // Defino una array vacio en donde generar las condiciones de búsqueda
+        $condiciones = [];
+
+        // Defino un array asociativo con el parámetro de busqueda
+        $parametro = [":busqueda", "%$busqueda%"];
+
+        // Genero las condiciones de búsqueda para encontrar Usuarios.
+        foreach($columnas as $columna) {
+            $condiciones[] = "$columna LIKE :busqueda";
+        }
+
+        // Construyo la sentencia SQL para realizar la búsqueda de Usuarios
+        $sql="SELECT u.nombre as usuario, CONCAT(p.apellido1, ' ', p.apellido2, ' ,', p.nombre) as nombre, u.estado as estado, u.rol as rol  FROM pdaw_usuarios u 
+            INNER JOIN pdaw_personas p ON u.codigo=p.usuario";
+
+        // Añado las condiciones de búsqueda a la sentencia SQL anterior
+        if (!empty($condiciones)) {
+            // Genero la cadena completa con todas las condiciones de búsqueda SQL.
+            $sql .= "WHERE " . implode("OR ", $condiciones);
+        }
+
+        // Añado la funcionalidad para ordenar el resultado de la búsqueda
+        $columnasPermitidas = ['usuario', 'nombre', 'estado', 'rol'];
+        $ordenesPemritidos = ['ASC', 'DESC'];
+
+        if (in_array($ordenarPor, $columnasPermitidas) && in_array($orden, $ordenesPemritidos)) {
+            $sql .= " ORDER BY $ordenarPor $orden";
+        }
+
+        // Ejecuto la sentencia SQL para recuperar a los usuario de la base de datos que coincidan el criterio de búsqueda
+        $res=Core::ejecutarSql($sql);
+        // Si el resultado devuelto tras ejecución contiene un array de un elemento
+        if (is_array($res) && count($res)>1)        
+        {
+            // Devuelvo al usuario recuperado de la base de datos
+            return $res;
+        }
+        else {
+            // De lo contario devolveré nulo
+            return null;
+        }
+        
     }
 
 }
