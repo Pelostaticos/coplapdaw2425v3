@@ -51,7 +51,7 @@ class Rol {
      *
      * @return boolean Estado del permiso para consultar el perfil de usuario.
      */
-    public function getPermisoConsultaUsuario() {
+    public function getPermisoConsultarUsuario() {
         // Devuelvo del atributo permisos el estado correspondiente al campo permiso1 de la tabla Roles.
         return $this->permisos['permiso1'];
     }

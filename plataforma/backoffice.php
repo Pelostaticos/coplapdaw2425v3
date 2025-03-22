@@ -26,6 +26,7 @@ require_once(__DIR__ . '/excepciones/AppException.php');
 require_once(__DIR__ . '/modelo/Persona.php');
 require_once(__DIR__ . '/modelo/Usuario.php');
 require_once(__DIR__ . '/modelo/Rol.php');
+require_once(__DIR__ . '/controladores/Usuarios.php');
 require_once(__DIR__ . '/controladores/ErrorController.php');
 require_once(__DIR__ . '/nucleo/Core.php');
 
@@ -98,6 +99,14 @@ try {
             // Proceso el formulario de contacto
             case "core:email:procesa":
                 Core::enviarEmail($smarty, $mail);                
+                break;
+            // Muestro el gestor de usuarios
+            case "usuarios:default":
+                Usuarios::default($smarty);
+                break;
+            // Muestro el perfil de usuario
+            case "usuarios:consultar":
+                Usuarios::consultarPerfil($smarty);
                 break;
             // Por defecto si estas logueado y no solicitas nada te muestro la página de inicio del backoffice.
             default:

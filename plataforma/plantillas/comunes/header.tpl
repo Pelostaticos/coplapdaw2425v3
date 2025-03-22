@@ -35,7 +35,7 @@
                 <!-- Menú del sitio web -->
                 <ul class="menu">
                     <!-- Entrada del menu para el acceso al gestor de usuarios -->
-                    <li><a href="#">Usuarios</a></li>
+                    <li><a href="/plataforma/backoffice.php?comando=usuarios:default">Usuarios</a></li>
                     <!-- Entrada de menu para el acceso al gestor de participantes -->
                     <li><a href="#">Participación</a></li>
                     <!-- Entrada del menu para el acceso al gestor de jornadas -->
@@ -52,7 +52,7 @@
                 <!-- Separador entre botones y menú de navegación -->
                 <span class="separador-nav"></span>
                 <!-- Nombre del usuario logeado -->
-                <a href="/plataforma/backoffice.php?comando=usuario:default" class="boton-nav"><span class="iconos-nav-backoffice">account_circle</span> {$usuario}</a>
+                <a href="/plataforma/backoffice.php?comando=usuarios:consultar" class="boton-nav"><span class="iconos-nav-backoffice">account_circle</span> {$usuario}</a>
                 <!-- Botón de salida de la plataforma -->
                 <a href="/plataforma/backoffice.php?comando=core:logout:vista" class="boton-nav"><span class="iconos-nav-backoffice">logout</span> Salir</a>
             {else}

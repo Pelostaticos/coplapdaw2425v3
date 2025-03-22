@@ -62,6 +62,11 @@ switch ($vista) {
         $smarty->assign('anyo', date('Y'));
         $smarty->display('comunes/contacto.tpl');
         break;
+    case '8':
+        $smarty->assign('usuario', 'Pelostaticos');
+        $smarty->assign('anyo', date('Y'));
+        $smarty->display('usuarios/perfil.tpl');        
+        break;
     default:
         $smarty->assign('usuario', 'Pelostaticos');
         $smarty->assign('anyo', date('Y'));

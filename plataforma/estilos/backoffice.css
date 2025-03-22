@@ -407,10 +407,107 @@ section#formulario form textarea {
     color: var(--color-textos-principal);
 }
 
+/* Estilos para encabezados de los gestores de la plataforma */
+.cabecera-gestor {
+    align-items: center;
+    border: 5px solid var(--color-secundario);
+    border-radius: 5px;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-bottom: 10px;
+    width: 100%;
+}
+.logo-gestor {
+    width: 70%;
+}
+.gestor {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;    
+}
+.titulo-gestor {
+    margin: 0;
+    line-height: 1em;
+}
+p.titulo-gestor {
+    font-size: var(--tamaño-fuente-h3-escritorio);
+    font-weight: 900;
+    color: var(--color-destacado);    
+}
+.titulo-accion-gestor {
+    align-self: flex-start;
+    border: 5px solid var(--color-secundario);
+    background-color: var(--color-secundario);
+    border-radius: 5px;
+    color: var(--color-gris-azulado-oscuro);
+    font-size: var(--tamaño-fuente-h4-escritorio);
+    margin-bottom: -5px;
+    padding: 5px;
+}
+.contenido-gestor {
+    border: 5px solid var(--color-secundario);
+    border-radius: 5px;    
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 10px;
+    width: 100%;
+}
+.campos-gestor {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    flex-wrap: wrap;
+    align-items: center;
+    padding: 0px;
+}
+.campos-gestor p.corto {
+    margin: 0px;
+    padding: 10px;
+    width: 10em;
+    font-size: var(--tamaño-fuente-h5-escritorio);
+}
+.campos-gestor p.medio {
+    margin: 0px;
+    padding: 10px;
+    width: 12em;
+    font-size: var(--tamaño-fuente-h5-escritorio);
+}
+.campos-gestor p.largo {
+    margin: 0px;
+    padding: 10px;
+    width: 15em;
+    font-size: var(--tamaño-fuente-h5-escritorio);
+}
+.campos-gestor p.extralargo {
+    margin: 0px;
+    padding: 10px;
+    width: 22em;
+    font-size: var(--tamaño-fuente-h5-escritorio);
+}
+.campos-gestor p span {
+    font-weight: 600;
+    text-decoration: underline;
+}
+.boton-accion-gestor {
+    align-self: center;
+    border-radius: 5px;
+    margin-top: 5px;
+    padding: 10px;
+    background-color: var(--color-primario);
+    color: var(--color-azul-cielo);    
+    font-weight: 600;
+    width: 7.5em;
+}
+.boton-accion-gestor:hover {
+    background-color: var(--color-azul-cielo);
+    color: var(--color-textos-principal);
+}
+
+
 /* Estilos para vista de notificaciones */
-/*article#notificaciones { No me gusta el resultado
-    margin: auto auto;
-}*/
 .boton-notificacion {
     align-self: center;
     border-radius: 5px;
