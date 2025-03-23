@@ -207,6 +207,12 @@ a {
     color: var(--color-textos-auxiliar);
     cursor: pointer;
 }
+.iconos-acciones-listados {
+    font-family: 'Material Icons';
+    font-size: 24px;
+    color: var(--color-azul-cielo);
+    cursor: pointer; 
+}
 .iconos-notificacion {
     align-self: center;
     font-family: 'Material Icons';
@@ -525,7 +531,23 @@ form#busqueda-gestor input, form#busqueda-gestor select {
     font-size: var(--tamaño-fuente-h6-escritorio);
 }
 table#listado-gestor {
-    padding: 10px;
+    padding: 10px 20px;
+}
+table#listado-gestor th, td {
+    border: 3px solid var(--color-gris-azulado-oscuro);
+    text-align: center;
+}
+.boton-accion-listado-gestor {
+    align-self: center;
+    background-color: var(--color-primario);
+    border-radius: 5px;
+    color: var(--color-azul-cielo);       
+    font-size: 1.2em;    
+    height: 2em;
+    justify-self: center;  
+    width: 2em;
+    padding-right: 0px;
+  
 }
 
 /* Estilos para vista de notificaciones */

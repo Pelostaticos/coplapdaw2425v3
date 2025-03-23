@@ -63,7 +63,7 @@
                             <th>Nombre</th>
                             <th>Estado</th>
                             <th>Rol</th>
-                            <th>Acciones disponibles</th>
+                            <th>Acciones</th>
                         </thead>
                         <!-- Contenido del listado de usuarios -->
                         <tbody>
@@ -72,19 +72,22 @@
                             <tr>
                                 <!-- Celdas con datos de cada usuario -->
                                 <td>{$fila.usuario}</td>
-                                <td>{$fila.nombre}</td>
+                                {if $fila.estado === "BAJA"}
+                                    <td>Datos persona desvinculados</td>
+                                {else}
+                                    <td>{$fila.nombre}</td>
+                                {/if}
                                 <td>{$fila.estado}</td>
                                 <td>{$fila.rol}</td>
                                 <!-- Celda con acciones permitidas para cada usuario  -->
                                 <td>
                                     <form method="post" action="/plataforma/backoffice.php?comando=usuarios:default">
                                         <input type="hidden" name="hashusuario" value="{$fila.hashusuario}">
-                                        <button class="boton-accion-gestor" type="submit" name="accion" value="consultar"><span class="iconos-nav-backoffice">search</span></button>
-                                        <button class="boton-accion-gestor" type="submit" name="accion" value="actualizar"><span class="iconos-nav-backoffice">edit</span></button>
-                                        <button class="boton-accion-gestor" type="submit" name="accion" value="eliminar"><span class="iconos-nav-backoffice">delete</span></button>
-                                        <button class="boton-accion-gestor" type="submit" name="accion" value="activar"><span class="iconos-nav-backoffice">check_box</span></button>
-                                        <button class="boton-accion-gestor" type="submit" name="accion" value="desactivar"><span class="iconos-nav-backoffice">check_box_outline</span></button>
-                                        <button class="boton-accion-gestor" type="submit" name="accion" value="password"><span class="iconos-nav-backoffice">vpn_key</span></button>
+                                        {if $fila.estado === "BAJA"}
+                                            <button class="boton-accion-listado-gestor" type="submit" name="accion" value="reactivar" title="Reactivar usuario"><span class="iconos-acciones-listados">refresh</span></button>
+                                        {else}
+                                            <button class="boton-accion-listado-gestor" type="submit" name="accion" value="consultar" title="Mostrar detalles"><span class="iconos-acciones-listados">search</span></button>
+                                        {/if}
                                     </form>
                                 </td>
                             </tr>

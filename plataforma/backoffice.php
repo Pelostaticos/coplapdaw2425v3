@@ -106,6 +106,9 @@ try {
                 break;
             // Muestro el perfil de usuario
             case "usuarios:consultar":
+                // Aquí no necesito volver al listado si está activa la variable de sesion volver.
+                if (isset($_SESSION['volver'])) {unset($_SESSION['volver']);}
+                // Solicito al controlador que muestro el perfil de usuario.
                 Usuarios::consultarPerfil($smarty);
                 break;
             case "usuarios:listar":

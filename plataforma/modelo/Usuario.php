@@ -209,6 +209,30 @@ class Usuario {
     }
 
     /**
+     * Método estático que permite consultar datos de un usuario
+     *
+     * @param string $codigo código de usuario del que se quiere consultar sus datos
+     * @return Usuario|null Devuelve un objeto usuario si se ha encontrado en la base de datos
+     *                      Devuelve nulo si el usuario solicitado NO se ha encontrado en la base de datos
+     */
+    public static function consultarUsuario($codigo): ?Usuario
+    {   
+        // Construyo la sentencia SQL para recuperar al usuario de la base de datos     
+        $sql="SELECT * from pdaw_usuarios where codigo=:codigo";
+        // Ejecuto la sentencia SQL para recuperar al usuario de la base de datos
+        $res=Core::ejecutarSql($sql,[':codigo'=>$codigo]);
+        // Si el resultado devuelto tras ejecución contiene un array de un elemento
+        if (is_array($res) && count($res)===1)        
+        {
+            // Devuelvo al usuario recuperado de la base de datos
+            return new Usuario($res[0]);
+        }
+        else
+            // De lo contario devolveré nulo
+            return null;
+    }
+
+    /**
      * Método estático para crear un nuevo usuario en la base de datos
      *
      * @param Array $datos Conjunto de datos del usuario a crear en la base de datos
@@ -238,7 +262,7 @@ class Usuario {
     public static function listarUsuarios(): ?Array {
         // Construyo la sentencia SQL para recuperar al usuario de la base de datos     
         $sql="SELECT u.codigo as hashusuario, u.nombre as usuario, CONCAT(p.apellido1, ' ', p.apellido2, ' ,', p.nombre) as nombre, u.estado as estado, u.rol as rol  FROM pdaw_usuarios u 
-            INNER JOIN pdaw_personas p ON u.codigo=p.usuario";
+            LEFT JOIN pdaw_personas p ON u.codigo=p.usuario";
         // Ejecuto la sentencia SQL para recuperar al usuario de la base de datos
         $res=Core::ejecutarSql($sql);
         // Si el resultado devuelto tras ejecución contiene un array de un elemento

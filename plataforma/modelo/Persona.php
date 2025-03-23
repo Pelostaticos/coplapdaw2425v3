@@ -277,7 +277,7 @@ class Persona {
     // E) Defino los métodos estáticos de la clase auxiliar Persona 
 
     /**
-     * Método que realiza la identificación de un usuario como persona
+     * Método estático que realiza la identificación de un usuario como persona
      *
      * @param string $hashUsuario Código del usuario al que se desea identificar como persona
      * @return Persona|null Devuelve un objeto Persona con todos sus datos si es identificado
@@ -285,14 +285,14 @@ class Persona {
      */
     public static function identificarPersona($hashUsuario): ?Persona
     {   
-        // Construyo la sentencia SQL para recuperar al usuario de la base de datos     
+        // Construyo la sentencia SQL para recuperar a la persona de la base de datos     
         $sql="SELECT * from pdaw_personas where usuario=:usuario";
-        // Ejecuto la sentencia SQL para recuperar al usuario de la base de datos
+        // Ejecuto la sentencia SQL para recuperar a la persona de la base de datos
         $res=Core::ejecutarSql($sql,[':usuario'=>$hashUsuario]);
         // Si el resultado devuelto tras ejecución contiene un array de un elemento
         if (is_array($res) && count($res)===1)        
         {
-            // Devuelvo al usuario recuperado de la base de datos
+            // Devuelvo a la persona recuperada de la base de datos
             return new Persona($res[0]);
         }
         else

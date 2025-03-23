@@ -64,7 +64,7 @@
                     {/if}
                     <a class="boton-accion-gestor" href="/plataforma/backoffice.php?comando=core:email:vista" title="Desactivar el peril de usuario">Desactivar</a>
                     <a class="boton-accion-gestor" href="/plataforma/backoffice.php?comando=core:email:vista" title="Cambiar contraseña usuario">Password</a>
-                    <a class="boton-accion-gestor" href="/plataforma/backoffice.php" title="Volver al inicio">Volver</a>
+                    <a class="boton-accion-gestor" href="{$volver}" title="Volver al atrás">Volver</a>
                 </div>
             </article>
         </section>
