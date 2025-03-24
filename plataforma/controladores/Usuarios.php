@@ -172,21 +172,62 @@ class Usuarios {
         // Obtengo al usuario de la sesión del navegacion
         $usuario = $_SESSION['usuario'];
 
-        // Simulo una entrada de contenidos de base de datos
-        $datos = Usuario::listarUsuarios();
-        // var_dump($datos);
-        // exit;
+        // Recupero los permisos del usuario logueado desde su sesión
+        $permisosUsuario = $_SESSION['permisos'];
+        
+        // Si el usuario logueado tiene permiso para filtrar usuarios entonces:
+        if ($permisosUsuario->getPermisoFiltrarUsuarios()) {
 
-        // Asigno las variables requeridas por la plantila del listado de usuarios
-        $smarty->assign('usuario', $usuario->getUsuario());
-        $smarty->assign('filas', $datos);
-        $smarty->assign('anyo', date('Y'));
-        // Muestro la plantilla del listado de usuarios
-        $smarty->display('usuarios/listado.tpl');      
+            // Genero el listado de usuarios  disponibles en la plataforma
+            $datos = Usuario::listarUsuarios();
+
+            // Asigno las variables requeridas por la plantila del listado de usuarios
+            $smarty->assign('usuario', $usuario->getUsuario());
+            $smarty->assign('permisosUsuario', $permisosUsuario);
+            $smarty->assign('filas', $datos);
+            $smarty->assign('anyo', date('Y'));
+            // Muestro la plantilla del listado de usuarios
+            $smarty->display('usuarios/listado.tpl');      
+
+        } else {
+            // Lanzo una excepción para notificar al usuario que no tiene permisos para filtrar usuarios
+            throw new AppException($message = "Disculpa! Tu rol no te permite listar usuarios en la plataforma", 
+                $urlAceptar="/plataforma/backoffice.php?comando=usuarios:default");
+        }
+
 
     }
 
     public static function filtrarUsuariosPlataforma($smarty) {
+
+        // Obtengo al usuario de la sesión del navegacion
+        $usuario = $_SESSION['usuario'];
+
+        // Recupero los permisos del usuario logueado desde su sesión
+        $permisosUsuario = $_SESSION['permisos'];
+
+        // Si el usuario logueado tiene permiso para filtrar usuarios entonces:
+        if ($permisosUsuario->getPermisoFiltrarUsuarios()) {
+            // Obtengo el campo de busqueda introducido por el usuario
+            $busqueda = filter_input(INPUT_POST,'frm-busqueda', FILTER_SANITIZE_SPECIAL_CHARS);
+            // Obtengo la columna por la que se desea ordenar los resultados
+            $ordenarPor = filter_input(INPUT_POST, 'frm-ordenarpor', FILTER_SANITIZE_SPECIAL_CHARS);
+            // Obtengo el modo de ordenarlos
+            $orden = filter_input(INPUT_POST, 'frm-orden', FILTER_SANITIZE_SPECIAL_CHARS);
+            // Obtengo los resultados del filtrado de usuarios en la plataforma            
+            $resultados = Usuario::buscarUsuarios($busqueda, $ordenarPor, $orden);
+            // Asigno las variables requeridas por la plantila del listado de usuarios
+            $smarty->assign('usuario', $usuario->getUsuario());
+            $smarty->assign('permisosUsuario', $permisosUsuario);            
+            $smarty->assign('filas', $resultados);
+            $smarty->assign('anyo', date('Y'));
+            // Muestro la plantilla del listado de usuarios
+            $smarty->display('usuarios/listado.tpl');               
+        } else {
+            // Lanzo una excepción para notificar al usuario que no tiene permisos para filtrar usuarios
+            throw new AppException($message = "Disculpa! Tu rol no te permite filtrar usuarios en la plataforma", 
+                $urlAceptar="/plataforma/backoffice.php?comando=usuarios:default");
+        }
 
     }
 

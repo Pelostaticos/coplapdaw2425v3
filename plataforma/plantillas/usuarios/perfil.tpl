@@ -57,12 +57,14 @@
                 </div>
                 <!-- Acciones permitidas por el gestor de usuario -->
                 <div class="botonera">                    
-                    <a class="boton-accion-gestor" href="/plataforma/backoffice.php?comando=core:email:vista" title="Actualizar el perfil usuario">Actualizar</a>
-                    <a class="boton-accion-gestor" href="/plataforma/backoffice.php?comando=core:email:vista" title="Eliminar el perfil usuario">Eliminar</a>
-                    {if isset($smarty.session) && $perfil.rol === 'administrador'}
-                        <a class="boton-accion-gestor" href="/plataforma/backoffice.php?comando=core:email:vista" title="Activar el perfil usuario">Activar</a>
+                    <a class="boton-accion-gestor" href="/plataforma/backoffice.php?comando=core:email:vista" title="Actualizar el perfil de usuario">Actualizar</a>
+                    <a class="boton-accion-gestor" href="/plataforma/backoffice.php?comando=core:email:vista" title="Eliminar el perfil de  usuario">Eliminar</a>
+                    {if isset($smarty.session) && $permisos->hasPermisoAdministradorGestor() && $perfil.estado === 'Desactivo'}
+                        <a class="boton-accion-gestor" href="/plataforma/backoffice.php?comando=core:email:vista" title="Activar el perfil de usuario">Activar</a>
                     {/if}
-                    <a class="boton-accion-gestor" href="/plataforma/backoffice.php?comando=core:email:vista" title="Desactivar el peril de usuario">Desactivar</a>
+                    {if $perfil.estado === 'Activo'}
+                        <a class="boton-accion-gestor" href="/plataforma/backoffice.php?comando=core:email:vista" title="Desactivar el peril de usuario">Desactivar</a>
+                    {/if}
                     <a class="boton-accion-gestor" href="/plataforma/backoffice.php?comando=core:email:vista" title="Cambiar contraseña usuario">Password</a>
                     <a class="boton-accion-gestor" href="{$volver}" title="Volver al atrás">Volver</a>
                 </div>

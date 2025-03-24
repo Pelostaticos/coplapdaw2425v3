@@ -115,7 +115,7 @@ try {
                 Usuarios::listarUsuariosPlataforma($smarty);
                 break;                    
             case "usuarios:filtrar":
-                var_dump($_POST);
+                Usuarios::filtrarUsuariosPlataforma($smarty);
                 break;                
             // Por defecto si estas logueado y no solicitas nada te muestro la página de inicio del backoffice.
             default:

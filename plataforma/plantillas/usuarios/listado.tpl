@@ -38,7 +38,7 @@
                         <p class="medio">
                             <label for="frm-ordenarpor">Ordenar por</label>:&nbsp;
                             <select id="frm-ordenarpor" name="frm-ordenarpor">
-                                <option value="" selected>ninguno</option>
+                                <option value="">ninguno</option>
                                 <option value="estado">estado</option>                                    
                                 <option value="nombre">nombre</option>
                                 <option value="rol">rol</option>                                    
@@ -48,7 +48,7 @@
                         <p class="corto">
                             <label for="frm-orden">Orden</label>:&nbsp;
                             <select id="frm-orden" name="frm-orden">
-                                <option value="" selected>ninguno</option>
+                                <option value="">ninguno</option>
                                 <option value="ASC">ascendente</option>                                    
                                 <option value="DESC">descendente</option>
                             </select>

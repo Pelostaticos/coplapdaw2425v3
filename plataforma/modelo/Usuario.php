@@ -261,7 +261,7 @@ class Usuario {
      */
     public static function listarUsuarios(): ?Array {
         // Construyo la sentencia SQL para recuperar al usuario de la base de datos     
-        $sql="SELECT u.codigo as hashusuario, u.nombre as usuario, CONCAT(p.apellido1, ' ', p.apellido2, ' ,', p.nombre) as nombre, u.estado as estado, u.rol as rol  FROM pdaw_usuarios u 
+        $sql="SELECT u.codigo as hashusuario, u.nombre as usuario, CONCAT(p.apellido1, ' ', p.apellido2, ', ', p.nombre) as nombre, u.estado as estado, u.rol as rol  FROM pdaw_usuarios u 
             LEFT JOIN pdaw_personas p ON u.codigo=p.usuario";
         // Ejecuto la sentencia SQL para recuperar al usuario de la base de datos
         $res=Core::ejecutarSql($sql);
@@ -288,27 +288,29 @@ class Usuario {
     public static function buscarUsuarios($busqueda, $ordenarPor, $orden) {
 
         // Defino las columnas de busqueda para encontrar usuarios
-        $columnas = ['usuario', 'nombre','estado', 'rol'];
+        $columnas = ['u.nombre', 'p.nombre', 'p.apellido1', 'p.apellido2', 'u.estado', 'u.rol'];
 
         // Defino una array vacio en donde generar las condiciones de búsqueda
         $condiciones = [];
 
-        // Defino un array asociativo con el parámetro de busqueda
-        $parametro = [":busqueda", "%$busqueda%"];
+        // Defino un array asociativo con los parámetros de busqueda
+        $parametros = [];
 
         // Genero las condiciones de búsqueda para encontrar Usuarios.
         foreach($columnas as $columna) {
-            $condiciones[] = "$columna LIKE :busqueda";
+            $parametro = str_replace('.','',$columna);
+            $parametros[":".$parametro] = "%$busqueda%";
+            $condiciones[] = "$columna LIKE :$parametro";                      
         }
 
         // Construyo la sentencia SQL para realizar la búsqueda de Usuarios
-        $sql="SELECT u.nombre as usuario, CONCAT(p.apellido1, ' ', p.apellido2, ' ,', p.nombre) as nombre, u.estado as estado, u.rol as rol  FROM pdaw_usuarios u 
-            INNER JOIN pdaw_personas p ON u.codigo=p.usuario";
+        $sql="SELECT u.codigo as hashusuario, u.nombre as usuario, CONCAT(p.apellido1, ' ', p.apellido2, ', ', p.nombre) as nombre, u.estado as estado, u.rol as rol  FROM pdaw_usuarios u 
+            LEFT JOIN pdaw_personas p ON u.codigo=p.usuario";
 
         // Añado las condiciones de búsqueda a la sentencia SQL anterior
         if (!empty($condiciones)) {
             // Genero la cadena completa con todas las condiciones de búsqueda SQL.
-            $sql .= "WHERE " . implode("OR ", $condiciones);
+            $sql .= " WHERE " . implode(" OR ", $condiciones);
         }
 
         // Añado la funcionalidad para ordenar el resultado de la búsqueda
@@ -318,11 +320,14 @@ class Usuario {
         if (in_array($ordenarPor, $columnasPermitidas) && in_array($orden, $ordenesPemritidos)) {
             $sql .= " ORDER BY $ordenarPor $orden";
         }
-
+        // var_dump($condiciones);
+        // var_dump($parametros);
+        // echo $busqueda . " - " . $ordenarPor . " -  " . $orden . "- " . $sql;
+        // exit;
         // Ejecuto la sentencia SQL para recuperar a los usuario de la base de datos que coincidan el criterio de búsqueda
-        $res=Core::ejecutarSql($sql);
+        $res=Core::ejecutarSql($sql, $parametros);
         // Si el resultado devuelto tras ejecución contiene un array de un elemento
-        if (is_array($res) && count($res)>1)        
+        if (is_array($res) && count($res)>0)        
         {
             // Devuelvo al usuario recuperado de la base de datos
             return $res;
