@@ -86,40 +86,70 @@ try {
         switch ($comando) {
             // Solicita el cierre de sesión en la plataforma
             case "core:logout:vista":
+                // Solicito al núcleo de la plataforma que muestre el mensaje de confirmación del cierre de seasión al usuario
                 Core::mostrarCierreSesion($smarty);
                 break;
             // Cierro la sesión del usuario en la plataforma
             case "core:logout:procesa":
+                // Solicito al núcleo de la plataforma que cierre la sesión del usuario logueado.
                 Core::cerrarSesion();
                 break;
             // Muestro el formulario de contacto
             case "core:email:vista":
+                // Solicito al núcleo de la plataforma que me muestre el formulario de contacto del backoffice
                 Core::mostrarFormularioContacto($smarty);
                 break;
             // Proceso el formulario de contacto
             case "core:email:procesa":
+                // Solicito al nucleo de la plataforma que procese el formulario de contacto
                 Core::enviarEmail($smarty, $mail);                
                 break;
             // Muestro el gestor de usuarios
             case "usuarios:default":
+                // Solicita al controlador de usuarios que muestre las vista por defectos del gestor de usuarios
                 Usuarios::default($smarty);
                 break;
             // Muestro el perfil de usuario
             case "usuarios:consultar":
                 // Aquí no necesito volver al listado si está activa la variable de sesion volver.
                 if (isset($_SESSION['volver'])) {unset($_SESSION['volver']);}
-                // Solicito al controlador que muestro el perfil de usuario.
+                // Solicito al controlador de usuarios que muestre el perfil de usuario.
                 Usuarios::consultarPerfil($smarty);
                 break;
+            case "usuarios:eliminar":
+                // Solicito al controlador de usuarios que elimine el perfil de usuario
+                Usuarios::eliminarUsuarioPlataforma($smarty);
+                break;
             case "usuarios:listar":
+                // Solicito al controlador de usuarios que me genere un listado con los usuarios de la plataforma
                 Usuarios::listarUsuariosPlataforma($smarty);
                 break;                    
             case "usuarios:filtrar":
+                // Solicito al controlador de usuarios que me filtre el listado de usuarios.
                 Usuarios::filtrarUsuariosPlataforma($smarty);
-                break;                
+                break;
+            case "usuarios:activar:vista":
+                // Muestro al usuario un mensaje informativo notificación que la acción no se encuentra disponible en la plataforma
+                ErrorController::mostrarMensajeInformativo($smarty, "Disculpa! Por cuestiones técnicas esta acción no está disponible en la platforma. Gracias!");
+                break;
+            // DESCARTO IMPLEMENTACIÓN POR FALTA DE TIEMPO: 25/03/2025.
+            // case "usuarios:activar:procesa":
+            //     // Solicito al controlador de usuarios que me active el perfil de usuario
+            //     Usuarios::activarUsuarioPlataforma($smarty);
+            //     break;
+            // Por defecto si estas logueado y no solicitas nada te muestro la página de inicio del backoffice.
+            case "usuarios:desactivar:vista":
+                // Muestro al usuario un mensaje informativo notificación que la acción no se encuentra disponible en la plataforma
+                ErrorController::mostrarMensajeInformativo($smarty, "Disculpa! Por cuestiones técnicas esta acción no está disponible en la platforma. Gracias!");
+                break;
+            // DESCARTO IMPLEMENTACIÓN POR FALTA DE TIEMPO: 25/03/2025.
+            // case "usuarios:desactivar:procesa":
+            //     // Solicito al controlador de usuarios que me desactive el perfil de usuario
+            //     Usuarios::desactivarUsuarioPlataforma($smarty);
+            //     break;
             // Por defecto si estas logueado y no solicitas nada te muestro la página de inicio del backoffice.
             default:
-                // Solicito que se muestre la página de inicio del backoffice de la plataforma.
+                // Solicito al núcleo que muestre la página de inicio del backoffice de la plataforma.
                 Core::default($smarty);
                 break;
         }

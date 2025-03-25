@@ -106,6 +106,8 @@ class Usuarios {
             $hashUsuario = $_SESSION['listado'];
             // Consulto a la base de datos por el usuario contenido en la variable de sessión listado
             $usuario = Usuario::consultarUsuario($hashUsuario);
+            // Establezco a falso esta variable para no mostrar las acciones de perfil para usuario logueado
+            $mostrarAccionesPerfil = false;
             // Elimino la variable de sesión listado porque ya ha cumplido su función en esta acción
             unset($_SESSION['listado']);
         } else {
@@ -113,7 +115,9 @@ class Usuarios {
             // Obtengo al usuario de la sesión del navegacion
             $usuario = $_SESSION['usuario'];
             // Obtengo el hash identificador de usuario
-            $hashUsuario = $usuario->getCodigo();            
+            $hashUsuario = $usuario->getCodigo();
+            // Establezco a falso esta variable para no mostrar las acciones de perfil para usuario logueado
+            $mostrarAccionesPerfil = true;                      
         }
 
         // Compruebo si el usuario tiene permisos para mostrar su perfil
@@ -141,6 +145,7 @@ class Usuarios {
                 // Asigno las variables requeridas por la plantila del perfil de usuario
                 $smarty->assign('usuario', $usuario->getUsuario());
                 $smarty->assign('permisos', $permisosUsuario);
+                $smarty->assign('mostrarAccionesPerfil', $mostrarAccionesPerfil);
                 $smarty->assign('perfil', $perfil);
                 if (isset($_SESSION['volver'])) {
                     // Si existe variable de sesion volver se le debe redirigir al usuario
@@ -166,7 +171,12 @@ class Usuarios {
 
     }
 
-    // FUNCION TEMPORAL PARA IR PROBANDO LA VISTA
+    /**
+     * Método estático para listar los usuarios disponibles en la plataforma
+     *
+     * @param Smarty $smarty Obtejp que contiene al motor de plantillas Smarty
+     * @return void No devuelve valor alguno
+     */
     public static function listarUsuariosPlataforma($smarty) {
 
         // Obtengo al usuario de la sesión del navegacion
@@ -198,6 +208,12 @@ class Usuarios {
 
     }
 
+    /**
+     * Método estático para filtrar listados de usuarios de la plataforma
+     *
+     * @param Smarty $smarty Objeto que contiene al motor de plantillas Smarty
+     * @return void No devuelve valor alguno
+     */
     public static function filtrarUsuariosPlataforma($smarty) {
 
         // Obtengo al usuario de la sesión del navegacion
@@ -231,12 +247,93 @@ class Usuarios {
 
     }
 
-    // public static function modificarPassword($passwordActual, $passwordNueva)
-    // {
-    //     // $sql="UPDATE usuarios SET password=SHA2(CONCAT(:username,:newpassword),256) WHERE username=:username and password=SHA2(CONCAT(:username,:currentpassword),256)";
-    //     // return DB::doSql($sql,[':usuario'=>$this->usuario,':currentpassword'=>$currentpassword,':newpassword'=>$newpassword]);        
-    // }
+    public static function mostrarVistaEdicionUsuarioPlataforma ($smarty) {
+        
+    }
+
+
+    public static function actualizarUsuarioPlataforma($smarty) {
+
+    }
+
+
+    public static function mostrarVistaCambioContraseñaUsuarioPlataforma($smarty) {
+
+    }
+
+    public static function modificarPasswordUsuarioPlataforma($smarty) {
+
+    }
     
+
+    /**
+     * Método estático para eliminar el perfil d eun usuario de la plataforma
+     *
+     * @param Smarty $smarty Objeto que contiene al motor de plantillas Smarty
+     * @return void No devuelve valor alguno
+     */
+    public static function eliminarUsuarioPlataforma($smarty) {
+        // Recupero los permisos del usuario logueado desde su sesión
+        $permisosUsuario = $_SESSION['permisos'];
+
+        // Compruebo la procedencía de la ejecución de la presente acción
+        // Si la variable de sesion listado está establecida junto 
+        // El usuario logueado tiene permiso para listar usuarios. Entonces:
+        if (isset($_SESSION['listado']) && $permisosUsuario->getPermisoListarUsuarios()) {
+            // El usuario autorizado está solicitando eliminar el perfil de un usuario no logueado
+            // Recupero el hash identificador de usuario desde la variable de sesion
+            $hashUsuario = $_SESSION['listado'];
+            // Consulto a la base de datos por el usuario contenido en la variable de sessión listado
+            $usuario = Usuario::consultarUsuario($hashUsuario);            
+            // Elimino la variable de sesión listado porque ya ha cumplido su función en esta acción
+            unset($_SESSION['listado']);
+        } else {
+            // De lo contrario, el usuario está pidiendo eliminar su propio perfil de usuario
+            // Obtengo al usuario de la sesión del navegacion
+            $usuario = $_SESSION['usuario'];
+            // Obtengo el hash identificador de usuario
+            $hashUsuario = $usuario->getCodigo();
+        }
+
+        // Compruebo si el usuario tiene permisos para eliminar el perfil de usuario
+        if ($permisosUsuario->getPermisoEliminarUsuario()) {
+            // Compruebo si la persona usuario pudo eliminarse de la plataforma para
+            // desvincular sus datos persnales del usuario y dejarlo para fines funcionales.
+            if ($usuario->eliminarPersona($hashUsuario)) {
+                // Modifico el estado del perfil del usuario a BAJA.
+                $usuario->setEstado('BAJA');
+                // Preparo la información para actualizar el nuevo estado del perfil de usuario elminiado
+                $datosUsuario = [':codigo' => $hashUsuario,':estado' => $usuario->getEstado(), ':rol' => $usuario->getRol()];
+                // Actualizo el estado del perfil de usuario elminado a su nuevo estado en la plataforma
+                if ($usuario->actualizarUsuario($datosUsuario)) {
+                    // Notifico al usuario que el perfil se ha eliminado correctamente y cierro su sesión
+                    ErrorController::mostrarMensajeInformativo($smarty, "El perfil de usuario se ha elminado correctamente!",
+                        "/plataforma/backoffice.php?comando=core:logout:procesa");
+                } else {
+                    // Lanzo una excepción para indicar que no existe perfil de usuario
+                    throw new AppException($message = "No se ha podido completar la baja del usuario! Por favor, contacte con los administradores.", 
+                        $urlAceptar="/plataforma/backoffice.php?comando=core:logout:procesa");
+                }
+            } else {
+                // Lanzo una excepción para indicar que no existe perfil de usuario
+                throw new AppException("No existe el perfil de usuario");
+            }
+        } else {
+            // Lanzo excepción para notificar al usuario que no tiene permiso para eliminar el perfil
+            throw new AppException("Su rol en la plataforma no le permite eliminar el perfil de usuario");
+        }
+
+    }
+
+    /* NO IMPLEMENTO ESTA FUNCIONALIDAD POR FALTA DE TIEMPO EN DESARROLLO: 25/03/2025.
+    public static function activarUsuarioPlataforma($smarty) {
+
+    } */
+
+    /* NO IMPLEMENTO ESTA FUNCIONALIDAD POR FALTA DE TIEMPO EN DESARROLLO: 25/03/2025.
+    public static function desactivarUsuarioPlataforma($smarty) {
+
+    } */
 
 }
 

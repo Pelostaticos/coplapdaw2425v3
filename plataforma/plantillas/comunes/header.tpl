@@ -22,7 +22,7 @@
     <!-- Cabecera del sisito web -->
     <header>
         <!-- Logotipo y titulo del sitio web -->
-        <a href="#inicio">
+        <a href="/plataforma/backoffice.php">
             <img src="/plataforma/imagenes/correplayas.png" alt="logotipo del portal web correplayas"/>
             <div class="sitioweb">
                 <small>Plataforma</small>

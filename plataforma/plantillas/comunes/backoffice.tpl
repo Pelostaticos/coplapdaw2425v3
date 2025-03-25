@@ -22,7 +22,7 @@
                 <p>Nos alegra tenerte aquí {$usuario}, listo para seguir contribuyendo a nuestro proyecto de ciencia ciudadana. Tu labor como voluntario es esencial para el éxito de esta iniciativa, ya que nos permite recopilar datos valiosos sobre la biodiversidad de nuestra región.</p>
                 <img src="/plataforma/imagenes/correplayas.jpg" alt="Foto del correlimos común con triactilo al fondo" />
                 <p>Con tu valiosa contribución, monitoreamos especies, detectamos amenazas y tomamos decisiones para la conservación. Cada observación y censo que realizas es vital. Juntos, ciencia y ciudadanía, construimos un futuro sostenible.</p>
-                <h3 class="cta">¿Cómo poddemos ayudarte?</h3>
+                <h3 class="cta">¿Cómo podemos ayudarte?</h3>
                 <div class="botonera">                    
                     <a class="boton" href="/plataforma/tutorial.pdf" target="_blank">Ayuda plataforma</a>
                     <a class="boton" href="/plataforma/backoffice.php?comando=core:email:vista">Tengo una duda</a>
