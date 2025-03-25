@@ -7,6 +7,8 @@
 * Parámetros de plantilla:
 *
 *   >> usuario: Nombre del usuario logueado.
+*   >> permisos: Conjunto de permisos del usuario logueado.
+*   >> filas: Conjunto de datos para generar el listado.
 *   >> anyo: Año en curso para copyright y copyleft del sitio web.
 *
 *}

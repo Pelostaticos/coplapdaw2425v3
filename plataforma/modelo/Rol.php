@@ -101,7 +101,7 @@ class Rol {
      *
      * @return boolean Estado del permiso para eliminar el perfil de un usuario
      */
-    public function getPermisoElimianrUsuario() {
+    public function getPermisoEliminarUsuario() {
         // Devuelvo del atributo permisos el estado correspondiente al campo permiso6 de la tabla Roles.
         return $this->permisos['permiso6'];
     }   

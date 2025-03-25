@@ -248,7 +248,76 @@ class Usuarios {
     }
 
     public static function mostrarVistaEdicionUsuarioPlataforma ($smarty) {
-        
+        // Recupero los permisos del usuario logueado desde su sesión
+        $permisosUsuario = $_SESSION['permisos'];
+
+        // Compruebo la procedencía de la ejecución de la presente acción
+        // Si la variable de sesion listado está establecida junto 
+        // El usuario logueado tiene permiso para listar usuarios. Entonces:
+        if (isset($_SESSION['listado']) && $permisosUsuario->getPermisoListarUsuarios()) {
+            // El usuario autorizado está solicitando actualizar datos de un usuario no logueado
+            // Recupero el hash identificador de usuario desde la variable de sesion
+            $hashUsuario = $_SESSION['listado'];
+            // Consulto a la base de datos por el usuario contenido en la variable de sessión listado
+            $usuario = Usuario::consultarUsuario($hashUsuario);
+            // Elimino la variable de sesión listado porque ya ha cumplido su función en esta acción
+            unset($_SESSION['listado']);
+        } else {
+            // De lo contrario, el usuario está pidiendo actualizar su propio perfil de usuario
+            // Obtengo al usuario de la sesión del navegacion
+            $usuario = $_SESSION['usuario'];
+            // Obtengo el hash identificador de usuario
+            $hashUsuario = $usuario->getCodigo();
+        }
+
+        // Compruebo si el usuario tiene permisos para actualizar el perfil de usuario
+        if ($permisosUsuario->getPermisoConsultarUsuario()) {
+
+            // Identifico a la persona usuaria
+            $personaUsuaria = Persona::identificarPersona($hashUsuario);
+
+            // Proceso la informacion del perfil si este existe
+            if ($usuario instanceof Usuario && $personaUsuaria instanceof Persona) {
+                // Genero el nombre completo de la persona usuaria
+                $nombrePersonaUsuaria = $personaUsuaria->getNombrePersona() . " " . $personaUsuaria->getPrimerApellido() . " " . $personaUsuaria->getSegundoApellido();
+                // Recopilo información del perfil de usuario para la plantilla
+                $perfil = ['usuario' => $usuario->getUsuario(),
+                'nombre' => $nombrePersonaUsuaria,
+                'tipo' => $personaUsuaria->getTipoDocumento(),
+                'documento' => $personaUsuaria->getDocumento(),
+                'direccion' => $personaUsuaria->getDireccionPersona(),
+                'localidad' => $personaUsuaria->getLocalidadPersona(),
+                'codigoPostal' => $personaUsuaria->getCodigoPostalPersona(),
+                'email' => $personaUsuaria->getEnailPersona(),
+                'telefono' => $personaUsuaria->getTelefonoPersona(),
+                'estado' => ucfirst(strtolower($usuario->getEstado())),
+                'rol' => ucfirst($usuario->getRol())];
+                // Asigno las variables requeridas por la plantila del perfil de usuario
+                $smarty->assign('usuario', $usuario->getUsuario());
+                $smarty->assign('permisos', $permisosUsuario);
+                $smarty->assign('perfil', $perfil);
+                if (isset($_SESSION['volver'])) {
+                    // Si existe variable de sesion volver se le debe redirigir al usuario
+                    // al listado cuando pulse en volvar en la vista de consulta del perfil
+                    $smarty->assign('volver', $_SESSION['volver']);
+                    // Elimino la variable de sesión volver porque ya cumplio su funcion
+                    unset($_SESSION['volver']);
+                } else {
+                    // De lo contario se le redirige a la página principal del backoffice
+                    $smarty->assign('volver', '/plataforma/backoffice.php');
+                }
+                $smarty->assign('anyo', date('Y'));
+                // Muestro la plantilla del perfil de usaurio con sus datos
+                $smarty->display('usuarios/edicion.tpl');                   
+            } else {
+                // Lanzo una excepción para indicar que no existe perfil de usuario
+                throw new AppException("No existe el perfil de usuario");
+            }
+        } else {
+            // Lanzo excepción para notificar al usuario que no tiene permiso para mostrar su perfil
+            throw new AppException("Su rol en la plataforma no le permite actualizar el perfil de usuario");
+        }
+
     }
 
 
@@ -294,6 +363,8 @@ class Usuarios {
             // Obtengo el hash identificador de usuario
             $hashUsuario = $usuario->getCodigo();
         }
+
+        // NOTA: Necesito recuperar a la persona usuaria que voy a desvincular de su usuario en la plataforma.
 
         // Compruebo si el usuario tiene permisos para eliminar el perfil de usuario
         if ($permisosUsuario->getPermisoEliminarUsuario()) {

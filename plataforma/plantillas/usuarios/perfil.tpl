@@ -59,10 +59,10 @@
                 <div class="botonera">
                     {if $mostrarAccionesPerfil}
                         {if isset($smarty.session) && $permisos->getPermisoActualizacionUsuario()}                   
-                            <a class="boton-accion-gestor" href="/plataforma/backoffice.php?comando=core:email:vista" title="Actualizar el perfil de usuario">Actualizar</a>
+                            <a class="boton-accion-gestor" href="/plataforma/backoffice.php?comando=usuarios:actualizar:vista" title="Actualizar el perfil de usuario">Actualizar</a>
                         {/if}
                         {if isset($smarty.session) && $permisos->getPermisoEliminarUsuario()}
-                            <a class="boton-accion-gestor" href="/plataforma/backoffice.php?comando=core:email:vista" title="Eliminar el perfil de  usuario">Eliminar</a>
+                            <a class="boton-accion-gestor" href="/plataforma/backoffice.php?comando=usuarios:eliminar" title="Eliminar el perfil de  usuario">Eliminar</a>
                         {/if}
                         {if isset($smarty.session) && $permisos->hasPermisoAdministradorGestor() && $perfil.estado === 'Desactivo'}
                             <a class="boton-accion-gestor" href="/plataforma/backoffice.php?comando=usuarios:activar:vista" title="Activar el perfil de usuario">Activar</a>
@@ -71,7 +71,7 @@
                             <a class="boton-accion-gestor" href="/plataforma/backoffice.php?comando=usuarios:desactivar:vista" title="Desactivar el peril de usuario">Desactivar</a>
                         {/if}
                         {if isset($smarty.session) && $permisos->getPermisoCambioPasswordUsuario()}
-                            <a class="boton-accion-gestor" href="/plataforma/backoffice.php?comando=core:email:vista" title="Cambiar contraseña usuario">Password</a>
+                            <a class="boton-accion-gestor" href="/plataforma/backoffice.php?comando=usuarios:contraseña:vista" title="Cambiar contraseña usuario">Password</a>
                         {/if}
                     {/if}
                     <a class="boton-accion-gestor" href="{$volver}" title="Volver al atrás">Volver</a>

@@ -82,7 +82,8 @@ try {
     // Intento ejecutar el comando solicitado por el usuario
     if (isset($_SESSION['usuario'])) {
         // 6.1º) Gestiono la petición como un comando del backoffice para un usuario logueado
-        echo "Hola! Esta funciones no están disponible por el momento... Gracias!";
+        echo "Hola! Esta funciones no están disponible por el momento... Gracias!<br>";
+        echo "<a href='/plataforma/backoffice.php'>Volver al inicio</a>";
         switch ($comando) {
             // Solicita el cierre de sesión en la plataforma
             case "core:logout:vista":
@@ -116,9 +117,26 @@ try {
                 // Solicito al controlador de usuarios que muestre el perfil de usuario.
                 Usuarios::consultarPerfil($smarty);
                 break;
+            // Muestro vista de edicion del perfil de usuario
+            case "usuarios:actualizar:vista":
+                // Solicito al controlador de usuarios que muestre la vista de edición del perfil
+                Usuarios::mostrarVistaEdicionUsuarioPlataforma($smarty);
+                break;
+            // Actualizo el perfil de usuario
+            case "usuarios:actualizar:procesa":
+                // Solicito al controlador de usuarios que actualice el perfil de usuario
+                Usuarios::actualizarUsuarioPlataforma($smarty);
+                break;
+            // Muestro vista para cambio de contraseña.
+            case "usuarios:contraseña:vista":                
+                break;
+            // Cambio de contraseña del usuario.
+            case "usuarios:contraseña:procesa":                
+                break;                
+            // Elimino el perfil de usuario
             case "usuarios:eliminar":
                 // Solicito al controlador de usuarios que elimine el perfil de usuario
-                Usuarios::eliminarUsuarioPlataforma($smarty);
+                // Usuarios::eliminarUsuarioPlataforma($smarty);
                 break;
             case "usuarios:listar":
                 // Solicito al controlador de usuarios que me genere un listado con los usuarios de la plataforma
@@ -147,7 +165,7 @@ try {
             //     // Solicito al controlador de usuarios que me desactive el perfil de usuario
             //     Usuarios::desactivarUsuarioPlataforma($smarty);
             //     break;
-            // Por defecto si estas logueado y no solicitas nada te muestro la página de inicio del backoffice.
+            // Por defecto si estas logueado y no solicitas nada te muestro la página de inicio del backoffice.            
             default:
                 // Solicito al núcleo que muestre la página de inicio del backoffice de la plataforma.
                 Core::default($smarty);
