@@ -341,4 +341,11 @@ class Usuario {
 
 }
 
+/* OBSERVACIONES: He observado que no he implementado correctamente los métodos de objeto eliminar, 
+actualizar y cambio de contraseña del usuarios ya que reciben como parámetros datos para ejecutar 
+la acción, y al ser un método de objeto pueden tomar estos datos de los propios atributos de objeto
+y a partir de ellos construir el array asociativo con los parámetros de consulta SQL preparada. No
+obstante, debido a plazo de tiempo justo que dispongo, la corrección de esto lo hare por los otros
+modelos de la aplicación web: Jornada y Participante. */
+
 ?>

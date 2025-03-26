@@ -247,6 +247,12 @@ class Usuarios {
 
     }
 
+    /**
+     * Método estático para mostrar la vista de edición de usuarios
+     *
+     * @param Smarty $smarty Objeto que contiene al motor de plantillas Smarty
+     * @return void No evuelve valor alguno
+     */
     public static function mostrarVistaEdicionUsuarioPlataforma ($smarty) {
         // Recupero los permisos del usuario logueado desde su sesión
         $permisosUsuario = $_SESSION['permisos'];
@@ -270,8 +276,8 @@ class Usuarios {
             $hashUsuario = $usuario->getCodigo();
         }
 
-        // Compruebo si el usuario tiene permisos para actualizar el perfil de usuario
-        if ($permisosUsuario->getPermisoConsultarUsuario()) {
+        // Compruebo si el usuario tiene permisos para consultar el perfil de usuario
+        if ($permisosUsuario->getPermisoConsultarUsuario() && $permisosUsuario->getPermisoActualizacionUsuario()) {
 
             // Identifico a la persona usuaria
             $personaUsuaria = Persona::identificarPersona($hashUsuario);
@@ -281,7 +287,8 @@ class Usuarios {
                 // Genero el nombre completo de la persona usuaria
                 $nombrePersonaUsuaria = $personaUsuaria->getNombrePersona() . " " . $personaUsuaria->getPrimerApellido() . " " . $personaUsuaria->getSegundoApellido();
                 // Recopilo información del perfil de usuario para la plantilla
-                $perfil = ['usuario' => $usuario->getUsuario(),
+                $perfil = ['codigo' => $hashUsuario,
+                'usuario' => $usuario->getUsuario(),
                 'nombre' => $nombrePersonaUsuaria,
                 'tipo' => $personaUsuaria->getTipoDocumento(),
                 'documento' => $personaUsuaria->getDocumento(),
@@ -326,9 +333,70 @@ class Usuarios {
 
     }
 
-
+    /**
+     * Método estático para actualizar el perfil de un usuario de la plataforma
+     *
+     * @param Smarty $smarty Objeto que contiene al motor de plantillas Smarty
+     * @return void No devuelve valor alguno
+     */
     public static function actualizarUsuarioPlataforma($smarty) {
 
+        // Recupero los permisos del usuario logueado desde su sesión
+        $permisosUsuario = $_SESSION['permisos'];        
+
+        // Compruebo si el usuario tiene permisos para actualizar el perfil de usuario
+        if ($permisosUsuario->getPermisoConsultarUsuario() && $permisosUsuario->getPermisoActualizacionUsuario()) {
+        
+            // Compruebo si el formualrio de actualización del perfil de usaurio está establecido            
+            if (isset($_POST['frm-hashusuario'])) {
+                // Recupero los datos del formulario de actualizacion del perfil de usuario
+                $hashUsuario = filter_input(INPUT_POST, 'frm-hashusuario');
+                $direccion = filter_input(INPUT_POST, 'frm-direccion');
+                $localidad = filter_input(INPUT_POST, 'frm-localidad');
+                $codPostal = filter_input(INPUT_POST, 'frm-codpostal');
+                $email = filter_input(INPUT_POST, 'frm-email');
+                $telefono = filter_input(INPUT_POST, 'frm-telefono');
+                // Recupero al usuario actualizado desde su hash de usuario
+                $usuario = Usuario::consultarUsuario($hashUsuario);
+                // Recupero a la persona usuaria actualizada del anterior usuario
+                $personaUsuaria = Persona::identificarPersona($hashUsuario);
+                // Si ha sido posible recuparar al usuario para obtener los datos por defecto
+                if ($usuario instanceof Usuario && $personaUsuaria instanceof Persona) {                
+                    // Compruebo si hubo posibilidad de actualizar el estado y rol del perfil de usuario
+                    if (isset($_POST['frm-estado'])) {
+                        // Recupero los datos de estado y rol del perfil de usuario actualizados
+                        $estado = filter_input(INPUT_POST, 'frm-estado');
+                        $rol = filter_input(INPUT_POST, 'frm-rol');
+                    } else {
+                            // Recupero los valores de estado y rol del usuario por defecto
+                            $estado = $usuario->getEstado();
+                            $rol = $usuario->getRol();
+                    }
+                    // Preparo los datos para la actualización del perfil de usuario
+                    $datosUsuario = [':codigo' => $hashUsuario, ':estado' => $estado, ':rol' => $rol];
+                    $datosPersonaUsuaria = [':usuario' => $hashUsuario, ':email' => $email,
+                        ':direccion' => $direccion, ':localidad' => $localidad, ':telefono' => $telefono, ':codPostal'  => $codPostal];                    
+                    // Actulizo los datos del perfil de usuario y muestro la notificación del resultado
+                    if ($usuario->actualizarUsuario($datosUsuario) && $personaUsuaria->actualizarPersona($datosPersonaUsuaria)) {
+                        // Notifico al usuario que la actualización del perfil fue existosa
+                        ErrorController::mostrarMensajeInformativo($smarty, "Perfil de usuario actualizado con éxito!!");
+                    } else {
+                        // Lanzo una excepción para indicar que no es posible obtener valores por defecto del perfil de usuario
+                        throw new AppException("No es posible actualizar el perfil de usuario");                                        
+                    }
+                } else {
+                    // Lanzo una excepción para indicar que no es posible obtener valores por defecto del perfil de usuario
+                    throw new AppException("No es posible recuperar el perfil de usuario");                
+                    }                    
+
+            } else {
+                // Lanzo una excepción para indicar que no existen datos para acutalizar el perfil de usuario
+                throw new AppException("No existen datos para actualizar el perfil de usuario");                
+            }
+        } else {
+            // Lanzo excepción para notificar al usuario que no tiene permiso para mostrar su perfil
+            throw new AppException("Su rol en la plataforma no le permite actualizar el perfil de usuario");
+        }
     }
 
 
