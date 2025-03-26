@@ -9,6 +9,8 @@
 *   >> usuario: Nombre del usuario logueado.
 *   >> permisos: Conjunto de permisos del usuario logueado.
 *   >> perfil: Datos del perfil de usuario.
+*   >> estadosPerfil: Array asociativos con todos los estado posibles de un perfil en la plataforma
+*   >> rolesPlataforma: Array asociativo con todos los roles disponibles en la plataforma
 *   >> anyo: Año en curso para copyright y copyleft del sitio web.
 *
 *}
@@ -30,37 +32,78 @@
                     </div>            
                 </div>                
                 <!-- Información del gestor de usuarios  -->
-                <div class="contenido-gestor">
-                    <div class="campos-gestor">
-                        <p class="corto"><span>Usuario</span>:&nbsp;{$perfil.usuario}</p>
-                        <p class="largo"><span>Nombre</span>:&nbsp;{$perfil.nombre}</p>
-                        <p class="corto"><span>{$perfil.tipo}</span>:&nbsp;{$perfil.documento}</p>
-                    </div> 
-                    <div class="campos-gestor">
-                        {if $perfil.direccion === "-"}
-                            <p class="extralargo"><span>Dirección</span>:&nbsp;Sin datos</p>
-                        {else}
-                            <p class="extralargo"><span>Dirección</span>:&nbsp;{$perfil.direccion} - {$perfil.localidad} - CP:&nbsp;{$perfil.codigoPostal}</p>
-                        {/if}
-                    </div>                                         
-                    <div class="campos-gestor">
-                        <p class="extralargo"><span>Email</span>:&nbsp;{$perfil.email}</p>
-                        {if $perfil.direccion === "-"}
-                            <p class="corto"><span>Teléfono</span>:&nbsp;Sin datos</p>
-                        {else}
-                            <p class="corto"><span>Teléfono</span>:&nbsp;{$perfil.telefono}</p>
-                        {/if}
+                <form id="edicion" method="post" action="/plataforma/backoffice.php?comando=usuarios:actualizar:procesa">
+                    <div class="contenido-gestor">
+                        <div class="campos-gestor">
+                            <p class="corto"><span>Usuario</span>:&nbsp;{$perfil.usuario}</p>
+                            <p class="largo"><span>Nombre</span>:&nbsp;{$perfil.nombre}</p>
+                            <p class="corto"><span>{$perfil.tipo}</span>:&nbsp;{$perfil.documento}</p>
+                        </div> 
+                        <div class="campos-gestor">
+                            {if $perfil.direccion === "-" || empty($perfil.direccion)}
+                                <p class="extraextralargo">
+                                    <label for="frm-dirección">Tu dirección:&nbsp;</label>
+                                    <input type="text" name="frm-dirección" id="frm-dirección" placeholder="Dirección...">        
+                                    <input type="text" name="frm-localidad" id="frm-localidad" value="{$perfil.localidad}">
+                                    <input type="text" name="frm-codpostal" id="frm-codpostal" placeholder="Código postal...">
+                                </p>
+                            {else}
+                                <p class="extraextralargo">
+                                    <label for="frm-dirección">Tu dirección&nbsp;:</label>
+                                    <input type="text" name="frm-dirección" id="frm-dirección" value="{$perfil.direccion}">        
+                                    <input type="text" name="frm-localidad" id="frm-localidad" value="{$perfil.localidad}">
+                                    <input type="text" name="frm-codpostal" id="frm-codpostal" value="{$perfil.codigoPostal}">
+                                </p>
+                            {/if}
+                        </div>                                         
+                        <div class="campos-gestor">
+                            <p class="extralargo">
+                                <label for="frm-email">Tu email:&nbsp;</label>
+                                <input type="email" name="frm-email" id="frm-email" value="{$perfil.email}">                                
+                            </p>
+                            {if $perfil.telefono === "-" || empty($perfil.telefono)}
+                                <p class="corto">
+                                    <label for="frm-telefono">Teléfono:&nbsp;</label>
+                                    <input type="phone" name="frm-telefono" id="frm-telefono" placeholder="Teléfono...">                                
+                                </p>
+                            {else}
+                                <label for="frm-telefono">Teléfono:&nbsp;</label>
+                                <input type="phone" name="frm-telefono" id="frm-telefono" value="{$perfil.telefono}">
+                            {/if}
+                        </div>
+                        <div class="campos-gestor">
+                            {if $permisos->hasPermisoAdministradorGestor()}
+                            <!-- Selector para editar el estado del perfil de un usuario -->
+                            <p class="corto">
+                                <label for="frm-estado">Estado:&nbsp;</label>
+                                <select name="frm-estado">
+                                    {foreach $estados as $nombre => $valor}
+                                        <option value="{$valor}" {if $perfil.estado === $valor}selected{/if}>{$nombre}</option>
+                                    {/foreach}
+                                </select>                                                                
+                            </p>
+                            <!-- Selector para editar el estado del perfil de un usuario -->
+                            <p class="corto">
+                                <label for="frm-rol">Rol:&nbsp;</label>
+                                <select name="frm-rol">
+                                    {foreach $roles as $nombre => $valor}
+                                        <option value="{$valor}" {if $perfil.rol === $valor}selected{/if}>{$nombre}</option>
+                                    {/foreach}
+                                </select>
+                            </p>                                        
+                            {else}
+                                <!-- Muestro la información del estado y rol sin posibilidad de edición -->
+                                <p class="medio"><span>Estado</span>:&nbsp;{$perfil.estado}</p>
+                                <p class="corto"><span>Rol</span>:&nbsp;{$perfil.rol}</p>
+                            {/if}
+                        </div>                    
                     </div>
-                    <div class="campos-gestor">
-                        <p class="medio"><span>Estado</span>:&nbsp;{$perfil.estado}</p>
-                        <p class="corto"><span>Rol</span>:&nbsp;{$perfil.rol}</p>                        
+                    <!-- Acciones permitidas por el gestor de usuario -->
+                    <div class="botonera">
+                        <a class="boton-accion-gestor" href="{$volver}" title="Volver al atrás">Volver</a>
+                        <button type="submit" class="boton-accion-gestor" title="Aplicar cmabios">Aplicar</button>
                     </div>
-                </div>
-                <!-- Acciones permitidas por el gestor de usuario -->
-                <div class="botonera">
-                    <a class="boton-accion-gestor" href="{$volver}" title="Volver al atrás">Volver</a>
-                    <a class="boton-accion-gestor" href="/plataforma/backoffice.php?comando=usuarios:actualizar:procesa" title="Aplicar cmabios">Aplicar</a>
-                </div>
+                </form>
             </article>
         </section>
     </main> 

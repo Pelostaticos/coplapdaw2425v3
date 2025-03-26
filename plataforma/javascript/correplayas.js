@@ -182,7 +182,7 @@ function validarSignup(event) {
     errores.push('Por favor, introduce un correo electrónico válido.');
   }
 
-  // Validación del nombre de la persona usuaria
+  // Validación de la localidad de la persona usuaria
   if (!localidad.trim()) {
     errores.push('Por favor, introduce tu localidad.');
   }
@@ -194,25 +194,57 @@ function validarSignup(event) {
   }
 }
 
-// D) Intento cargar los manejadores de eventos de cada formulario
-// D.0) Manipulador de evento para validar del formulario de contacto previo a su envio.
-try {
-  document.getElementById('contactenos').addEventListener('submit', validarContactenos);
-} catch (error) {
-  console.info("Aquí no existe formulario de contacto...");
-}
-// D.1) Manipulador de evento para validar del formulario de inicio de sesión.
-try {
-  document.getElementById('login').addEventListener('submit', validarLogin);
-} catch (error) {
-  console.info("Aquí no existe formulario de inicio de sesión...");
-}
-// D.2) Manipulador de evento para validar del formulario de registro de usuario.
-try {
-  document.getElementById('signup').addEventListener('submit', validarSignup);  
-} catch (error) {  
-  console.info("Aquí no existe formulario de registro de usuario...");
+// C.4) Funcion para validar el formulario de edición de usuarios.
+function validarEdicionUsuarios(event) {
+
+  // Obtengo los datos introducidos en los campos del formulario
+  let codigoPostal = document.getElementById('frm-codpostal').value;
+  let email = document.getElementById('frm-email').value;
+  let telefono = document.getElementById('frm-telefono').value;
+  
+  // Creo un array para almacenar los errores de validación detectados
+  let errores = [];  
+
+  // Validación para Código postal del usuario
+  let codigoPostalRegex = /^(?:0[1-9]|[1-4]\d|5[0-2])\d{3}$/;
+  if (codigoPostal.length > 0 && !codigoPostalRegex.test(codigoPostal)) {
+    errores.push('Por favor, introduce un código postal correcto.');
+  }
+
+  // Validación para Código postal del usuario
+  let telefonoRegex = /^(?:(?:(?:00|\+)34|34)[\s\-]?(?:[6789]\d{2}[\s\-]?\d{2}[\s\-]?\d{2}[\s\-]?\d{2}))$/;
+  if (telefono.length > 0 && !telefonoRegex.test(telefono)) {
+    errores.push('Por favor, introduce un número de teléfono válido.');
+  }
+
+  // Validación de Correo Electrónico
+  let emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!emailRegex.test(email)) {
+    errores.push('Por favor, introduce un correo electrónico válido.');
+  }
+
+  // Si se detectan error detengo el envio del formulario y se los notifico al usuario.
+  if (errores.length > 0) {
+    event.preventDefault();
+    alert(errores.join('\n'));
+  }
+
 }
 
+// D) Manipulación de eventos para las validaciones de formularios.
+// D.0) Array asociativos con los formularios disponibles en la plataforma y sus validadores.
+const validadoresFormularios = {'contactenos': validarContactenos, 'login': validarLogin
+  , 'signup':validarSignup, 'edicion': validarEdicionUsuarios}
+// D.1) Cargo el manipulador de evento para válidar el(los) formulario(s) presente en la página actual.
+const formularios = document.querySelectorAll('form');
+formularios.forEach(formulario => {
+  console.info(formulario.id);
+  // Compruebo si alguno de los formularios presentes en la página actual tiene validador.
+  if (validadoresFormularios.hasOwnProperty(formulario.id)) {
+    console.info("Has encontrado al formulario en la página... " + formulario.id)
+    // Añado el manipulador del evento submit para el formulario presente en la página web
+   /document.getElementById(formulario.id).addEventListener('submit', validadoresFormularios[formulario.id]);
+  }
+});  
 
 

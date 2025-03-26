@@ -292,9 +292,15 @@ class Usuarios {
                 'telefono' => $personaUsuaria->getTelefonoPersona(),
                 'estado' => ucfirst(strtolower($usuario->getEstado())),
                 'rol' => ucfirst($usuario->getRol())];
+                // Establezco un array asociativo con los valores de estado del perfil posibles
+                $estadosPerfil = ['Activo' => 'ACTIVO', 'Desactivo' => 'DESACTIVO', 'Baja' => 'BAJA', 'Reactivar' => 'REACTIVAR'];
+                // Establezco un array asociativo con los varoles de roles disponibles en la plataforma (TEMPORAL SIN AJAX)
+                $rolesPlataforma = ['Administrador' =>'administrador', 'Coordinador' => 'coordinador', 'Voluntario' => 'voluntario'];
                 // Asigno las variables requeridas por la plantila del perfil de usuario
                 $smarty->assign('usuario', $usuario->getUsuario());
                 $smarty->assign('permisos', $permisosUsuario);
+                $smarty->assign('estados', $estadosPerfil);
+                $smarty->assign('roles', $rolesPlataforma);
                 $smarty->assign('perfil', $perfil);
                 if (isset($_SESSION['volver'])) {
                     // Si existe variable de sesion volver se le debe redirigir al usuario
@@ -364,30 +370,39 @@ class Usuarios {
             $hashUsuario = $usuario->getCodigo();
         }
 
-        // NOTA: Necesito recuperar a la persona usuaria que voy a desvincular de su usuario en la plataforma.
-
         // Compruebo si el usuario tiene permisos para eliminar el perfil de usuario
         if ($permisosUsuario->getPermisoEliminarUsuario()) {
-            // Compruebo si la persona usuario pudo eliminarse de la plataforma para
-            // desvincular sus datos persnales del usuario y dejarlo para fines funcionales.
-            if ($usuario->eliminarPersona($hashUsuario)) {
-                // Modifico el estado del perfil del usuario a BAJA.
-                $usuario->setEstado('BAJA');
-                // Preparo la información para actualizar el nuevo estado del perfil de usuario elminiado
-                $datosUsuario = [':codigo' => $hashUsuario,':estado' => $usuario->getEstado(), ':rol' => $usuario->getRol()];
-                // Actualizo el estado del perfil de usuario elminado a su nuevo estado en la plataforma
-                if ($usuario->actualizarUsuario($datosUsuario)) {
-                    // Notifico al usuario que el perfil se ha eliminado correctamente y cierro su sesión
-                    ErrorController::mostrarMensajeInformativo($smarty, "El perfil de usuario se ha elminado correctamente!",
-                        "/plataforma/backoffice.php?comando=core:logout:procesa");
+
+            // Identifico a la persona usuaria
+            $personaUsuaria = Persona::identificarPersona($hashUsuario);
+
+            // Proceso la informacion del perfil si este existe
+            if ($usuario instanceof Usuario && $personaUsuaria instanceof Persona) {
+
+                // Compruebo si la persona usuario pudo eliminarse de la plataforma para
+                // desvincular sus datos persnales del usuario y dejarlo para fines funcionales.
+                if ($personaUsuaria->eliminarPersona($hashUsuario)) {
+                    // Modifico el estado del perfil del usuario a BAJA.
+                    $usuario->setEstado('BAJA');
+                    // Preparo la información para actualizar el nuevo estado del perfil de usuario elminiado
+                    $datosUsuario = [':codigo' => $hashUsuario,':estado' => $usuario->getEstado(), ':rol' => $usuario->getRol()];
+                    // Actualizo el estado del perfil de usuario elminado a su nuevo estado en la plataforma
+                    if ($usuario->actualizarUsuario($datosUsuario)) {
+                        // Notifico al usuario que el perfil se ha eliminado correctamente y cierro su sesión
+                        ErrorController::mostrarMensajeInformativo($smarty, "El perfil de usuario se ha elminado correctamente!",
+                            "/plataforma/backoffice.php?comando=core:logout:procesa");
+                    } else {
+                        // Lanzo una excepción para indicar que no existe perfil de usuario
+                        throw new AppException($message = "No se ha podido completar la baja del usuario! Por favor, contacte con los administradores.", 
+                            $urlAceptar="/plataforma/backoffice.php?comando=core:logout:procesa");
+                    }
                 } else {
-                    // Lanzo una excepción para indicar que no existe perfil de usuario
-                    throw new AppException($message = "No se ha podido completar la baja del usuario! Por favor, contacte con los administradores.", 
-                        $urlAceptar="/plataforma/backoffice.php?comando=core:logout:procesa");
+                    // Lanzo una excepción para indicar que existe algún problema para dar de baja al usuario
+                    throw new AppException("No es posible dar de baja al usuario!");
                 }
             } else {
                 // Lanzo una excepción para indicar que no existe perfil de usuario
-                throw new AppException("No existe el perfil de usuario");
+                throw new AppException("Este usuario ya está desvinculado de la platforma!");
             }
         } else {
             // Lanzo excepción para notificar al usuario que no tiene permiso para eliminar el perfil
