@@ -41,36 +41,22 @@
                             <p class="corto"><span>{$perfil.tipo}</span>:&nbsp;{$perfil.documento}</p>
                         </div> 
                         <div class="campos-gestor">
-                            {if $perfil.direccion === "-" || empty($perfil.direccion)}
-                                <p class="extraextralargo">
-                                    <label for="frm-dirección">Tu dirección:&nbsp;</label>
-                                    <input type="text" name="frm-dirección" id="frm-dirección" placeholder="Dirección...">        
-                                    <input type="text" name="frm-localidad" id="frm-localidad" value="{$perfil.localidad}">
-                                    <input type="text" name="frm-codpostal" id="frm-codpostal" placeholder="Código postal...">
-                                </p>
-                            {else}
-                                <p class="extraextralargo">
-                                    <label for="frm-dirección">Tu dirección&nbsp;:</label>
-                                    <input type="text" name="frm-dirección" id="frm-dirección" value="{$perfil.direccion}">        
-                                    <input type="text" name="frm-localidad" id="frm-localidad" value="{$perfil.localidad}">
-                                    <input type="text" name="frm-codpostal" id="frm-codpostal" value="{$perfil.codigoPostal}">
-                                </p>
-                            {/if}
+                            <p class="extraextralargo">
+                                <label for="frm-dirección">Tu dirección:&nbsp;</label>
+                                <input type="text" name="frm-direccion" id="frm-direccion" value="{$perfil.direccion}">        
+                                <input type="text" name="frm-localidad" id="frm-localidad" value="{$perfil.localidad}">
+                                <input type="text" name="frm-codpostal" id="frm-codpostal" value="{$perfil.codigoPostal}">
+                            </p>
                         </div>                                         
                         <div class="campos-gestor">
                             <p class="extralargo">
                                 <label for="frm-email">Tu email:&nbsp;</label>
                                 <input type="email" name="frm-email" id="frm-email" value="{$perfil.email}">                                
                             </p>
-                            {if $perfil.telefono === "-" || empty($perfil.telefono)}
-                                <p class="corto">
-                                    <label for="frm-telefono">Teléfono:&nbsp;</label>
-                                    <input type="phone" name="frm-telefono" id="frm-telefono" placeholder="Teléfono...">                                
-                                </p>
-                            {else}
+                            <p class="corto">
                                 <label for="frm-telefono">Teléfono:&nbsp;</label>
                                 <input type="phone" name="frm-telefono" id="frm-telefono" value="{$perfil.telefono}">
-                            {/if}
+                            </p>
                         </div>
                         <div class="campos-gestor">
                             {if $permisos->hasPermisoAdministradorGestor()}
@@ -79,7 +65,7 @@
                                 <label for="frm-estado">Estado:&nbsp;</label>
                                 <select name="frm-estado">
                                     {foreach $estados as $nombre => $valor}
-                                        <option value="{$valor}" {if $perfil.estado === $valor}selected{/if}>{$nombre}</option>
+                                        <option value="{$valor}" {if $perfil.estado === $nombre}selected{/if}>{$nombre}</option>
                                     {/foreach}
                                 </select>                                                                
                             </p>
@@ -88,7 +74,7 @@
                                 <label for="frm-rol">Rol:&nbsp;</label>
                                 <select name="frm-rol">
                                     {foreach $roles as $nombre => $valor}
-                                        <option value="{$valor}" {if $perfil.rol === $valor}selected{/if}>{$nombre}</option>
+                                        <option value="{$valor}" {if $perfil.rol === $nombre}selected{/if}>{$nombre}</option>
                                     {/foreach}
                                 </select>
                             </p>                                        

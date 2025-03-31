@@ -40,11 +40,11 @@
                             <p class="corto"><span>Rol</span>:&nbsp;{$perfil.rol}</p>
                         </div> 
                         <div class="campos-gestor">
-                            <p class="medio">
+                            <p class="extralargo">
                                 <label for="frm-nuevo-password">Nuevo password:&nbsp;</label>
                                 <input type="password" name="frm-nuevo-password" id="frm-nuevo-passwordl" placeholder="Inserte nuevo password...">
                             </p>
-                            <p class="medio">
+                            <p class="extralargo">
                                 <label for="frm-repetir-password">Repetir password:&nbsp;</label>
                                 <input type="password" name="frm-repetir-password" id="frm-repetir-passwordl" placeholder="Repita el password...">
                             </p>

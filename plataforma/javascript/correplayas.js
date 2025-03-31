@@ -156,6 +156,12 @@ function validarSignup(event) {
     errores.push('Por favor, introduce tu nombre de usuario.');
   }
 
+    // Validación de seguridad para nueva contraseña para el perfil de usuario
+    let passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()\-_=+{};:,<.>]).{8,}$/;
+    if (!passwordRegex.test(password)) {
+      errores.push('Por favor, la contraseña debe tener al menos 8 caracteres y contener al menos una letra minúscula, una letra mayúscula, un dígito y un carácter especial.');
+    }
+
   // Validación del DNI de la persona usuaria
   if (!validarDNI(dni)) {
     errores.push('Por favor, introduce tu DNI correctamente.');

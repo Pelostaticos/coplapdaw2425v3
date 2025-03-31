@@ -402,9 +402,9 @@ class Usuarios {
                     // Preparo los datos para la actualización del perfil de usuario
                     $datosUsuario = [':codigo' => $hashUsuario, ':estado' => $estado, ':rol' => $rol];
                     $datosPersonaUsuaria = [':usuario' => $hashUsuario, ':email' => $email,
-                        ':direccion' => $direccion, ':localidad' => $localidad, ':telefono' => $telefono, ':codPostal'  => $codPostal];                    
+                        ':direccion' => $direccion, ':localidad' => $localidad, ':telefono' => $telefono, ':codigoPostal'  => $codPostal];
                     // Actulizo los datos del perfil de usuario y muestro la notificación del resultado
-                    if ($usuario->actualizarUsuario($datosUsuario) && $personaUsuaria->actualizarPersona($datosPersonaUsuaria)) {
+                    if ($usuario->actualizarUsuario($datosUsuario) || $personaUsuaria->actualizarPersona($datosPersonaUsuaria)) {
                         // Notifico al usuario que la actualización del perfil fue existosa
                         ErrorController::mostrarMensajeInformativo($smarty, "Perfil de usuario actualizado con éxito!!");
                     } else {
@@ -519,6 +519,8 @@ class Usuarios {
                 $usuario = Usuario::consultarUsuario($hashUsuario);
                 // Si ha sido posible recuparar al usuario para actualizarle su password de perfil
                 if ($usuario instanceof Usuario) {     
+                    // Genero el hash de la nueva contraseña del perfil de usuario
+                    $nuevoPassword = hash('sha256', $usuario->getUsuario() . $nuevoPassword);
                     // Preparo los datos para la actualización del perfil de usuario
                     $datosUsuario = [':codigo' => $hashUsuario, ':contrasenya' => $nuevoPassword];
                     // Actulizo el password del perfil de usuario y muestro la notificación del resultado
@@ -584,9 +586,12 @@ class Usuarios {
             // Proceso la informacion del perfil si este existe
             if ($usuario instanceof Usuario && $personaUsuaria instanceof Persona) {
 
+                // Preparo los datos para la eliminación del perfil de usuario
+                $codigoUsuario = [':usuario' => $hashUsuario];
+
                 // Compruebo si la persona usuario pudo eliminarse de la plataforma para
                 // desvincular sus datos persnales del usuario y dejarlo para fines funcionales.
-                if ($personaUsuaria->eliminarPersona($hashUsuario)) {
+                if ($personaUsuaria->eliminarPersona($codigoUsuario)) {
                     // Modifico el estado del perfil del usuario a BAJA.
                     $usuario->setEstado('BAJA');
                     // Preparo la información para actualizar el nuevo estado del perfil de usuario elminiado

@@ -135,8 +135,8 @@ class Core {
                     AppException::DB_QUERY_EXECUTION_FAILURE
                 );
         } catch (\PDOException $ex) {            
-            echo $ex->getMessage();
-            exit; 
+            // echo $ex->getMessage();
+            // exit; 
             if ($ex->getCode()==='23000')
             {
                 throw new AppException('Error DB: la consulta realizada incumple las restricciones de la base de datos.',

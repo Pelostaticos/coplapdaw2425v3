@@ -37,9 +37,9 @@
                     </div> 
                     <div class="campos-gestor">
                         {if $perfil.direccion === "-" || empty($perfil.direccion)}
-                        <p class="extralargo"><span>Dirección</span>:&nbsp;Sin datos</p>
+                        <p class="extraextralargo"><span>Dirección</span>:&nbsp;Sin datos</p>
                         {else}
-                            <p class="extralargo"><span>Dirección</span>:&nbsp;{$perfil.direccion} - {$perfil.localidad} - CP:&nbsp;{$perfil.codigoPostal}</p>
+                            <p class="extraextralargo"><span>Dirección</span>:&nbsp;{$perfil.direccion} - {$perfil.localidad} - CP:&nbsp;{$perfil.codigoPostal}</p>
                         {/if}
                     </div>                                         
                     <div class="campos-gestor">

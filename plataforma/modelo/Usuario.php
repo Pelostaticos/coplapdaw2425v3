@@ -64,9 +64,10 @@ class Usuario {
             // Devuelvo verdadero para indicar que el usuario se ha actualizado
             return true;
         }
-        else
+        else {
             // De lo contario devuelvo falso para indicar que el usuario no se ha actualizado
             return false;
+        }
     }
 
      /**
