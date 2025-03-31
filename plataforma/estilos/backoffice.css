@@ -549,9 +549,10 @@ form#busqueda-gestor input, form#busqueda-gestor select {
 table#listado-gestor {
     padding: 10px 20px;
 }
-table#listado-gestor th, td {
+table#listado-gestor th, table#listado-gestor td {
     border: 3px solid var(--color-gris-azulado-oscuro);
     text-align: center;
+    width: auto;
 }
 .boton-accion-listado-gestor {
     align-self: center;

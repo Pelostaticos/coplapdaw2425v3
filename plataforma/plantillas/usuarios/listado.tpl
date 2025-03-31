@@ -89,7 +89,16 @@
                                             <button class="boton-accion-listado-gestor" type="submit" name="accion" value="reactivar" title="Reactivar usuario"><span class="iconos-acciones-listados">refresh</span></button>
                                         {else}
                                             <button class="boton-accion-listado-gestor" type="submit" name="accion" value="consultar" title="Mostrar detalles"><span class="iconos-acciones-listados">search</span></button>
+                                            <button class="boton-accion-listado-gestor" type="submit" name="accion" value="actualizar" title="Actualizar usuario"><span class="iconos-acciones-listados">edit</span></button>
+                                            <button class="boton-accion-listado-gestor" type="submit" name="accion" value="eliminar" title="Eliminar usuario"><span class="iconos-acciones-listados">delete</span></button>
+                                            <button class="boton-accion-listado-gestor" type="submit" name="accion" value="password" title="Cambiar password"><span class="iconos-acciones-listados">vpn_key</span></button>
+                                            {if $fila.estado === 'ACTIVO'}
+                                                <button class="boton-accion-listado-gestor" type="submit" name="accion" value="desactivar" title="Desactivar perfil"><span class="iconos-acciones-listados">visibility_off</span></button>
+                                            {else}
+                                                <button class="boton-accion-listado-gestor" type="submit" name="accion" value="activar" title="Activar perfil"><span class="iconos-acciones-listados">visibility</span></button>
+                                            {/if}
                                         {/if}
+                                        
                                     </form>
                                 </td>
                             </tr>

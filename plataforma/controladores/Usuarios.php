@@ -62,7 +62,34 @@ class Usuarios {
                     ErrorController::mostrarMensajeInformativo($smarty, "Esta autorizado para ejecutar esta funcionalidad. No obstante, por cuestones técnicas
                      el reactivar a un usuario de baja no se encuentra disponible en la plataforma. Gracias!", $volver);
                     break;
+                case "activar":
+                    // Elimino la variable de sesion listado por aquí ya cumplio su funcion
+                    if (isset($_SESSION['listado'])) {unset($_SESSION['listado']);}
+                    // Muestro el mensaje informativo indicandole al usuario que la funcionalidad no está disponible.
+                    ErrorController::mostrarMensajeInformativo($smarty, "Esta autorizado para ejecutar esta funcionalidad. No obstante, por cuestones técnicas
+                     el activar a un usuario desactivo no se encuentra disponible en la plataforma. Gracias!", $volver);
+                    break;
+                case "desactivar":
+                    // Elimino la variable de sesion listado por aquí ya cumplio su funcion
+                    if (isset($_SESSION['listado'])) {unset($_SESSION['listado']);}
+                    // Muestro el mensaje informativo indicandole al usuario que la funcionalidad no está disponible.
+                    ErrorController::mostrarMensajeInformativo($smarty, "Esta autorizado para ejecutar esta funcionalidad. No obstante, por cuestones técnicas
+                     el desactivar a un usuario activo no se encuentra disponible en la plataforma. Gracias!", $volver);
+                    break;
+                case "actualizar":                   
+                    // Ejecuto la acción mostrar vista de edición del perfil de usuario desde el listado
+                    Usuarios::mostrarVistaEdicionUsuarioPlataforma($smarty);
+                    break;
+                case "eliminar":
+                    // Ejecuto la acción elminiar perfil de usuario desde el listado
+                    Usuarios::eliminarUsuarioPlataforma($smarty);
+                    break;
+                case "password":
+                    // Ejecuto la acción de mostrar vista para cambio de contraseña del perfil de usuario desde el listado
+                    Usuarios::mostrarVistaCambioContraseñaUsuarioPlataforma($smarty);
+                    break;                    
                 default:
+                    // Ejecuto la acción de consultar perfil de usuario desde el lisstado
                     Usuarios::consultarPerfil($smarty);
                     break;
             }
