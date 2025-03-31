@@ -231,10 +231,34 @@ function validarEdicionUsuarios(event) {
 
 }
 
+// C.5) Funcion para validar el formulario de edición de usuarios.
+function validarCambioPassword(event) {
+
+  // Obtengo los datos introducidos en los campos del formulario
+  let nuevoPassword = document.getElementById('frm-nuevo-password').value;
+  let repetirPassword = document.getElementById('frm-repetir-password').value;
+  
+  // Creo un array para almacenar los errores de validación detectados
+  let errores = [];  
+
+  // Validación que la nueva contraseña y su repetida para el perfil de usaurio coincidan
+  if (nuevoPassword !== repetirPassword) {
+    errores.push('Por favor, introduzca las contraseñas de nuevo porque no coinciden!!');
+  }
+
+  // Validación de seguridad para nueva contraseña para el perfil de usuario
+  let passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()\-_=+{};:,<.>]).{8,}$/;
+  if (!passwordRegex.test(nuevoPassword)) {
+    errores.push('Por favor, la contraseña debe tener al menos 8 caracteres y contener al menos una letra minúscula, una letra mayúscula, un dígito y un carácter especial.');
+  }
+
+
+}
+
 // D) Manipulación de eventos para las validaciones de formularios.
 // D.0) Array asociativos con los formularios disponibles en la plataforma y sus validadores.
 const validadoresFormularios = {'contactenos': validarContactenos, 'login': validarLogin
-  , 'signup':validarSignup, 'edicion': validarEdicionUsuarios}
+  , 'signup':validarSignup, 'edicion': validarEdicionUsuarios, 'password': validarCambioPassword}
 // D.1) Cargo el manipulador de evento para válidar el(los) formulario(s) presente en la página actual.
 const formularios = document.querySelectorAll('form');
 formularios.forEach(formulario => {

@@ -36,7 +36,7 @@
                         <p class="corto"><span>{$perfil.tipo}</span>:&nbsp;{$perfil.documento}</p>
                     </div> 
                     <div class="campos-gestor">
-                        {if $perfil.direccion === "-"}
+                        {if $perfil.direccion === "-" || empty($perfil.direccion)}
                         <p class="extralargo"><span>Dirección</span>:&nbsp;Sin datos</p>
                         {else}
                             <p class="extralargo"><span>Dirección</span>:&nbsp;{$perfil.direccion} - {$perfil.localidad} - CP:&nbsp;{$perfil.codigoPostal}</p>
@@ -44,7 +44,7 @@
                     </div>                                         
                     <div class="campos-gestor">
                         <p class="extralargo"><span>Email</span>:&nbsp;{$perfil.email}</p>
-                        {if $perfil.direccion === "-"}
+                        {if $perfil.telefono === "-" || empty($perfil.telefono)}
                             <p class="corto"><span>Teléfono</span>:&nbsp;Sin datos</p>
                         {else}
                             <p class="corto"><span>Teléfono</span>:&nbsp;{$perfil.telefono}</p>

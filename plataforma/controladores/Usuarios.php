@@ -276,7 +276,7 @@ class Usuarios {
             $hashUsuario = $usuario->getCodigo();
         }
 
-        // Compruebo si el usuario tiene permisos para consultar el perfil de usuario
+        // Compruebo si el usuario tiene permisos para consultar el perfil de usuario y actualizarlo
         if ($permisosUsuario->getPermisoConsultarUsuario() && $permisosUsuario->getPermisoActualizacionUsuario()) {
 
             // Identifico a la persona usuaria
@@ -400,11 +400,121 @@ class Usuarios {
     }
 
 
+    /**
+     * Método estático para mostrar la vista del cambio de contraseña del perfil de usuario
+     *
+     * @param Smarty $smarty Objeto que contiene al motor de plantillas Smarty
+     * @return void No devuelve valor alguno
+     */
     public static function mostrarVistaCambioContraseñaUsuarioPlataforma($smarty) {
+        // Recupero los permisos del usuario logueado desde su sesión
+        $permisosUsuario = $_SESSION['permisos'];
+
+        // Compruebo la procedencía de la ejecución de la presente acción
+        // Si la variable de sesion listado está establecida junto 
+        // El usuario logueado tiene permiso para listar usuarios. Entonces:
+        if (isset($_SESSION['listado']) && $permisosUsuario->getPermisoListarUsuarios()) {
+            // El usuario autorizado está solicitando cambiar el password de un usuario no logueado
+            // Recupero el hash identificador de usuario desde la variable de sesion
+            $hashUsuario = $_SESSION['listado'];
+            // Consulto a la base de datos por el usuario contenido en la variable de sessión listado
+            $usuario = Usuario::consultarUsuario($hashUsuario);
+            // Elimino la variable de sesión listado porque ya ha cumplido su función en esta acción
+            unset($_SESSION['listado']);
+        } else {
+            // De lo contrario, el usuario está pidiendo cambiar el password de su propio perfil de usuario
+            // Obtengo al usuario de la sesión del navegacion
+            $usuario = $_SESSION['usuario'];
+            // Obtengo el hash identificador de usuario
+            $hashUsuario = $usuario->getCodigo();
+        }
+
+        // Compruebo si el usuario tiene permisos para consultar el perfil de usuario y cambiar el password
+        if ($permisosUsuario->getPermisoConsultarUsuario() && $permisosUsuario->getPermisoCambioPasswordUsuario()) {
+            // Proceso la informacion del perfil si este existe
+            if ($usuario instanceof Usuario) { 
+                // Recopilo información del perfil de usuario para la plantilla
+                $perfil = ['codigo' => $hashUsuario,
+                'usuario' => $usuario->getUsuario(),
+                'estado' => ucfirst(strtolower($usuario->getEstado())),
+                'rol' => ucfirst($usuario->getRol())];
+                // Asigno las variables requeridas por la plantila del perfil de usuario
+                $smarty->assign('usuario', $usuario->getUsuario());
+                $smarty->assign('permisos', $permisosUsuario);
+                $smarty->assign('perfil', $perfil);
+                if (isset($_SESSION['volver'])) {
+                    // Si existe variable de sesion volver se le debe redirigir al usuario
+                    // al listado cuando pulse en volvar en la vista de consulta del perfil
+                    $smarty->assign('volver', $_SESSION['volver']);
+                    // Elimino la variable de sesión volver porque ya cumplio su funcion
+                    unset($_SESSION['volver']);
+                } else {
+                    // De lo contario se le redirige a la página principal del backoffice
+                    $smarty->assign('volver', '/plataforma/backoffice.php');
+                }
+                $smarty->assign('anyo', date('Y'));
+                // Muestro la plantilla del cambio del password para el perfil de usaurio con sus datos
+                $smarty->display('usuarios/password.tpl');                  
+            } else {
+                // Lanzo una excepción para indicar que no existe perfil de usuario
+                throw new AppException("No existe el perfil de usuario");
+            }
+        } else {
+            // Lanzo excepción para notificar al usuario que no tiene permiso para modificar el password de su perfil
+            throw new AppException("Su rol en la plataforma no le permite cambiar el password de su perfil de usuario");
+
+        }
 
     }
 
+    /**
+     * Método estático para cambiar el password del perfil de usuario
+     *
+     * @param Smarty $smarty Objeto que contiene al motor de plantillas Smarty
+     * @return void No devuelve valor alguno
+     */
     public static function modificarPasswordUsuarioPlataforma($smarty) {
+        // Recupero los permisos del usuario logueado desde su sesión
+        $permisosUsuario = $_SESSION['permisos'];        
+
+        // Compruebo si el usuario tiene permisos para cambiar el password del perfil de usuario
+        if ($permisosUsuario->getPermisoConsultarUsuario() && $permisosUsuario->getPermisoCambioPasswordUsuario()) {
+        
+            // Compruebo si el formualrio de actualización del perfil de usaurio está establecido            
+            if (isset($_POST['frm-hashusuario'])) {
+                // Recupero los datos del formulario de cambio de password del perfil de usuario
+                $hashUsuario = filter_input(INPUT_POST, 'frm-hashusuario');
+                $nuevoPassword = filter_input(INPUT_POST, 'frm-nuevo-password');
+                $repetirPassword = filter_input(INPUT_POST, 'frm-repetir-password');
+                // Verifico que la contraseña nueva y la contraseña repetida coinciden antes de continuar el proceso
+                if ($nuevoPassword !== $repetirPassword) {throw new AppException("Los campos de contraseña nueva y repetida no coinciden!!!");}
+                // Recupero al usuario actualizado desde su hash de usuario
+                $usuario = Usuario::consultarUsuario($hashUsuario);
+                // Si ha sido posible recuparar al usuario para actualizarle su password de perfil
+                if ($usuario instanceof Usuario) {     
+                    // Preparo los datos para la actualización del perfil de usuario
+                    $datosUsuario = [':codigo' => $hashUsuario, ':contrasenya' => $nuevoPassword];
+                    // Actulizo el password del perfil de usuario y muestro la notificación del resultado
+                    if ($usuario->cambiarContraseñaUsuario($datosUsuario)) {
+                        // Notifico al usuario que la actualización del perfil fue existosa
+                        ErrorController::mostrarMensajeInformativo($smarty, "Password del perfil de usuario cambiado con éxito!!");
+                    } else {
+                        // Lanzo una excepción para indicar que no es posible obtener valores por defecto del perfil de usuario
+                        throw new AppException("No es posible cambiar el password del perfil de usuario");                                        
+                    }                    
+                } else {
+                    // Lanzo una excepción para indicar que no es posible obtener el perfil de usuario
+                    throw new AppException("No es posible recuperar el perfil de usuario");   
+                }                                
+            } else {
+                // Lanzo una excepción para indicar que no existen datos para acutalizar el perfil de usuario
+                throw new AppException("No existen datos para cambiar el password del perfil de usuario");   
+            }
+        } else {
+            // Lanzo excepción para notificar al usuario que no tiene permiso para mostrar su perfil
+            throw new AppException("Su rol en la plataforma no le permite cambiar el password  del perfil de usuario");
+
+        }
 
     }
     

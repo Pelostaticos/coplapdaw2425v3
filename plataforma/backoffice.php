@@ -128,10 +128,14 @@ try {
                 Usuarios::actualizarUsuarioPlataforma($smarty);
                 break;
             // Muestro vista para cambio de contraseña.
-            case "usuarios:contraseña:vista":                
+            case "usuarios:contraseña:vista":
+                // Solicito al controlador de usuarios que muestre la vista para cambiar el password de usuario
+                Usuarios::mostrarVistaCambioContraseñaUsuarioPlataforma($smarty);
                 break;
             // Cambio de contraseña del usuario.
-            case "usuarios:contraseña:procesa":                
+            case "usuarios:contraseña:procesa":
+                // Solicito al controlador de usuarios que cambie la contraseña del perfil de usuario
+                Usuarios::modificarPasswordUsuarioPlataforma($smarty);
                 break;                
             // Elimino el perfil de usuario
             case "usuarios:eliminar":

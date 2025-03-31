@@ -36,9 +36,7 @@ class Usuario {
 
     // B) Defino el constructor privado de la clase Usuario
     private function __construct($usuario) {
-        var_dump($usuario);
         // Defino los atributos de la clase Usuario
-
         $this->codigo=$usuario['codigo'];
         $this->usuario=$usuario['nombre'];
         $this->estado=$usuario['estado'];
