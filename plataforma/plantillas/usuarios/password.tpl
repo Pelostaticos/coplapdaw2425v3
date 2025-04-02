@@ -33,6 +33,7 @@
                 <!-- Información del gestor de usuarios  -->
                 <form id="password" method="post" action="/plataforma/backoffice.php?comando=usuarios:contraseña:procesa">
                     <div class="contenido-gestor">
+                        <input type="hidden" name="frm-urlaceptar" id="frm-urlaceptar" value="{$volver}">                    
                         <input type="hidden" name="frm-hashusuario" id="frm-hashusuario" value="{$perfil.codigo}">
                         <div class="campos-gestor">
                             <p class="corto"><span>Usuario</span>:&nbsp;{$perfil.usuario}</p>

@@ -31,14 +31,15 @@ use Smarty\Smarty;
 class Usuarios {
 
     /**
-     * Método por defecto para mostrar la vista del gestor de usuarios de la plataforma
+     * Método por defecto que muestra la vista del gestor de usuarios de la plataforma y además gestiona
+     * las acciones solicitadas por los usuarios administradores desde el listado de usuarios.
      *
      * @param Smarty $smarty Objeto que contiene al motor de plantillas Smarty
      * @return void No devuelve valor alguno
      */
     public static function default($smarty) {
         // Recupero el rol del usuario logueado
-        $usuarioLogueado = $_SESSION['usuario'];
+        // $usuarioLogueado = $_SESSION['usuario'];
 
         // Recupero los permisos del usuario logueado desde su sesión
         $permisosUsuario = $_SESSION['permisos'];
@@ -81,8 +82,8 @@ class Usuarios {
                     Usuarios::mostrarVistaEdicionUsuarioPlataforma($smarty);
                     break;
                 case "eliminar":
-                    // Ejecuto la acción elminiar perfil de usuario desde el listado
-                    Usuarios::eliminarUsuarioPlataforma($smarty);
+                    // Ejecuto la acción mostrar confirmación para elminiar perfil de usuario desde el listado
+                    Usuarios::mostrarConfirmacionBajaUsuarioPlataforma($smarty);
                     break;
                 case "password":
                     // Ejecuto la acción de mostrar vista para cambio de contraseña del perfil de usuario desde el listado
@@ -376,7 +377,9 @@ class Usuarios {
         
             // Compruebo si el formualrio de actualización del perfil de usaurio está establecido            
             if (isset($_POST['frm-hashusuario'])) {
-                // Recupero los datos del formulario de actualizacion del perfil de usuario
+                // Recupero del formulario la URL a la que se redigirá al usuario tras aceptar notificación.
+                $urlAceptarNotificacion = filter_input(INPUT_POST, 'frm-urlaceptar');
+                // Recupero del formulario de actualizacion del perfil de usuario los datos
                 $hashUsuario = filter_input(INPUT_POST, 'frm-hashusuario');
                 $direccion = filter_input(INPUT_POST, 'frm-direccion');
                 $localidad = filter_input(INPUT_POST, 'frm-localidad');
@@ -406,14 +409,14 @@ class Usuarios {
                     // Actulizo los datos del perfil de usuario y muestro la notificación del resultado
                     if ($usuario->actualizarUsuario($datosUsuario) || $personaUsuaria->actualizarPersona($datosPersonaUsuaria)) {
                         // Notifico al usuario que la actualización del perfil fue existosa
-                        ErrorController::mostrarMensajeInformativo($smarty, "Perfil de usuario actualizado con éxito!!");
+                        ErrorController::mostrarMensajeInformativo($smarty, "Perfil de usuario actualizado con éxito!!", $urlAceptarNotificacion);
                     } else {
                         // Lanzo una excepción para indicar que no es posible obtener valores por defecto del perfil de usuario
-                        throw new AppException("No es posible actualizar el perfil de usuario");                                        
+                        throw new AppException($message = "No es posible actualizar el perfil de usuario", $urlAceptar=$urlAceptarNotificacion);
                     }
                 } else {
                     // Lanzo una excepción para indicar que no es posible obtener valores por defecto del perfil de usuario
-                    throw new AppException("No es posible recuperar el perfil de usuario");                
+                    throw new AppException($message = "No es posible recuperar el perfil de usuario", $urlAceptar=$urlAceptarNotificacion);                
                     }                    
 
             } else {
@@ -509,6 +512,8 @@ class Usuarios {
         
             // Compruebo si el formualrio de actualización del perfil de usaurio está establecido            
             if (isset($_POST['frm-hashusuario'])) {
+                // Recupero del formulario la URL a la que se redigirá al usuario tras aceptar notificación.
+                $urlAceptarNotificacion = filter_input(INPUT_POST, 'frm-urlaceptar');                
                 // Recupero los datos del formulario de cambio de password del perfil de usuario
                 $hashUsuario = filter_input(INPUT_POST, 'frm-hashusuario');
                 $nuevoPassword = filter_input(INPUT_POST, 'frm-nuevo-password');
@@ -526,14 +531,14 @@ class Usuarios {
                     // Actulizo el password del perfil de usuario y muestro la notificación del resultado
                     if ($usuario->cambiarContraseñaUsuario($datosUsuario)) {
                         // Notifico al usuario que la actualización del perfil fue existosa
-                        ErrorController::mostrarMensajeInformativo($smarty, "Password del perfil de usuario cambiado con éxito!!");
+                        ErrorController::mostrarMensajeInformativo($smarty, "Password del perfil de usuario cambiado con éxito!!", $urlAceptarNotificacion);
                     } else {
                         // Lanzo una excepción para indicar que no es posible obtener valores por defecto del perfil de usuario
-                        throw new AppException("No es posible cambiar el password del perfil de usuario");                                        
+                        throw new AppException($message = "No es posible cambiar el password del perfil de usuario", $urlAceptar=$urlAceptarNotificacion);
                     }                    
                 } else {
                     // Lanzo una excepción para indicar que no es posible obtener el perfil de usuario
-                    throw new AppException("No es posible recuperar el perfil de usuario");   
+                    throw new AppException($message = "No es posible recuperar el perfil de usuario", $urlAceptar=$urlAceptarNotificacion);   
                 }                                
             } else {
                 // Lanzo una excepción para indicar que no existen datos para acutalizar el perfil de usuario
@@ -547,6 +552,38 @@ class Usuarios {
 
     }
     
+    /**
+     * Método estático que solicita confirmación para eliminar un perfil de usuario de la plataforma
+     *
+     * @param Smarty $smarty Objeto que contiene al motor de plantillas Smarty
+     * @return void No devuelve valor alguno
+     */
+    public static function mostrarConfirmacionBajaUsuarioPlataforma($smarty) {
+        // Recupero los permisos del usuario logueado desde su sesión
+        $permisosUsuario = $_SESSION['permisos'];
+
+        // Compruebo la procedencía de la ejecución de la presente acción
+        // Si la variable de sesion listado está establecida junto 
+        // El usuario logueado tiene permiso para listar usuarios. Entonces:        
+        if (isset($_SESSION['listado']) && $permisosUsuario->getPermisoListarUsuarios()) {
+            // Un usuario autorizado a elegido del listado la acción eliminar usuario
+            // Establezco la configuración del mensaje de confirmación para el usuario autorizado
+            $mensaje = "Has solicitado eliminar a un usuario de la plataforma";
+            $pregunta = "¿Estás seguro que quieres eliminar a dicho usuario?";
+            $urlCancelar = "/plataforma/backoffice.php?comando=usuarios:listar";
+            $urlAceptar = "/plataforma/backoffice.php?comando=usuarios:eliminar:procesa";
+        } else {
+            // Un usuario logueado a elegido desde su perfil la acción eliminar usuario
+            // Establezco la configuración del mensaje de confirmación para el usuario logueado
+            $mensaje = "Has solicitado eliminar a su perfil de usuario en la plataforma";
+            $pregunta = "¿Estás seguro que quieres eliminar su perfil de usuario?";
+            $urlCancelar = "/plataforma/backoffice.php";
+            $urlAceptar = "/plataforma/backoffice.php?comando=usuarios:eliminar:procesa";
+        }
+
+        // Muestro el mensaje de confirmación de baja al usuario
+        ErrorController::mostarMensajeAdvertencia($smarty,$mensaje,$pregunta,$urlCancelar,$urlAceptar);
+    }
 
     /**
      * Método estático para eliminar el perfil d eun usuario de la plataforma
@@ -566,7 +603,10 @@ class Usuarios {
             // Recupero el hash identificador de usuario desde la variable de sesion
             $hashUsuario = $_SESSION['listado'];
             // Consulto a la base de datos por el usuario contenido en la variable de sessión listado
-            $usuario = Usuario::consultarUsuario($hashUsuario);            
+            $usuario = Usuario::consultarUsuario($hashUsuario);
+            // Establezco los mensajes de notificación y URL de destino para administradores
+            $urlAceptarNotificacion = "/plataforma/backoffice.php?comando=usuarios:listar";
+            $mensajeError = "No se ha podido completar la baja del usuario! Por favor, revise el perfil del usuario.";
             // Elimino la variable de sesión listado porque ya ha cumplido su función en esta acción
             unset($_SESSION['listado']);
         } else {
@@ -575,6 +615,9 @@ class Usuarios {
             $usuario = $_SESSION['usuario'];
             // Obtengo el hash identificador de usuario
             $hashUsuario = $usuario->getCodigo();
+            // Establezco los mensajes de notificación y URL de destino para el resto de usuarios
+            $urlAceptarNotificacion = "/plataforma/backoffice.php?comando=core:logout:procesa";
+            $mensajeError = "No se ha podido completar su baja como usuario! Por favor, contacte con los administradores.";
         }
 
         // Compruebo si el usuario tiene permisos para eliminar el perfil de usuario
@@ -600,11 +643,11 @@ class Usuarios {
                     if ($usuario->actualizarUsuario($datosUsuario)) {
                         // Notifico al usuario que el perfil se ha eliminado correctamente y cierro su sesión
                         ErrorController::mostrarMensajeInformativo($smarty, "El perfil de usuario se ha elminado correctamente!",
-                            "/plataforma/backoffice.php?comando=core:logout:procesa");
+                            $urlAceptarNotificacion);
                     } else {
                         // Lanzo una excepción para indicar que no existe perfil de usuario
-                        throw new AppException($message = "No se ha podido completar la baja del usuario! Por favor, contacte con los administradores.", 
-                            $urlAceptar="/plataforma/backoffice.php?comando=core:logout:procesa");
+                        throw new AppException($message = $mensajeError, 
+                            $urlAceptar = $urlAceptarNotificacion);
                     }
                 } else {
                     // Lanzo una excepción para indicar que existe algún problema para dar de baja al usuario
