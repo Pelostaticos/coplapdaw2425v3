@@ -586,7 +586,7 @@ class Usuarios {
     }
 
     /**
-     * Método estático para eliminar el perfil d eun usuario de la plataforma
+     * Método estático para eliminar el perfil de un usuario de la plataforma
      *
      * @param Smarty $smarty Objeto que contiene al motor de plantillas Smarty
      * @return void No devuelve valor alguno
@@ -664,15 +664,66 @@ class Usuarios {
 
     }
 
+    /**
+     * Método estático para mostrar la confirmación de activación del perfil de un usuario (INCOMPLETA)
+     *
+     * @param Smarty $smarty Objeto que contiene al motor de plantillas Smarty
+     * @return void No devuelve valor alguno
+     */
+    public static function mostrarConfirmacionActivarUsuarioPlataforma($smarty) {
+        // Recupero los permisos del usuario logueado desde su sesión
+        $permisosUsuario = $_SESSION['permisos'];
+
+        // Compruebo la procedencía de la ejecución de la presente acción
+        // Si la variable de sesion listado está establecida junto 
+        // El usuario logueado tiene permiso para listar usuarios. Entonces:
+        if (isset($_SESSION['listado']) && $permisosUsuario->getPermisoListarUsuarios()) {
+            // El usuario autorizado está solicitando activar el perfil de un usuario no logueado
+            // Notifico al usuario autorizado que la funcionalidad no está implementada en la plataforma
+            // RECUERDA: Sólo los administradores están autorizado a listar a los usuarios de la plataforma
+            ErrorController::mostrarMensajeInformativo($smarty, "Disculpa! Por cuestiones técnicas esta acción no está disponible en la platforma. Gracias!",
+                "/plataforma/backoffice.php?comando=usuarios:default");
+        } else {
+            // De lo contrario, el usuario logueado NO tiene permisos para activar el perfil de un usuario
+            // lanzo una excepción para notificar al usuario de la incidencia
+            throw new AppException("Su rol en la plataforma no le permite activar el perfil de usuario");
+        }
+        
+        // NO IMPLEMENTO ESTA FUNCIONALIDAD POR FALTA DE TIEMPO EN DESARROLLO: 25/03/2025.
+
+    }
+
     /* NO IMPLEMENTO ESTA FUNCIONALIDAD POR FALTA DE TIEMPO EN DESARROLLO: 25/03/2025.
-    public static function activarUsuarioPlataforma($smarty) {
+    public static function activarUsuarioPlataforma($smarty) {...} */
 
-    } */
+    /**
+     * Método estático para mostrar la confirmación de desactivación del perfil de un usuario (INCOMPLETA)
+     *
+     * @param Smarty $smarty Objeto que contiene al motor de plantilla Smarty
+     * @return void No devuelve valor alguno
+     */
+    public static function mostrarConfirmacionDesactivarUsuarioPlataforma($smarty) {
+        
+        // Recupero los permisos del usuario logueado desde su sesión
+        $permisosUsuario = $_SESSION['permisos'];
+
+        // Compruebo que el usuario tiene los permisos adecuados para desactivar el perfil del usuario
+        if ($permisosUsuario->getPermisoDesactivarUsuario()) {
+            // El usuario logueado tiene permisos para desactivar el perfil de usuario. Entonces:
+            // Le notifico que la funcionalidad no se encuentra disponible en la plataforma
+            ErrorController::mostrarMensajeInformativo($smarty, "Disculpa! Por cuestiones técnicas esta acción no está disponible en la platforma. Gracias!");
+        } else {
+            // De lo contrario, el usuario logueado NO tiene permisos para desactivar el perfil de un usuario
+            // lanzo una excepción para notificar al usuario de la incidencia
+            throw new AppException("Su rol en la plataforma no le permite desactivar el perfil de usuario");
+        }
+
+        // NO IMPLEMENTO ESTA FUNCIONALIDAD POR FALTA DE TIEMPO EN DESARROLLO: 25/03/2025.
+
+    }
 
     /* NO IMPLEMENTO ESTA FUNCIONALIDAD POR FALTA DE TIEMPO EN DESARROLLO: 25/03/2025.
-    public static function desactivarUsuarioPlataforma($smarty) {
-
-    } */
+    public static function desactivarUsuarioPlataforma($smarty) {...} */
 
 }
 

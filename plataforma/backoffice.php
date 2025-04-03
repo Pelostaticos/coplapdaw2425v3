@@ -136,40 +136,47 @@ try {
             case "usuarios:contraseña:procesa":
                 // Solicito al controlador de usuarios que cambie la contraseña del perfil de usuario
                 Usuarios::modificarPasswordUsuarioPlataforma($smarty);
-                break;                
-            // Elimino el perfil de usuario
-            case "usuarios:eliminar":
-                // Solicito al controlador de usuarios que elimine el perfil de usuario
-                // Usuarios::eliminarUsuarioPlataforma($smarty);
                 break;
+            // Muestro confirmación para eliminar el perfil de un  usuario
+            case "":
+                // Solicito al controlador de usuarios que muestre la vista de confirmación para eliminar un perfil de usuario
+                Usuarios::mostrarConfirmacionBajaUsuarioPlataforma($smarty);
+                break;
+            // Elimino el perfil de usuario
+            case "usuarios:eliminar:procesa":
+                // Solicito al controlador de usuarios que elimine el perfil de usuario
+                Usuarios::eliminarUsuarioPlataforma($smarty);
+                break;
+            // Listo a los usuarios disponibles en la plataforma (Sólo adinistradores)
             case "usuarios:listar":
                 // Solicito al controlador de usuarios que me genere un listado con los usuarios de la plataforma
                 Usuarios::listarUsuariosPlataforma($smarty);
-                break;                    
+                break;
+            // Filtro a los usuarios disponibles en la plataforma (Sólo administradores)                    
             case "usuarios:filtrar":
                 // Solicito al controlador de usuarios que me filtre el listado de usuarios.
                 Usuarios::filtrarUsuariosPlataforma($smarty);
                 break;
+            // Activo el perfil de un usuario cuyo estado es desactivo (Sólo administradores)
             case "usuarios:activar:vista":
-                // Muestro al usuario un mensaje informativo notificación que la acción no se encuentra disponible en la plataforma
-                ErrorController::mostrarMensajeInformativo($smarty, "Disculpa! Por cuestiones técnicas esta acción no está disponible en la platforma. Gracias!");
+                // Solicito al controlador de usuarios que muestre la confirmación para la activación del perfil de un usuario
+                Usuarios::mostrarConfirmacionActivarUsuarioPlataforma($smarty);
                 break;
             // DESCARTO IMPLEMENTACIÓN POR FALTA DE TIEMPO: 25/03/2025.
             // case "usuarios:activar:procesa":
             //     // Solicito al controlador de usuarios que me active el perfil de usuario
             //     Usuarios::activarUsuarioPlataforma($smarty);
             //     break;
-            // Por defecto si estas logueado y no solicitas nada te muestro la página de inicio del backoffice.
+            // Desactivo el perfil de un usuario cuyo estado es activo
             case "usuarios:desactivar:vista":
-                // Muestro al usuario un mensaje informativo notificación que la acción no se encuentra disponible en la plataforma
-                ErrorController::mostrarMensajeInformativo($smarty, "Disculpa! Por cuestiones técnicas esta acción no está disponible en la platforma. Gracias!");
+                // Solicito al controlador de usuarios que muestre la confirmación para la desactivación del perfil de un usuario
+                Usuarios::mostrarConfirmacionDesactivarUsuarioPlataforma($smarty);
                 break;
             // DESCARTO IMPLEMENTACIÓN POR FALTA DE TIEMPO: 25/03/2025.
             // case "usuarios:desactivar:procesa":
             //     // Solicito al controlador de usuarios que me desactive el perfil de usuario
             //     Usuarios::desactivarUsuarioPlataforma($smarty);
             //     break;
-            // Por defecto si estas logueado y no solicitas nada te muestro la página de inicio del backoffice.            
             default:
                 // Solicito al núcleo que muestre la página de inicio del backoffice de la plataforma.
                 Core::default($smarty);
