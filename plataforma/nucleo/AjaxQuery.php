@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Clase del núcleo para intercambio asíncrono de datos en la plataforma correplayas
+ * Clase del núcleo para intercambio asíncrono de datos en la plataforma correplayas para lado servidor
  * Proyecto DAW Cursos 2024/25 - I.E.S AGUADULCE
  * Nombre del proyecto: Plataforma Correplayas
  * Tutor PDAW: Jośe Antonio Morales Álvarez.
