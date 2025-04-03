@@ -138,7 +138,7 @@ try {
                 Usuarios::modificarPasswordUsuarioPlataforma($smarty);
                 break;
             // Muestro confirmación para eliminar el perfil de un  usuario
-            case "":
+            case "usuarios:eliminar:vista":
                 // Solicito al controlador de usuarios que muestre la vista de confirmación para eliminar un perfil de usuario
                 Usuarios::mostrarConfirmacionBajaUsuarioPlataforma($smarty);
                 break;

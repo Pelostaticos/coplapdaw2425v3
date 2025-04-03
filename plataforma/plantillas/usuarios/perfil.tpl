@@ -62,7 +62,7 @@
                             <a class="boton-accion-gestor" href="/plataforma/backoffice.php?comando=usuarios:actualizar:vista" title="Actualizar el perfil de usuario">Actualizar</a>
                         {/if}
                         {if isset($smarty.session) && $permisos->getPermisoEliminarUsuario()}
-                            <a class="boton-accion-gestor" href="/plataforma/backoffice.php?comando=usuarios:eliminar" title="Eliminar el perfil de  usuario">Eliminar</a>
+                            <a class="boton-accion-gestor" href="/plataforma/backoffice.php?comando=usuarios:eliminar:vista" title="Eliminar el perfil de  usuario">Eliminar</a>
                         {/if}
                         {if isset($smarty.session) && $permisos->hasPermisoAdministradorGestor() && $perfil.estado === 'Desactivo'}
                             <a class="boton-accion-gestor" href="/plataforma/backoffice.php?comando=usuarios:activar:vista" title="Activar el perfil de usuario">Activar</a>

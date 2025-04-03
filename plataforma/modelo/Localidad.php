@@ -95,7 +95,7 @@ class Localidad {
         // Defino el array localidades que contendra a todas las disponibles para la plataforma
         $localidades = [];
         // Construyo la sentencia SQL para recuperar las localidades de la base de datos     
-        $sql="SELECT locaidad from pdaw_localidades";
+        $sql="SELECT localidad from pdaw_localidades";
         // Ejecuto la sentencia SQL para recuperar las localidades de la base de datos
         $res=Core::ejecutarSql($sql);
         // Si el resultado devuelto tras ejecución contiene un array de un elemento
