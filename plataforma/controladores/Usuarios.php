@@ -480,7 +480,7 @@ class Usuarios {
                     unset($_SESSION['volver']);
                 } else {
                     // De lo contario se bliga al usuario que inicie sesión con las nuevas credenciales
-                    $smarty->assign('volver', '/plataforma/backoffice.php?comando=core:logout:procesa');
+                    $smarty->assign('volver', '/plataforma/backoffice.php');
                 }
                 $smarty->assign('anyo', date('Y'));
                 // Muestro la plantilla del cambio del password para el perfil de usaurio con sus datos
