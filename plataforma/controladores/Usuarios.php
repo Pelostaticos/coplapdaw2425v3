@@ -329,13 +329,10 @@ class Usuarios {
                 'rol' => ucfirst($usuario->getRol())];
                 // Establezco un array asociativo con los valores de estado del perfil posibles
                 $estadosPerfil = ['Activo' => 'ACTIVO', 'Desactivo' => 'DESACTIVO', 'Baja' => 'BAJA', 'Reactivar' => 'REACTIVAR'];
-                // Establezco un array asociativo con los varoles de roles disponibles en la plataforma (TEMPORAL SIN AJAX)
-                $rolesPlataforma = ['Administrador' =>'administrador', 'Coordinador' => 'coordinador', 'Voluntario' => 'voluntario'];
                 // Asigno las variables requeridas por la plantila del perfil de usuario
                 $smarty->assign('usuario', $usuario->getUsuario());
                 $smarty->assign('permisos', $permisosUsuario);
                 $smarty->assign('estados', $estadosPerfil);
-                $smarty->assign('roles', $rolesPlataforma);
                 $smarty->assign('perfil', $perfil);
                 if (isset($_SESSION['volver'])) {
                     // Si existe variable de sesion volver se le debe redirigir al usuario

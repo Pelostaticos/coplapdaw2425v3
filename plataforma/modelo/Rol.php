@@ -505,7 +505,7 @@ class Rol {
         // Ejecuto la sentencia SQL para recuperar a los roles de usuario de la base de datos
         $res=Core::ejecutarSql($sql);
         // Si el resultado devuelto tras ejecución contiene un array de un elemento
-        if (is_array($res) && count($res)===1)        
+        if (is_array($res) && count($res)>0)        
         {
             // Proceso los resultados para obtener los roles disponibles en la plataforma
             foreach ($res as $rol) {

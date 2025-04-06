@@ -10,7 +10,6 @@
 *   >> permisos: Conjunto de permisos del usuario logueado.
 *   >> perfil: Datos del perfil de usuario.
 *   >> estadosPerfil: Array asociativos con todos los estado posibles de un perfil en la plataforma
-*   >> rolesPlataforma: Array asociativo con todos los roles disponibles en la plataforma
 *   >> anyo: Año en curso para copyright y copyleft del sitio web.
 *
 *}
@@ -45,7 +44,10 @@
                             <p class="extraextralargo">
                                 <label for="frm-dirección">Tu dirección:&nbsp;</label>
                                 <input type="text" name="frm-direccion" id="frm-direccion" value="{$perfil.direccion}">        
-                                <input type="text" name="frm-localidad" id="frm-localidad" value="{$perfil.localidad}">
+                                {* <input type="text" name="frm-localidad" id="frm-localidad" value="{$perfil.localidad}"> *}
+                                <select name="frm-localidad" id="frm-localidad">
+                                    <option value="{$perfil.localidad}" selected>{$perfil.localidad}</option>
+                                </select>
                                 <input type="text" name="frm-codpostal" id="frm-codpostal" value="{$perfil.codigoPostal}">
                             </p>
                         </div>                                         
@@ -73,10 +75,8 @@
                             <!-- Selector para editar el estado del perfil de un usuario -->
                             <p class="corto">
                                 <label for="frm-rol">Rol:&nbsp;</label>
-                                <select name="frm-rol">
-                                    {foreach $roles as $nombre => $valor}
-                                        <option value="{$valor}" {if $perfil.rol === $nombre}selected{/if}>{$nombre}</option>
-                                    {/foreach}
+                                <select name="frm-rol" id="frm-rol">
+                                    <option value="{$perfil.rol|lower}" selected>{$perfil.rol}</option>
                                 </select>
                             </p>                                        
                             {else}

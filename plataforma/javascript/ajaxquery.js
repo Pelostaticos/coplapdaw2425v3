@@ -32,6 +32,7 @@ function realizarPeticionesAjax(comando) {
                 switch (comando) {
                     // Cargo dinámicamente los selectores disponibles en la vista de edición de usuarios.
                     case "usuarios:actualizar":
+                        cargarSelectEdicionUsuarios(datos);
                         break;
                     // Por defecto: Cargo dinámicamente los selectores disponibles en la vista de registro de usuario.
                     default:
@@ -43,7 +44,7 @@ function realizarPeticionesAjax(comando) {
         // 3º) Capturo cualquier posible excepción a nivel de red que pueda surgir durante la petición AJAX.
         .catch(error => {
             // Notifico al usuario el error en la petición Ajax realizada.
-            console.error(error);
+            console.error('Error en petición Ajax: ' + error);
             alert('Error en petición Ajax: ', error);
         }); 
 
@@ -51,43 +52,94 @@ function realizarPeticionesAjax(comando) {
 // A.1) Función para cargar dinámicamente los elementos select del formualrio de registro de usuarios
 function cargarSelectRegistroUsuarios(datos) {
 
-    // 1º) Obtengo el elemento select "localidades" del formulario de registro de usuarios
-    const selectLocalidades = document.getElementById('frm-localidad');
+    // Intento cargar dinámicamente los elementos select del formulario de registro de usuarios
+    try {
+        // 0º) Obtengo el elemento select "localidades" del formulario de registro de usuarios
+        const selectLocalidades = document.getElementById('frm-localidad');
 
-    // 1º) Limpio las opciones existente en el selector "localidades" ontenido
-    selectLocalidades.innerHTML = '';
+        // 1º) Limpio las opciones existente en el selector "localidades" ontenido
+        selectLocalidades.innerHTML = '';
 
-    // 2º) Cargo las localidades en el selector de formulario obtenido
-    datos.forEach(opcion => {
-        const option = document.createElement('option');
-        option.value = opcion.valor;
-        option.textContent = opcion.nombre;
-        selectLocalidades.appendChild(option);
-    });
+        // 2º) Cargo las localidades en el selector de formulario obtenido
+        datos.forEach(opcion => {
+            const option = document.createElement('option');
+            option.value = opcion.valor;
+            option.textContent = opcion.nombre;
+            selectLocalidades.appendChild(option);
+        });
+    } catch (error) {
+        // Manejo las posibles excepciones que puedan ocurrir durante el proceso
+        console.error(error);
+    }
 
 }
 
+// A.2) Función para cargar dinámicamente los elementos select del formulario de edición de usuarios
+function cargarSelectEdicionUsuarios(datos) {
+
+    // Intento cargar dinámicamente los elementos select del formulario de edición de usuarios
+    try {
+        // 0º) Obtengo los selectores del formulario de edición de usuarios
+        const selectLocalidad = document.getElementById('frm-localidad');
+        const selectRol = document.getElementById('frm-rol');
+
+        // 1º) Obtengo los valores actuales de los selectores del formulario de edición de usuarios
+        const localidadActual = selectLocalidad.querySelector('option[selected]');
+        const rolActual = selectRol.querySelector('option[selected]');
+
+        // 2º) Limpio los selectores del formulario de edición de usuarios
+        selectLocalidad.innerHTML = '';
+        selectRol.innerHTML = '';
+
+        // 3º) Cargo las localidades en el selector correspondiente del formualrio
+        datos.localidad.forEach(opcion => {
+            const option = document.createElement('option');
+            option.value = opcion.valor;
+            option.textContent = opcion.nombre;
+            if (opcion.valor === localidadActual.value) {option.selected=true;}
+            selectLocalidad.appendChild(option);
+        });    
+
+        // 4º) Cargo los roles en el selector correspondiente del formulario
+        datos.rol.forEach(opcion => {
+            const option = document.createElement('option');
+            option.value = opcion.valor;
+            option.textContent = opcion.nombre;
+            if (opcion.valor === rolActual.value) {option.selected=true;}
+            selectRol.appendChild(option);
+        });     
+    } catch (error) {
+        console.error(error);
+    }
+}
 
 // B) Funcionaes de actualización dinámica de datos por clic en elemento select.
 
 
 // C) Manejadores de eventos control dináimico de datos en formualrios.
-// C.0) Array asociativos con los formularios disponibles en la plataforma y sus comandos de peticion Ajax.
-const peticionesSelectAjax = {'signup':'usuarios:registro', 'edicion':'usuarios:actualizar'};
-// C.1) Añado el manipulador de evento para controlar que el contenido del DOM se ha cargado.
-document.addEventListener('DOMContentLoaded', function() { 
-    // Obtengo todos los formularios disponible en la página actual ya cargada..
-    const formularios = document.querySelectorAll('form');
-    // Recupero cada uno de los selectores presentes en la página cargada:
-    formularios.forEach(formulario => {  
-        // Compruebo si el selector actual tiene el identificador deseado.
-        if (peticionesSelectAjax.hasOwnProperty(formulario.id)) { 
-            console.info("Se está haciendo una petición Ajax procedente de " + formulario.id);
-            // Realizo la petición AJAX
-            realizarPeticionesAjax(peticionesSelectAjax[formulario.id]);
-        }
-    });
-});
+// C.0) Intentp manejar los eventos de control dinámico de datos en formularios
+try {
+    // C.1) Array asociativos con los formularios disponibles en la plataforma y sus comandos de peticion Ajax.
+    const peticionesSelectAjax = {'signup':'usuarios:registro', 'edicion':'usuarios:actualizar'};
+    // C.2) Añado el manipulador de evento para controlar que el contenido del DOM se ha cargado.
+    document.addEventListener('DOMContentLoaded', function() { 
+        // Obtengo todos los formularios disponible en la página actual ya cargada..
+        const formularios = document.querySelectorAll('form');
+        // Recupero cada uno de los selectores presentes en la página cargada:
+        formularios.forEach(formulario => {  
+            // Compruebo si el selector actual tiene el identificador deseado.
+            if (peticionesSelectAjax.hasOwnProperty(formulario.id)) { 
+                console.info("Se está haciendo una petición Ajax procedente de " + formulario.id);
+                // Realizo la petición AJAX
+                realizarPeticionesAjax(peticionesSelectAjax[formulario.id]);
+            }
+        });
+    });    
+} catch (error) {
+    // Manejo las posibles excepciones que se produzcan durante el manejos de eventos de control dinámico
+    // de datos en formularios de la plataforma.
+    console.error(error);
+}
 
 // D) Manejadores de eventos control clics en elementos select en formualrios.
 

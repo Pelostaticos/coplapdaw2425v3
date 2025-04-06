@@ -22,6 +22,7 @@ namespace correplayas\nucleo;
 // 1º) Defino los espacios de nombres que voy a utilizar en esta clase
 
 use correplayas\modelo\Localidad;
+use correplayas\modelo\Rol;
 use correplayas\excepciones\AppException;
 use PDO;
 use PDOException;
@@ -35,13 +36,28 @@ class AjaxQuery {
 
     // A) Método estático por defecto para gestionar la peticiones AJAX del frontend
 
+    /**
+     * Método estático por defecto que gestiona los comando de la peticiónes de datos asíncronas
+     *
+     * @return void
+     */
     public static function default() {
         // Recupero el comando del intercambio de datos asincrono desde la petición AJAX
         $peticionAjax = AjaxQuery::recuperarPeticionAjax();
-        $peticionAjax = $peticionAjax['ajaxquery'];
+        $peticionAjax = isset($peticionAjax['ajaxquery']) ? $peticionAjax['ajaxquery'] : '';
         // Compruebo que hay una sesión de usuario iniciada antes de procesar la petición AJAX
         if (isset($_SESSION['usuario'])) {
             // Gestiono la petición AJAX para usuarios logueados
+            switch ($peticionAjax) {
+                case "usuarios:actualizar":
+                    AjaxQuery::prepararDatosAjaxVistaEdicionUsuario();
+                    break;
+                default:
+                    // Por defecto si la petición Ajax es desconocida le respondo con un error
+                    $mensaje = ['error' => 'Petición Ajax no soportada por plataforma!!!'];
+                    AjaxQuery::responderErrorPeticionAjax($mensaje);
+                    break;                    
+            }
         } else {
             // Gestiono la petición AJAX para usuarios visitantes
             switch ($peticionAjax) {
@@ -50,7 +66,7 @@ class AjaxQuery {
                     break;
                 default:
                     // Por defecto si la petición Ajax es desconocida le respondo con un error
-                    $mensaje = ['error' => 'Petición Ajax desconocida!!!'];
+                    $mensaje = ['error' => 'Petición Ajax no soportada por plataforma!!!'];
                     AjaxQuery::responderErrorPeticionAjax($mensaje);
                     break;
             }
@@ -102,6 +118,12 @@ class AjaxQuery {
     }
 
     // C) Método estáticos auxiliares para preparar los datos a intercambiar asincronamente con el frontend
+
+    /**
+     * Método estático auxiliar para responder a una petición Ajax de la vista de registro de usuario
+     *
+     * @return void No devuelve valor alguno
+     */
     private static function prepararDatosAjaxVistaRegistroUsuario() {
         // Defino el array asociativo con los datos de la respuesta a la petición Ajax
         $datosRespuestaAjax = [];
@@ -111,6 +133,35 @@ class AjaxQuery {
         foreach($localidades as $localidad) {
             $datosRespuestaAjax[] = ['valor' => $localidad, 'nombre' => $localidad];
         }
+        // Respongo al frontend con los datos solicitados en la petición Ajax
+        AjaxQuery::responderPeticionAjax($datosRespuestaAjax);
+    }
+
+    /**
+     * Método estático auxiliar para responder a una petición Ajax de la vista de edición de usuario
+     *
+     * @return void No devuelve valor alguno
+     */
+    private static function prepararDatosAjaxVistaEdicionUsuario() {
+        // Defino el array asociativo con los datos de la respuesta a la petición Ajax
+        $datosRespuestaAjax = [];
+        // Defino el array asociativo con los datos de los selectores formateados
+        $datosSelectorLocalidad = [];
+        $datosSelectorRol = [];
+        // Obtengo las localidades disponibles en la plataforma
+        $localidades = Localidad::listarLocalidades();        
+        // Genero los datos de la respuesta Ajax con el formato adecuado para procesar el selector localidad.
+        foreach($localidades as $localidad) {
+            $datosSelectorLocalidad[] = ['valor' => $localidad, 'nombre' => $localidad];
+        }
+        // Obtengo los roles disponibles en la plataforma
+        $roles = Rol::listarRoles();
+        // Genero los datos de la respuesta Ajax con el formato adecuado para procesar el selector localidad.
+        foreach($roles as $rol) {
+            $datosSelectorRol[] = ['valor' => $rol, 'nombre' => $rol];
+        }
+        // Genero la respuesta Ajax con los datos de los selectores formateados
+        $datosRespuestaAjax = ['localidad' => $datosSelectorLocalidad, 'rol' => $datosSelectorRol];
         // Respongo al frontend con los datos solicitados en la petición Ajax
         AjaxQuery::responderPeticionAjax($datosRespuestaAjax);
     }
