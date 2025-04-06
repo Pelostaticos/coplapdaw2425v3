@@ -52,7 +52,8 @@
                         <label for="frm-email">Tu correo electrónico:</label>
                         <input type="email" name="frm-email" id="frm-email" placeholder="Escribe tu correo electrónico..." require>
                         <label for="frm-localidad">Tu localidad:</label>
-                        <input type="text" name="frm-localidad" id="frm-localidad" placeholder="Escribe tu localidad..." require>
+                        <select id="localidades" name="frm-localidad"></select>
+                        {* <input type="text" name="frm-localidad" id="frm-localidad" placeholder="Escribe tu localidad..." require> *}
                     </div>
                     <button type="submit" class="boton-enviar">Registrarme</button>
                 </form>

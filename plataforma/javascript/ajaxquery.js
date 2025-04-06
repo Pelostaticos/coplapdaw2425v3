@@ -43,7 +43,7 @@ function realizarPeticionesAjax(comando) {
 function cargarSelectRegistroUsuarios(datos) {
 
     // 1º) Obtengo el elemento select "localidades" del formulario de registro de usuarios
-    const selectLocalidades = document.getElementById('localidaes');
+    const selectLocalidades = document.getElementById('localidades');
 
     // 1º) Limpio las opciones existente en el selector "localidades" ontenido
     selectLocalidades.innerHTML = '';

@@ -28,6 +28,7 @@ require_once(__DIR__ . '/modelo/Usuario.php');
 require_once(__DIR__ . '/modelo/Rol.php');
 require_once(__DIR__ . '/controladores/Usuarios.php');
 require_once(__DIR__ . '/controladores/ErrorController.php');
+require_once(__DIR__ . '/nucleo/AjaxQuery.php');
 require_once(__DIR__ . '/nucleo/Core.php');
 
 
@@ -45,6 +46,7 @@ use PHPMailer\PHPMailer\Exception;
 use correplayas\controladores\ErrorController;
 use correplayas\controladores\Usuarios;
 use correplayas\excepciones\AppException;
+use correplayas\nucleo\AjaxQuery;
 use correplayas\nucleo\Core;
 
 // 3º) Inicio la sesion web en la plataforma web
@@ -85,6 +87,10 @@ try {
         echo "Hola! Esta funciones no están disponible por el momento... Gracias!<br>";
         echo "<a href='/plataforma/backoffice.php'>Volver al inicio</a>";
         switch ($comando) {
+            // Solicita al núcleo el procesamiento de una petición de intercambio de datos asíncrono.
+            case "ajax:query:core":
+                AjaxQuery::default();
+                break;
             // Solicita el cierre de sesión en la plataforma
             case "core:logout:vista":
                 // Solicito al núcleo de la plataforma que muestre el mensaje de confirmación del cierre de seasión al usuario
@@ -185,6 +191,10 @@ try {
     } else {
         // 6.2) Gestiono la petición como un comando esencial de la plataforma para un visitante web.
         switch ($comando) {
+            // Solicita al núcleo el procesamiento de una petición de intercambio de datos asíncrono.
+            case "ajax:query:core":
+                AjaxQuery::default();
+                break;            
             // Solicita el inicio de sesión en la plataforma
             case "core:login:vista":
                 Core::mostrarInicioSesion($smarty);
