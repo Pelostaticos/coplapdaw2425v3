@@ -23,6 +23,7 @@ namespace correplayas;
 // 1º) Cargo el fichero de configuración y clases de la plataforma web
 require_once(__DIR__ . '/config/config-inc.php');
 require_once(__DIR__ . '/excepciones/AppException.php');
+require_once(__DIR__ . '/modelo/Localidad.php');
 require_once(__DIR__ . '/modelo/Persona.php');
 require_once(__DIR__ . '/modelo/Usuario.php');
 require_once(__DIR__ . '/modelo/Rol.php');
@@ -74,18 +75,18 @@ $mail->setFrom(SMTP_FROM, 'Plataforma Correplayas');
 $comando = filter_input(INPUT_GET, 'comando', FILTER_SANITIZE_SPECIAL_CHARS);
 
 // Mensaje temporal para depuración del enrutador:
-echo "Bienvenido al futuro enrutador de la Playaforma Correplayas...";
-echo "<br/>";
-echo "El comando que quieres ejecutar es: " . $comando;
-echo "<br/>";
+// echo "Bienvenido al futuro enrutador de la Playaforma Correplayas...";
+// echo "<br/>";
+// echo "El comando que quieres ejecutar es: " . $comando;
+// echo "<br/>";
 
 // 6º) Compruebo si el usuario tiene iniciada una sesion para restringir las acciones disponibles
 try {
     // Intento ejecutar el comando solicitado por el usuario
     if (isset($_SESSION['usuario'])) {
         // 6.1º) Gestiono la petición como un comando del backoffice para un usuario logueado
-        echo "Hola! Esta funciones no están disponible por el momento... Gracias!<br>";
-        echo "<a href='/plataforma/backoffice.php'>Volver al inicio</a>";
+        // echo "Hola! Esta funciones no están disponible por el momento... Gracias!<br>";
+        // echo "<a href='/plataforma/backoffice.php'>Volver al inicio</a>";
         switch ($comando) {
             // Solicita al núcleo el procesamiento de una petición de intercambio de datos asíncrono.
             case "ajax:query:core":
@@ -192,7 +193,7 @@ try {
         // 6.2) Gestiono la petición como un comando esencial de la plataforma para un visitante web.
         switch ($comando) {
             // Solicita al núcleo el procesamiento de una petición de intercambio de datos asíncrono.
-            case "ajax:query:core":
+            case "ajax:query:core":             
                 AjaxQuery::default();
                 break;            
             // Solicita el inicio de sesión en la plataforma

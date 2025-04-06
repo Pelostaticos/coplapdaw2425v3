@@ -21,6 +21,7 @@ namespace correplayas\nucleo;
 
 // 1º) Defino los espacios de nombres que voy a utilizar en esta clase
 
+use correplayas\modelo\Localidad;
 use correplayas\excepciones\AppException;
 use PDO;
 use PDOException;
@@ -35,16 +36,24 @@ class AjaxQuery {
     // A) Método estático por defecto para gestionar la peticiones AJAX del frontend
 
     public static function default() {
-        // Recupero petición AJAX desde el frontend
-        $peticionAjax = AjaxQuery::recuperarPeticionAjax();
         // Recupero el comando del intercambio de datos asincrono desde la petición AJAX
-        var_dump($peticionAjax);
-        exit;
+        $peticionAjax = AjaxQuery::recuperarPeticionAjax();
+        $peticionAjax = $peticionAjax['ajaxquery'];
         // Compruebo que hay una sesión de usuario iniciada antes de procesar la petición AJAX
         if (isset($_SESSION['usuario'])) {
             // Gestiono la petición AJAX para usuarios logueados
         } else {
             // Gestiono la petición AJAX para usuarios visitantes
+            switch ($peticionAjax) {
+                case "usuarios:registro":
+                    AjaxQuery::prepararDatosAjaxVistaRegistroUsuario();
+                    break;
+                default:
+                    // Por defecto si la petición Ajax es desconocida le respondo con un error
+                    $mensaje = ['error' => 'Petición Ajax desconocida!!!'];
+                    AjaxQuery::responderErrorPeticionAjax($mensaje);
+                    break;
+            }
         }
     }
 
@@ -72,28 +81,39 @@ class AjaxQuery {
         // está en formato JSON típica de un intercambio asincrono de datos con AJAX
         header('Content-Type: application/json');
         // Genero la respuesta del servidor a la petición AJAX en formato JSON.
-        echo json_encode($respuesta);
+        echo json_encode($respuesta, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
     }
 
     /**
      * Método estático auxiliar para responder con error a una petición AJAX realizada desde el frontend (Privado)
      *
-     * @param string $respuestaError Mensaje de respuesta del error de la petición AJAX del frontend
+     * @param array $respuestaError Array aspciativo que contiene al mensaje de respuesta del error de la petición AJAX del frontend
      * @param integer $codigo Código de estado HTTP de la respuesta
      * @return void No devuelve valor alguno
      */
-    private static function responderErrorPeticionAjax(string $respuestaError, $codigo=400) {
+    private static function responderErrorPeticionAjax(array $respuestaError, $codigo=400) {
         // Establezco el código de estado de la respuesta
-        http_response_code($codigo);
+        // http_response_code($codigo);
         // Establezco encabezado de la respuesta del servidor para indicarle al frontend que 
         // está en formato JSON típico de un intercambio asíncrono de datos AJAX
         header('Content-Type: application/json');
         // Genero la respuesta de error del servidor a una petición AJAX en formato JSON
-        echo json_encode($respuestaError);
+        echo json_encode($respuestaError, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
     }
 
     // C) Método estáticos auxiliares para preparar los datos a intercambiar asincronamente con el frontend
-
+    private static function prepararDatosAjaxVistaRegistroUsuario() {
+        // Defino el array asociativo con los datos de la respuesta a la petición Ajax
+        $datosRespuestaAjax = [];
+        // Obtengo las localidades disponibles en la plataforma
+        $localidades = Localidad::listarLocalidades();        
+        // Genero los datos de la respuesta Ajax con el formato adecuado para procesar el selector localidad.
+        foreach($localidades as $localidad) {
+            $datosRespuestaAjax[] = ['valor' => $localidad, 'nombre' => $localidad];
+        }
+        // Respongo al frontend con los datos solicitados en la petición Ajax
+        AjaxQuery::responderPeticionAjax($datosRespuestaAjax);
+    }
 
 }
 

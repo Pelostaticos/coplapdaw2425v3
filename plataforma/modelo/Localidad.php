@@ -99,7 +99,7 @@ class Localidad {
         // Ejecuto la sentencia SQL para recuperar las localidades de la base de datos
         $res=Core::ejecutarSql($sql);
         // Si el resultado devuelto tras ejecución contiene un array de un elemento
-        if (is_array($res) && count($res)===1)        
+        if (is_array($res) && count($res)>0)        
         {
             // Proceso los resultados para obtener las localidades disponibles en la plataforma
             foreach ($res as $localidad) {

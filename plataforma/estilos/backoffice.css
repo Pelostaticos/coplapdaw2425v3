@@ -385,6 +385,12 @@ section#formulario form input {
     font-size: var(--tamaño-fuente-p-escritorio);
     font-weight: 400;
 }
+section#formulario form select {
+    margin-top: 10px;
+    margin-right: 5px;
+    font-size: var(--tamaño-fuente-p-escritorio);
+    font-weight: 400;
+}
 section#formulario form textarea {
     font-size: var(--tamaño-fuente-p-escritorio);
     font-weight: 400;
@@ -397,6 +403,9 @@ section#formulario form textarea {
     align-items: center;
 }
 .campos-formulario input {
+    flex-grow: 1;
+}
+.campos-formulario select {
     flex-grow: 1;
 }
 .boton-enviar {

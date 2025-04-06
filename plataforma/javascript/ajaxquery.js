@@ -13,7 +13,7 @@
 function realizarPeticionesAjax(comando) {
 
     // 0º) Inicio la petición AJAX al backend de la plataforma correplayas
-    fetch('backoffice.php?comando=ajax:query:core', {
+    fetch('/plataforma/backoffice.php?comando=ajax:query:core', {
         method: 'POST',
         body: JSON.stringify({ ajaxquery: comando }),
         headers: { 'Content-Type': 'application/json' }
@@ -22,19 +22,28 @@ function realizarPeticionesAjax(comando) {
         .then(respuesta => respuesta.json())
         // 2º) Recupero los datos enviados por el servidor tras ejecutar la promesa anterior
         .then(datos => {
-            switch (comando) {
-                // Cargo dinámicamente los selectores disponibles en la vista de edición de usuarios.
-                case "usuarios:actualizar":
-                    break;
-                // Por defecto: Cargo dinámicamente los selectores disponibles en la vista de registro de usuario.
-                default:
-                    cargarSelectRegistroUsuarios(datos);
-                    break;
+            // Compruebo que no se haya error en el backend tars petición Ajax
+            if (datos.error) {
+                // Se han encontrado error en el backend por petición Ajax. Entonces:
+                // Lo notifico al usuario en el frontend
+                alert(datos.error);
+            } else {
+                // Proceso las respuesta obtenida desde el backend
+                switch (comando) {
+                    // Cargo dinámicamente los selectores disponibles en la vista de edición de usuarios.
+                    case "usuarios:actualizar":
+                        break;
+                    // Por defecto: Cargo dinámicamente los selectores disponibles en la vista de registro de usuario.
+                    default:
+                        cargarSelectRegistroUsuarios(datos);
+                        break;
+                }    
             }
         })
-        // 3º) Capturo cualquier posible excepción que pueda surgir durante la petición AJAX.
+        // 3º) Capturo cualquier posible excepción a nivel de red que pueda surgir durante la petición AJAX.
         .catch(error => {
             // Notifico al usuario el error en la petición Ajax realizada.
+            console.error(error);
             alert('Error en petición Ajax: ', error);
         }); 
 
@@ -43,7 +52,7 @@ function realizarPeticionesAjax(comando) {
 function cargarSelectRegistroUsuarios(datos) {
 
     // 1º) Obtengo el elemento select "localidades" del formulario de registro de usuarios
-    const selectLocalidades = document.getElementById('localidades');
+    const selectLocalidades = document.getElementById('frm-localidad');
 
     // 1º) Limpio las opciones existente en el selector "localidades" ontenido
     selectLocalidades.innerHTML = '';
@@ -53,7 +62,7 @@ function cargarSelectRegistroUsuarios(datos) {
         const option = document.createElement('option');
         option.value = opcion.valor;
         option.textContent = opcion.nombre;
-        select.appendChild(option);
+        selectLocalidades.appendChild(option);
     });
 
 }
@@ -73,6 +82,7 @@ document.addEventListener('DOMContentLoaded', function() {
     formularios.forEach(formulario => {  
         // Compruebo si el selector actual tiene el identificador deseado.
         if (peticionesSelectAjax.hasOwnProperty(formulario.id)) { 
+            console.info("Se está haciendo una petición Ajax procedente de " + formulario.id);
             // Realizo la petición AJAX
             realizarPeticionesAjax(peticionesSelectAjax[formulario.id]);
         }
