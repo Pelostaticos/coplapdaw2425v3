@@ -41,11 +41,11 @@
                     <!-- Entrada de menu para el acceso al gestor de participantes -->
                     <li><a href="#">Participación</a></li>
                     <!-- Entrada del menu para el acceso al gestor de censos    -->
-                    <li><a href="#">Censos</a></li>
+                    <li><a href="/plataforma/backoffice.php?comando=censos:default">Censos</a></li>
                     <!-- Entrada del menú para el acceso al gestor de aves -->
-                    <li><a href="#">Aves</a></li>
+                    <li><a href="/plataforma/backoffice.php?comando=aves:default">Aves</a></li>
                     <!-- Entrada del menú para el acceso al gestor de observatorios -->
-                    <li><a href="#">Observatorios</a></li>
+                    <li><a href="/plataforma/backoffice.php?comando=observatorios:default">Observatorios</a></li>
                 </ul>
                 <!-- Hamburguesa del menú responsive -->
                 <span class="menu-icono">menu</span>

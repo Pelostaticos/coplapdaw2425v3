@@ -28,6 +28,9 @@ require_once(__DIR__ . '/modelo/Persona.php');
 require_once(__DIR__ . '/modelo/Usuario.php');
 require_once(__DIR__ . '/modelo/Rol.php');
 require_once(__DIR__ . '/controladores/Usuarios.php');
+require_once(__DIR__ . '/controladores/Censos.php');
+require_once(__DIR__ . '/controladores/Aves.php');
+require_once(__DIR__ . '/controladores/Observatorios.php');
 require_once(__DIR__ . '/controladores/ErrorController.php');
 require_once(__DIR__ . '/nucleo/AjaxQuery.php');
 require_once(__DIR__ . '/nucleo/Core.php');
@@ -46,6 +49,9 @@ use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception; 
 use correplayas\controladores\ErrorController;
 use correplayas\controladores\Usuarios;
+use correplayas\controladores\Censos;
+use correplayas\controladores\Aves;
+use correplayas\controladores\Observatorios;
 use correplayas\excepciones\AppException;
 use correplayas\nucleo\AjaxQuery;
 use correplayas\nucleo\Core;
@@ -184,6 +190,21 @@ try {
             //     // Solicito al controlador de usuarios que me desactive el perfil de usuario
             //     Usuarios::desactivarUsuarioPlataforma($smarty);
             //     break;
+            case "censos:default":
+                // Solicito al controlador de censos que muestre las vista por defecto según rol del usuario
+                Censos::default($smarty);
+                // OBSERVACIONES: El gestor de censos no se encuentra implementado por falta de tiempo
+                break;                
+            case "aves:default":
+                // Solicito al controlador de aves que muestre las vista por defecto según rol del usuario
+                Aves::default($smarty);
+                // OBSERVACIONES: El gestor de censos no se encuentra implementado por falta de tiempo
+                break;                
+            case "observatorios:default":
+                // Solicito al controlador de observatorios que muestre las vista por defecto según rol del usuario
+                Observatorios::default($smarty);
+                // OBSERVACIONES: El gestor de censos no se encuentra implementado por falta de tiempo
+                break;
             default:
                 // Solicito al núcleo que muestre la página de inicio del backoffice de la plataforma.
                 Core::default($smarty);
