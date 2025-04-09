@@ -198,6 +198,13 @@ a {
     justify-content: space-around;
     align-items: center;
 }
+.botonera-superior-listados {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+    padding: 0px 20px;
+}
 
 /* Iconos utilizados en el backoffice */ 
 .iconos-nav-backoffice {
@@ -441,7 +448,8 @@ section#formulario form textarea {
     display: flex;
     flex-direction: column;
     justify-content: center;
-    align-items: flex-start;    
+    align-items: flex-start;
+    margin-left: 10px;
 }
 .titulo-gestor {
     margin: 0;

@@ -295,9 +295,9 @@ class Jornada {
      */
     public static function listarJornadas(): ?Array {
         // Construyo la sentencia SQL para recuperar al usuario de la base de datos     
-        $sql="SELECT j.id_jornada as idJornada, u.titulo as titulo, ob.nombre as observatorio, j.fecha as fecha
+        $sql="SELECT j.id_jornada as idJornada, j.titulo as titulo, ob.nombre as observatorio, j.fecha as fecha,
             j.estado as estado FROM pdaw_jornadas j 
-            LEFT JOIN pdaw_observatorios ob ON j.observatorio=ob.codigo";
+            JOIN pdaw_observatorios ob ON j.observatorio=ob.codigo";
         // Ejecuto la sentencia SQL para recuperar al usuario de la base de datos
         $res=Core::ejecutarSql($sql);
         // Si el resultado devuelto tras ejecución contiene un array de un elemento
@@ -311,7 +311,7 @@ class Jornada {
             return null;
     }    
 
-    // OJO HAY QUE ADAPTARLA A LAS NECESIDADES DE JORNADAS ...... (Hacerlo mañana)
+    // OJO HAY QUE ADAPTARLA A LAS NECESIDADES DE JORNADAS ...... (Hacerlo conjunto con el controlador)
 
     /**
      * Método estático para buscar Jornadas en la base de datos.

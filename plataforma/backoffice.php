@@ -26,8 +26,10 @@ require_once(__DIR__ . '/excepciones/AppException.php');
 require_once(__DIR__ . '/modelo/Localidad.php');
 require_once(__DIR__ . '/modelo/Persona.php');
 require_once(__DIR__ . '/modelo/Usuario.php');
+require_once(__DIR__ . '/modelo/Jornada.php');
 require_once(__DIR__ . '/modelo/Rol.php');
 require_once(__DIR__ . '/controladores/Usuarios.php');
+require_once(__DIR__ . '/controladores/Jornadas.php');
 require_once(__DIR__ . '/controladores/Censos.php');
 require_once(__DIR__ . '/controladores/Aves.php');
 require_once(__DIR__ . '/controladores/Observatorios.php');
@@ -49,6 +51,7 @@ use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception; 
 use correplayas\controladores\ErrorController;
 use correplayas\controladores\Usuarios;
+use correplayas\controladores\Jornadas;
 use correplayas\controladores\Censos;
 use correplayas\controladores\Aves;
 use correplayas\controladores\Observatorios;
@@ -190,6 +193,10 @@ try {
             //     // Solicito al controlador de usuarios que me desactive el perfil de usuario
             //     Usuarios::desactivarUsuarioPlataforma($smarty);
             //     break;
+            case "jornadas:default":
+                // Solicito al controlador de jornadas que muestre la vista por defecto del gestor jornadas
+                Jornadas::default($smarty);
+                break;
             case "censos:default":
                 // Solicito al controlador de censos que muestre las vista por defecto según rol del usuario
                 Censos::default($smarty);
