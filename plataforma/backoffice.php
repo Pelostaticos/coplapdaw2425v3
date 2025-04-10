@@ -198,6 +198,14 @@ try {
                 // Solicito al controlador de jornadas que muestre la vista por defecto del gestor jornadas
                 Jornadas::default($smarty);
                 break;
+            case "jornadas:registrar:vista":
+                // Solicito al controlador de jornadas que me muestre la vista para el registro de nuevas jornadas
+                Jornadas::mostrarRegistroJornadaPlataforma($smarty);
+                break;
+            case "jornadas:registrar:procesa":
+                // Solicito al controlador de jornadas que me muestre la vista para el registro de nuevas jornadas
+                Jornadas::registrarJornadaPlataforma($smarty);
+                break;                
             case "censos:default":
                 // Solicito al controlador de censos que muestre las vista por defecto según rol del usuario
                 Censos::default($smarty);

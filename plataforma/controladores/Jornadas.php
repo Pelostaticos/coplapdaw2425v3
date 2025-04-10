@@ -187,6 +187,60 @@ class Jornadas {
 
     // C) Métodos estáticos públicos para vistas generales y su procesamiento de datos asociados
 
+    /**
+     * Método estático general para mostrar la vista de registro de nuevas jornadas en la plataforma
+     *
+     * @param Smarty $smarty Obtejo que contiene al motor de plantilla Smarty
+     * @return void No devuelve valor alguno
+     */
+    public static function mostrarRegistroJornadaPlataforma($smarty) {
+        // Recupero al usuario logueado de la sesión
+        $usuario = $_SESSION['usuario'];
+        // Asigno las variables de la plantilla de registro de jornada
+        $smarty->assign('usuario', $usuario->getUsuario());
+        $smarty->assign('anyo', date('Y'));
+        $smarty->assign('hoy', date('Y-m-d'));
+        // Muestro la plantilla para el registro de un nuevo voluntario
+        $smarty->display('jornadas/registro.tpl');    
+    }
+
+    public static function registrarJornadaPlataforma($smarty) {
+
+        // Recupero los datos de la nueva jornada desde el formulario de registro
+        $datosJornada = [':titulo' => filter_input(INPUT_POST,'frm-titulo'),
+            ':fecha' => filter_input(INPUT_POST,'frm-fecha'),
+            ':horaInicio' => filter_input(INPUT_POST,'frm-horaInicio'),
+            ':horaFin' => filter_input(INPUT_POST,'frm-horaFin'),
+            ':información' => filter_input(INPUT_POST,'frm-información'),
+            ':estado' => 'PUBLICADA', ':asistencia' => false, 
+            ':observatorio' => filter_input(INPUT_POST,'frm-observatorio')];
+
+        // Intento registrar a la nueva jornada
+        try { 
+            // Registro a la nueva jornada en la base de datos
+            $j = Jornada::crearJornada($datosJornada);            
+
+            // Compruebo que el usuario y su persona asociada se crearon correctamente
+            if ($j) {
+                // Notifico al usuario el resultado de registrar una nueva jornada en la plataforma
+                ErrorController::mostrarMensajeInformativo($smarty, "Nueva jornada registrada con éxito!!", "/plataforma/backoffice.php?comando=jornadas:default");
+            } else {
+                // Lanzo excepción para notificar al usuario que hubo algún problema con su proceso de registro
+                throw new AppException("Uppps!! Hubo un problema con su registro. Por favor, contacte con los administradores","/plataforma/backoffice.php?comando=core:email:vista");
+            } 
+
+        // Manejo la excepción que se haya producido para notificarla al usuario
+        } catch (AppException $ae) {
+            // Si se produce una violación de restricción al registrarlos
+            if ($ae->getCode() === AppException::DB_CONSTRAINT_VIOLATION_IN_QUERY)
+            {
+                ErrorController::handleException($ae, $smarty, '/plataforma/backoffice.php?comando=jornadas:default', "Esta jornada ya esta registrada!!");
+            }
+            else
+                ErrorController::handleException($ae, $smarty, '/plataforma/backoffice.php');
+        }     
+    }
+
 }
 
 ?>

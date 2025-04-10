@@ -258,13 +258,86 @@ function validarCambioPassword(event) {
     errores.push('Por favor, la contraseña debe tener al menos 8 caracteres y contener al menos una letra minúscula, una letra mayúscula, un dígito y un carácter especial.');
   }
 
+  // Si se detectan error detengo el envio del formulario y se los notifico al usuario.
+  if (errores.length > 0) {
+    event.preventDefault();
+    alert(errores.join('\n'));
+  }  
+
+}
+
+// C.6 Función para validar el formulario de registro de una nueva jornada en la plataforma
+function validarRegistroJornada(event) {
+
+  // Obtengo los datos introducidos en los campos del formulario
+  let titulo = document.getElementById('frm-titulo').value;
+  let fecha = document.getElementById('frm-fecha').value;
+  let horaInicio = document.getElementById('frm-hora-inicio').value;
+  let horaFin = document.getElementById('frm-hora-fin').value;
+  let informacion = document.getElementById('frm-informacion').value;
+  let observatorio = document.getElementById('frm-observatorio').value;
+  
+  // Creo un array para almacenar los errores de validación detectados
+  let errores = [];  
+
+  // Validación para Nombre de usuario
+  if (!titulo.trim()) {
+    errores.push('Por favor, introduce un titulo para la nueva jornada.');
+  }
+
+  // Validación para fecha y horas asociadas e la jornada
+  const fechaRegex = /^\d{4}-\d{2}-\d{2}$/;
+  const horaRegex = /^([01]\d|2[0-3]):([0-5]\d)(:([0-5]\d))?$/;
+  // --->> El campo fecha está vacio o no cumple el formato
+  if (!fecha.trim() || !fechaRegex.test(fecha)) {
+    console.warn(fecha);
+    errores.push('Por favor, elige una fecha correcta.');
+  }
+  // --->> El campo hora de inicio está vacio o no cumple el formato
+  if (!horaInicio.trim() || !horaRegex.test(horaInicio)) {
+    console.warn(horaInicio);
+    errores.push('Por favor, introduzca una hora de inicio correcta.');
+  }
+  // --->> El campo hora de fin está vacio o no cumple el formato
+  if (!horaFin.trim() || !horaRegex.test(horaFin)) {
+    console.warn(horaFin);
+    errores.push('Por favor, introduzca una hora de fin correcta.');
+  }
+  // --->> Aquí creo objetos de fechas para realizar comparaciones
+  const fechaInicio = new Date(`${fecha}T${horaInicio}`);
+  const fechaFin = new Date(`${fecha}T${horaFin}`);
+  // --->> El campo fecha fin no puede ser anterior a la fecha de inicio
+  if (fechaFin < fechaInicio) {
+    errores.push('La fecha de fin es anterior a la fecha de inicio. Por favor, corrijalo!');
+  }
+  // --->> La duración de la jornada es negativa
+  if (fechaFin.getTime() === fechaInicio.getTime()) {
+    errores.push('La fecha y hora de inicio y fin no pueden ser iguales. Por favor, corrijalo!');
+  }
+
+  // Inicializar información con el valor por defecto
+  if (!informacion.trim()) {
+    document.getElementById('frm-informacion').value = "Ninguna";
+  }  
+
+  // Validación para Nombre de usuario
+  if (!observatorio.trim()) {
+    errores.push('Por favor, elige un observatorio del desplegable.');
+  }
+
+  // Si se detectan error detengo el envio del formulario y se los notifico al usuario.
+  if (errores.length > 0) {
+    event.preventDefault();
+    alert(errores.join('\n'));
+  }
 
 }
 
 // D) Manipulación de eventos para las validaciones de formularios.
 // D.0) Array asociativos con los formularios disponibles en la plataforma y sus validadores.
 const validadoresFormularios = {'contactenos': validarContactenos, 'login': validarLogin
-  , 'signup':validarSignup, 'edicion': validarEdicionUsuarios, 'password': validarCambioPassword}
+  , 'signup':validarSignup, 'edicion-usuario': validarEdicionUsuarios, 'password': validarCambioPassword
+  , 'registro-jornada': validarRegistroJornada};
 // D.1) Cargo el manipulador de evento para válidar el(los) formulario(s) presente en la página actual.
 const formularios = document.querySelectorAll('form');
 formularios.forEach(formulario => {

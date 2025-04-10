@@ -22,6 +22,7 @@ namespace correplayas\nucleo;
 // 1º) Defino los espacios de nombres que voy a utilizar en esta clase
 
 use correplayas\modelo\Localidad;
+use correplayas\modelo\Observatorio;
 use correplayas\modelo\Rol;
 use correplayas\excepciones\AppException;
 use PDO;
@@ -51,6 +52,9 @@ class AjaxQuery {
             switch ($peticionAjax) {
                 case "usuarios:actualizar":
                     AjaxQuery::prepararDatosAjaxVistaEdicionUsuario();
+                    break;
+                case "jornadas:registrar":
+                    AjaxQuery::prepararDatosAjaxVistaRegistroJornada();
                     break;
                 default:
                     // Por defecto si la petición Ajax es desconocida le respondo con un error
@@ -164,6 +168,25 @@ class AjaxQuery {
         $datosRespuestaAjax = ['localidad' => $datosSelectorLocalidad, 'rol' => $datosSelectorRol];
         // Respongo al frontend con los datos solicitados en la petición Ajax
         AjaxQuery::responderPeticionAjax($datosRespuestaAjax);
+    }
+
+    /**
+     * Método estático auxiliar para responder una petición Ajax de la visa de registro de jornada
+     *
+     * @return void No devuelve valor alguno
+     */    
+    private static function prepararDatosAjaxVistaRegistroJornada() {
+        // Defino el array asociativo con los datos de la respuesta a la petición Ajax
+        $datosRespuestaAjax = [];
+        // Obtengo los observatorios disponibles en la plataforma
+        $observatorios = Observatorio::listarObservatorios();
+        // Genero los datos de la respuesta Ajax con el formato adecuado para procesar el selector observatorio.
+        foreach($observatorios as $observatorio) {
+            $nombre = $observatorio['nombre'] . ' (' . $observatorio['localidad'] . ')';
+            $datosRespuestaAjax[] = ['valor' => $observatorio['codigo'], 'nombre' => $nombre];
+        }
+        // Respongo al frontend con los datos solicitados en la petición Ajax
+        AjaxQuery::responderPeticionAjax($datosRespuestaAjax);             
     }
 
 }

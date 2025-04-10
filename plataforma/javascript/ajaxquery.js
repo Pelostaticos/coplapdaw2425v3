@@ -34,6 +34,10 @@ function realizarPeticionesAjax(comando) {
                     case "usuarios:actualizar":
                         cargarSelectEdicionUsuarios(datos);
                         break;
+                    // Cargo dinámicamente los selectores disponibles en la vista de registro de nueva jornada
+                    case "jornadas:registrar":
+                        cargarSelectRegistroJornadas(datos);
+                        break;
                     // Por defecto: Cargo dinámicamente los selectores disponibles en la vista de registro de usuario.
                     default:
                         cargarSelectRegistroUsuarios(datos);
@@ -113,6 +117,30 @@ function cargarSelectEdicionUsuarios(datos) {
     }
 }
 
+// A.3) Función para cargar dinámicamente los selectores de la vista de registro de nueva jornada
+function cargarSelectRegistroJornadas(datos) {
+    // Intento cargar dinámicamente los elementos select del formulario de edición de usuarios
+    try {
+        // 0º) Obtengo el elemento select "observatorio" del formulario de registro de usuarios
+        const selectObservatorios = document.getElementById('frm-observatorio');
+
+        // 1º) Limpio las opciones existente en el selector "observatorio" ontenido
+        selectObservatorios.innerHTML = '';
+
+        // 2º) Cargo los observatorios en el selector de formulario obtenido
+        datos.forEach(opcion => {
+            const option = document.createElement('option');
+            option.value = opcion.valor;
+            option.textContent = opcion.nombre;
+            selectObservatorios.appendChild(option);
+        });        
+
+    } catch(error) {
+        // Muestro por consola el error producido al cargar seelctores en la vista deseada
+        console.error(error);
+    }
+}
+
 // B) Funcionaes de actualización dinámica de datos por clic en elemento select.
 
 
@@ -120,7 +148,8 @@ function cargarSelectEdicionUsuarios(datos) {
 // C.0) Intentp manejar los eventos de control dinámico de datos en formularios
 try {
     // C.1) Array asociativos con los formularios disponibles en la plataforma y sus comandos de peticion Ajax.
-    const peticionesSelectAjax = {'signup':'usuarios:registro', 'edicion':'usuarios:actualizar'};
+    const peticionesSelectAjax = {'signup':'usuarios:registro', 'edicion-usuario':'usuarios:actualizar',
+        'registro-jornada': 'jornadas:registrar'};
     // C.2) Añado el manipulador de evento para controlar que el contenido del DOM se ha cargado.
     document.addEventListener('DOMContentLoaded', function() { 
         // Obtengo todos los formularios disponible en la página actual ya cargada..
