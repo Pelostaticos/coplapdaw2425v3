@@ -8,7 +8,7 @@
 *
 *   >> usuario: Nombre del usuario logueado.
 *   >> permisos: Conjunto de permisos del usuario logueado.
-*   >> filas: Conjunto de datos para generar los detalles de la jornada.
+*   >> perfil: Datos para generar los detalles de la jornada.
 *   >> anyo: Año en curso para copyright y copyleft del sitio web.
 *
 *}

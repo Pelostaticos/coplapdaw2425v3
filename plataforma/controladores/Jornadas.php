@@ -76,6 +76,12 @@ class Jornadas {
 
     // A) Método estáticos privados para gestioanr las vistas específicas solicitada desde el listado
 
+    /**
+     * Método estático auxiliar para mostrar la vista con el listado de jornadas disponibles en la plataforma
+     *
+     * @param Smarty $smarty Objeto que contiene al motor de plantillas Smarty
+     * @return void No devuelve valor alguno
+     */
     private static function listarJornadasPlataforma($smarty) {
 
         // Obtengo al usuario de la sesión del navegacion
@@ -106,6 +112,12 @@ class Jornadas {
 
     }
 
+    /**
+     * Método auxiliar para mostrar la vista de detalles de una jornada de la plataforma
+     *
+     * @param Smarty $smarty Objeto que contiene al motor de plantillas Smarty
+     * @return void No devuelve valor alguno
+     */
     private static function consultarDetallesJornadaPlataforma($smarty) {
 
         // Recupero al usuario logueado en la plataforma
@@ -173,8 +185,81 @@ class Jornadas {
 
     }
 
+    /**
+     * Método auxiliar para mostrar la vista de edición de una jornada de la plataforma
+     *
+     * @param Smarty $smarty Objeto que contiene al motor de plantillas Smarty
+     * @return void No devuelve valor alguno
+     */
     private static function mostrarEdicionJornadaPlataforma($smarty) {
+        // Recupero al usuario logueado en la plataforma
+        $usuario = $_SESSION['usuario'];
 
+        // Recupero los permisos del usuario logueado desde su sesión
+        $permisosUsuario = $_SESSION['permisos'];
+
+        // Compruebo si el usuario logueado es administrador para
+        // poder ejecutar la edición de una jornada de la plataforma
+        if ($permisosUsuario->hasPermisoAdministradorGestor()) {
+            // El usuario logueado es administrador. Entonces:
+            // Compruebo que el usuario haya elegido una jornada del listado
+            if (isset($_POST['idJornada'])) {
+                // El usuario ha elegido una jornada del listado. Entonces:
+                // Recupero el identificador de la jornada elegida por el usuario
+                $idJornada = filter_input(INPUT_POST, 'idJornada');
+                // Recupero los datos de la jornada elegida por el usuario
+                $jornada = Jornada::consultarJornada($idJornada);
+                // Compruebo si la jornada elegida existe en la base de datos
+                if ($jornada instanceof Jornada) {
+                    // Se ha podido recuperar la jornada de la base de datos. Entonces:
+                    // Recupero los datos del observatorio asociado a la jornada elegida
+                    $observatorio=Observatorio::consultarObservatorio($jornada->getIdObservatorioJornada());
+                    // Compruebo si el observatorio asociado a la jornada existe en la base de datos
+                    if ($observatorio instanceof Observatorio) {
+                        // Se ha posido recuperar al observatorio asociadp a la jornada. Entonces:
+                        // Genero el nombre del observatorio asociado a la jornada
+                        $nombreObservatorio = $observatorio->getNombreObservatorio() . " (" . $observatorio->getLocalidadObservatorio() . ")";
+                        // Recopilo la información de la plantilla para mostrar detalles de la jornada
+                        $perfil = ['titulo' => $jornada->getTituloJornada(),
+                            'fecha' => $jornada->getFechaJornada(),
+                            'horaInicio' => $jornada->getHoraInicioJornada(),
+                            'horaFin' => $jornada->getHoraFinJornada(),
+                            'informacion' => $jornada->getInformacionJornada(),
+                            'estado' => $jornada->getEstadoJornada(),
+                            'asistencia' => $jornada->getControlAsistenciaJornada() === 1 ? 'Verificada' : 'Pendiente',
+                            'observatorio' => $jornada->getIdObservatorioJornada(),
+                            'nombreObservatorio' => $nombreObservatorio];
+                        // Establezco un array asociativo con los valores de estado del perfil posibles
+                        $estadosJornada = ['Publicada' => 'PUBLICADA', 'Abierta' => 'ABIERTA', 
+                            'Cerrada' => 'CERRADA', 'Cancelada' => 'CANCELADA'];                            
+                        // Asigno las variables requeridas por la plantila de detalles de una jornada
+                        $smarty->assign('usuario', $usuario->getUsuario());
+                        $smarty->assign('permisos', $permisosUsuario);
+                        $smarty->assign('estados', $estadosJornada);
+                        $smarty->assign('perfil', $perfil);
+                        $smarty->assign('anyo', date('Y'));
+                        // Muestro la plantilla de detalles de una jornada con sus datos
+                        $smarty->display('jornadas/edicion.tpl');
+                    } else {
+                        // De lo contario, lanzo una excepción para notificar al usuario que el
+                        // observatorio asociado a la jornada deseada no existe en la base de datos
+                        throw new AppException($message = "El observatorio de la jornada elegida no existe en la base de datos!!!",
+                        $urlAceptar="/plataforma/backoffice.php?comando=jornadas:default");
+                    }
+                } else {
+                    // De lo contario, lanzo una excepción para notificar al usuario que la
+                    // jornada deseada no existe en la base de datos
+                    throw new AppException($message = "La jornada elegida no existe en la base de datos!!!",
+                    $urlAceptar="/plataforma/backoffice.php?comando=jornadas:default");                    
+                }         
+            } else {
+                // Lanzo una excepción para notificar que el usuario no eligió una jornada del listado
+                throw new AppException("No ha elegido una jornada del listado. Por favor, eliga una. Gracias!");
+            }
+        } else {
+            // Lanzo excepción para notificar al usuario que no tiene permiso para actualizar una jornada
+            throw new AppException("Su rol en la plataforma no le permite actualizar una jornada");
+        }
     }
 
     private static function mostrarConfirmaciónBajaJornadaPlataforma($smarty) {
@@ -209,11 +294,11 @@ class Jornadas {
         // Recupero los datos de la nueva jornada desde el formulario de registro
         $datosJornada = [':titulo' => filter_input(INPUT_POST,'frm-titulo'),
             ':fecha' => filter_input(INPUT_POST,'frm-fecha'),
-            ':horaInicio' => filter_input(INPUT_POST,'frm-horaInicio'),
-            ':horaFin' => filter_input(INPUT_POST,'frm-horaFin'),
-            ':información' => filter_input(INPUT_POST,'frm-información'),
-            ':estado' => 'PUBLICADA', ':asistencia' => false, 
-            ':observatorio' => filter_input(INPUT_POST,'frm-observatorio')];
+            ':horaInicio' => filter_input(INPUT_POST,'frm-hora-inicio'),
+            ':horaFin' => filter_input(INPUT_POST,'frm-hora-fin'),
+            ':informacion' => filter_input(INPUT_POST,'frm-informacion'),
+            ':estado' => 'PUBLICADA', ':asistencia' => 0, 
+            ':observatorio' => intval(filter_input(INPUT_POST,'frm-observatorio', FILTER_SANITIZE_NUMBER_INT))];
 
         // Intento registrar a la nueva jornada
         try { 

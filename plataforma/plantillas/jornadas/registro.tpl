@@ -18,7 +18,7 @@
         <!-- Sección para el gestor de Jornadas de la plataforma correplayas -->
          <section id="correplayas">
             <!-- Artículo que describe el proyecto de la plataforma correplayas -->
-             <article>
+            <article>
                 <!-- Encabezado del gestor de jornadas -->
                 <h1 class="titulo-accion-gestor">Registro de jornada</h1>                    
                 <div class="cabecera-gestor">
@@ -62,7 +62,7 @@
                         <button type="submit" class="boton-accion-gestor" title="Crear jornada">Crear</button>
                     </div>
                 </form>
-              </article>
-          </section>
-      </main> 
-      {include file="comunes/footer.tpl" anyo="{$anyo}"}                   
+            </article>
+        </section>
+    </main> 
+{include file="comunes/footer.tpl" anyo="{$anyo}"}                   

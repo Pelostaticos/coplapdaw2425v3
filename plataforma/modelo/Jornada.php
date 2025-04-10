@@ -250,8 +250,8 @@ class Jornada {
     public static function crearJornada($datos): ?bool
     {       
         // Construyo la sentencia SQL para añadir una nueva jornada a la tabla Jornadas de la base datos
-        $sql="INSERT INTO pdaw_jornadas (id_jornada, titulo, fecha, hora_inicio, hora_fin,
-            informacion, estado, asistencia, observatorio) VALUES (:idJornada, :titulo, :fecha, :horaInicio, :horaFin,
+        $sql="INSERT INTO pdaw_jornadas (titulo, fecha, hora_inicio, hora_fin,
+            informacion, estado, asistencia, observatorio) VALUES (:titulo, :fecha, :horaInicio, :horaFin,
             :informacion, :estado, :asistencia, :observatorio)";
         // Si al ejecutar la sentencia SQL me devuelve uno
         if (Core::ejecutarSql($sql,$datos)===1)

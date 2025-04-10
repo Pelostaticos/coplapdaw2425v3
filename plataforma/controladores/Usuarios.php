@@ -345,14 +345,14 @@ class Usuarios {
                     $smarty->assign('volver', '/plataforma/backoffice.php');
                 }
                 $smarty->assign('anyo', date('Y'));
-                // Muestro la plantilla del perfil de usaurio con sus datos
+                // Muestro la plantilla de edición del perfil de usaurio con sus datos
                 $smarty->display('usuarios/edicion.tpl');                   
             } else {
                 // Lanzo una excepción para indicar que no existe perfil de usuario
                 throw new AppException("No existe el perfil de usuario");
             }
         } else {
-            // Lanzo excepción para notificar al usuario que no tiene permiso para mostrar su perfil
+            // Lanzo excepción para notificar al usuario que no tiene permiso para actualizar su perfil
             throw new AppException("Su rol en la plataforma no le permite actualizar el perfil de usuario");
         }
 
