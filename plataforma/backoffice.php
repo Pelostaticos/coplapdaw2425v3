@@ -27,6 +27,7 @@ require_once(__DIR__ . '/modelo/Localidad.php');
 require_once(__DIR__ . '/modelo/Persona.php');
 require_once(__DIR__ . '/modelo/Usuario.php');
 require_once(__DIR__ . '/modelo/Jornada.php');
+require_once(__DIR__ . '/modelo/Observatorio.php');
 require_once(__DIR__ . '/modelo/Rol.php');
 require_once(__DIR__ . '/controladores/Usuarios.php');
 require_once(__DIR__ . '/controladores/Jornadas.php');

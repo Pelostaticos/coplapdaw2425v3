@@ -22,6 +22,7 @@ namespace correplayas\controladores;
 // Defino los espacios de mombres que voy a utilizar en esta clase
 use correplayas\excepciones\AppException;
 use correplayas\modelo\Jornada;
+use correplayas\modelo\Observatorio;
 use Smarty\Smarty;
 
 /**
@@ -65,7 +66,6 @@ class Jornadas {
             } else {
                 // De lo contario, muestro las vista por defecto del gestor de jornadas. Por tanto:
                 Jornadas::listarJornadasPlataforma($smarty);
-                echo "He llegado aquí";
             }            
         } else {
             // De lo contario, el usuario logueado no tiene permisos para ejecutar este gestor
@@ -107,7 +107,70 @@ class Jornadas {
     }
 
     private static function consultarDetallesJornadaPlataforma($smarty) {
-        echo "He llegado a consultar detalles de una jornada...";
+
+        // Recupero al usuario logueado en la plataforma
+        $usuario = $_SESSION['usuario'];
+
+        // Recupero los permisos del usuario logueado desde su sesión
+        $permisosUsuario = $_SESSION['permisos'];
+
+        // Compruebo si el usuario logueado tiene el rol de administrador
+        // que es el requerido para ejecutar la consulta de detalles de una jornada         
+        if ($permisosUsuario->hasPermisoAdministradorGestor()) {            
+            // El usuario logueado es administrador. Entonces:
+            // Compruebo que el usuario haya elegido una jornada del listado
+            if (isset($_POST['idJornada'])) {
+                // El usuario ha elegido una jornada del listado. Entonces:
+                // Recupero el identificador de la jornada elegida por el usuario
+                $idJornada = filter_input(INPUT_POST, 'idJornada');
+                // Recupero los datos de la jornada elegida por el usuario
+                $jornada = Jornada::consultarJornada($idJornada);
+                // Compruebo si la jornada elegida existe en la base de datos
+                if ($jornada instanceof Jornada) {
+                    // Se ha podido recuperar la jornada de la base de datos. Entonces:
+                    // Recupero los datos del observatorio asociado a la jornada elegida
+                    $observatorio=Observatorio::consultarObservatorio($jornada->getIdObservatorioJornada());
+                    // Compruebo si el observatorio asociado a la jornada existe en la base de datos
+                    if ($observatorio instanceof Observatorio) {
+                        // Se ha posido recuperar al observatorio asociadp a la jornada. Entonces:
+                        // Recopilo la información de la plantilla para mostrar detalles de la jornada
+                        $perfil = ['titulo' => $jornada->getTituloJornada(),
+                            'fecha' => $jornada->getFechaJornada(),
+                            'horaInicio' => $jornada->getHoraInicioJornada(),
+                            'horaFin' => $jornada->getHoraFinJornada(),
+                            'informacion' => $jornada->getInformacionJornada(),
+                            'estado' => ucfirst(strtolower($jornada->getEstadoJornada())),
+                            'asistencia' => $jornada->getControlAsistenciaJornada() === 1 ? 'Verificada' : 'Pendiente',
+                            'observatorio' => $observatorio->getNombreObservatorio(),
+                            'localidad' => $observatorio->getLocalidadObservatorio()];
+                        // Asigno las variables requeridas por la plantila de detalles de una jornada
+                        $smarty->assign('usuario', $usuario->getUsuario());
+                        $smarty->assign('permisos', $permisosUsuario);
+                        $smarty->assign('perfil', $perfil);
+                        $smarty->assign('anyo', date('Y'));
+                        // Muestro la plantilla de detalles de una jornada con sus datos
+                        $smarty->display('jornadas/detalles.tpl');
+                    } else {
+                        // De lo contario, lanzo una excepción para notificar al usuario que el
+                        // observatorio asociado a la jornada deseada no existe en la base de datos
+                        throw new AppException($message = "El observatorio de la jornada elegida no existe en la base de datos!!!",
+                        $urlAceptar="/plataforma/backoffice.php?comando=jornadas:default");
+                    }
+                } else {
+                    // De lo contario, lanzo una excepción para notificar al usuario que la
+                    // jornada deseada no existe en la base de datos
+                    throw new AppException($message = "La jornada elegida no existe en la base de datos!!!",
+                    $urlAceptar="/plataforma/backoffice.php?comando=jornadas:default");
+                }
+            } else {
+                // Lanzo una excepción para notificar que el usuario no eligió una jornada del listado
+                throw new AppException("No ha elegido una jornada del listado. Por favor, eliga una. Gracias!");
+            }
+        } else {
+            // Lanzo excepción para notificar al usuario que no tiene permiso para mostrar detalles de una jornada
+            throw new AppException("Su rol en la plataforma no le permite mostrar su detalles de una jornada");
+        }
+
     }
 
     private static function mostrarEdicionJornadaPlataforma($smarty) {

@@ -40,7 +40,7 @@ class Jornada {
 
     // B) Defino el constructor privado de la clase Jornada
     private function __construct($jornada) {
-        // Defino los atributos de la clase Usuario
+        // Defino los atributos de la clase Jornada
         $this->idJornada=$jornada['id_jornada'];
         $this->titulo=$jornada['titulo'];
         $this->fecha=$jornada['fecha'];
@@ -110,7 +110,7 @@ class Jornada {
     /**
      * Método GET para obtener el identificador único de la jornada
      *
-     * @return string Devuelve el identificador único de la jornada
+     * @return unsigned Devuelve el identificador único de la jornada
      */
     public function getIdJornada() {
         return $this->idJornada;
@@ -266,14 +266,14 @@ class Jornada {
     /**
      * Método estático que permite consultar datos de una jornada
      *
-     * @param string $codigo código de la jornada de la que se quiere consultar sus datos
-     * @return Usuario|null Devuelve un objeto jornada si se ha encontrado en la base de datos
+     * @param string $idJornada Identificador de la jornada de la que se quiere consultar sus datos
+     * @return Jornada|null Devuelve un objeto jornada si se ha encontrado en la base de datos
      *                      Devuelve nulo si la jornada solicitada NO se ha encontrado en la base de datos
      */
     public static function consultarJornada($idJornada): ?Jornada
     {   
         // Construyo la sentencia SQL para recuperar a la jornada de la base de datos     
-        $sql="SELECT * from pdaw_jornadas where id_jornada=:idJornada";
+        $sql="SELECT * FROM pdaw_jornadas WHERE id_jornada=:idJornada";
         // Ejecuto la sentencia SQL para recuperar a la jornada de la base de datos
         $res=Core::ejecutarSql($sql,[':idJornada'=>$idJornada]);
         // Si el resultado devuelto tras ejecución contiene un array de un elemento
@@ -294,16 +294,16 @@ class Jornada {
      *                    Devuelve nulo si NO pudo obtnerse un listado completo de jornadas en la base de datos
      */
     public static function listarJornadas(): ?Array {
-        // Construyo la sentencia SQL para recuperar al usuario de la base de datos     
+        // Construyo la sentencia SQL para recuperar a las jornadas de la base de datos     
         $sql="SELECT j.id_jornada as idJornada, j.titulo as titulo, ob.nombre as observatorio, j.fecha as fecha,
             j.estado as estado FROM pdaw_jornadas j 
             JOIN pdaw_observatorios ob ON j.observatorio=ob.codigo";
-        // Ejecuto la sentencia SQL para recuperar al usuario de la base de datos
+        // Ejecuto la sentencia SQL para recuperar a las jornadas de la base de datos
         $res=Core::ejecutarSql($sql);
         // Si el resultado devuelto tras ejecución contiene un array de un elemento
         if (is_array($res) && count($res)>0)        
         {
-            // Devuelvo al usuario recuperado de la base de datos
+            // Devuelvo a las jornadas recuperadas de la base de datos
             return $res;
         }
         else
