@@ -20,7 +20,12 @@
 namespace correplayas\modelo;
 
 // Defino los espacios de mombres que voy a utilizar en esta clase
+
+use correplayas\controladores\ErrorController;
+use correplayas\excepciones\AppException;
 use \correplayas\nucleo\Core;
+use DateTime;
+use Exception;
 
 /**
  * Clase del modelo de datos para trabajar con Jornadas
@@ -311,8 +316,6 @@ class Jornada {
             return null;
     }    
 
-    // OJO HAY QUE ADAPTARLA A LAS NECESIDADES DE JORNADAS ...... (Hacerlo conjunto con el controlador)
-
     /**
      * Método estático para buscar Jornadas en la base de datos.
      *
@@ -325,7 +328,7 @@ class Jornada {
     public static function buscarJornadas($busqueda, $ordenarPor, $orden) {
 
         // Defino las columnas de busqueda para encontrar usuarios
-        $columnas = ['u.nombre', 'p.nombre', 'p.apellido1', 'p.apellido2', 'u.estado', 'u.rol'];
+        $columnas = ['j.titulo','j.estado', 'ob.nombre', 'ob.localidad'];
 
         // Defino una array vacio en donde generar las condiciones de búsqueda
         $condiciones = [];
@@ -333,16 +336,48 @@ class Jornada {
         // Defino un array asociativo con los parámetros de busqueda
         $parametros = [];
 
-        // Genero las condiciones de búsqueda para encontrar Usuarios.
-        foreach($columnas as $columna) {
-            $parametro = str_replace('.','',$columna);
-            $parametros[":".$parametro] = "%$busqueda%";
-            $condiciones[] = "$columna LIKE :$parametro";                      
+        // Limpio el término de búsqueda introducido por el usuario
+        $busqueda = Jornada::limpiarBusqueda($busqueda);
+
+        // Establezco expresiones regulares para detectar fechas y rango de fechas
+        // RECUERDA: El formato admitidos en el frontend es DD-MM-YYYY para fechas
+        // y en el caso de rangos de fechas es DD-MM-YYYY a DD-MM-YYYY.
+        $fechaRegex = '/^\d{2}-\d{2}-\d{4}$/';
+        $rangoFechaRegex = '/^\d{2}-\d{2}-\d{4}\s+(a|hasta|-)\s+\d{2}-\d{2}-\d{4}$/';
+
+        // Detecto el tipo de búsqueda de jornadas que ha solicitado el usuario
+        // CASO-A: Detecta búsqueda por fecha única
+        if (preg_match($fechaRegex, $busqueda)) {
+            // Obtengo la fecha de búsqueda en el formato correcto para la consulta SQL
+            $fecha = Jornada::prepararFechas($busqueda);
+            // Genero la condicion de busqueda para la consulta SQL
+            $condiciones[]="j.fecha=:fecha";
+            // Genero los parámetros para la consulta SQL preparada
+            $parametros[':fecha']=$fecha;
+        // CASO-B: Detecta búsqueda por rango de fechas
+        } elseif (preg_match($rangoFechaRegex, $busqueda, $matches)) {
+            // Obtengo las fechas individuales del rango de fechas deseado por el usuario
+            list($fechaInicio, $fechaFin) = Jornada::prepararRangoFechas($busqueda);
+            // Genero la condicion de busqueda para la consulta SQL
+            $condiciones[]="j.fecha>=:fechaInicio AND j.fecha<=:fechaFin";            
+            // Genero los parámetros para la consulta SQL preparada
+            $parametros[':fechaInicio']=$fechaInicio;
+            $parametros[':fechaFin']=$fechaFin;
+        // CASO-C: Detecta búsqueda por estado, observatorio o localidad.
+        } else {
+            // Genero las condiciones de búsqueda para encontrar jornadas por los campos.
+            // Estado, observatorio y localidad.
+            foreach($columnas as $columna) {
+                $parametro = str_replace('.','',$columna);
+                $parametros[":".$parametro] = "%$busqueda%";
+                $condiciones[] = "$columna LIKE :$parametro";                      
+            }
         }
 
         // Construyo la sentencia SQL para realizar la búsqueda de Usuarios
-        $sql="SELECT u.codigo as hashusuario, u.nombre as usuario, CONCAT(p.apellido1, ' ', p.apellido2, ', ', p.nombre) as nombre, u.estado as estado, u.rol as rol  FROM pdaw_usuarios u 
-            LEFT JOIN pdaw_personas p ON u.codigo=p.usuario";
+        $sql="SELECT j.id_jornada as idJornada, j.titulo as titulo, ob.nombre as observatorio, 
+        ob.localidad as localidad, j.fecha as fecha, j.estado as estado FROM pdaw_jornadas j 
+            JOIN pdaw_observatorios ob ON j.observatorio=ob.codigo";
 
         // Añado las condiciones de búsqueda a la sentencia SQL anterior
         if (!empty($condiciones)) {
@@ -351,7 +386,7 @@ class Jornada {
         }
 
         // Añado la funcionalidad para ordenar el resultado de la búsqueda
-        $columnasPermitidas = ['usuario', 'nombre', 'estado', 'rol'];
+        $columnasPermitidas = ['titulo', 'observatorio', 'estado', 'fecha'];
         $ordenesPemritidos = ['ASC', 'DESC'];
 
         if (in_array($ordenarPor, $columnasPermitidas) && in_array($orden, $ordenesPemritidos)) {
@@ -374,6 +409,66 @@ class Jornada {
             return null;
         }
         
+    }
+
+    // F) Métodos estáticos privados de apoyo a la búsquedas de jornadas por fechas y rango de fechas
+
+    /**
+     * Método auxiliar para limpiar el término de dúsqueda de jornadas
+     *
+     * @param string $terminoBusqueda El término de búsqueda introciduo por el usuario
+     * @return string Devuelve limpio el termino de búsqueda introducido por el usuario
+     */
+    private static function limpiarBusqueda($terminoBusqueda) {
+        return htmlspecialchars(strip_tags(trim($terminoBusqueda)));
+    }
+
+    /**
+     * Método auxiliar para limpiar y dar formato adecuado a la fecha introducida por el usuario
+     *
+     * @param Smarty $smarty Objeto que contiene al motor de plantillas Smarty
+     * @param string $fecha Fecha de búsqueda introducida por el usuario 
+     * @return string Devuelve la fecha introducida por el usuario en el formato correcto
+     */
+    private static function prepararFechas($fecha) {
+        // Limpio la fecha introducida por el usuario en el campo de búsqueda
+        $fecha = Jornada::limpiarBusqueda($fecha);
+        // Intento obtener un objeto fecha a partir de la cadena de fecha introducida por el usuario
+        // Obtengo un objeto fecha a partir de la cadena de fecha introducida por el usuario
+        $fechaObjeto = DateTime::createFromFormat('d-m-Y', $fecha);
+        // Si el objeto fecha NO se pudo crear correctamente. Entonces:
+        if (!$fechaObjeto) {
+            // Notifico al usuario que el formato de la fecha introducida por el usuario es incorrecta
+            throw new AppException("Recuerda! El formato de fecha introducido debe ser: DD-MM-YYYY");
+        }
+        // Devuelvo el formato de la fecha de búsqueda en el formato adecuado para la base de datos
+        return $fechaObjeto->format('Y-m-d');
+    }
+
+    /**
+     * Método estático auxiliar para limpiar y dar formato correcto al rango de fechas introducido por el usuario
+     *
+     * @param string $rangoFechas Rango de fecha de búsqueda introducido por el usuario
+     * @return list Devuelve un objeto tipo listado con las fechas del rango introducido en formato correcto
+     */
+    private static function prepararRangoFechas($rangoFechas) {
+        // Limpio la fecha introducida por el usuario en el campo de búsqueda
+        $rangoFechas = Jornada::limpiarBusqueda($rangoFechas);
+        // Divido el rango de fechas introducido por el usuario en sus partes
+        // RECUERDA: El formato de rango de fechas admitidos en frontend es: DD-MM-YYYY a DD-MM-YYYY
+        $partes = explode('a', $rangoFechas);
+        // Compruebo si el rango de fechas deseado se compone de dos partes
+        if (count($partes) === 2) {
+            // Obtengo la fecha de inicio del rango de búsqueda deseado en el formato correcto
+            $fechaInicio = Jornada::prepararFechas(trim($partes[0]));
+            // Obtengo la fecha de finc del rango de búsqueda deseado en el formato correcto
+            $fechaFin = Jornada::prepararFechas(trim($partes[1]));
+        } else {
+            // Notifico al usuario que el formato del rango fecha introducida por el usuario es incorrecto
+            throw new AppException("Recuerda! El formato para el fecha introducido debe ser: DD-MM-YYYY a DD-MM-YYYY");
+        }
+        // Devuelvo las fechas del rango de búsqueda en el formato correcto para la base de datos
+        return [$fechaInicio, $fechaFin];
     }
 
 }

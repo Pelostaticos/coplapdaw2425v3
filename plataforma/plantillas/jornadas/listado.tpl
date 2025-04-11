@@ -41,10 +41,10 @@
                             <label for="frm-ordenarpor">Ordenar por</label>:&nbsp;
                             <select id="frm-ordenarpor" name="frm-ordenarpor">
                                 <option value="">ninguno</option>
+                                <option value="titulo">titulo</option>                                    
+                                <option value="observatorio">observatorio</option>
                                 <option value="estado">estado</option>                                    
-                                <option value="nombre">nombre</option>
-                                <option value="rol">rol</option>                                    
-                                <option value="usuario">usuario</option>                                    
+                                <option value="fecha">fecha</option>                                    
                             </select>
                         </p>
                         <p class="corto">

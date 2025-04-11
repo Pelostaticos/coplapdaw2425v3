@@ -214,6 +214,10 @@ try {
                 // Solicito al controlador de jornadas que procese la baja de una jornada
                 Jornadas::eliminarJornadaPlataforma($smarty);
                 break;
+            case "jornadas:filtrar":
+                // Solicito al controlador de jornadas que filtre el listado por los criterios de búsqueda dados
+                Jornadas::filtrarJornadasPlataforma($smarty);
+                break;
             case "censos:default":
                 // Solicito al controlador de censos que muestre las vista por defecto según rol del usuario
                 Censos::default($smarty);
