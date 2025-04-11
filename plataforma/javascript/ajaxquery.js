@@ -38,6 +38,9 @@ function realizarPeticionesAjax(comando) {
                     case "jornadas:registrar":
                         cargarSelectRegistroJornadas(datos);
                         break;
+                    case "jornadas:actualizar":
+                        cargarSelectEdicionJornadas(datos);
+                        break;
                     // Por defecto: Cargo dinámicamente los selectores disponibles en la vista de registro de usuario.
                     default:
                         cargarSelectRegistroUsuarios(datos);
@@ -119,12 +122,12 @@ function cargarSelectEdicionUsuarios(datos) {
 
 // A.3) Función para cargar dinámicamente los selectores de la vista de registro de nueva jornada
 function cargarSelectRegistroJornadas(datos) {
-    // Intento cargar dinámicamente los elementos select del formulario de edición de usuarios
+    // Intento cargar dinámicamente los elementos select del formulario de registro de jornada
     try {
-        // 0º) Obtengo el elemento select "observatorio" del formulario de registro de usuarios
+        // 0º) Obtengo el elemento select "observatorio" del formulario de registro de jornada
         const selectObservatorios = document.getElementById('frm-observatorio');
 
-        // 1º) Limpio las opciones existente en el selector "observatorio" ontenido
+        // 1º) Limpio las opciones existente en el selector "observatorio" obtenido
         selectObservatorios.innerHTML = '';
 
         // 2º) Cargo los observatorios en el selector de formulario obtenido
@@ -136,13 +139,41 @@ function cargarSelectRegistroJornadas(datos) {
         });        
 
     } catch(error) {
+        // Muestro por consola el error producido al cargar selectores en la vista deseada
+        console.error(error);
+    }
+}
+
+// A.4) Función para cargar dinámicamente los selectores de la vista de edición de jornada
+function cargarSelectEdicionJornadas(datos) {
+    // Intento cargar dinámicamente los elementos select del formulario de edición de jornada
+    try {
+        // 0º) Obtengo el elemento select "observatorio" del formulario de edicion de jornada
+        const selectObservatorios = document.getElementById('frm-observatorio');
+
+        // 1º) Obtengo los valores actuales de los selectores del formulario de edición de usuarios
+        const observatorioActual = selectObservatorios.querySelector('option[selected]');
+
+        // 2º) Limpio las opciones existente en el selector "observatorio" ontenido
+        selectObservatorios.innerHTML = '';
+
+        // 3º) Cargo las localidades en el selector correspondiente del formualrio
+        datos.forEach(opcion => {
+            const option = document.createElement('option');
+            option.value = opcion.valor;
+            option.textContent = opcion.nombre;
+            if (opcion.valor === observatorioActual.value) {option.selected=true;}
+            selectObservatorios.appendChild(option);
+        });       
+
+    } catch(error) {
         // Muestro por consola el error producido al cargar seelctores en la vista deseada
         console.error(error);
     }
 }
 
 // B) Funcionaes de actualización dinámica de datos por clic en elemento select.
-
+// RECUERDA: Descartado por falta de tiempo para cumplir fecha de entrega del Proyecto DAW
 
 // C) Manejadores de eventos control dináimico de datos en formualrios.
 // C.0) Intentp manejar los eventos de control dinámico de datos en formularios

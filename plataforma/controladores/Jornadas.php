@@ -131,10 +131,13 @@ class Jornadas {
         if ($permisosUsuario->hasPermisoAdministradorGestor()) {            
             // El usuario logueado es administrador. Entonces:
             // Compruebo que el usuario haya elegido una jornada del listado
-            if (isset($_POST['idJornada'])) {
+            if (isset($_SESSION['listado'])) {
                 // El usuario ha elegido una jornada del listado. Entonces:
                 // Recupero el identificador de la jornada elegida por el usuario
-                $idJornada = filter_input(INPUT_POST, 'idJornada');
+                $idJornada = $_SESSION['listado'];
+                // Desestablezco el identificador de jornada elegido por el usuario desde la sesion porque
+                // ya ha cumpplido su función aquí
+                unset($_SESSION['listado']);                
                 // Recupero los datos de la jornada elegida por el usuario
                 $jornada = Jornada::consultarJornada($idJornada);
                 // Compruebo si la jornada elegida existe en la base de datos
@@ -203,10 +206,13 @@ class Jornadas {
         if ($permisosUsuario->hasPermisoAdministradorGestor()) {
             // El usuario logueado es administrador. Entonces:
             // Compruebo que el usuario haya elegido una jornada del listado
-            if (isset($_POST['idJornada'])) {
+            if (isset($_SESSION['listado'])) {
                 // El usuario ha elegido una jornada del listado. Entonces:
                 // Recupero el identificador de la jornada elegida por el usuario
-                $idJornada = filter_input(INPUT_POST, 'idJornada');
+                $idJornada = $_SESSION['listado'];
+                // Desestablezco el identificador de jornada elegido por el usuario desde la sesion porque
+                // ya ha cumpplido su función aquí
+                unset($_SESSION['listado']);                
                 // Recupero los datos de la jornada elegida por el usuario
                 $jornada = Jornada::consultarJornada($idJornada);
                 // Compruebo si la jornada elegida existe en la base de datos
@@ -220,12 +226,13 @@ class Jornadas {
                         // Genero el nombre del observatorio asociado a la jornada
                         $nombreObservatorio = $observatorio->getNombreObservatorio() . " (" . $observatorio->getLocalidadObservatorio() . ")";
                         // Recopilo la información de la plantilla para mostrar detalles de la jornada
-                        $perfil = ['titulo' => $jornada->getTituloJornada(),
+                        $perfil = ['idJornada' => $idJornada,
+                            'titulo' => $jornada->getTituloJornada(),
                             'fecha' => $jornada->getFechaJornada(),
                             'horaInicio' => $jornada->getHoraInicioJornada(),
                             'horaFin' => $jornada->getHoraFinJornada(),
                             'informacion' => $jornada->getInformacionJornada(),
-                            'estado' => $jornada->getEstadoJornada(),
+                            'estado' => ucfirst(strtolower($jornada->getEstadoJornada())),
                             'asistencia' => $jornada->getControlAsistenciaJornada() === 1 ? 'Verificada' : 'Pendiente',
                             'observatorio' => $jornada->getIdObservatorioJornada(),
                             'nombreObservatorio' => $nombreObservatorio];
@@ -262,11 +269,130 @@ class Jornadas {
         }
     }
 
+    /**
+     * Método auxiliar para mostrar la confirmación de baja de una jornada de la plataforma
+     *
+     * @param Smarty $smarty Objeto que contiene al motor de plantillas Smarty
+     * @return void No devuelve valor alguno
+     */
     private static function mostrarConfirmaciónBajaJornadaPlataforma($smarty) {
+        // Recupero los permisos del usuario logueado desde su sesión
+        $permisosUsuario = $_SESSION['permisos'];
 
+        // Compruebo que el usuario logueado es un administrador
+        if ($permisosUsuario->hasPermisoAdministradorGestor()) {
+            // El usuario logueado es administrador. Entonces:
+            // Compruebo que el usuario haya elegido una jornada del listado
+            if (isset($_POST['idJornada'])) {
+                // Establezco la configuración del mensaje de confirmación para el usuario autorizado
+                $mensaje = "Has solicitado eliminar una jornada de la plataforma";
+                $pregunta = "¿Estás seguro que quieres eliminar a dicha jornada?";
+                $urlCancelar = "/plataforma/backoffice.php?comando=jornadas:default";
+                $urlAceptar = "/plataforma/backoffice.php?comando=jornadas:eliminar:procesa";
+                // Muestro el mensaje de confirmación de baja al usuario
+                ErrorController::mostarMensajeAdvertencia($smarty,$mensaje,$pregunta,$urlCancelar,$urlAceptar);
+            } else {
+                // Lanzo una excepción para notificar que el usuario no eligió una jornada del listado
+                throw new AppException("No ha elegido una jornada del listado. Por favor, eliga una. Gracias!");                
+            }
+        } else {
+            // Lanzo excepción para notificar al usuario que no tiene permiso para actualizar una jornada
+            throw new AppException("Su rol en la plataforma no le permite eliminar una jornada");            
+        }
     }
 
     // B) Métodos estáticos públicos para procesar los datos de las vistas específicas
+
+    /**
+     * Método estático para actualizar una jornada de la plataforma
+     *
+     * @param Smarty $smarty Objeto que contiene al motor de plantillas Smarty
+     * @return void No devuelve valor alguno
+     */
+    public static function actualizarJornadaPlataforma($smarty) {
+
+        // Recupero los permisos del usuario logueado desde su sesión
+        $permisosUsuario = $_SESSION['permisos']; 
+
+        // Compruebo si el usuario tiene rol de administrador
+        if ($permisosUsuario->hasPermisoAdministradorGestor()) {
+            // El usuario logueado es administrador. Entonces:
+            // Recupero el identificador de la jornada elegida por el usuario
+            $idJornada = filter_input(INPUT_POST, 'frm-idjornada');
+            // Recupero los datos de la jornada elegida por el usuario
+            $jornada = Jornada::consultarJornada($idJornada);
+            // Compruebo si la jornada elegida existe en la base de datos
+            if ($jornada instanceof Jornada) {
+                // Recupero del formulario de actualizacion de jornadas los datos y actualizo el objeto
+                $jornada->setHoraInicioJornada(filter_input(INPUT_POST,'frm-hora-inicio'));
+                $jornada->setHoraFinJornada(filter_input(INPUT_POST,'frm-hora-fin'));
+                $jornada->setInformacionJornada(filter_input(INPUT_POST,'frm-informacion'));
+                $jornada->setEstadoJornada(filter_input(INPUT_POST,'frm-estado'));
+                // Actulizo los datos de la jornada y muestro la notificación del resultado
+                if ($jornada->actualizarJornada()) {
+                    // Notifico al usuario que la actualización de la jornada fue existosa
+                    ErrorController::mostrarMensajeInformativo($smarty, "Perfil de usuario actualizado con éxito!!", 
+                        "/plataforma/backoffice.php?comando=jornadas:default");
+                } else {
+                    // Lanzo una excepción para indicar que no es posible obtener valores por defecto del perfil de usuario
+                    throw new AppException($message = "No es posible actualizar el perfil de usuario", 
+                        $urlAceptar="/plataforma/backoffice.php?comando=jornadas:default");
+                }                    
+            } else {
+                // De lo contario, lanzo una excepción para notificar al usuario que la
+                // jornada deseada no existe en la base de datos
+                throw new AppException($message = "La jornada elegida no existe en la base de datos!!!",
+                $urlAceptar="/plataforma/backoffice.php?comando=jornadas:default");                    
+            }
+        } else {
+            // Lanzo excepción para notificar al usuario que no tiene permiso para actualizar una jornada
+            throw new AppException("Su rol en la plataforma no le permite actualizar una jornada");
+        }
+
+    }
+
+    /**
+     * Método estático para eliminar a una jornada de la plataforma
+     *
+     * @param Smarty $smarty Objeto que contiene al motor de plantillas Smarty
+     * @return void No devuelve valor alguno
+     */
+    public static function eliminarJornadaPlataforma($smarty) {
+
+        // Recupero los permisos del usuario logueado desde su sesión
+        $permisosUsuario = $_SESSION['permisos'];
+
+        // Compruebo que el usuario tiene rol de administrador
+        if ($permisosUsuario->hasPermisoAdministradorGestor()) {
+            // El usuario logueado es administrador. Entonces:
+            // Compruebo que el usuario loqueado eligió una jornada del listado
+            if (isset($_SESSION['listado'])) {
+                // Recupero el identificador de la jornada elegida por el usuario desde su sesion
+                $idJornada = $_SESSION['listado'];
+                // Desestablezco el identificador de jornada elegido por el usuario desde la sesion porque
+                // ya ha cumpplido su función aquí
+                unset($_SESSION['listado']);
+                // Recupero la jornada elegida por el usuario que desea eleiminar
+                $jornada = Jornada::consultarJornada($idJornada);
+                // Procedo a eliminar la jornada y compruebo su resultado
+                if ($jornada->eliminarJornada()) {
+                    // Notifico al usuario que el perfil se ha eliminado correctamente y cierro su sesión
+                    ErrorController::mostrarMensajeInformativo($smarty, "La jornada indicada se ha elminado correctamente!",
+                        "/plataforma/backoffice.php?comando=jornadas:default");
+                } else {
+                    // Lanzo una excepción para indicar que existe algún problema para dar de baja al usuario
+                    throw new AppException("No es posible dar de baja a la jornada indicada!");
+                }
+            } else {
+                // Lanzo una excepción para notificar que el usuario no eligió una jornada del listado
+                throw new AppException("No ha elegido una jornada del listado. Por favor, eliga una. Gracias!");
+            }         
+        } else {
+            // Lanzo excepción para notificar al usuario que no tiene permiso para actualizar una jornada
+            throw new AppException("Su rol en la plataforma no le permite eliminar una jornada");
+        }
+
+    }
 
     // NOTA: El filtrado o busqueda de jornadas lo dejo para el final para decidir campos y algoritmo
 

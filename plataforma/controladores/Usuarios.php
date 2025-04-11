@@ -421,7 +421,7 @@ class Usuarios {
                 throw new AppException("No existen datos para actualizar el perfil de usuario");                
             }
         } else {
-            // Lanzo excepción para notificar al usuario que no tiene permiso para mostrar su perfil
+            // Lanzo excepción para notificar al usuario que no tiene permiso para actualizar su perfil
             throw new AppException("Su rol en la plataforma no le permite actualizar el perfil de usuario");
         }
     }

@@ -63,7 +63,7 @@ class Jornada {
     public function actualizarJornada(): ?bool {       
         // Construyo la sentencia SQL para actualizar al usuario de la base de datos     
         $sql="UPDATE pdaw_jornadas SET hora_inicio=:horaInicio, hora_fin=:horaFin, informacion=:informacion,
-            estado=:estado, asistencia:asistencia WHERE id_jornada=:idJornada";
+            estado=:estado, asistencia=:asistencia WHERE id_jornada=:idJornada";
         // Preparo los datos de la jornada a actualizar en la base de datos
         $datos = [':horaInicio' => $this->horaInicio, ':horaFin' => $this->horaFin, ':informacion' => $this->informacion,
             ':estado' => $this->estado, ':asistencia' => $this->asistencia, ':idJornada' => $this->idJornada];

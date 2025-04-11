@@ -32,14 +32,12 @@
                 </div>                
                 <!-- Información del gestor de jornadas  -->
                 <form id="edicion-jornada" method="post" action="/plataforma/backoffice.php?comando=jornadas:actualizar:procesa">
+                    <input name="frm-idjornada" id="frm-idjornada" type="hidden" value="{$perfil.idJornada}">
                     <div class="contenido-gestor">                        
                         <div class="campos-gestor">
+                            <p class="largo"><span>Titulo</span>:&nbsp;{$perfil.titulo}</p>
                             <p class="largo">
-                                <label for="frm-titulo">Titulo:&nbsp;</label>
-                                <input type="text" name="frm-titulo" id="frm-titulo" value="{$perfil.titulo}">
-                            </p>
-                            <p class="largo">
-                                <label for="frm-estado">Estado:&nbsp;</label>
+                                <label for="frm-estado"><span>Estado</span>:&nbsp;</label>
                                 <select name="frm-estado">
                                     {foreach $estados as $nombre => $valor}
                                         <option value="{$valor}" {if $perfil.estado === $nombre}selected{/if}>{$nombre}</option>
@@ -49,30 +47,23 @@
                             <p class="corto"><span>Asistencia</span>:&nbsp;{$perfil.asistencia}</p>           
                         </div>
                         <div class="campos-gestor">
-                            <p class="extralargo">
-                                <label for="frm-observatorio">Observatorio:&nbsp;</label>
-                                <select name="frm-observatorio" id="frm-observatorio">
-                                    <option value="{$perfil.observatorio}" selected>{$perfil.nombreObservatorio}</option>
-                                </select>
-                            </p>
+                            <p class="extralargo"><span>Observatorio</span>:&nbsp;{$perfil.nombreObservatorio}</p>
                         </div>                        
                         <div class="campos-gestor">
-                            <p class="corto">
-                                <label for="frm-fecha">Fecha:&nbsp;</label>
-                                <input name="frm-fecha" id="frm-fecha" type="date" min="{$hoy}" value="{$perfil.fecha}">
-                            </p>
+                            <p class="corto"><span>Fecha</span>:&nbsp;{$perfil.fecha}</p>
+                            <input name="frm-fecha" id="frm-fecha" type="hidden" value="{$perfil.fecha}">
                             <p class="largo">
-                                <label for="frm-hora-inicio">Hora de inicio:&nbsp;</label>
+                                <label for="frm-hora-inicio"><span>Hora de inicio</span>:&nbsp;</label>
                                 <input name="frm-hora-inicio" id="frm-hora-inicio" type="time" min="08:00:00" max="13:00:00" step="15" value="{$perfil.horaInicio}">
                             </p>
                             <p class="largo">
-                                <label for="frm-hora-fin">Hora de fin:&nbsp;</label>
+                                <label for="frm-hora-fin"><span>Hora de fin</span>:&nbsp;</label>
                                 <input name="frm-hora-fin" id="frm-hora-fin" type="time" min="08:00:00" max="13:00:00" step="15" value="{$perfil.horaFin}">
                             </p>
                         </div>
                         <div class="campos-gestor">
                             <p class="extraextralargo">
-                                <label for="frm-informacion">Información:&nbsp;</label>
+                                <label for="frm-informacion"><span>Información</span>:&nbsp;</label>
                                 <textarea name="frm-informacion" id="frm-informacion" rows="3" maxleng="200">{$perfil.informacion}</textarea>
                             </p>
                         </div>

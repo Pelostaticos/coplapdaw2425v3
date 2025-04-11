@@ -54,7 +54,10 @@ class AjaxQuery {
                     AjaxQuery::prepararDatosAjaxVistaEdicionUsuario();
                     break;
                 case "jornadas:registrar":
-                    AjaxQuery::prepararDatosAjaxVistaRegistroJornada();
+                    AjaxQuery::prepararDatosAjaxVistaRegistroEdicionJornada();
+                    break;
+                case "jornadas:actualizar":
+                    AjaxQuery::prepararDatosAjaxVistaRegistroEdicionJornada();
                     break;
                 default:
                     // Por defecto si la petición Ajax es desconocida le respondo con un error
@@ -175,7 +178,7 @@ class AjaxQuery {
      *
      * @return void No devuelve valor alguno
      */    
-    private static function prepararDatosAjaxVistaRegistroJornada() {
+    private static function prepararDatosAjaxVistaRegistroEdicionJornada() {
         // Defino el array asociativo con los datos de la respuesta a la petición Ajax
         $datosRespuestaAjax = [];
         // Obtengo los observatorios disponibles en la plataforma

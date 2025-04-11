@@ -205,7 +205,15 @@ try {
             case "jornadas:registrar:procesa":
                 // Solicito al controlador de jornadas que me muestre la vista para el registro de nuevas jornadas
                 Jornadas::registrarJornadaPlataforma($smarty);
-                break;                
+                break;
+            case "jornadas:actualizar:procesa":
+                // Solicito al controlador de jornadas que procese la actualización de una jornada
+                Jornadas::actualizarJornadaPlataforma($smarty);
+                break;
+            case "jornadas:eliminar:procesa":
+                // Solicito al controlador de jornadas que procese la baja de una jornada
+                Jornadas::eliminarJornadaPlataforma($smarty);
+                break;
             case "censos:default":
                 // Solicito al controlador de censos que muestre las vista por defecto según rol del usuario
                 Censos::default($smarty);

@@ -526,7 +526,9 @@ div.campos-gestor p {
     width: 42em;
     font-size: var(--tamaño-fuente-h5-escritorio);
 }
-.campos-gestor p span {
+.campos-gestor p span,
+.campos-gestor p label span
+ {
     font-weight: 600;
     text-decoration: underline;
 }

@@ -88,8 +88,11 @@
                                         <button class="boton-accion-listado-gestor" type="submit" name="accion" value="consultar" title="Mostrar detalles"><span class="iconos-acciones-listados">search</span></button>
                                         {if $fila.estado === 'ABIERTA' || $fila.estado === 'PUBLICADA'}
                                             <button class="boton-accion-listado-gestor" type="submit" name="accion" value="actualizar" title="Actualizar jornada"><span class="iconos-acciones-listados">edit</span></button>
+                                            
+                                        {/if}
+                                        {if $fila.estado === 'PUBLICADA'}                                                    
                                             <button class="boton-accion-listado-gestor" type="submit" name="accion" value="eliminar" title="Eliminar jornada"><span class="iconos-acciones-listados">delete</span></button>
-                                        {{/if}}
+                                        {/if}
                                     </form>
                                 </td>
                             </tr>
