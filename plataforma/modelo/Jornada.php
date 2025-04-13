@@ -62,8 +62,8 @@ class Jornada {
     /**
     * Método para actualizar los datos de una jornada en la base de datos
     *
-    * @return boolean Devuelve verdadero si se actualizo al usuario
-    *                 Devuelve falso si no se pudo actualizar al usuario  
+    * @return boolean Devuelve verdadero si se actualizo a la jornada
+    *                 Devuelve falso si no se pudo actualizar a la jornada
     */
     public function actualizarJornada(): ?bool {       
         // Construyo la sentencia SQL para actualizar al usuario de la base de datos     

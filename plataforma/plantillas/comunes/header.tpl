@@ -39,7 +39,7 @@
                     <!-- Entrada del menu para el acceso al gestor de jornadas -->
                     <li><a href="/plataforma/backoffice.php?comando=jornadas:default">Jornadas</a></li>
                     <!-- Entrada de menu para el acceso al gestor de participantes -->
-                    <li><a href="#">Participación</a></li>
+                    <li><a href="/plataforma/backoffice.php?comando=participantes:default">Participación</a></li>
                     <!-- Entrada del menu para el acceso al gestor de censos    -->
                     <li><a href="/plataforma/backoffice.php?comando=censos:default">Censos</a></li>
                     <!-- Entrada del menú para el acceso al gestor de aves -->

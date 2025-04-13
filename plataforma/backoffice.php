@@ -27,10 +27,12 @@ require_once(__DIR__ . '/modelo/Localidad.php');
 require_once(__DIR__ . '/modelo/Persona.php');
 require_once(__DIR__ . '/modelo/Usuario.php');
 require_once(__DIR__ . '/modelo/Jornada.php');
+require_once(__DIR__ . '/modelo/Participante.php');
 require_once(__DIR__ . '/modelo/Observatorio.php');
 require_once(__DIR__ . '/modelo/Rol.php');
 require_once(__DIR__ . '/controladores/Usuarios.php');
 require_once(__DIR__ . '/controladores/Jornadas.php');
+require_once(__DIR__ . '/controladores/Participantes.php');
 require_once(__DIR__ . '/controladores/Censos.php');
 require_once(__DIR__ . '/controladores/Aves.php');
 require_once(__DIR__ . '/controladores/Observatorios.php');
@@ -53,6 +55,7 @@ use PHPMailer\PHPMailer\Exception;
 use correplayas\controladores\ErrorController;
 use correplayas\controladores\Usuarios;
 use correplayas\controladores\Jornadas;
+use correplayas\controladores\Participantes;
 use correplayas\controladores\Censos;
 use correplayas\controladores\Aves;
 use correplayas\controladores\Observatorios;
@@ -217,6 +220,10 @@ try {
             case "jornadas:filtrar":
                 // Solicito al controlador de jornadas que filtre el listado por los criterios de búsqueda dados
                 Jornadas::filtrarJornadasPlataforma($smarty);
+                break;
+            case "participantes:default":
+                // Solicito al controlador de participantes que muestre la vista por defecto según el rol del usuario
+                Participantes::default($smarty);
                 break;
             case "censos:default":
                 // Solicito al controlador de censos que muestre las vista por defecto según rol del usuario
