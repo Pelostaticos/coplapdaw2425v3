@@ -9,6 +9,7 @@
 *   >> usuario: Nombre del usuario logueado.
 *   >> permisos: Conjunto de permisos del usuario logueado.
 *   >> perfil: Datos para generar los detalles de la jornada.
+*   >> volver: URL a la que se le redirige al usuario al pulsar sobre el botón volver.
 *   >> anyo: Año en curso para copyright y copyleft del sitio web.
 *
 *}
@@ -54,7 +55,7 @@
                 </div>
                 <!-- Acciones permitidas por el gestor de jornadas -->
                 <div class="botonera">
-                    <a class="boton-accion-gestor" href="/plataforma/backoffice.php?comando=jornadas:default" title="Volver al atrás">Volver</a>
+                    <a class="boton-accion-gestor" href="{$volver}" title="Volver al atrás">Volver</a>
                 </div>
               </article>
           </section>

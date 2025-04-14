@@ -64,10 +64,10 @@
                                         <td>{$fila.fecha}</td>
                                         <!-- Celda con acciones permitidas para cada jornada de inscripción  -->
                                         <td>
-                                            <form method="post" action="/plataforma/backoffice.php?comando=jornadas:default">
+                                            <form method="post" action="/plataforma/backoffice.php?comando=participantes:default">
                                                 <input type="hidden" name="idJornada" value="{$fila.idJornada}">
-                                                <button class="boton-accion-listado-gestor" type="submit" name="accion" value="inscribirse" title="Inscribirse a la jornada"><span class="iconos-acciones-listados">person_add</span></button>
                                                 <button class="boton-accion-listado-gestor" type="submit" name="accion" value="detalles" title="Mostrar detalles jornada a inscribirse"><span class="iconos-acciones-listados">search</span></button>
+                                                <button class="boton-accion-listado-gestor" type="submit" name="accion" value="inscribirse" title="Inscribirse a la jornada"><span class="iconos-acciones-listados">person_add</span></button>                                                
                                             </form>
                                         </td>
                                     </tr>

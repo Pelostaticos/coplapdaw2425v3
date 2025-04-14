@@ -21,6 +21,7 @@
 
  // Defino los espacios de mombres que voy a utilizar en esta clase
  use correplayas\controladores\ErrorController;
+ use correplayas\controladores\Jornadas;
  use correplayas\excepciones\AppException;
  use correplayas\modelo\Participante;
  use Smarty\Smarty;
@@ -62,9 +63,19 @@ class Participantes {
                 // Está establecida la acción en el superglobal POST. Entonces:                
                 // Recupero la acción solicitada desde un listado del gestor de participantes
                 $accion = $_POST['accion'];
+                // Establezco la variable sesion con el identificador de la jornada seleccionado en el listado
+                $_SESSION['listado'] = $_POST['idJornada'];                
                 // Proceso la acción solicitadas por usuarios no administradores desde el gestor
                 switch ($accion) {
+                    case "inscribirse":
+                        break;
                     default:
+                        // Establezco la variable de sesión para volver al gestor de participantes 
+                        // tras consultar detalles de una jornada disponible a inscripción.
+                        $_SESSION['volver'] = $_SERVER['REQUEST_URI'];                    
+                        // Solicito al controlador de jornadas que muestre los detalles de la jornada
+                        // abierta a inscripción que el usuario desea consultar.
+                        Jornadas::consultarDetallesJornadaPlataforma($smarty);
                         break;
                 }
             } else {

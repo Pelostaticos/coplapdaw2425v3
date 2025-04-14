@@ -54,12 +54,18 @@ class Jornadas {
                 // Gestiono la vista que debo mostrarle al administrador según la acción solicitada
                 switch($accion) {
                     case "actualizar":
+                        // Muestro la vista específica de edición de una jornada de la plataforma
                         Jornadas::mostrarEdicionJornadaPlataforma($smarty);
                         break;
                     case "eliminar":
+                        // Muestro la vista específica de confirmación de baja de una jornada de la plataforma
                         Jornadas::mostrarConfirmaciónBajaJornadaPlataforma($smarty);
                         break;
                     default:
+                        // Establezco la variable de sesión volver al gestor de jornadas tras consultar
+                        // los detalles de una jornada disponibles en la plataforma
+                        $_SESSION['volver'] = $_SERVER['REQUEST_URI'];
+                        // Muestro la vista general con los detalles de la jornada de la plataforma deseada
                         Jornadas::consultarDetallesJornadaPlataforma($smarty);
                         break;
                 }
@@ -109,82 +115,6 @@ class Jornadas {
             throw new AppException($message = "Tu rol en la plataforma no te permite listar ni filtrar jornadas", 
                 $urlAceptar="/plataforma/backoffice.php");
         }        
-
-    }
-
-    /**
-     * Método auxiliar para mostrar la vista de detalles de una jornada de la plataforma
-     *
-     * @param Smarty $smarty Objeto que contiene al motor de plantillas Smarty
-     * @return void No devuelve valor alguno
-     */
-    private static function consultarDetallesJornadaPlataforma($smarty) {
-
-        // Recupero al usuario logueado en la plataforma
-        $usuario = $_SESSION['usuario'];
-
-        // Recupero los permisos del usuario logueado desde su sesión
-        $permisosUsuario = $_SESSION['permisos'];
-
-        // Compruebo si el usuario logueado tiene el rol de administrador
-        // que es el requerido para ejecutar la consulta de detalles de una jornada         
-        if ($permisosUsuario->hasPermisoAdministradorGestor()) {            
-            // El usuario logueado es administrador. Entonces:
-            // Compruebo que el usuario haya elegido una jornada del listado
-            if (isset($_SESSION['listado'])) {
-                // El usuario ha elegido una jornada del listado. Entonces:
-                // Recupero el identificador de la jornada elegida por el usuario
-                $idJornada = $_SESSION['listado'];
-                // Desestablezco el identificador de jornada elegido por el usuario desde la sesion porque
-                // ya ha cumpplido su función aquí
-                unset($_SESSION['listado']);                
-                // Recupero los datos de la jornada elegida por el usuario
-                $jornada = Jornada::consultarJornada($idJornada);
-                // Compruebo si la jornada elegida existe en la base de datos
-                if ($jornada instanceof Jornada) {
-                    // Se ha podido recuperar la jornada de la base de datos. Entonces:
-                    // Recupero los datos del observatorio asociado a la jornada elegida
-                    $observatorio=Observatorio::consultarObservatorio($jornada->getIdObservatorioJornada());
-                    // Compruebo si el observatorio asociado a la jornada existe en la base de datos
-                    if ($observatorio instanceof Observatorio) {
-                        // Se ha posido recuperar al observatorio asociadp a la jornada. Entonces:
-                        // Recopilo la información de la plantilla para mostrar detalles de la jornada
-                        $perfil = ['titulo' => $jornada->getTituloJornada(),
-                            'fecha' => $jornada->getFechaJornada(),
-                            'horaInicio' => $jornada->getHoraInicioJornada(),
-                            'horaFin' => $jornada->getHoraFinJornada(),
-                            'informacion' => $jornada->getInformacionJornada(),
-                            'estado' => ucfirst(strtolower($jornada->getEstadoJornada())),
-                            'asistencia' => $jornada->getControlAsistenciaJornada() === 1 ? 'Verificada' : 'Pendiente',
-                            'observatorio' => $observatorio->getNombreObservatorio(),
-                            'localidad' => $observatorio->getLocalidadObservatorio()];
-                        // Asigno las variables requeridas por la plantila de detalles de una jornada
-                        $smarty->assign('usuario', $usuario->getUsuario());
-                        $smarty->assign('permisos', $permisosUsuario);
-                        $smarty->assign('perfil', $perfil);
-                        $smarty->assign('anyo', date('Y'));
-                        // Muestro la plantilla de detalles de una jornada con sus datos
-                        $smarty->display('jornadas/detalles.tpl');
-                    } else {
-                        // De lo contario, lanzo una excepción para notificar al usuario que el
-                        // observatorio asociado a la jornada deseada no existe en la base de datos
-                        throw new AppException($message = "El observatorio de la jornada elegida no existe en la base de datos!!!",
-                        $urlAceptar="/plataforma/backoffice.php?comando=jornadas:default");
-                    }
-                } else {
-                    // De lo contario, lanzo una excepción para notificar al usuario que la
-                    // jornada deseada no existe en la base de datos
-                    throw new AppException($message = "La jornada elegida no existe en la base de datos!!!",
-                    $urlAceptar="/plataforma/backoffice.php?comando=jornadas:default");
-                }
-            } else {
-                // Lanzo una excepción para notificar que el usuario no eligió una jornada del listado
-                throw new AppException("No ha elegido una jornada del listado. Por favor, eliga una. Gracias!");
-            }
-        } else {
-            // Lanzo excepción para notificar al usuario que no tiene permiso para mostrar detalles de una jornada
-            throw new AppException("Su rol en la plataforma no le permite mostrar su detalles de una jornada");
-        }
 
     }
 
@@ -435,6 +365,85 @@ class Jornadas {
     }
 
     // C) Métodos estáticos públicos para vistas generales y su procesamiento de datos asociados
+
+    /**
+     * Método estático general para mostrar la vista de detalles de una jornada de la plataforma
+     *
+     * @param Smarty $smarty Objeto que contiene al motor de plantillas Smarty
+     * @return void No devuelve valor alguno
+     */
+    public static function consultarDetallesJornadaPlataforma($smarty) {
+
+        // Recupero al usuario logueado en la plataforma
+        $usuario = $_SESSION['usuario'];
+
+        // Recupero los permisos del usuario logueado desde su sesión
+        $permisosUsuario = $_SESSION['permisos'];
+
+        // Compruebo si el usuario logueado tiene permiso para ejecutar la consulta de detalles 
+        // de una jornada determinada de la plataforma
+        if ($permisosUsuario->getPermisoConsultarJornada()) {            
+            // El usuario logueado es administrador. Entonces:
+            // Compruebo que el usuario haya elegido una jornada del listado
+            if (isset($_SESSION['listado'])) {
+                // El usuario ha elegido una jornada del listado. Entonces:
+                // Recupero el identificador de la jornada elegida por el usuario
+                $idJornada = $_SESSION['listado'];
+                // Desestablezco el identificador de jornada elegido por el usuario desde la sesion porque
+                // ya ha cumpplido su función aquí
+                unset($_SESSION['listado']);                
+                // Recupero los datos de la jornada elegida por el usuario
+                $jornada = Jornada::consultarJornada($idJornada);
+                // Compruebo si la jornada elegida existe en la base de datos
+                if ($jornada instanceof Jornada) {
+                    // Se ha podido recuperar la jornada de la base de datos. Entonces:
+                    // Recupero los datos del observatorio asociado a la jornada elegida
+                    $observatorio=Observatorio::consultarObservatorio($jornada->getIdObservatorioJornada());
+                    // Compruebo si el observatorio asociado a la jornada existe en la base de datos
+                    if ($observatorio instanceof Observatorio) {
+                        // Se ha posido recuperar al observatorio asociadp a la jornada. Entonces:
+                        // Recopilo la información de la plantilla para mostrar detalles de la jornada
+                        $perfil = ['titulo' => $jornada->getTituloJornada(),
+                            'fecha' => $jornada->getFechaJornada(),
+                            'horaInicio' => $jornada->getHoraInicioJornada(),
+                            'horaFin' => $jornada->getHoraFinJornada(),
+                            'informacion' => $jornada->getInformacionJornada(),
+                            'estado' => ucfirst(strtolower($jornada->getEstadoJornada())),
+                            'asistencia' => $jornada->getControlAsistenciaJornada() === 1 ? 'Verificada' : 'Pendiente',
+                            'observatorio' => $observatorio->getNombreObservatorio(),
+                            'localidad' => $observatorio->getLocalidadObservatorio()];
+                        // Asigno las variables requeridas por la plantila de detalles de una jornada
+                        $smarty->assign('usuario', $usuario->getUsuario());
+                        $smarty->assign('permisos', $permisosUsuario);
+                        $smarty->assign('perfil', $perfil);
+                        $smarty->assign('volver', $_SESSION['volver']);
+                        $smarty->assign('anyo', date('Y'));
+                        // Desentablezco la variable de sesion volver porque aqui cumplió ya su función
+                        unset($_SESSION['volver']);
+                        // Muestro la plantilla de detalles de una jornada con sus datos
+                        $smarty->display('jornadas/detalles.tpl');
+                    } else {
+                        // De lo contario, lanzo una excepción para notificar al usuario que el
+                        // observatorio asociado a la jornada deseada no existe en la base de datos
+                        throw new AppException($message = "El observatorio de la jornada elegida no existe en la base de datos!!!",
+                        $urlAceptar="/plataforma/backoffice.php?comando=jornadas:default");
+                    }
+                } else {
+                    // De lo contario, lanzo una excepción para notificar al usuario que la
+                    // jornada deseada no existe en la base de datos
+                    throw new AppException($message = "La jornada elegida no existe en la base de datos!!!",
+                    $urlAceptar="/plataforma/backoffice.php?comando=jornadas:default");
+                }
+            } else {
+                // Lanzo una excepción para notificar que el usuario no eligió una jornada del listado
+                throw new AppException("No ha elegido una jornada del listado. Por favor, eliga una. Gracias!");
+            }
+        } else {
+            // Lanzo excepción para notificar al usuario que no tiene permiso para mostrar detalles de una jornada
+            throw new AppException("Su rol en la plataforma no le permite mostrar su detalles de una jornada");
+        }
+
+    }
 
     /**
      * Método estático general para mostrar la vista de registro de nuevas jornadas en la plataforma
