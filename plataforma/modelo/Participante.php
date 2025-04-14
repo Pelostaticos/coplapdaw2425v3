@@ -219,7 +219,7 @@ class Participante {
     /**
      * Método estático para listar las jornadas disponibles en la base de datos para un usuario participante
      *
-     * @param string $participante Hah del usuario que quiere participan en las jornadas abiertas inscripción
+     * @param string $participante Hash del usuario que quiere participan en las jornadas abiertas inscripción
      * @return Array|null Devuelve un array asociativo con el listado de jornadas disponibles para inscripción de dicho participante
      *                    Devuelve nulo si NO pudo obtnerse un listado de jornadas disponibles para inscripción de dicho participante
      */
@@ -237,6 +237,43 @@ class Participante {
         if (is_array($res) && count($res)>0)        
         {
             // Devuelvo a las jornadas recuperadas de la base de datos
+            return $res;
+        }
+        else
+            // De lo contario devolveré nulo
+            return null;
+    }
+
+    /**
+     * Método estático para listar el histórico de participación de un usuario de la plataforma
+     *
+     * @param string $participante Hash del usuario del que se desea listar su hitórico de participanción en la plataforma
+     * @return Array|null Devuelve un array asociativo con el listado de inscripciones de dicho participante
+     *                    Devuelve nulo si NO pudo obtnerse un listado de inscripciones de dicho participante
+     */
+    public static function listarHistoricosInscripcion($participante): ?Array {
+        // Construyo la sentencia SQL base para recuperar el histórico de participación del usuario de la base de datos     
+        $sql="SELECT j.id_jornada as idJornada, j.titulo as titulo, 
+            CONCAT(j.fecha,' - ', j.hora_inicio, ' - ', j.hora_fin) as programada, 
+            p.inscripcion as inscrito, j.estado, 
+            CASE j.estado
+                WHEN 'ABIERTA' THEN 'NO'
+                WHEN 'CANCELADA' THEN 'NO'
+                WHEN 'CERRADA' THEN 'SI'
+                WHEN 'PUBLICADA' THEN 'NO'                
+            END AS realizada
+            FROM pdaw_jornadas j 
+            JOIN pdaw_observatorios ob ON j.observatorio=ob.codigo
+            JOIN pdaw_participantes p ON p.id_jornada=j.id_jornada
+            WHERE p.usuario=:usuario";
+        // Preparo los paŕametros requeridos por la consulta del histórico de participación a la base de datos        
+        $datos=[':usuario' => $participante];
+        // Ejecuto la sentencia SQL para recuperar el histórico de participación jornadas de la base de datos
+        $res=Core::ejecutarSql($sql, $datos);
+        // Si el resultado devuelto tras ejecución contiene un array de un elemento
+        if (is_array($res) && count($res)>0)        
+        {
+            // Devuelvo a las inscripciones recuperadas de la base de datos
             return $res;
         }
         else

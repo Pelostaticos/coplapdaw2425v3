@@ -72,7 +72,8 @@ class Participantes {
                 // Proceso la acción solicitadas por usuarios no administradores desde el gestor
                 switch ($accion) {
                     case "historico":
-                        echo "Aquí debería mostrar el histórico de participación del usuario logueado...";
+                        // Muestro la vista del histórico de participación del usuario deseado
+                        Participantes::mostrarHistoricoParticipacionusuarioPlataforma($smarty);
                         break;
                     case "inscribirse":
                         // Muestro la vista para inscribir a un usuario participante a una jornada
@@ -226,6 +227,42 @@ class Participantes {
             throw new AppException("Su usuario NO tiene permisos para inscribirse a jornadas en la plataforma!!!");
         }
 
+    }
+
+    /**
+     * Método estático auxiliar para mostrar la vista con el histórico de participación del usuario
+     *
+     * @param [type] $smarty Objeto que contiene al motor de plantillas Smarty
+     * @return void No devuelve valor alguno
+     */
+    private static function mostrarHistoricoParticipacionusuarioPlataforma($smarty) {
+        // Obtengo al usuario de la sesión de navegacion
+        $usuario = $_SESSION['usuario'];
+
+        // Recupero el hash de usuario del usuario participante
+        $participante=$usuario->getCodigo();
+
+        // Recupero los permisos del usuario logueado desde su sesión
+        $permisosUsuario = $_SESSION['permisos'];
+
+        // Compruebo que el usuario logueado no es administrador o es un administrdor como el modo participación activo
+        if (!$permisosUsuario->hasPermisoAdministradorGestor() || isset($_SESSION['adminparticipa'])) {
+
+            // Genero el listado de jornadas  disponibles en la plataforma
+            $datos = Participante::listarHistoricosInscripcion($participante);
+
+            // Asigno las variables requeridas por la plantila del listado de jornadas
+            $smarty->assign('usuario', $usuario->getUsuario());
+            $smarty->assign('permisosUsuario', $permisosUsuario);
+            $smarty->assign('filas', $datos);
+            $smarty->assign('anyo', date('Y'));
+            // Muestro la plantilla del listado de jornadas
+            $smarty->display('participantes/historico.tpl');  
+
+        } else {
+            // lazo una excepción para notificar al usuario que no tiene permisos para incribirse a jornadas en la plataforma
+            throw new AppException("Su usuario NO tiene permisos para mostrar históricos de participación en la plataforma!!!");
+        }     
     }
 
     // B) Métodos estáticos públicos para procesar los datos de las vistas específicas
