@@ -1,4 +1,4 @@
-{* Plantilla Smarty para vista del listado de jornadas abiertas a inscripción de la plataforma correplayas
+{* Plantilla Smarty para vista del histórico de participación de un usuario de la plataforma correplayas
 * Proyecto DAW Cursos 2024/25 - I.E.S AGUADULCE
 * Nombre del proyecto: Plataforma Correplayas
 * Tutor PDAW: Jośe Antonio Morales Álvarez.
@@ -14,7 +14,7 @@
 *}
 
 {include file="comunes/header.tpl" titulo="Histórico de participación" usuario=$usuario}
-    <!-- Contenidos de la página para el listado de jornadas para inscripción de la plataforma correplayas -->
+    <!-- Contenidos de la página para el histórico de participación de un usuario de la plataforma correplayas -->
     <main id="inicio">        
         <!-- Sección para el gestor de Participantes de la plataforma correplayas -->
          <section id="correplayas">
@@ -31,7 +31,7 @@
                 </div>                
                 <!-- Información del gestor de particpantes  -->
                 <div class="contenido-gestor">
-                    <!-- Formulario para busqueda y orden en el listado de jornadas  -->
+                    <!-- Formulario para busqueda y orden en el histórico de participación de un usuario  -->
                     <form id="busqueda-gestor" name="busqueda-gestor" method="post" action="/plataforma/backoffice.php?comando=jornadas:filtrar">
                         <p class="corto">
                             <label for="frm-busqueda">Busqueda</label>:&nbsp;
@@ -57,9 +57,9 @@
                         </p>
                         <p class="corto"><button type="submit" class="boton-accion-gestor">Buscar</button></p>                                             
                     </form>                                   
-                    <!-- Tabla que representa al listado de jornadas para inscripción -->
+                    <!-- Tabla que representa al histórico de participación de un usuario -->
                     <table id="listado-gestor">
-                        <!-- Cabecera del listado de jornadas para inscripción -->
+                        <!-- Cabecera del histórico de participación de un usuario -->
                         <thead>
                             <th>Titulo</th>
                             <th>Inscrito</th>
@@ -67,7 +67,7 @@
                             <th>Realizada</th>
                             <th>Acciones</th>
                         </thead>
-                        <!-- Contenido del listado de jornadas para inscripción -->
+                        <!-- Contenido del histórico de participación de un usuario -->
                         <tbody>
                             {if $filas|@count === 0}
                                 <tr>
@@ -75,14 +75,14 @@
                                 </tr>
                             {else}                        
                                 {foreach $filas as $fila}
-                                    <!-- Fila con los datos de cada jornada de inscripción  -->
+                                    <!-- Fila con los datos de cada inscripción del histórico de participación  -->
                                     <tr>
-                                        <!-- Celdas con datos de cada jornada de inscripción -->
+                                        <!-- Celdas con datos de cada inscripción del histórico de participación -->
                                         <td>{$fila.titulo}</td>
                                         <td>{$fila.inscrito}</td>
                                         <td>{$fila.programada}</td>
                                         <td>{$fila.realizada}</td>
-                                        <!-- Celda con acciones permitidas para cada jornada de inscripción  -->
+                                        <!-- Celda con acciones permitidas para cada inscripción del histórico de participación  -->
                                         <td>
                                             <form method="post" action="/plataforma/backoffice.php?comando=participantes:default">
                                                 <input type="hidden" name="idJornada" value="{$fila.idJornada}">
@@ -101,7 +101,8 @@
                 </div>
                 <!-- Acciones permitidas por el gestor de participantes -->
                 <div class="botonera">
-                    <a class="boton-accion-gestor" href="/plataforma/backoffice.php?comando=participantes:default" title="Volver al inicio">Volver</a>
+                    <a class="boton-accion-gestor" href="/plataforma/backoffice.php?comando=participantes:default" title="Volver atrás">Volver</a>
+                    <a class="boton-accion-gestor" href="/plataforma/backoffice.php" title="Volver al inicio del backoffice">Salir</a>
                 </div>
             </article>
         </section>

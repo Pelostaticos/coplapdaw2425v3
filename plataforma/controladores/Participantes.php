@@ -73,11 +73,14 @@ class Participantes {
                 switch ($accion) {
                     case "historico":
                         // Muestro la vista del histórico de participación del usuario deseado
-                        Participantes::mostrarHistoricoParticipacionusuarioPlataforma($smarty);
+                        Participantes::mostrarHistoricoParticipacionUsuarioPlataforma($smarty);
                         break;
                     case "inscribirse":
                         // Muestro la vista para inscribir a un usuario participante a una jornada
                         Participantes::mostrarInscripcionParticipanteJornadaPlataforma($smarty);
+                        break;
+                    case "detalles":
+                        Participantes::mostrarDetallesIncripciónUsuarioPlataforma($smarty);
                         break;
                     default:
                         // Establezco la variable de sesión para volver al gestor de participantes 
@@ -166,7 +169,7 @@ class Participantes {
                 // Desestablezco el identificador de jornada elegido por el usuario desde la sesion porque
                 // ya ha cumpplido su función aquí
                 unset($_SESSION['listado']);
-                // Recupero la jornada elegida por el usuario que desea eleiminar
+                // Recupero la jornada elegida por el usuario que desea inscribirse
                 $jornada = Jornada::consultarJornada($idJornada);
                 // Compruebo si la jornada elegida existe en la base de datos
                 if ($jornada instanceof Jornada) {
@@ -232,10 +235,10 @@ class Participantes {
     /**
      * Método estático auxiliar para mostrar la vista con el histórico de participación del usuario
      *
-     * @param [type] $smarty Objeto que contiene al motor de plantillas Smarty
+     * @param Smarty $smarty Objeto que contiene al motor de plantillas Smarty
      * @return void No devuelve valor alguno
      */
-    private static function mostrarHistoricoParticipacionusuarioPlataforma($smarty) {
+    private static function mostrarHistoricoParticipacionUsuarioPlataforma($smarty) {
         // Obtengo al usuario de la sesión de navegacion
         $usuario = $_SESSION['usuario'];
 
@@ -263,6 +266,99 @@ class Participantes {
             // lazo una excepción para notificar al usuario que no tiene permisos para incribirse a jornadas en la plataforma
             throw new AppException("Su usuario NO tiene permisos para mostrar históricos de participación en la plataforma!!!");
         }     
+    }
+
+    /**
+     * Método estático auxiliar para mostrar la vista con los detalles de una inscripción de un usuario participante
+     *
+     * @param Smarty $smarty Objeto que contiene al motor de plantillas Smarty
+     * @return void No devuelve valor alguno
+     */
+    private static function mostrarDetallesIncripciónUsuarioPlataforma($smarty) {
+        // Obtengo al usuario de la sesión de navegacion
+        $usuario = $_SESSION['usuario'];
+
+        // Recupero el hash de usuario del usuario participante
+        $hashParticipante=$usuario->getCodigo();
+
+        // Recupero los permisos del usuario logueado desde su sesión
+        $permisosUsuario = $_SESSION['permisos'];
+
+        // Compruebo si el usuario logueado tiene permiso para consultrar detalles de una inscripcion de la plataforma
+        if ($permisosUsuario->getPermisoInscribirseJornadas()) {
+            // El usuario logueado tiene permisos para inscribirse a jornadas: Entonces:
+            // Compruebo que el usuario loqueado eligió una jornada del listado
+            if (isset($_SESSION['listado'])) {
+                // Recupero el identificador de la jornada elegida por el usuario desde su sesion
+                $idJornada = $_SESSION['listado'];
+                // Desestablezco el identificador de jornada elegido por el usuario desde la sesion porque
+                // ya ha cumpplido su función aquí
+                unset($_SESSION['listado']);
+                // Recupero la inscripción elegida por el usuario que desea consultar detalles
+                $jornada = Jornada::consultarJornada($idJornada);
+                // Compruebo si la jornada elegida existe en la base de datos
+                if ($jornada instanceof Jornada) {
+                    // Se ha podido recuperar la jornada de la base de datos. Entonces:
+                    // Recupero los datos del observatorio asociado a la jornada elegida
+                    $observatorio=Observatorio::consultarObservatorio($jornada->getIdObservatorioJornada());
+                    // Compruebo si el observatorio asociado a la jornada existe en la base de datos
+                    if ($observatorio instanceof Observatorio) {
+                        // Se ha posido recuperar al observatorio asociadp a la jornada. Entonces:
+                        // Recupero los datos de la persona usuaria participante
+                        $personaUsuariaParticipante = Persona::identificarPersona($hashParticipante);
+                        // Compruebo si la persona usuario participante existe en la base de datos
+                        if ($personaUsuariaParticipante instanceof Persona) {
+                            // Se ha posido recuperar a la persona usuaria participante de la jornada. Entonces:
+                            // Preparo el identificado de la inscripción deseada del usuario participante
+                            $idInscripcion=['idJornada' => $idJornada, 'usuario' => $hashParticipante];
+                            // Recupero los datos de inscripción deseada del usuario participante
+                            $inscripcion=Participante::consultarInscripcion($idInscripcion);
+                            // Genero el nombre completo de la persona participante usuaria d ela plataforma
+                            $participante = $personaUsuariaParticipante->getNombreCompletoPersona();
+                            // Genero el lugar donde se desarrolla la jornada donde se inscribe
+                            $lugar=$observatorio->getNombreObservatorio() . " - " . $observatorio->getDireccionObservatorio() . 
+                                " - " . $observatorio->getLocalidadObservatorio();
+                            // Genero el horario de la jornada a la que se inscribe
+                            $horario=$jornada->getFechaJornada() . " (" . $jornada->getHoraInicioJornada() . " - " 
+                                . $jornada->getHoraFinJornada() . ")";
+                            // Recopilo la información de la plantilla para mostrar inscripción a una jornada
+                            $perfil = ['asiste' => $inscripcion->getAsiste(), 'participante' => $participante, 
+                                'titulo' => $jornada->getTituloJornada(),'lugar' => $lugar, 
+                                'horario' => $horario, 'inscripcion' => $inscripcion->getInscripción(),
+                                'observacion' => $inscripcion->getObservación()];
+                            // Asigno las variables requeridas por la plantila de detalles de una jornada
+                            $smarty->assign('usuario', $usuario->getUsuario());
+                            $smarty->assign('permisos', $permisosUsuario);
+                            $smarty->assign('perfil', $perfil);
+                            $smarty->assign('anyo', date('Y'));
+                            // Muestro la plantilla de detalles de una jornada con sus datos
+                            $smarty->display('participantes/detalles.tpl');                            
+                        } else {
+                            // De lo contario, lanzo una excepción para notificar al usuario que el
+                            // persona usuaria participante no existe en la base de datos
+                            throw new AppException($message = "El participante a la jornada elegida no existe en la base de datos!!!",
+                            $urlAceptar="/plataforma/backoffice.php?comando=participantes:default");
+                        }
+                    } else {
+                        // De lo contario, lanzo una excepción para notificar al usuario que el
+                        // observatorio asociado a la jornada deseada no existe en la base de datos
+                        throw new AppException($message = "El observatorio de la jornada elegida no existe en la base de datos!!!",
+                        $urlAceptar="/plataforma/backoffice.php?comando=participantes:default");
+                    }
+                } else {
+                    // De lo contario, lanzo una excepción para notificar al usuario que la
+                    // jornada deseada no existe en la base de datos
+                    throw new AppException($message = "La jornada elegida no existe en la base de datos!!!",
+                    $urlAceptar="/plataforma/backoffice.php?comando=participantes:default");                    
+                }             
+            } else {
+                // Lanzo una excepción para notificar que el usuario no eligió una inscripción del listado
+                throw new AppException("No ha elegido una inscripción del listado. Por favor, eliga una. Gracias!");                
+            }
+        } else {
+            // lazo una excepción para notificar al usuario que no tiene permisos para consultar detalles de una inscripción en la plataforma
+            throw new AppException("Su usuario NO tiene permisos para consultar detalles de una inscripción en la plataforma!!!");
+        }
     }
 
     // B) Métodos estáticos públicos para procesar los datos de las vistas específicas

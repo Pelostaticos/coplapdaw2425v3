@@ -389,11 +389,25 @@ function validarEdicionJornada(event) {
 
 }
 
+// C.8) Función para validar el formulario de inscripción a una jornada en la plataforma
+function validarInscripcionJornada(event) {
+
+  // Obtengo los datos introducidos en los campos del formulario
+  let observacion = document.getElementById('frm-observacion').value;
+
+  // Inicializar información con el valor por defecto
+  if (!observacion.trim()) {
+    document.getElementById('frm-observacion').value = "Ninguna";
+  }  
+
+}
+
 // D) Manipulación de eventos para las validaciones de formularios.
 // D.0) Array asociativos con los formularios disponibles en la plataforma y sus validadores.
 const validadoresFormularios = {'contactenos': validarContactenos, 'login': validarLogin
   , 'signup':validarSignup, 'edicion-usuario': validarEdicionUsuarios, 'password': validarCambioPassword
-  , 'registro-jornada': validarRegistroJornada, 'edicion-jornada': validarEdicionJornada};
+  , 'registro-jornada': validarRegistroJornada, 'edicion-jornada': validarEdicionJornada
+  , 'inscripcion-jornada': validarInscripcionJornada};
 // D.1) Cargo el manipulador de evento para válidar el(los) formulario(s) presente en la página actual.
 const formularios = document.querySelectorAll('form');
 formularios.forEach(formulario => {
