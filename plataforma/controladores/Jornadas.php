@@ -155,7 +155,7 @@ class Jornadas {
                         // Se ha posido recuperar al observatorio asociadp a la jornada. Entonces:
                         // Genero el nombre del observatorio asociado a la jornada
                         $nombreObservatorio = $observatorio->getNombreObservatorio() . " (" . $observatorio->getLocalidadObservatorio() . ")";
-                        // Recopilo la información de la plantilla para mostrar detalles de la jornada
+                        // Recopilo la información de la plantilla para mostrar actualizar de la jornada
                         $perfil = ['idJornada' => $idJornada,
                             'titulo' => $jornada->getTituloJornada(),
                             'fecha' => $jornada->getFechaJornada(),
@@ -462,6 +462,12 @@ class Jornadas {
         $smarty->display('jornadas/registro.tpl');    
     }
 
+    /**
+     * Método estático general para procesar el registro de una nueva jornada en la plataforma 
+     *
+     * @param Smarty $smarty Objeto que contiene al motor de plantillas Smarty
+     * @return void No devuelve valor alguno
+     */
     public static function registrarJornadaPlataforma($smarty) {
 
         // Recupero los datos de la nueva jornada desde el formulario de registro
@@ -478,7 +484,7 @@ class Jornadas {
             // Registro a la nueva jornada en la base de datos
             $j = Jornada::crearJornada($datosJornada);            
 
-            // Compruebo que el usuario y su persona asociada se crearon correctamente
+            // Compruebo que la nueva jornada se crearo correctamente
             if ($j) {
                 // Notifico al usuario el resultado de registrar una nueva jornada en la plataforma
                 ErrorController::mostrarMensajeInformativo($smarty, "Nueva jornada registrada con éxito!!", "/plataforma/backoffice.php?comando=jornadas:default");

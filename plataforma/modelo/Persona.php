@@ -140,6 +140,16 @@ class Persona {
     }
 
     /**
+     * Método GET para obtener el nombre completo de la persona usuaria
+     *
+     * @return string Nombre completo de la persona usuaria (Apellido1 Apellido2, Nombre)
+     */
+    public function getNombreCompletoPersona() {
+        // Devuelvo el nombre completo de la persona usuaria
+        return $this->apellido1 . " " . $this->apellido2 . ", " . $this->nombre;
+    }
+
+    /**
      * Método GET para obtener el primer apellido de la persona usuaria
      *
      * @return string Primer apellido de la persona usuaria

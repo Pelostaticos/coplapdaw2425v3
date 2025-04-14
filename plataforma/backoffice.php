@@ -225,6 +225,10 @@ try {
                 // Solicito al controlador de participantes que muestre la vista por defecto según el rol del usuario
                 Participantes::default($smarty);
                 break;
+            case "participantes:inscribirse:procesa":
+                // Solicito al controlador de participantes que procese la nueva inscripción a jornadas de la plataforma
+                Participantes::inscribirParticipanteJornadaPlataforma($smarty);
+                break;
             case "censos:default":
                 // Solicito al controlador de censos que muestre las vista por defecto según rol del usuario
                 Censos::default($smarty);
