@@ -87,6 +87,17 @@ class Participantes {
                         // Muestro la vista de edición de una inscripción de la plataforma
                         Participantes::mostrarEdicionInscripcionUsuarioPlataforma($smarty);
                         break;
+                    case "eliminar":
+                        // Muestra la confirmación de baja de una inscripción de la plaatforma
+                        Participantes::mostrarConfirmacionBajaInscripcionPlataforma($smarty);
+                        break;
+                    case "volver:historico":
+                        // Desestablezco la variable acción del POST simulado durante la edición 
+                        // y eliminación de inscripciones de la plataforma.
+                        unset($_POST['accion']);
+                        // Vuelvo a mostrar la vista del histórico de participación
+                        Participantes::mostrarHistoricoParticipacionUsuarioPlataforma($smarty);
+                        break;
                     default:
                         // Establezco la variable de sesión para volver al gestor de participantes 
                         // tras consultar detalles de una jornada disponible a inscripción.
@@ -141,8 +152,7 @@ class Participantes {
             throw new AppException("Su usuario NO tiene permisos para inscribirse a jornadas en la plataforma!!!");
         }
 
-        // OBSERVACIÓN: Aquí trabajamos directamente con el hash del usuario logueado ya que los administradores no
-        // tienen implementada las funcionalidades de gestión de inscripciones de otros usuarios participantes.
+
 
 
     }
@@ -270,7 +280,8 @@ class Participantes {
         } else {
             // lazo una excepción para notificar al usuario que no tiene permisos para incribirse a jornadas en la plataforma
             throw new AppException("Su usuario NO tiene permisos para mostrar históricos de participación en la plataforma!!!");
-        }     
+        }                
+
     }
 
     /**
@@ -447,8 +458,8 @@ class Participantes {
                     }
                 } else {
                     // De lo contario, lanzo una excepción para notificar al usuario que la
-                    // jornada deseada no existe en la base de datos
-                    throw new AppException($message = "La jornada elegida no existe en la base de datos!!!",
+                    // inscripción deseada no existe en la base de datos
+                    throw new AppException($message = "La inscripción elegida no existe en la base de datos!!!",
                     $urlAceptar="/plataforma/backoffice.php?comando=participantes:default");                    
                 }             
             } else {
@@ -456,15 +467,50 @@ class Participantes {
                 throw new AppException("No ha elegido una inscripción del listado. Por favor, eliga una. Gracias!");                
             }
         } else {
-            // lazo una excepción para notificar al usuario que no tiene permisos para consultar detalles de una inscripción en la plataforma
-            throw new AppException("Su usuario NO tiene permisos para consultar detalles de una inscripción en la plataforma!!!");
+            // lazo una excepción para notificar al usuario que no tiene permisos para actualizar de una inscripción en la plataforma
+            throw new AppException("Su usuario NO tiene permisos para actualizar una inscripción en la plataforma!!!");
+        }
+    }
+
+    /**
+     * Método estático auxiliar para mostrar la confirmación de baja de una inscripción de la plataforma
+     *
+     * @param Smarty $smarty Objeto que contiene al motor de plantillas Smarty
+     * @return void No devuelve valor alguno
+     */
+    private static function mostrarConfirmacionBajaInscripcionPlataforma($smarty) {
+        // Recupero los permisos del usuario logueado desde su sesión
+        $permisosUsuario = $_SESSION['permisos'];
+
+        // Establezco la accion de volver al histórico de participación en la sesión de usuario
+        $_SESSION['accion']="volver:historico";           
+
+        // Compruebo que el usuario logueado tiene permiso para eliminar una inscripción
+        if ($permisosUsuario->getPermisoEliminarInscripcion()) {
+            // El usuario logueado tiene permiso para eliminar una inscripcion. Entonces:
+            // Compruebo que el usuario haya elegido una jornada del listado
+            if (isset($_POST['idJornada'])) {
+                // Establezco la configuración del mensaje de confirmación para el usuario autorizado
+                $mensaje = "Has solicitado eliminar una inscripción de la plataforma";
+                $pregunta = "¿Estás seguro que quieres eliminar a dicha inscripción?";
+                $urlCancelar = "/plataforma/backoffice.php?comando=participantes:default";
+                $urlAceptar = "/plataforma/backoffice.php?comando=participantes:eliminar:procesa";
+                // Muestro el mensaje de confirmación de baja al usuario
+                ErrorController::mostarMensajeAdvertencia($smarty,$mensaje,$pregunta,$urlCancelar,$urlAceptar);
+            } else {
+                // Lanzo una excepción para notificar que el usuario no eligió una inscripción del listado
+                throw new AppException("No ha elegido una jornada del listado. Por favor, eliga una. Gracias!");                
+            }
+        } else {
+            // Lanzo excepción para notificar al usuario que no tiene permiso para eliminar una inscripción
+            throw new AppException("Su rol en la plataforma no le permite eliminar una jornada");            
         }
     }
 
     // B) Métodos estáticos públicos para procesar los datos de las vistas específicas
 
     /**
-     * Método estático general para procesar la inscripción de un usuario participante en la plataforma
+     * Método estático especifico para procesar la inscripción de un usuario participante en la plataforma
      *
      * @param Smarty $smarty Objeto que contiene al motor de plantillas Smarty
      * @return void No devuelve valor alguno
@@ -502,12 +548,113 @@ class Participantes {
             else
                 ErrorController::handleException($ae, $smarty, '/plataforma/backoffice.php');
         }     
-    }    
+    }
     
-    // C) Métodos estáticos públicos para vistas generales y su procesamiento de datos asociados
-    
-    
+    /**
+     * Método estático especifico para procesar la actualización de una inscripción de un usuario participante en la plataforma
+     *
+     * @param Smarty $smarty Objeto que contiene al motor de plantillas Smarty
+     * @return void No devuelve valor alguno
+     */
+    public static function actualizarInscripciónParticipantePlataforma($smarty) {
 
+        // Recupero los permisos del usuario logueado desde su sesión
+        $permisosUsuario = $_SESSION['permisos'];
+
+        // Establezco la accion de volver al histórico de participación en la sesión de usuario
+        $_SESSION['accion']="volver:historico";          
+
+        // Compruebo si el usuario logueado tiene permiso para la edición de una inscripcion de la plataforma
+        if ($permisosUsuario->getPermisoActualizarInscripcion()) {
+            // El usuario logueado tiene permisos para actualizar una inscripcion: Entonces:
+            // Preparo el identificador de la inscripción deseada del usuario participante
+            $idInscripcion=['idJornada' => intval(filter_input(INPUT_POST,'frm-idjornada', FILTER_SANITIZE_NUMBER_INT)), 
+                'usuario' => filter_input(INPUT_POST,'frm-usuario')];                
+            // Recupero la inscripción elegida por el usuario que desea consultar detalles
+             $inscripcion = Participante::consultarInscripcion($idInscripcion);
+            // Compruebo si la jornada elegida existe en la base de datos
+            if ($inscripcion instanceof Participante) {
+                // Recupero del formulario de edición de inscripción los datos y actualizo el objeto
+                $inscripcion->setAsiste(intval(filter_input(INPUT_POST,'frm-asiste', FILTER_SANITIZE_NUMBER_INT)));
+                $inscripcion->setObservacion(filter_input(INPUT_POST,'frm-observacion'));
+                // Actulizo los datos de la jornada y muestro la notificación del resultado
+                if ($inscripcion->actualizarInscripción()) {                   
+                    // Notifico al usuario que la actualización de la inscripción fue existosa
+                    ErrorController::mostrarMensajeInformativo($smarty, "Inscripción actualizada con éxito!!", 
+                        "/plataforma/backoffice.php?comando=participantes:default");
+                } else {                 
+                    // Lanzo una excepción para inotificar que NO pudo actualizarse la inscripción deseada
+                    throw new AppException(message: "No es posible actualizar la inscripción deseada!!!", 
+                        urlAceptar: "/plataforma/backoffice.php?comando=participantes:default");
+                }                     
+            } else {
+                // De lo contario, lanzo una excepción para notificar al usuario que la
+                // inscripción a actualizar no existe en la base de datos
+                throw new AppException(message: "La inscripción elegida no existe en la base de datos!!!",
+                    urlAceptar: "/plataforma/backoffice.php?comando=participantes:default");  
+            }
+        } else {              
+            // Lanzo una excepción para notificar al usuario que no tiene permisos para actualizar de una inscripción en la plataforma
+            throw new AppException("Su usuario NO tiene permisos para actualizar una inscripción en la plataforma!!!");
+        }
+    }
+
+    /**
+     * Método estático específico para procesa la baja de una inscripción de la plataforma
+     *
+     * @param Smarty $smarty Objeto que contiene al motor de plantillas Smarty
+     * @return void No devuelve valor alguno
+     */
+    public static function eliminarInscripcionParticipantePlataforma($smarty) {
+        // Obtengo al usuario de la sesión de navegacion
+        $usuario = $_SESSION['usuario'];
+
+        // Recupero el hash de usuario del usuario participante
+        $hashParticipante=$usuario->getCodigo();
+
+        // Recupero los permisos del usuario logueado desde su sesión
+        $permisosUsuario = $_SESSION['permisos'];
+
+        // Compruebo que el usuario tiene permiso para eliminar una inscripción
+        if ($permisosUsuario->getPermisoEliminarInscripcion()) {
+            // El usuario logueado tiene permiso para eliminar una inscripción. Entonces:
+            // Compruebo que el usuario loqueado eligió una inscripción del listado (idJornada del PK)
+            if (isset($_SESSION['listado'])) {
+                // Recupero el identificador de la jornada elegida por el usuario desde su sesion
+                $idJornada = $_SESSION['listado'];
+                // Desestablezco el identificador de jornada elegido por el usuario desde la sesion porque
+                // ya ha cumpplido su función aquí
+                unset($_SESSION['listado']);
+                // Preparo el identificador de la inscripción deseada del usuario participante
+                $idInscripcion = ['idJornada' => $idJornada, 'usuario' => $hashParticipante]; //PK
+                // Recupero la inscripción elegida por el usuario que desea eleiminar
+                $inscripcion = Participante::consultarInscripcion($idInscripcion);
+                // Procedo a eliminar la jornada y compruebo su resultado
+                if ($inscripcion->eliminarInscripcion()) {
+                    // Notifico al usuario que la inscripción se ha eliminado correctamente y cierro su sesión
+                    ErrorController::mostrarMensajeInformativo($smarty, "La inscripción indicada se ha elminado correctamente!",
+                        "/plataforma/backoffice.php?comando=participantes:default");
+                } else {
+                    // Lanzo una excepción para indicar que existe algún problema para dar de baja a la inscripción
+                    throw new AppException("No es posible dar de baja a la inscripción indicada!");
+                }
+            } else {
+                // Lanzo una excepción para notificar que el usuario no eligió una jornada del listado
+                throw new AppException("No ha elegido una inscripción del listado. Por favor, eliga una. Gracias!");
+            }         
+        } else {
+            // Lanzo excepción para notificar al usuario que no tiene permiso para eliminar una inscripción
+            throw new AppException("Su rol en la plataforma no le permite eliminar una inscripción");
+        }
+    }
+
+    // C) Métodos estáticos públicos para vistas generales y su procesamiento de datos asociados
+    // No hay métodos disponibles de este tipo en este gestor
+    // NOTA: Quizás la funcionalidad de vista y procesamiento del histórico de participación deban ser de este tipo
+    // No obstante, dado el ajustado plazo disponible para cumplir con la entrega del proyecto. He decidido dejarlo así.    
+    
+    // OBSERVACIÓN: Aquí trabajamos directamente con el hash del usuario logueado ya que los administradores no
+    // no tienen implementada las funcionalidades de gestión de inscripciones sobre otros usuarios participantes.        
 
 }
 

@@ -222,12 +222,34 @@ try {
                 Jornadas::filtrarJornadasPlataforma($smarty);
                 break;
             case "participantes:default":
+                // Compruebo si hay acción establecida en la sesión del usuario
+                if (isset($_SESSION['accion'])) {
+                    // Hay una acción establecida en la variable de sesión del usuario. Entonces:
+                    // Simulo un POST de una acción espécifica del gestor de participantes que es
+                    // solicitada desde el propio código de procesamiento de una acción previa.
+                    // EJEMPLOS: Acciones específicas de actualizar y eliminar inscripciones de la plataforma.
+                    //           donde ambos al finalizar su procesamiento piden volver al histórico de participación
+                    // MOTIVO: Mi inexperiencia en el desarrollo de aplicaciones web tan complejas, me ha hecho que a priori
+                    // no contemplase todos los casos posibles de redirecciones que necesitaria el usuario, y por ello esta 
+                    // solución parcial para dar funcionalidad al gestor y poder continuar con el desarrollo.
+                    $_POST['accion']=$_SESSION['accion'];
+                    // Desestablezco la variable acción de la sesión de usuario porque aquí ya cumplió su función
+                    unset($_SESSION['accion']);
+                }
                 // Solicito al controlador de participantes que muestre la vista por defecto según el rol del usuario
                 Participantes::default($smarty);
                 break;
             case "participantes:inscribirse:procesa":
                 // Solicito al controlador de participantes que procese la nueva inscripción a jornadas de la plataforma
                 Participantes::inscribirParticipanteJornadaPlataforma($smarty);
+                break;
+            case "participantes:actualizar:procesa":
+                // Solicito al controlador de participantes que procese la actualización de una inscripción en la plataforma
+                Participantes::actualizarInscripciónParticipantePlataforma($smarty);
+                break;
+            case "participantes:eliminar:procesa":
+                // Solicito al controlador de participantes que procese la baja de una inscripción de la plataforma
+                Participantes::eliminarInscripcionParticipantePlataforma($smarty);
                 break;
             case "censos:default":
                 // Solicito al controlador de censos que muestre las vista por defecto según rol del usuario

@@ -226,7 +226,7 @@ class Jornadas {
                 throw new AppException("No ha elegido una jornada del listado. Por favor, eliga una. Gracias!");                
             }
         } else {
-            // Lanzo excepción para notificar al usuario que no tiene permiso para actualizar una jornada
+            // Lanzo excepción para notificar al usuario que no tiene permiso para eliminar una jornada
             throw new AppException("Su rol en la plataforma no le permite eliminar una jornada");            
         }
     }
@@ -306,11 +306,11 @@ class Jornadas {
                 $jornada = Jornada::consultarJornada($idJornada);
                 // Procedo a eliminar la jornada y compruebo su resultado
                 if ($jornada->eliminarJornada()) {
-                    // Notifico al usuario que el perfil se ha eliminado correctamente y cierro su sesión
+                    // Notifico al usuario que la jornada se ha eliminado correctamente y cierro su sesión
                     ErrorController::mostrarMensajeInformativo($smarty, "La jornada indicada se ha elminado correctamente!",
                         "/plataforma/backoffice.php?comando=jornadas:default");
                 } else {
-                    // Lanzo una excepción para indicar que existe algún problema para dar de baja al usuario
+                    // Lanzo una excepción para indicar que existe algún problema para dar de baja a la jornada
                     throw new AppException("No es posible dar de baja a la jornada indicada!");
                 }
             } else {
@@ -318,7 +318,7 @@ class Jornadas {
                 throw new AppException("No ha elegido una jornada del listado. Por favor, eliga una. Gracias!");
             }         
         } else {
-            // Lanzo excepción para notificar al usuario que no tiene permiso para actualizar una jornada
+            // Lanzo excepción para notificar al usuario que no tiene permiso para eliminar una jornada
             throw new AppException("Su rol en la plataforma no le permite eliminar una jornada");
         }
 

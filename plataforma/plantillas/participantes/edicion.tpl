@@ -51,17 +51,14 @@
                             </p>
                         </div>
                     </div>
-                    <!-- Acciones permitidas por el gestor de jornadas -->
-                    <div class="botonera">
-                            <button type="submit" class="boton-accion-gestor" title="Actualizar inscripción">Actualizar</button>                                    
-                        <!-- Aquí termina el formulario de edición de inscripción: Pierde la estética del código
-                        Pero no encuentro otra solución para el envió de la acción volver mediante post -->    
-                        </form>
-                        <!-- Formulario que gestiona el retorno de la vista de edición a la vista historicos de participación -->
-                        <form name="volverHistorico" id="volverHistorico" method="post" action="/plataforma/backoffice.php?comando=participantes:default">
-                            <button type="submit" class="boton-accion-gestor" name="accion" value="historico" title="Volver al histórico de participación">Volver atrás</button>
-                        </form>
-                    </div>                                
+                </form>
+                <!-- Formulario para la acción del volver al historico de participantes -->
+                <form name="volverHistorico" id="volverHistorico" method="post" action="/plataforma/backoffice.php?comando=participantes:default"></form>
+                <!-- Acciones permitidas por el gestor de jornadas -->
+                <div class="botonera">
+                    <button form="volverHistorico" type="submit" class="boton-accion-gestor" name="accion" value="historico" title="Volver al histórico de participación">Volver atrás</button>
+                    <button form="edicion-inscripcion" type="submit" class="boton-accion-gestor" title="Actualizar inscripción">Actualizar</button>                    
+                </div>                                
             </article>
         </section>
     </main> 
