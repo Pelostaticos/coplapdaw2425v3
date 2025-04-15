@@ -34,10 +34,13 @@
             </ul>
             <!-- Hamburguesa del menú responsive -->
             <span class="menu-icono">menu</span>
-            <!-- Botón acceso al backoffice de la plataforma correplayas -->
-            <a href="/plataforma/backoffice.php?comando=core:login:vista" class="boton"><span class="iconos-nav-portal">login</span> Acceso</a> 
-            <!-- Botón CTA invitando a la participación -->
-            <a href="#participa" class="boton">¡Participa!</a>
+            <!-- Botonera de navegacion del encabezado de página -->
+            <div class="botonera-nav">
+                <!-- Botón acceso al backoffice de la plataforma correplayas -->
+                <a href="/plataforma/backoffice.php?comando=core:login:vista" class="boton-nav"><span class="iconos-nav-portal">login</span> Acceso</a> 
+                <!-- Botón CTA invitando a la participación -->
+                <a href="#participa" class="boton-nav">¡Participa!</a>
+            </div>
         </nav>
     </header>
     <!-- Contenidos del sitio web -->

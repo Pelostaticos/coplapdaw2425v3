@@ -289,6 +289,26 @@ nav {
     color: var(--color-textos-principal);
     border-bottom: 5px solid var(--color-destacado);
 }
+.botonera-nav {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    align-items: center;
+}
+.boton-nav {
+    border-radius: 5px;
+    margin-top: 5px;
+    margin-left: 5px;
+    margin-right: 5px;
+    padding: 10px;
+    background-color: var(--color-textos-principal);
+    color: var(--color-destacado);    
+    font-weight: 600;    
+}
+.boton-nav:hover {
+    background-color: var(--color-destacado);
+    color: var(--color-textos-principal);
+}
 
 /* Estilos requeridos por el menú responsive en dispositivos moviles*/
 .menu-icono {

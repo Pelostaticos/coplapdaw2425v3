@@ -55,7 +55,8 @@
                                 <option value="DESC">descendente</option>
                             </select>
                         </p>
-                        <p class="corto"><button type="submit" class="boton-accion-gestor">Buscar</button></p>                                             
+                        <p class="corto"><button type="submit" class="boton-accion-gestor">Buscar</button></p>
+                        <small><span>RECUERDA</span>:&nbsp;Puedes hacer búsqueda por el usuario, nombre, apellidos, estado y rol.</small>
                     </form>
                     <!-- Tabla que representa al listado de usuarios -->
                      <table id="listado-gestor">

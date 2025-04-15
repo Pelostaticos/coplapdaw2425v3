@@ -55,8 +55,10 @@
                                 <option value="DESC">descendente</option>
                             </select>
                         </p>
-                        <p class="corto"><button type="submit" class="boton-accion-gestor">Buscar</button></p>                                             
-                    </form>
+                        <p class="corto"><button type="submit" class="boton-accion-gestor">Buscar</button></p>                                                                     
+                        <small><span>RECUERDA</span>:&nbsp;Puedes hacer búsqueda de jornadas por el titulo, observatorio, localidad, fecha, rango de fechas y estado dela jornada. El formato 
+                        para fecha única es DD-MM-YYYY, mientras que el formato para el rango de fechas es DD-MM-YYYY a DD-MM-YYYYY.</small>
+                    </form>                    
                     <!-- Bóton para la acción de registrar una nueva jornada en la plataforma -->
                     <div class="botonera-superior-listados">
                         <a class="boton-accion-gestor" href="/plataforma/backoffice.php?comando=jornadas:registrar:vista" title="Añadir una nueva jornada a la plataforma">Añadir jornada</a>                    

@@ -557,7 +557,7 @@ div.campos-gestor p {
 form#busqueda-gestor {
     display: flex;
     flex-direction: row;
-    justify-content: space-around;
+    justify-content: flex-start;
     flex-wrap: wrap;
     align-items: center;
     padding: 10px;    
@@ -568,12 +568,28 @@ form#busqueda-gestor label {
 }
 form#busqueda-gestor p label {
     font-size: var(--tamaño-fuente-h6-escritorio);
-    margin-left: 5px;
+    margin-left: 10px;
 }
 form#busqueda-gestor input, form#busqueda-gestor select {
     font-size: var(--tamaño-fuente-h6-escritorio);
 }
+form#busqueda-gestor button {
+    margin-left: 40px;
+}
+form#busqueda-gestor small {
+    margin-left: 10px;
+    margin-right: 10px;
+    background-color: var(--color-destacado);
+    border: 1px solid var(--color-primario);    
+    padding: 5px;
+}
+form#busqueda-gestor small span {
+    font-weight: 600;
+    text-decoration: underline;      
+}
 table#listado-gestor {
+    border-collapse: collapse;
+    margin: 20px 20px;
     padding: 10px 20px;
 }
 table#listado-gestor th, table#listado-gestor td {
@@ -590,8 +606,7 @@ table#listado-gestor th, table#listado-gestor td {
     height: 2em;
     justify-self: center;  
     width: 2em;
-    padding-right: 0px;
-  
+    padding-right: 0px;  
 }
 
 /* Estilos para vista de notificaciones */

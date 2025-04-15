@@ -54,7 +54,10 @@
                                 <option value="DESC">descendente</option>
                             </select>
                         </p>
-                        <p class="corto"><button type="submit" class="boton-accion-gestor">Buscar</button></p>                                             
+                        <p class="corto"><button type="submit" class="boton-accion-gestor">Buscar</button></p>
+                        <small><span>RECUERDA</span>:&nbsp;Puedes hacer búsqueda de jornadas por el titulo, observatorio, localidad, fecha, rango de fechas y si la jornada 
+                        está o no realizada. El formato para fecha única es DD-MM-YYYY, mientras que el formato para el rango de fechas es DD-MM-YYYY a DD-MM-YYYYY. Para
+                        filtrar por realizada debes usar el término realizada:si o realizada:no.</small>
                     </form>                                   
                     <!-- Tabla que representa al histórico de participación de un usuario -->
                     <table id="listado-gestor">
