@@ -61,7 +61,7 @@
                                         <td>{$fila.titulo}</td>
                                         <td>{$fila.observatorio}</td>
                                         <td>{$fila.localidad}</td>
-                                        <td>{$fila.fecha}</td>
+                                        <td>{$fila.fecha|date_format:"%d-%m-%Y"}</td>
                                         <!-- Celda con acciones permitidas para cada jornada de inscripción  -->
                                         <td>
                                             <form method="post" action="/plataforma/backoffice.php?comando=participantes:default">

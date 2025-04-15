@@ -41,7 +41,7 @@
                         <p class="extralargo"><span>Observatorio</span>:&nbsp;{$perfil.observatorio} ({$perfil.localidad})</p>
                     </div>
                     <div class="campos-gestor">
-                        <p class="corto"><span>Fecha</span>:&nbsp;{$perfil.fecha}</p>
+                        <p class="corto"><span>Fecha</span>:&nbsp;{$perfil.fecha|date_format:"%d-%m-%Y"}</p>
                         <p class="largo"><span>Hora de inicio</span>:&nbsp;{$perfil.horaInicio}</p>
                         <p class="largo"><span>Hora de fin</span>:&nbsp;{$perfil.horaFin}</p>
                     </div>                     

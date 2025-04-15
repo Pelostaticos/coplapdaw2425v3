@@ -54,7 +54,7 @@
                     </div>
                     <!-- Acciones permitidas por el gestor de jornadas -->
                     <div class="botonera">
-                        <a class="boton-accion-gestor" href="/plataforma/backoffice.php?comando=jornadas:default" title="Volver al atrás">Volver</a>
+                        <a class="boton-accion-gestor" href="/plataforma/backoffice.php?comando=participantes:default" title="Volver al atrás">Volver</a>
                         <button type="submit" class="boton-accion-gestor" title="Inscribirme a la jornada">Inscribirme</button>
                     </div>
                 </form>

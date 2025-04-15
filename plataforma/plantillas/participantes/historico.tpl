@@ -85,7 +85,7 @@
                                         <td>
                                             <form method="post" action="/plataforma/backoffice.php?comando=participantes:default">
                                                 <input type="hidden" name="idJornada" value="{$fila.idJornada}">
-                                                <button class="boton-accion-listado-gestor" type="submit" name="accion" value="detalles" title="Mostrar detalles de participación"><span class="iconos-acciones-listados">search</span></button>
+                                                <button class="boton-accion-listado-gestor" type="submit" name="accion" value="inscripcion" title="Mostrar detalles de participación"><span class="iconos-acciones-listados">search</span></button>
                                                 {if $fila.realizada === 'NO'}
                                                     <button class="boton-accion-listado-gestor" type="submit" name="accion" value="actualizar" title="Actualizar inscripción"><span class="iconos-acciones-listados">edit</span></button>
                                                     <button class="boton-accion-listado-gestor" type="submit" name="accion" value="eliminar" title="Eliminar inscripción"><span class="iconos-acciones-listados">delete</span></button>                                                    

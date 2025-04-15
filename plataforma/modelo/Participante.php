@@ -254,8 +254,8 @@ class Participante {
     public static function listarHistoricosInscripcion($participante): ?Array {
         // Construyo la sentencia SQL base para recuperar el histórico de participación del usuario de la base de datos     
         $sql="SELECT j.id_jornada as idJornada, j.titulo as titulo, 
-            CONCAT(j.fecha,' - ', j.hora_inicio, ' - ', j.hora_fin) as programada, 
-            p.inscripcion as inscrito, j.estado, 
+            CONCAT(DATE_FORMAT(j.fecha,'%d-%m-%Y'),' - ', j.hora_inicio, ' - ', j.hora_fin) as programada, 
+            DATE_FORMAT(p.inscripcion,'%d-%m-%Y') as inscrito, j.estado, 
             CASE j.estado
                 WHEN 'ABIERTA' THEN 'NO'
                 WHEN 'CANCELADA' THEN 'NO'
@@ -356,8 +356,8 @@ class Participante {
 
         // Construyo la sentencia SQL base para recuperar el histórico de participación del usuario de la base de datos     
         $sql="SELECT j.id_jornada as idJornada, j.titulo as titulo, 
-            CONCAT(j.fecha,' - ', j.hora_inicio, ' - ', j.hora_fin) as programada, 
-            p.inscripcion as inscrito, ob.nombre as observatorio, ob.localidad as localidad, j.estado,
+            CONCAT(DATE_FORMAT(j.fecha,'%d-%m-%Y'),' - ', j.hora_inicio, ' - ', j.hora_fin) as programada, 
+            DATE_FORMAT(p.inscripcion,'%d-%m-%Y') as inscrito, ob.nombre as observatorio, ob.localidad as localidad, j.estado,
             CASE j.estado
                 WHEN 'ABIERTA' THEN 'NO'
                 WHEN 'CANCELADA' THEN 'NO'

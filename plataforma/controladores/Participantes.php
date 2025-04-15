@@ -27,7 +27,8 @@
  use correplayas\modelo\Jornada;
  use correplayas\modelo\Observatorio;
  use correplayas\modelo\Participante;
- use Smarty\Smarty;
+use DateTime;
+use Smarty\Smarty;
 
  /**
  * Clase del controlador Participantes para gestión de todas sus acciones disponibles en plataforma
@@ -79,7 +80,7 @@ class Participantes {
                         // Muestro la vista para inscribir a un usuario participante a una jornada
                         Participantes::mostrarInscripcionParticipanteJornadaPlataforma($smarty);
                         break;
-                    case "detalles":
+                    case "inscripcion":
                         // Muestro la vista con los detalles de una determinada inscripción de un participante
                         Participantes::mostrarDetallesIncripciónUsuarioPlataforma($smarty);
                         break;
@@ -204,8 +205,10 @@ class Participantes {
                             // Genero el lugar donde se desarrolla la jornada donde se inscribe
                             $lugar=$observatorio->getNombreObservatorio() . " - " . $observatorio->getDireccionObservatorio() . 
                                 " - " . $observatorio->getLocalidadObservatorio();
+                            // Recupero la fecha de la jornada en formato DD-MM-YYYY
+                            $fechaJornada = new DateTime($jornada->getFechaJornada());
                             // Genero el horario de la jornada a la que se inscribe
-                            $horario=$jornada->getFechaJornada() . " (" . $jornada->getHoraInicioJornada() . " - " 
+                            $horario=$fechaJornada->format('d-m-Y') . " (" . $jornada->getHoraInicioJornada() . " - " 
                                 . $jornada->getHoraFinJornada() . ")";
                             // Recopilo la información de la plantilla para mostrar inscripción a una jornada
                             $perfil = ['idJornada' => $idJornada, 'usuario' => $hashParticipante, 'asiste' => 0,
@@ -334,8 +337,10 @@ class Participantes {
                             // Genero el lugar donde se desarrolla la jornada donde se inscribe
                             $lugar=$observatorio->getNombreObservatorio() . " - " . $observatorio->getDireccionObservatorio() . 
                                 " - " . $observatorio->getLocalidadObservatorio();
+                            // Recupero la fecha de la jornada en formato DD-MM-YYYY
+                            $fechaJornada = new DateTime($jornada->getFechaJornada());
                             // Genero el horario de la jornada a la que se inscribe
-                            $horario=$jornada->getFechaJornada() . " (" . $jornada->getHoraInicioJornada() . " - " 
+                            $horario=$fechaJornada->format('d-m-Y') . " (" . $jornada->getHoraInicioJornada() . " - " 
                                 . $jornada->getHoraFinJornada() . ")";
                             // Recopilo la información de la plantilla para mostrar inscripción a una jornada
                             $perfil = ['asiste' => $inscripcion->getAsiste(), 'participante' => $participante, 
@@ -427,8 +432,10 @@ class Participantes {
                             // Genero el lugar donde se desarrolla la jornada donde se inscribe
                             $lugar=$observatorio->getNombreObservatorio() . " - " . $observatorio->getDireccionObservatorio() . 
                                 " - " . $observatorio->getLocalidadObservatorio();
+                            // Recupero la fecha de la jornada en formato DD-MM-YYYY
+                            $fechaJornada = new DateTime($jornada->getFechaJornada());
                             // Genero el horario de la jornada a la que se inscribe
-                            $horario=$jornada->getFechaJornada() . " (" . $jornada->getHoraInicioJornada() . " - " 
+                            $horario=$fechaJornada->format('d-m-Y') . " (" . $jornada->getHoraInicioJornada() . " - " 
                                 . $jornada->getHoraFinJornada() . ")";
                             // Recopilo la información de la plantilla para mostrar edición de una iscripcion
                             $perfil = ['idJornada' => $idJornada, 'usuario' => $hashParticipante,

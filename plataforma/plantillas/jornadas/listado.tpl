@@ -79,7 +79,7 @@
                                 <!-- Celdas con datos de cada jornada -->
                                 <td>{$fila.titulo}</td>
                                 <td>{$fila.observatorio}</td>
-                                <td>{$fila.fecha}</td>
+                                <td>{$fila.fecha|date_format:"%d-%m-%Y"}</td>
                                 <td>{$fila.estado}</td>
                                 <!-- Celda con acciones permitidas para cada jornada  -->
                                 <td>
