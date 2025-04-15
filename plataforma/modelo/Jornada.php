@@ -21,7 +21,6 @@ namespace correplayas\modelo;
 
 // Defino los espacios de mombres que voy a utilizar en esta clase
 
-use correplayas\controladores\ErrorController;
 use correplayas\excepciones\AppException;
 use \correplayas\nucleo\Core;
 use DateTime;
@@ -66,13 +65,13 @@ class Jornada {
     *                 Devuelve falso si no se pudo actualizar a la jornada
     */
     public function actualizarJornada(): ?bool {       
-        // Construyo la sentencia SQL para actualizar al usuario de la base de datos     
+        // Construyo la sentencia SQL para actualizar a la jornada de la base de datos     
         $sql="UPDATE pdaw_jornadas SET hora_inicio=:horaInicio, hora_fin=:horaFin, informacion=:informacion,
             estado=:estado, asistencia=:asistencia WHERE id_jornada=:idJornada";
         // Preparo los datos de la jornada a actualizar en la base de datos
         $datos = [':horaInicio' => $this->horaInicio, ':horaFin' => $this->horaFin, ':informacion' => $this->informacion,
             ':estado' => $this->estado, ':asistencia' => $this->asistencia, ':idJornada' => $this->idJornada];
-        // Ejecuto la sentencia SQL para actualizar al usuario de la base de datos
+        // Ejecuto la sentencia SQL para actualizar a la jornada de la base de datos
         $res=Core::ejecutarSql($sql,$datos);
         // Si el resultado es mayor de cero entonces:
         if ($res > 0)        
@@ -93,7 +92,7 @@ class Jornada {
      *                 Devuelve falso si NO se eliminó la jornada de la base de datos
      */
     public function eliminarJornada(): ?bool {
-        // Construyo la sentencia SQL para eliminar al usuario de la base de datos     
+        // Construyo la sentencia SQL para eliminar a la jornada de la base de datos     
         $sql="DELETE FROM pdaw_jornadas WHERE id_jornada=:idJornada";
         // Preparo el código de la jornada que se desea eliminar de la base de datos
         $codigo = [':idJornada' => $this->idJornada];
@@ -151,7 +150,7 @@ class Jornada {
     /**
      * Método GET para obtener la hora de fin de la jornada
      *
-     * @return string Devuelve la hra de fin de la jornada
+     * @return string Devuelve la hora de fin de la jornada
      */
     public function getHoraFinJornada() {
         return $this->horaFin;
@@ -320,7 +319,7 @@ class Jornada {
      * Método estático para buscar Jornadas en la base de datos.
      *
      * @param string $busqueda Cadena de busqueda en las Jornadas de la base de datos
-     * @param string $ordenar Por Campo por el que se quiere ordenar los resultado
+     * @param string $ordenarPor Campo por el que se quiere ordenar los resultado
      * @param string $orden El tipo de orden que se desea para los resultados
      * @return Array|null Devuelve un array con los resultados de la búsqueda de Jornadas
      *                    Devuelve nulo si el criterio de búsqueda no ha encontrado Jornadas
@@ -426,6 +425,7 @@ class Jornada {
      * @param Smarty $smarty Objeto que contiene al motor de plantillas Smarty
      * @param string $fecha Fecha de búsqueda introducida por el usuario 
      * @return string Devuelve la fecha introducida por el usuario en el formato correcto
+     * @throws AppException Excepción cuando el formato de entrada de la fecha no es DD-MM-YYYY
      */
     private static function prepararFechas($fecha) {
         // Limpio la fecha introducida por el usuario en el campo de búsqueda
@@ -447,6 +447,7 @@ class Jornada {
      *
      * @param string $rangoFechas Rango de fecha de búsqueda introducido por el usuario
      * @return list Devuelve un objeto tipo listado con las fechas del rango introducido en formato correcto
+     * @throws AppException Excepción cuando el rango de fecha no cumple con el formato de entrada DD-MM-YYYY a DD-MM-YYYY
      */
     private static function prepararRangoFechas($rangoFechas) {
         // Limpio la fecha introducida por el usuario en el campo de búsqueda

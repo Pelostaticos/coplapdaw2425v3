@@ -36,6 +36,7 @@ class Observatorios {
      *
      * @param Smarty $smarty Objeto que contiene al motor de plantillas Smarty
      * @return void No devuelve valor alguno
+     * @throws AppException Excepción existe algún error con los permisos del usuario
      */
     public static function default($smarty) {
 

@@ -36,6 +36,7 @@ class Jornadas {
      *
      * @param Smarty $smarty Objeto que contiene al motor de plantillas Smarty
      * @return void No devuelve valor alguno
+     * @throws AppException Excepción cuando existe problemas de permisos del usurio
      */    
     public static function default($smarty) {
         // Recupero los permisos del usuario logueado desde su sesión
@@ -87,6 +88,7 @@ class Jornadas {
      *
      * @param Smarty $smarty Objeto que contiene al motor de plantillas Smarty
      * @return void No devuelve valor alguno
+     * @throws AppException Excepción cuando existe problemas de pemrisos del usuario
      */
     private static function listarJornadasPlataforma($smarty) {
 
@@ -112,8 +114,8 @@ class Jornadas {
 
         } else {
             // Lanzo una excepción para notificar al usuario que no tiene permisos para listar y filtrar jornadas
-            throw new AppException($message = "Tu rol en la plataforma no te permite listar ni filtrar jornadas", 
-                $urlAceptar="/plataforma/backoffice.php");
+            throw new AppException(message: "Tu rol en la plataforma no te permite listar ni filtrar jornadas", 
+                urlAceptar: "/plataforma/backoffice.php");
         }        
 
     }
@@ -123,6 +125,7 @@ class Jornadas {
      *
      * @param Smarty $smarty Objeto que contiene al motor de plantillas Smarty
      * @return void No devuelve valor alguno
+     * @throws AppException Excepción cuando existe problemas para mostrar la vista de edición de jornadas
      */
     private static function mostrarEdicionJornadaPlataforma($smarty) {
         // Recupero al usuario logueado en la plataforma
@@ -180,14 +183,14 @@ class Jornadas {
                     } else {
                         // De lo contario, lanzo una excepción para notificar al usuario que el
                         // observatorio asociado a la jornada deseada no existe en la base de datos
-                        throw new AppException($message = "El observatorio de la jornada elegida no existe en la base de datos!!!",
-                        $urlAceptar="/plataforma/backoffice.php?comando=jornadas:default");
+                        throw new AppException(message: "El observatorio de la jornada elegida no existe en la base de datos!!!",
+                        urlAceptar: "/plataforma/backoffice.php?comando=jornadas:default");
                     }
                 } else {
                     // De lo contario, lanzo una excepción para notificar al usuario que la
                     // jornada deseada no existe en la base de datos
-                    throw new AppException($message = "La jornada elegida no existe en la base de datos!!!",
-                    $urlAceptar="/plataforma/backoffice.php?comando=jornadas:default");                    
+                    throw new AppException(message: "La jornada elegida no existe en la base de datos!!!",
+                    urlAceptar: "/plataforma/backoffice.php?comando=jornadas:default");                    
                 }         
             } else {
                 // Lanzo una excepción para notificar que el usuario no eligió una jornada del listado
@@ -204,6 +207,7 @@ class Jornadas {
      *
      * @param Smarty $smarty Objeto que contiene al motor de plantillas Smarty
      * @return void No devuelve valor alguno
+     * @throws AppException Excepción cuando existe algún problema para mostrar confirmación de baja jornada
      */
     private static function mostrarConfirmaciónBajaJornadaPlataforma($smarty) {
         // Recupero los permisos del usuario logueado desde su sesión
@@ -238,6 +242,7 @@ class Jornadas {
      *
      * @param Smarty $smarty Objeto que contiene al motor de plantillas Smarty
      * @return void No devuelve valor alguno
+     * @throws AppException Excepción cuando existe algún probelma para actualizar la jornada
      */
     public static function actualizarJornadaPlataforma($smarty) {
 
@@ -265,14 +270,14 @@ class Jornadas {
                         "/plataforma/backoffice.php?comando=jornadas:default");
                 } else {
                     // Lanzo una excepción para indicar que no es posible obtener valores por defecto del perfil de usuario
-                    throw new AppException($message = "No es posible actualizar el perfil de usuario", 
-                        $urlAceptar="/plataforma/backoffice.php?comando=jornadas:default");
+                    throw new AppException(message: "No es posible actualizar el perfil de usuario", 
+                        urlAceptar: "/plataforma/backoffice.php?comando=jornadas:default");
                 }                    
             } else {
                 // De lo contario, lanzo una excepción para notificar al usuario que la
                 // jornada deseada no existe en la base de datos
-                throw new AppException($message = "La jornada elegida no existe en la base de datos!!!",
-                $urlAceptar="/plataforma/backoffice.php?comando=jornadas:default");                    
+                throw new AppException(message: "La jornada elegida no existe en la base de datos!!!",
+                urlAceptar: "/plataforma/backoffice.php?comando=jornadas:default");                    
             }
         } else {
             // Lanzo excepción para notificar al usuario que no tiene permiso para actualizar una jornada
@@ -286,6 +291,7 @@ class Jornadas {
      *
      * @param Smarty $smarty Objeto que contiene al motor de plantillas Smarty
      * @return void No devuelve valor alguno
+     * @throws AppException Excepción cuando existe algún problema al eliminar una jornada
      */
     public static function eliminarJornadaPlataforma($smarty) {
 
@@ -329,6 +335,7 @@ class Jornadas {
      *
      * @param Smarty $smarty Objeto que contiene al motor de plantillas Smarty
      * @return void No devuelve valor alguno
+     * @throws AppException Excepcion cuando existe algún problema de permisos del usuario
      */
     public static function filtrarJornadasPlataforma($smarty) {
 
@@ -358,8 +365,8 @@ class Jornadas {
             $smarty->display('jornadas/listado.tpl');               
         } else {
             // Lanzo una excepción para notificar al usuario que no tiene permisos para listar y filtrar jornadas
-            throw new AppException($message = "Tu rol en la plataforma no te permite listar ni filtrar jornadas", 
-                $urlAceptar="/plataforma/backoffice.php");
+            throw new AppException(message: "Tu rol en la plataforma no te permite listar ni filtrar jornadas", 
+                urlAceptar: "/plataforma/backoffice.php");
         }
 
     }
@@ -371,6 +378,7 @@ class Jornadas {
      *
      * @param Smarty $smarty Objeto que contiene al motor de plantillas Smarty
      * @return void No devuelve valor alguno
+     * @throws AppException Excepción cuando existe algún problema al mostrar detalles de una jornada
      */
     public static function consultarDetallesJornadaPlataforma($smarty) {
 
@@ -425,14 +433,14 @@ class Jornadas {
                     } else {
                         // De lo contario, lanzo una excepción para notificar al usuario que el
                         // observatorio asociado a la jornada deseada no existe en la base de datos
-                        throw new AppException($message = "El observatorio de la jornada elegida no existe en la base de datos!!!",
-                        $urlAceptar="/plataforma/backoffice.php?comando=jornadas:default");
+                        throw new AppException(message: "El observatorio de la jornada elegida no existe en la base de datos!!!",
+                        urlAceptar: "/plataforma/backoffice.php?comando=jornadas:default");
                     }
                 } else {
                     // De lo contario, lanzo una excepción para notificar al usuario que la
                     // jornada deseada no existe en la base de datos
-                    throw new AppException($message = "La jornada elegida no existe en la base de datos!!!",
-                    $urlAceptar="/plataforma/backoffice.php?comando=jornadas:default");
+                    throw new AppException(message: "La jornada elegida no existe en la base de datos!!!",
+                    urlAceptar: "/plataforma/backoffice.php?comando=jornadas:default");
                 }
             } else {
                 // Lanzo una excepción para notificar que el usuario no eligió una jornada del listado
@@ -467,6 +475,7 @@ class Jornadas {
      *
      * @param Smarty $smarty Objeto que contiene al motor de plantillas Smarty
      * @return void No devuelve valor alguno
+     * @throws AppException Excepción cuando existe algún problema al registrar una jornada
      */
     public static function registrarJornadaPlataforma($smarty) {
 

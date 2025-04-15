@@ -419,6 +419,7 @@ class Participante {
      * @param Smarty $smarty Objeto que contiene al motor de plantillas Smarty
      * @param string $fecha Fecha de búsqueda introducida por el usuario 
      * @return string Devuelve la fecha introducida por el usuario en el formato correcto
+     * @throws AppException Excepción cuando el formato de entrada de la fecha no es DD-MM-YYYY
      */
     private static function prepararFechas($fecha) {
         // Limpio la fecha introducida por el usuario en el campo de búsqueda
@@ -440,6 +441,7 @@ class Participante {
      *
      * @param string $rangoFechas Rango de fecha de búsqueda introducido por el usuario
      * @return list Devuelve un objeto tipo listado con las fechas del rango introducido en formato correcto
+     * @throws AppException Excepción cuando el formato de entrada del rango de fechas no es: DD-MM-YYYY a DD-MM-YYYY
      */
     private static function prepararRangoFechas($rangoFechas) {
         // Limpio la fecha introducida por el usuario en el campo de búsqueda

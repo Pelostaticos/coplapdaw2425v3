@@ -21,8 +21,6 @@
 namespace correplayas\modelo;
 
 // Defino los espacios de mombres que voy a utilizar en esta clase
-use \PDO;
-use \PDOException;
 use \correplayas\nucleo\Core;
 
 /**

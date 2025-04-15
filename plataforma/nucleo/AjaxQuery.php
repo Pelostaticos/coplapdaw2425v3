@@ -24,9 +24,6 @@ namespace correplayas\nucleo;
 use correplayas\modelo\Localidad;
 use correplayas\modelo\Observatorio;
 use correplayas\modelo\Rol;
-use correplayas\excepciones\AppException;
-use PDO;
-use PDOException;
 
 // 2º) Defino la clase del nucleo AJAX de la plataforma correplayas
 

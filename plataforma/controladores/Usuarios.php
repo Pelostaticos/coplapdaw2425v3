@@ -119,6 +119,7 @@ class Usuarios {
      *
      * @param Smarty $smarty Objeto que contiene al motor de plantillas Smarty
      * @return void No devuelve valor alguno
+     * @throws AppException Excepción cuando existe algún problema al mostrar el perfil de usuario
      */
     public static function consultarPerfil($smarty) {
 
@@ -204,6 +205,7 @@ class Usuarios {
      *
      * @param Smarty $smarty Obtejp que contiene al motor de plantillas Smarty
      * @return void No devuelve valor alguno
+     * @throws AppException Excepción cuando existe algún problema al listar usuarios
      */
     public static function listarUsuariosPlataforma($smarty) {
 
@@ -229,8 +231,8 @@ class Usuarios {
 
         } else {
             // Lanzo una excepción para notificar al usuario que no tiene permisos para filtrar usuarios
-            throw new AppException($message = "Disculpa! Tu rol no te permite listar usuarios en la plataforma", 
-                $urlAceptar="/plataforma/backoffice.php?comando=usuarios:default");
+            throw new AppException(message: "Disculpa! Tu rol no te permite listar usuarios en la plataforma", 
+                urlAceptar: "/plataforma/backoffice.php?comando=usuarios:default");
         }
 
 
@@ -241,6 +243,7 @@ class Usuarios {
      *
      * @param Smarty $smarty Objeto que contiene al motor de plantillas Smarty
      * @return void No devuelve valor alguno
+     * @throws AppException Excepción cuando existe algún problema al filtrar listados de usuarios
      */
     public static function filtrarUsuariosPlataforma($smarty) {
 
@@ -269,8 +272,8 @@ class Usuarios {
             $smarty->display('usuarios/listado.tpl');               
         } else {
             // Lanzo una excepción para notificar al usuario que no tiene permisos para filtrar usuarios
-            throw new AppException($message = "Disculpa! Tu rol no te permite filtrar usuarios en la plataforma", 
-                $urlAceptar="/plataforma/backoffice.php?comando=usuarios:default");
+            throw new AppException(message: "Disculpa! Tu rol no te permite filtrar usuarios en la plataforma", 
+                urlAceptar: "/plataforma/backoffice.php?comando=usuarios:default");
         }
 
     }
@@ -280,6 +283,7 @@ class Usuarios {
      *
      * @param Smarty $smarty Objeto que contiene al motor de plantillas Smarty
      * @return void No evuelve valor alguno
+     * @throws AppException Excepción cuandi existe algún problema al mostrar la vista de edición
      */
     public static function mostrarVistaEdicionUsuarioPlataforma ($smarty) {
         // Recupero los permisos del usuario logueado desde su sesión
@@ -363,6 +367,7 @@ class Usuarios {
      *
      * @param Smarty $smarty Objeto que contiene al motor de plantillas Smarty
      * @return void No devuelve valor alguno
+     * @throws AppException Excepción cuando existe algún problema al actualizar el perfil de usuario
      */
     public static function actualizarUsuarioPlataforma($smarty) {
 
@@ -409,11 +414,13 @@ class Usuarios {
                         ErrorController::mostrarMensajeInformativo($smarty, "Perfil de usuario actualizado con éxito!!", $urlAceptarNotificacion);
                     } else {
                         // Lanzo una excepción para indicar que no es posible obtener valores por defecto del perfil de usuario
-                        throw new AppException($message = "No es posible actualizar el perfil de usuario", $urlAceptar=$urlAceptarNotificacion);
+                        throw new AppException(message: "No es posible actualizar el perfil de usuario", 
+                            urlAceptar: $urlAceptarNotificacion);
                     }
                 } else {
                     // Lanzo una excepción para indicar que no es posible obtener valores por defecto del perfil de usuario
-                    throw new AppException($message = "No es posible recuperar el perfil de usuario", $urlAceptar=$urlAceptarNotificacion);                
+                    throw new AppException(message: "No es posible recuperar el perfil de usuario", 
+                        urlAceptar: $urlAceptarNotificacion);                
                     }                    
 
             } else {
@@ -432,6 +439,7 @@ class Usuarios {
      *
      * @param Smarty $smarty Objeto que contiene al motor de plantillas Smarty
      * @return void No devuelve valor alguno
+     * @throws AppException Excepción cuando existe algún problema al cambiar contraseña del usuario
      */
     public static function mostrarVistaCambioContraseñaUsuarioPlataforma($smarty) {
         // Recupero los permisos del usuario logueado desde su sesión
@@ -499,6 +507,7 @@ class Usuarios {
      *
      * @param Smarty $smarty Objeto que contiene al motor de plantillas Smarty
      * @return void No devuelve valor alguno
+     * @throws AppException Excepción cuando existe algún problema al procesar el cambio de contraseña del usuario
      */
     public static function modificarPasswordUsuarioPlataforma($smarty) {
         // Recupero los permisos del usuario logueado desde su sesión
@@ -531,11 +540,13 @@ class Usuarios {
                         ErrorController::mostrarMensajeInformativo($smarty, "Password del perfil de usuario cambiado con éxito!!", $urlAceptarNotificacion);
                     } else {
                         // Lanzo una excepción para indicar que no es posible obtener valores por defecto del perfil de usuario
-                        throw new AppException($message = "No es posible cambiar el password del perfil de usuario", $urlAceptar=$urlAceptarNotificacion);
+                        throw new AppException(message: "No es posible cambiar el password del perfil de usuario", 
+                            urlAceptar: $urlAceptarNotificacion);
                     }                    
                 } else {
                     // Lanzo una excepción para indicar que no es posible obtener el perfil de usuario
-                    throw new AppException($message = "No es posible recuperar el perfil de usuario", $urlAceptar=$urlAceptarNotificacion);   
+                    throw new AppException(message: "No es posible recuperar el perfil de usuario", 
+                        urlAceptar: $urlAceptarNotificacion);   
                 }                                
             } else {
                 // Lanzo una excepción para indicar que no existen datos para acutalizar el perfil de usuario
@@ -587,6 +598,7 @@ class Usuarios {
      *
      * @param Smarty $smarty Objeto que contiene al motor de plantillas Smarty
      * @return void No devuelve valor alguno
+     * @throws AppException Excepción cuando existe algún problema al eliminar el perfil de un usuario
      */
     public static function eliminarUsuarioPlataforma($smarty) {
         // Recupero los permisos del usuario logueado desde su sesión
@@ -643,8 +655,8 @@ class Usuarios {
                             $urlAceptarNotificacion);
                     } else {
                         // Lanzo una excepción para indicar que no existe perfil de usuario
-                        throw new AppException($message = $mensajeError, 
-                            $urlAceptar = $urlAceptarNotificacion);
+                        throw new AppException(message: $mensajeError, 
+                            urlAceptar: $urlAceptarNotificacion);
                     }
                 } else {
                     // Lanzo una excepción para indicar que existe algún problema para dar de baja al usuario
@@ -666,6 +678,7 @@ class Usuarios {
      *
      * @param Smarty $smarty Objeto que contiene al motor de plantillas Smarty
      * @return void No devuelve valor alguno
+     * @throws AppException Excepción cuando existe algún problema al mostrar confirmación para activación del perfil de usuario
      */
     public static function mostrarConfirmacionActivarUsuarioPlataforma($smarty) {
         // Recupero los permisos del usuario logueado desde su sesión
@@ -698,6 +711,7 @@ class Usuarios {
      *
      * @param Smarty $smarty Objeto que contiene al motor de plantilla Smarty
      * @return void No devuelve valor alguno
+     * @throws AppException Excepción cuando existe algún problema de permitar para desactivar el perfil de usuario
      */
     public static function mostrarConfirmacionDesactivarUsuarioPlataforma($smarty) {
         

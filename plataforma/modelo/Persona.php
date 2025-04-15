@@ -115,7 +115,7 @@ class Persona {
      * @return string Documento de identidad de la persona usuaria
      */
     public function getDocumento() {
-        // Devuelvo el documento d eidentidad de la persona usuaria
+        // Devuelvo el documento de identidad de la persona usuaria
         return $this->documento;
     }
 
@@ -162,7 +162,7 @@ class Persona {
     /**
      * Método GET para obtener el segundo apellido de la persona usuaria
      *
-     * @return string Segundo apellido d ela persona usuaria
+     * @return string Segundo apellido de la persona usuaria
      */
     public function getSegundoApellido() {
         // Devuelvo el segundo apellido de la persona usuaria

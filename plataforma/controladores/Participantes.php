@@ -122,6 +122,7 @@ class Participantes {
      *
      * @param Smarty $smarty Objeto que contiene al motor de plantillas Smarty
      * @return void No devuelve valor alguno
+     * @throws AppException Excepción cuando existe algún problema de permisos del usuario
      */
     private static function listarJornadasInscripcionPlataforma($smarty) {
 
@@ -163,6 +164,7 @@ class Participantes {
      *
      * @param Smarty $smarty Objeto que contiene al motor de plantillas Smarty
      * @return void No devuelve valor alguno
+     * @throws AppException Excepción cuando existe algún problema al mostrar vista del inscripción
      */
     private static function mostrarInscripcionParticipanteJornadaPlataforma($smarty) {
 
@@ -224,20 +226,20 @@ class Participantes {
                         } else {
                             // De lo contario, lanzo una excepción para notificar al usuario que el
                             // persona usuaria participante no existe en la base de datos
-                            throw new AppException($message = "El participante a la jornada elegida no existe en la base de datos!!!",
-                            $urlAceptar="/plataforma/backoffice.php?comando=participantes:default");
+                            throw new AppException(message: "El participante a la jornada elegida no existe en la base de datos!!!",
+                            urlAceptar: "/plataforma/backoffice.php?comando=participantes:default");
                         }
                     } else {
                         // De lo contario, lanzo una excepción para notificar al usuario que el
                         // observatorio asociado a la jornada deseada no existe en la base de datos
-                        throw new AppException($message = "El observatorio de la jornada elegida no existe en la base de datos!!!",
-                        $urlAceptar="/plataforma/backoffice.php?comando=participantes:default");
+                        throw new AppException(message: "El observatorio de la jornada elegida no existe en la base de datos!!!",
+                        urlAceptar: "/plataforma/backoffice.php?comando=participantes:default");
                     }
                 } else {
                     // De lo contario, lanzo una excepción para notificar al usuario que la
                     // jornada deseada no existe en la base de datos
-                    throw new AppException($message = "La jornada elegida no existe en la base de datos!!!",
-                    $urlAceptar="/plataforma/backoffice.php?comando=participantes:default");                    
+                    throw new AppException(message: "La jornada elegida no existe en la base de datos!!!",
+                    urlAceptar: "/plataforma/backoffice.php?comando=participantes:default");                    
                 }
             } else {
                 // Lanzo una excepción para notificar que el usuario no eligió una jornada del listado
@@ -292,6 +294,7 @@ class Participantes {
      *
      * @param Smarty $smarty Objeto que contiene al motor de plantillas Smarty
      * @return void No devuelve valor alguno
+     * @throws AppException Excepción cuando existe añlgún problema con la vista de detalles de inscripción
      */
     private static function mostrarDetallesIncripciónUsuarioPlataforma($smarty) {
         // Obtengo al usuario de la sesión de navegacion
@@ -357,20 +360,20 @@ class Participantes {
                         } else {
                             // De lo contario, lanzo una excepción para notificar al usuario que el
                             // persona usuaria participante no existe en la base de datos
-                            throw new AppException($message = "El participante a la jornada elegida no existe en la base de datos!!!",
-                            $urlAceptar="/plataforma/backoffice.php?comando=participantes:default");
+                            throw new AppException(message: "El participante a la jornada elegida no existe en la base de datos!!!",
+                            urlAceptar: "/plataforma/backoffice.php?comando=participantes:default");
                         }
                     } else {
                         // De lo contario, lanzo una excepción para notificar al usuario que el
                         // observatorio asociado a la jornada deseada no existe en la base de datos
-                        throw new AppException($message = "El observatorio de la jornada elegida no existe en la base de datos!!!",
-                        $urlAceptar="/plataforma/backoffice.php?comando=participantes:default");
+                        throw new AppException(message: "El observatorio de la jornada elegida no existe en la base de datos!!!",
+                        urlAceptar: "/plataforma/backoffice.php?comando=participantes:default");
                     }
                 } else {
                     // De lo contario, lanzo una excepción para notificar al usuario que la
                     // jornada deseada no existe en la base de datos
-                    throw new AppException($message = "La jornada elegida no existe en la base de datos!!!",
-                    $urlAceptar="/plataforma/backoffice.php?comando=participantes:default");                    
+                    throw new AppException(message: "La jornada elegida no existe en la base de datos!!!",
+                    urlAceptar: "/plataforma/backoffice.php?comando=participantes:default");                    
                 }             
             } else {
                 // Lanzo una excepción para notificar que el usuario no eligió una inscripción del listado
@@ -387,6 +390,7 @@ class Participantes {
      *
      * @param Smarty $smarty Objeto que contiene al motor de plantillas Smarty
      * @return void No devuelve valor alguno
+     * @throws AppException Excepción cuando existe algún problema al mostrar la vista de edición de inscriupción
      */
     private static function mostrarEdicionInscripcionUsuarioPlataforma($smarty) {
         // Obtengo al usuario de la sesión de navegacion
@@ -454,20 +458,20 @@ class Participantes {
                         } else {
                             // De lo contario, lanzo una excepción para notificar al usuario que el
                             // persona usuaria participante no existe en la base de datos
-                            throw new AppException($message = "El participante a la jornada elegida no existe en la base de datos!!!",
-                            $urlAceptar="/plataforma/backoffice.php?comando=participantes:default");
+                            throw new AppException(message: "El participante a la jornada elegida no existe en la base de datos!!!",
+                            urlAceptar: "/plataforma/backoffice.php?comando=participantes:default");
                         }
                     } else {
                         // De lo contario, lanzo una excepción para notificar al usuario que el
                         // observatorio asociado a la jornada deseada no existe en la base de datos
-                        throw new AppException($message = "El observatorio de la jornada elegida no existe en la base de datos!!!",
-                        $urlAceptar="/plataforma/backoffice.php?comando=participantes:default");
+                        throw new AppException(message: "El observatorio de la jornada elegida no existe en la base de datos!!!",
+                        urlAceptar: "/plataforma/backoffice.php?comando=participantes:default");
                     }
                 } else {
                     // De lo contario, lanzo una excepción para notificar al usuario que la
                     // inscripción deseada no existe en la base de datos
-                    throw new AppException($message = "La inscripción elegida no existe en la base de datos!!!",
-                    $urlAceptar="/plataforma/backoffice.php?comando=participantes:default");                    
+                    throw new AppException(message: "La inscripción elegida no existe en la base de datos!!!",
+                    urlAceptar: "/plataforma/backoffice.php?comando=participantes:default");                    
                 }             
             } else {
                 // Lanzo una excepción para notificar que el usuario no eligió una inscripción del listado
@@ -484,6 +488,7 @@ class Participantes {
      *
      * @param Smarty $smarty Objeto que contiene al motor de plantillas Smarty
      * @return void No devuelve valor alguno
+     * @throws AppException Excepción cuando existe algún problema al mostar la confirmación de baja de inscripción
      */
     private static function mostrarConfirmacionBajaInscripcionPlataforma($smarty) {
         // Recupero los permisos del usuario logueado desde su sesión
@@ -521,6 +526,7 @@ class Participantes {
      *
      * @param Smarty $smarty Objeto que contiene al motor de plantillas Smarty
      * @return void No devuelve valor alguno
+     * @throws AppException Excepción cuando existe algún problema al procesar la inscripción de un usuario
      */
     public static function inscribirParticipanteJornadaPlataforma($smarty) {
 
@@ -562,6 +568,7 @@ class Participantes {
      *
      * @param Smarty $smarty Objeto que contiene al motor de plantillas Smarty
      * @return void No devuelve valor alguno
+     * @throws AppException Excepción cuando existe algún problema al procesar la actualización de una inscripción
      */
     public static function actualizarInscripciónParticipantePlataforma($smarty) {
 
@@ -611,6 +618,7 @@ class Participantes {
      *
      * @param Smarty $smarty Objeto que contiene al motor de plantillas Smarty
      * @return void No devuelve valor alguno
+     * @throws AppException Excepción cuando existe algún problema al procesa la baja de una inscripción
      */
     public static function eliminarInscripcionParticipantePlataforma($smarty) {
         // Obtengo al usuario de la sesión de navegacion
@@ -692,8 +700,8 @@ class Participantes {
             $smarty->display('participantes/historico.tpl');               
         } else {
             // Lanzo una excepción para notificar al usuario que no tiene permisos para filtrar inscripciones
-            throw new AppException($message = "Tu rol en la plataforma no te permite filtrar inscripciones", 
-                $urlAceptar="/plataforma/backoffice.php");
+            throw new AppException(message: "Tu rol en la plataforma no te permite filtrar inscripciones", 
+                urlAceptar: "/plataforma/backoffice.php");
         }
 
     }    

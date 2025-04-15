@@ -409,7 +409,8 @@ class Core {
                 $smarty->display('comunes/notificaciones.tpl');              
             } else {
                 // Lanzo excepción para notificar al usuario que hubo algún problema con su proceso de registro
-                throw new AppException("Uppps!! Hubo un problema con su registro. Por favor, contacte con los administradores","/plataforma/backoffice.php?comando=core:email:vista");
+                throw new AppException(message: "Uppps!! Hubo un problema con su registro. Por favor, contacte con los administradores",
+                    urlAceptar: "/plataforma/backoffice.php?comando=core:email:vista");
             }                
 
         // Manejo la excepción que se haya producido para notificarla al usuario
