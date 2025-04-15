@@ -251,6 +251,10 @@ try {
                 // Solicito al controlador de participantes que procese la baja de una inscripción de la plataforma
                 Participantes::eliminarInscripcionParticipantePlataforma($smarty);
                 break;
+            case "participantes:filtrar":
+                // Solicito al controlador de participantes que filter el histórico de participación de un usuario de la plataforma
+                Participantes::filtrarInscripcionesParticipantesPlataforma($smarty);
+                break;
             case "censos:default":
                 // Solicito al controlador de censos que muestre las vista por defecto según rol del usuario
                 Censos::default($smarty);

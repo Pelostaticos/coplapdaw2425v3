@@ -648,6 +648,49 @@ class Participantes {
         }
     }
 
+    /**
+     * Método estático para filtrar listados de inscripciones de la plataforma
+     *
+     * @param Smarty $smarty Objeto que contiene al motor de plantillas Smarty
+     * @return void No devuelve valor alguno
+     */
+    public static function filtrarInscripcionesParticipantesPlataforma($smarty) {
+
+        // Obtengo al usuario de la sesión del navegacion
+        $usuario = $_SESSION['usuario'];
+
+        // Recupero el hash de usuario del usuario participante
+        $hashParticipante=$usuario->getCodigo();        
+
+        // Recupero los permisos del usuario logueado desde su sesión
+        $permisosUsuario = $_SESSION['permisos'];
+
+        // Compruebo si el usuario logueado tiene el permiso para filtrar inscripciones en la plataforma.
+        if ($permisosUsuario->getPermisoBuscarInscripciones()) {
+            // El usuario logueado tiene permiso para filtrar inscripciones. Entonces:
+            // Obtengo el campo de busqueda introducido por el usuario
+            $busqueda = filter_input(INPUT_POST,'frm-busqueda', FILTER_SANITIZE_SPECIAL_CHARS);
+            // Obtengo la columna por la que se desea ordenar los resultados
+            $ordenarPor = filter_input(INPUT_POST, 'frm-ordenarpor', FILTER_SANITIZE_SPECIAL_CHARS);
+            // Obtengo el modo de ordenarlos
+            $orden = filter_input(INPUT_POST, 'frm-orden', FILTER_SANITIZE_SPECIAL_CHARS);
+            // Obtengo los resultados del filtrado de inscripciones en la plataforma            
+            $resultados = Participante::buscarInscripciones($busqueda, $ordenarPor, $orden, $hashParticipante);
+            // Asigno las variables requeridas por la plantila del histórico de participación
+            $smarty->assign('usuario', $usuario->getUsuario());
+            $smarty->assign('permisosUsuario', $permisosUsuario);            
+            $smarty->assign('filas', $resultados);
+            $smarty->assign('anyo', date('Y'));
+            // Muestro la plantilla del histórico de participación
+            $smarty->display('participantes/historico.tpl');               
+        } else {
+            // Lanzo una excepción para notificar al usuario que no tiene permisos para filtrar inscripciones
+            throw new AppException($message = "Tu rol en la plataforma no te permite filtrar inscripciones", 
+                $urlAceptar="/plataforma/backoffice.php");
+        }
+
+    }    
+
     // C) Métodos estáticos públicos para vistas generales y su procesamiento de datos asociados
     // No hay métodos disponibles de este tipo en este gestor
     // NOTA: Quizás la funcionalidad de vista y procesamiento del histórico de participación deban ser de este tipo

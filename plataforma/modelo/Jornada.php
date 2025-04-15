@@ -327,7 +327,7 @@ class Jornada {
      */
     public static function buscarJornadas($busqueda, $ordenarPor, $orden) {
 
-        // Defino las columnas de busqueda para encontrar usuarios
+        // Defino las columnas de busqueda para encontrar jornadas
         $columnas = ['j.titulo','j.estado', 'ob.nombre', 'ob.localidad'];
 
         // Defino una array vacio en donde generar las condiciones de búsqueda
@@ -343,7 +343,7 @@ class Jornada {
         // RECUERDA: El formato admitidos en el frontend es DD-MM-YYYY para fechas
         // y en el caso de rangos de fechas es DD-MM-YYYY a DD-MM-YYYY.
         $fechaRegex = '/^\d{2}-\d{2}-\d{4}$/';
-        $rangoFechaRegex = '/^\d{2}-\d{2}-\d{4}\s+(a|hasta|-)\s+\d{2}-\d{2}-\d{4}$/';
+        $rangoFechaRegex = '/^\d{2}-\d{2}-\d{4}\s+(a)\s+\d{2}-\d{2}-\d{4}$/';
 
         // Detecto el tipo de búsqueda de jornadas que ha solicitado el usuario
         // CASO-A: Detecta búsqueda por fecha única

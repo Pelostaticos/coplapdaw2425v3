@@ -281,6 +281,129 @@ class Participante {
             return null;
     }
 
+    /**
+     * Método estático para buscar Inscripciones en la base de datos.
+     *
+     * @param string $busqueda Cadena de busqueda en las Inscripciones de la base de datos
+     * @param string $ordenar Por Campo por el que se quiere ordenar los resultado
+     * @param string $orden El tipo de orden que se desea para los resultados
+     * @param string $participante Hash del usuario participante del que buscar en sus Inscripciones
+     * @return Array|null Devuelve un array con los resultados de la búsqueda de Inscripciones
+     *                    Devuelve nulo si el criterio de búsqueda no ha encontrado Inscripciones
+     */
+    public static function buscarInscripciones($busqueda, $ordenarPor, $orden, $participante) {
+
+        // Defino las columnas de busqueda para encontrar inscripciones
+        $columnas = ['j.titulo', 'ob.nombre', 'ob.localidad'];
+
+        // Defino una array vacio en donde generar las condiciones de búsqueda
+        $condiciones = [];
+
+        // Defino un array asociativo con los parámetros de busqueda
+        $parametros = [];
+
+        // Limpio el término de búsqueda introducido por el usuario
+        $busqueda = Participante::limpiarBusqueda($busqueda);
+
+        // Establezco expresiones regulares para detectar fechas y rango de fechas
+        // RECUERDA: El formato admitidos en el frontend es DD-MM-YYYY para fechas
+        // y en el caso de rangos de fechas es DD-MM-YYYY a DD-MM-YYYY.
+        $fechaRegex = '/^\d{2}-\d{2}-\d{4}$/';
+        $rangoFechaRegex = '/^\d{2}-\d{2}-\d{4}\s+(a)\s+\d{2}-\d{2}-\d{4}$/';
+
+        // Detecto el tipo de búsqueda de jornadas que ha solicitado el usuario
+        // CASO-A: Detecta búsqueda por fecha única
+        if (preg_match($fechaRegex, $busqueda)) {
+            // Obtengo la fecha de búsqueda en el formato correcto para la consulta SQL
+            $fecha = Participante::prepararFechas($busqueda);
+            // Genero la condicion de busqueda para la consulta SQL
+            $condiciones[]="j.fecha=:fecha";
+            $condiciones[]="p.inscripcion=:fecha";
+            // Genero los parámetros para la consulta SQL preparada
+            $parametros[':fecha']=$fecha;
+        // CASO-B: Detecta búsqueda por rango de fechas
+        } elseif (preg_match($rangoFechaRegex, $busqueda, $matches)) {
+            // Obtengo las fechas individuales del rango de fechas deseado por el usuario
+            list($fechaInicio, $fechaFin) = Participante::prepararRangoFechas($busqueda);
+            // Genero la condicion de busqueda para la consulta SQL
+            $condiciones[]="(j.fecha>=:fechaInicio AND j.fecha<=:fechaFin)";
+            $condiciones[]="(p.inscripcion>=:fechaInicio AND p.inscripcion<=:fechaFin)";
+            // Genero los parámetros para la consulta SQL preparada
+            $parametros[':fechaInicio']=$fechaInicio;
+            $parametros[':fechaFin']=$fechaFin;
+        // CASO-C: Detecta búsqueda por filtrado de inscripción realizadas
+        } elseif (trim($busqueda)==='realizada:si') {
+            // Genero la condición de busuqeda para la consulta SQL
+            $condiciones[]="j.estado = :estado";
+            // Genero los parámetros para la consulta SQL preparada
+            $parametros[':estado'] = "CERRADA";
+        // CASO-D: detecta búsqueda por filtrado de inscripciones no realizadas
+        } elseif (trim($busqueda)==='realizada:no') {
+            // Genero la condición de busuqeda para la consulta SQL
+            $condiciones[]="j.estado IN :estados";
+            // Genero los parámetros para la consulta SQL preparada
+            $parametros[':estados'] = "('ABIERTA', 'CANCELADA', 'PUBLICADA')";            
+        // CASO-E: Detecta búsqueda por titulo, observatorio o localidad.
+        } else {
+            // Genero las condiciones de búsqueda para encontrar jornadas por los campos.
+            // Titulo, observatorio y localidad.
+            foreach($columnas as $columna) {
+                $parametro = str_replace('.','',$columna);
+                $parametros[":".$parametro] = "%$busqueda%";
+                $condiciones[] = "$columna LIKE :$parametro";                      
+            }
+        }
+
+        // Construyo la sentencia SQL base para recuperar el histórico de participación del usuario de la base de datos     
+        $sql="SELECT j.id_jornada as idJornada, j.titulo as titulo, 
+            CONCAT(j.fecha,' - ', j.hora_inicio, ' - ', j.hora_fin) as programada, 
+            p.inscripcion as inscrito, ob.nombre as observatorio, ob.localidad as localidad, j.estado,
+            CASE j.estado
+                WHEN 'ABIERTA' THEN 'NO'
+                WHEN 'CANCELADA' THEN 'NO'
+                WHEN 'CERRADA' THEN 'SI'
+                WHEN 'PUBLICADA' THEN 'NO'                
+            END AS realizada
+            FROM pdaw_jornadas j 
+            JOIN pdaw_observatorios ob ON j.observatorio=ob.codigo
+            JOIN pdaw_participantes p ON p.id_jornada=j.id_jornada";
+        // Preparo el parámetro del usuario participante sobre el que realizar la búsquedas en la base de datos        
+        $parametros[':usuario'] = $participante;
+
+        // Añado las condiciones de búsqueda a la sentencia SQL anterior
+        if (!empty($condiciones)) {
+            // Genero la cadena completa con todas las condiciones de búsqueda SQL.
+            $sql .= " WHERE p.usuario=:usuario AND (" . implode(" OR ", $condiciones) . ")";
+        }
+
+        // Añado la funcionalidad para ordenar el resultado de la búsqueda
+        $columnasPermitidas = ['titulo', 'observatorio', 'localidad'];
+        $ordenesPemritidos = ['ASC', 'DESC'];
+
+        if (in_array($ordenarPor, $columnasPermitidas) && in_array($orden, $ordenesPemritidos)) {
+            $sql .= " ORDER BY $ordenarPor $orden";
+        }
+        // var_dump($condiciones);
+        // var_dump($parametros);
+        // echo $busqueda . " - " . $ordenarPor . " -  " . $orden . "- " . $sql;
+        // echo $sql;
+        // exit;
+        // Ejecuto la sentencia SQL para recuperar a los usuario de la base de datos que coincidan el criterio de búsqueda
+        $res=Core::ejecutarSql($sql, $parametros);
+        // Si el resultado devuelto tras ejecución contiene un array de un elemento
+        if (is_array($res) && count($res)>0)        
+        {
+            // Devuelvo al usuario recuperado de la base de datos
+            return $res;
+        }
+        else {
+            // De lo contario devolveré nulo
+            return null;
+        }
+        
+    }
+
+
     // F) Métodos estáticos privados de apoyo a la búsquedas de jornadas por fechas y rango de fechas
 
     /**

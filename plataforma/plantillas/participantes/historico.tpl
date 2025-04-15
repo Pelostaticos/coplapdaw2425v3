@@ -32,7 +32,7 @@
                 <!-- Información del gestor de particpantes  -->
                 <div class="contenido-gestor">
                     <!-- Formulario para busqueda y orden en el histórico de participación de un usuario  -->
-                    <form id="busqueda-gestor" name="busqueda-gestor" method="post" action="/plataforma/backoffice.php?comando=jornadas:filtrar">
+                    <form id="busqueda-gestor" name="busqueda-gestor" method="post" action="/plataforma/backoffice.php?comando=participantes:filtrar">
                         <p class="corto">
                             <label for="frm-busqueda">Busqueda</label>:&nbsp;
                             <input type="text" id="frm-busqueda" name="frm-busqueda" placeholder="Busqueda de inscripciones...">
@@ -43,8 +43,7 @@
                                 <option value="">ninguno</option>
                                 <option value="titulo">titulo</option>                                    
                                 <option value="observatorio">observatorio</option>
-                                <option value="estado">estado</option>                                    
-                                <option value="fecha">fecha</option>                                    
+                                <option value="localidad">localidad</option>                                                                    
                             </select>
                         </p>
                         <p class="corto">
