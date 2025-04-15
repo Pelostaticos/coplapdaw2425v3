@@ -383,11 +383,7 @@ class Participante {
         if (in_array($ordenarPor, $columnasPermitidas) && in_array($orden, $ordenesPemritidos)) {
             $sql .= " ORDER BY $ordenarPor $orden";
         }
-        // var_dump($condiciones);
-        // var_dump($parametros);
-        // echo $busqueda . " - " . $ordenarPor . " -  " . $orden . "- " . $sql;
-        // echo $sql;
-        // exit;
+
         // Ejecuto la sentencia SQL para recuperar a los usuario de la base de datos que coincidan el criterio de búsqueda
         $res=Core::ejecutarSql($sql, $parametros);
         // Si el resultado devuelto tras ejecución contiene un array de un elemento
