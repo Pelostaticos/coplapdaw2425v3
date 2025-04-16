@@ -52,9 +52,9 @@
                 <!-- Separador entre botones y menú de navegación -->
                 <span class="separador-nav"></span>
                 <!-- Nombre del usuario logeado -->
-                <a href="/plataforma/backoffice.php?comando=usuarios:consultar" class="boton-nav" title="Ver mi perfil de usuario"><span class="iconos-nav-backoffice">account_circle</span> {$usuario}</a>
+                <a id="perfil" href="/plataforma/backoffice.php?comando=usuarios:consultar" class="boton-nav" title="Ver mi perfil de usuario"><span class="iconos-nav-backoffice">account_circle</span> {$usuario}</a>
                 <!-- Botón de salida de la plataforma -->
-                <a href="/plataforma/backoffice.php?comando=core:logout:vista" class="boton-nav" title="Salir de la plataforma"><span class="iconos-nav-backoffice">logout</span> Salir</a>
+                <a id="salir" href="/plataforma/backoffice.php?comando=core:logout:vista" class="boton-nav" title="Salir de la plataforma"><span class="iconos-nav-backoffice">logout</span> Salir</a>
             {else}
                 <h1 class="titulo-navegacion">Backoffice</h1>
             {/if}

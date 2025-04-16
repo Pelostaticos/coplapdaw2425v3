@@ -74,11 +74,22 @@ Tabla de contenido
     --tamaño-fuente-h6-tabletas: calc(var(--tamaño-fuente-h6-escritorio) - var(--factor-ajuste-tabletas));
     --tamaño-fuente-p-escritorio: 16px;
     --tamaño-fuente-small-escritorio: 14px;
+    --tamaño-fuente-small-tabletas: 12px;
+    --tamaño-fuente-small-moviles: 12px;
     --tamaño-fuente-button-escritorio: 16px;
+    --tamaño-fuente-button-tabletas: 14x;
+    --tamaño-fuente-button-moviles: 12x;
 
     /* Nuestros tamaños para elementos especificos */
     --altura-cabecera-global: 100px;
     --altura-pie-pagina-global: 50px;
+
+    /* Tamaños para los iconos del backoffice */
+    --tamaño-iconos-nav-backoffice: 24px;
+    --tamaño-iconos-notificacion-backoffice: 96px;
+    --tamaño-iconos-acciones-listados-escriotorio: 24px;
+    --tamaño-iconos-acciones-listados-tabletas: 20px;
+    --tamaño-iconos-acciones-listados-moviles: 16px;
 }
 
 /* Configuración por defecto */
@@ -210,23 +221,28 @@ a {
 .iconos-nav-backoffice {
     padding-right: 10px;
     font-family: 'Material Icons';
-    font-size: 24px;
+    font-size: var(--tamaño-iconos-nav-backoffice);
     color: var(--color-textos-auxiliar);
     cursor: pointer;
 }
 .iconos-acciones-listados {
     font-family: 'Material Icons';
-    font-size: 24px;
+    font-size: var(--tamaño-iconos-acciones-listados-escriotorio);
     color: var(--color-azul-cielo);
     cursor: pointer; 
 }
 .iconos-notificacion {
     align-self: center;
     font-family: 'Material Icons';
-    font-size: 96px;
+    font-size: var(--tamaño-iconos-notificacion-backoffice);
     color: var(--color-azul-cielo);
     cursor: pointer;
 }
+
+/* Control de visibilidad de elementos prescindibles en responsive
+.visibilidad {
+    display:
+} */
 
 /*--------------------------------------------------------------
 2. Encabezado
@@ -375,6 +391,71 @@ article img {
     width: 45%;
 }
 
+/* Estilos para las vistas de login y signup */
+
+.contenido-core {
+    width: 80%;
+    border-radius: 10px;
+    margin: 10px auto;
+    padding: 10px;
+    font-size: var(--tamaño-fuente-h4-escritorio);
+    text-align: center;
+    color: var(--color-primario);
+    background-color: var(--color-secundario);
+}
+.campos-core {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    flex-wrap: wrap;
+    align-items: center;
+    padding: 0px;
+}
+div.campos-core p {
+    display: flex;
+    flex-direction: row;
+}
+.campos-core p.corto {
+    margin: 0px;
+    padding: 10px;
+    width: 10em;
+    font-size: var(--tamaño-fuente-h5-escritorio);
+}
+.campos-core p.medio {
+    margin: 0px;
+    padding: 10px;
+    width: 15em;
+    font-size: var(--tamaño-fuente-h5-escritorio);
+}
+.campos-core p.largo {
+    margin: 0px;
+    padding: 10px;
+    width: 22em;
+    font-size: var(--tamaño-fuente-h5-escritorio);
+}
+.campos-core p input,
+.campos-core p select,
+.campos-core p textarea
+ {
+    padding-left: 5px;
+    margin-right: 5px;
+    flex-grow: 1;
+}
+.boton-accion-core {
+    align-self: center;
+    border-radius: 5px;
+    margin-top: 5px;
+    padding: 10px;
+    background-color: var(--color-primario);
+    color: var(--color-azul-cielo);    
+    font-weight: 600;
+    width: 7.5em;
+}
+.boton-accion-core:hover {
+    background-color: var(--color-azul-cielo);
+    color: var(--color-textos-principal);
+}
+
 /* Estilos para el formualrio de contacto */
 section#formulario form {
     display: flex;
@@ -418,7 +499,7 @@ section#formulario form textarea {
 .boton-enviar {
     align-self: flex-start;
     border-radius: 5px;
-    margin-top: 5px;
+    margin-top: 20px;
     padding: 10px 50px;
     background-color: var(--color-primario);
     color: var(--color-azul-cielo);    
@@ -580,7 +661,7 @@ form#busqueda-gestor small {
     margin-left: 10px;
     margin-right: 10px;
     background-color: var(--color-destacado);
-    border: 1px solid var(--color-primario);    
+    border: 1px solid var(--color-primario);
     padding: 5px;
 }
 form#busqueda-gestor small span {
@@ -718,48 +799,145 @@ footer {
 }
 
 /* Estilos para móviles gama baja */
-@media (max-width: 479px) {
+@media (max-width: 480px) {
+    /* Ajusto estilos generales */
+    h1 {
+        font-size: var(--tamaño-fuente-h1-moviles);
+    }
+    h2 {
+        font-size: var(--tamaño-fuente-h2-moviles);
+    }
+    h3 {
+        font-size: var(--tamaño-fuente-h3-moviles);
+    }
+    h4 {
+        font-size: var(--tamaño-fuente-h4-moviles);
+    }
+    h5 {
+        font-size: var(--tamaño-fuente-h5-moviles);
+    }
+    h6 {
+        font-size: var(--tamaño-fuente-h6-moviles);
+    }
+    small {
+        font-size: var(--tamaño-fuente-small-moviles);
+    }    
+    p {
+        text-align: justify;
+    }
+    .titulo {
+        font-size: var(--tamaño-fuente-h3-moviles);
+    }
+    .subtitulo {
+        font-size: var(--tamaño-fuente-h5-moviles);
+    }
+    button {
+        font-size: var(--tamaño-fuente-button-moviles);
+    }    
+    .boton {
+        font-size: var(--tamaño-fuente-button-moviles);
+        align-self: normal;
+    }
+    .boton-enviar {
+        font-size: var(--tamaño-fuente-button-moviles);
+        align-self: normal;
+    }
+    .botonera {
+        flex-direction: row;
+        flex-wrap: wrap;
+    }
+    .cta {
+        font-size: var(--tamaño-fuente-h4-moviles);
+        text-align: center;
+    }
+
+    /* Ajusto tamaños de tipografias específicas */
+    p.titulo-gestor {
+        font-size: var(--tamaño-fuente-h3-moviles);
+    }
+    .titulo-accion-gestor {
+        font-size: var(--tamaño-fuente-h4-moviles);
+    }
+    .campos-gestor p.corto {
+        font-size: var(--tamaño-fuente-h5-moviles);
+    }
+    .campos-gestor p.medio {
+        font-size: var(--tamaño-fuente-h5-moviles);
+    }
+    .campos-gestor p.largo {
+        font-size: var(--tamaño-fuente-h5-moviles);
+    }
+    .campos-gestor p.extralargo {
+        font-size: var(--tamaño-fuente-h5-moviles);
+    }
+    .campos-gestor p.extraextralargo {
+        font-size: var(--tamaño-fuente-h5-moviles);
+    }
+    .campos-gestor p.extraextraextralargo {
+        font-size: var(--tamaño-fuente-h5-moviles);
+    }
+    form#busqueda-gestor p label {
+        font-size: var(--tamaño-fuente-h6-moviles);
+    }
+    form#busqueda-gestor input, form#busqueda-gestor select {
+        font-size: var(--tamaño-fuente-h6-moviles);
+    }
+    table#listado-gestor th, table#listado-gestor td {
+        font-size: var(--tamaño-fuente-h6-moviles);
+    }      
+    .mensaje-notificacion {
+        width: 80%;
+        font-size: var(--tamaño-fuente-h4-moviles);
+    }    
     /* Oculto el titulo del sitio web  */
     div.sitioweb {
-        display: none;
-    } 
-}
+        display: none;        
+    }
 
-/* Ajuste de pie de página para determinados dispositivos moviles */
-@media (max-width: 480px) {
-    footer {
-        position: unset;
-        justify-content: center;
+    /* Ajustes de estilos de los iconos del backoffice */
+    .iconos-acciones-listados {
+        font-size: var(--tamaño-iconos-acciones-listados-moviles);
+    }
+
+    /* Ajustes estilos de la zona de encabezados */
+    header a div p {
+        font-size: var(--tamaño-fuente-h4-moviles); 
+    }
+
+    /* Ajustes de estilos de la zona de navegación */
+    .menu a {
+        font-size: var(--tamaño-fuente-h5-moviles);
+    }
+    .menu a:hover {
+        font-size: var(--tamaño-fuente-h5-moviles);
+    }
+    a#perfil {
+        display:none;
+    }
+
+    /* Ajusto estilos para formulario de contacto */
+    section#formulario form label {
+        font-size: var(--tamaño-fuente-h6-moviles);
+    }
+    section#formulario form input {
+        font-size: var(--tamaño-fuente-p-moviles);
+    }
+    section#formulario form select {
+        font-size: var(--tamaño-fuente-p-moviles);
+    }
+    section#formulario form textarea {
+        font-size: var(--tamaño-fuente-p-moviles);
     }     
-    .copyright {
-        display: none;
+
+    /* Ajusto estilos para vistas de gestores */
+    .logo-gestor {
+        width: 50%;
     }
-    .copyleft {
-        display: block;
+    .cabecera-gestor {
+        padding-top: 10px;
+        padding-bottom: 10px;
     }
-}
-@media (min-width: 481px) and (max-width: 809px) {
-    footer {
-        position: unset;
-        justify-content: center;
-    }     
-    .copyright {
-        display: none;
-    }    
-    .copyleft {
-        display: block;
-        font-size: var(--tamaño-fuente-small-escritorio);
-    }
-}
-@media (min-width: 810px) {
-    footer {
-        position: fixed;
-        justify-content: space-around;
-    }     
-    .copyright {
-        display: block;
-    }
-    .copyleft {
+    .visibilidad, th#estado, th#rol, th#observatorio {
         display: none;
     }
 }
@@ -785,6 +963,9 @@ footer {
     h6 {
         font-size: var(--tamaño-fuente-h6-moviles);
     }
+    small {
+        font-size: var(--tamaño-fuente-small-moviles);
+    }    
     p {
         text-align: justify;
     }
@@ -801,12 +982,31 @@ footer {
         align-self: normal;
     }
     .botonera {
-        flex-direction: column;
+        flex-direction: row;
+        flex-wrap: wrap;
     }
     .cta {
         font-size: var(--tamaño-fuente-h4-moviles);
         text-align: center;
-    }    
+    }
+
+    /* Ajustes de estilos de los iconos del backoffice */
+    .iconos-acciones-listados {
+        font-size: var(--tamaño-iconos-acciones-listados-moviles);
+    }
+
+    /* Ajustes estilos de la zona de encabezados */
+    header a div p {
+        font-size: var(--tamaño-fuente-h4-moviles); 
+    }
+
+    /* Ajustes de estilos de la zona de navegación */
+    .menu a {
+        font-size: var(--tamaño-fuente-h5-moviles);
+    }
+    .menu a:hover {
+        font-size: var(--tamaño-fuente-h5-moviles);
+    }
 
     /* Ajusto estilos de la zona de contenidos */
     article {
@@ -820,7 +1020,7 @@ footer {
         width: 100%;
     }
 
-    /* Ajustp estilos para vista de notificación */
+    /* Ajusto estilos para vista de notificación */
     .mensaje-notificacion {
         width: 80%;
         border-radius: 10px;
@@ -830,6 +1030,63 @@ footer {
         text-align: center;
         color: var(--color-primario);
         background-color: var(--color-azul-cielo);
+    }
+
+    /* Ajusto estilos para formulario de contacto */
+    section#formulario form label {
+        font-size: var(--tamaño-fuente-h6-moviles);
+    }
+    section#formulario form input {
+        font-size: var(--tamaño-fuente-p-moviles);
+    }
+    section#formulario form select {
+        font-size: var(--tamaño-fuente-p-moviles);
+    }
+    section#formulario form textarea {
+        font-size: var(--tamaño-fuente-p-moviles);
+    }    
+
+    /* Ajusto estilos para vistas gestores */
+    p.titulo-gestor {
+        font-size: var(--tamaño-fuente-h3-moviles);
+    }
+    .titulo-accion-gestor {
+        font-size: var(--tamaño-fuente-h4-moviles);
+    }
+    .campos-gestor p.corto {
+        font-size: var(--tamaño-fuente-h5-moviles);
+    }
+    .campos-gestor p.medio {
+        font-size: var(--tamaño-fuente-h5-moviles);
+    }
+    .campos-gestor p.largo {
+        font-size: var(--tamaño-fuente-h5-moviles);
+    }
+    .campos-gestor p.extralargo {
+        font-size: var(--tamaño-fuente-h5-moviles);
+    }
+    .campos-gestor p.extraextralargo {
+        font-size: var(--tamaño-fuente-h5-moviles);
+    }
+    .campos-gestor p.extraextraextralargo {
+        font-size: var(--tamaño-fuente-h5-moviles);
+    }
+    form#busqueda-gestor p label {
+        font-size: var(--tamaño-fuente-h6-moviles);
+    }
+    form#busqueda-gestor input, form#busqueda-gestor select {
+        font-size: var(--tamaño-fuente-h6-moviles);
+    }
+    table#listado-gestor th, table#listado-gestor td {
+        font-size: var(--tamaño-fuente-h6-moviles);
+    }    
+    .mensaje-notificacion {
+        width: 80%;
+        font-size: var(--tamaño-fuente-h4-moviles);
+    }    
+    .boton-accion-gestor {        
+        margin-left: 2px;
+        margin-right: 2px;
     }
     
 }
@@ -890,6 +1147,59 @@ footer {
         width: 100%;
     }
 
+    /* Ajusto estilos para formulario de contacto */
+    section#formulario form label {
+        font-size: var(--tamaño-fuente-h6-tabletas);
+    }
+    section#formulario form input {
+        font-size: var(--tamaño-fuente-p-tabletas);
+    }
+    section#formulario form select {
+        font-size: var(--tamaño-fuente-p-tabletas);
+    }
+    section#formulario form textarea {
+        font-size: var(--tamaño-fuente-p-tabletas);
+    } 
+
+    /* Ajustes de estilos para vistas de gestores */
+    p.titulo-gestor {
+        font-size: var(--tamaño-fuente-h3-tabletas);
+    }
+    .titulo-accion-gestor {
+        font-size: var(--tamaño-fuente-h4-tabletas);
+    }
+    .campos-gestor p.corto {
+        font-size: var(--tamaño-fuente-h5-tabletas);
+    }
+    .campos-gestor p.medio {
+        font-size: var(--tamaño-fuente-h5-tabletas);
+    }
+    .campos-gestor p.largo {
+        font-size: var(--tamaño-fuente-h5-tabletas);
+    }
+    .campos-gestor p.extralargo {
+        font-size: var(--tamaño-fuente-h5-tabletas);
+    }
+    .campos-gestor p.extraextralargo {
+        font-size: var(--tamaño-fuente-h5-tabletas);
+    }
+    .campos-gestor p.extraextraextralargo {
+        font-size: var(--tamaño-fuente-h5-tabletas);
+    }
+    form#busqueda-gestor p label {
+        font-size: var(--tamaño-fuente-h6-tabletas);
+    }
+    form#busqueda-gestor input, form#busqueda-gestor select {
+        font-size: var(--tamaño-fuente-h6-tabletas);
+    }
+    table#listado-gestor th, table#listado-gestor td {
+        font-size: var(--tamaño-fuente-h6-tabletas);
+    }      
+    .mensaje-notificacion {
+        width: 80%;
+        font-size: var(--tamaño-fuente-h4-tabletas);
+    }        
+
     /* Ajustp estilos para vista de notificación */
     .mensaje-notificacion {
         width: 80%;
@@ -900,5 +1210,44 @@ footer {
         text-align: center;
         color: var(--color-primario);
         background-color: var(--color-azul-cielo);
+    }
+}
+
+/* Ajuste de pie de página para determinados dispositivos moviles */
+@media (max-width: 480px) {
+    footer {
+        position: unset;
+        justify-content: center;
+    }     
+    .copyright {
+        display: none;
+    }
+    .copyleft {
+        display: block;
+    }
+}
+@media (min-width: 481px) and (max-width: 809px) {
+    footer {
+        position: unset;
+        justify-content: center;
+    }     
+    .copyright {
+        display: none;
     }    
+    .copyleft {
+        display: block;
+        font-size: var(--tamaño-fuente-small-escritorio);
+    }
+}
+@media (min-width: 810px) {
+    footer {
+        position: fixed;
+        justify-content: space-around;
+    }     
+    .copyright {
+        display: block;
+    }
+    .copyleft {
+        display: none;
+    }
 }

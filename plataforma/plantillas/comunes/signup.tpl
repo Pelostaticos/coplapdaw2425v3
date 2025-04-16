@@ -26,16 +26,8 @@
                 <h1 class="titulo">Registro de usuario</h1>
                 <p>Parece que has llegado a la página de registro de usuario. Si no eres nuevo aquí, te invitamos a que inicies de sesión para participar en nuestra comunidad. Si ya tienes una cuenta, por favor verifica tus datos de acceso. Si tienes algún problema, no dudes en contactarnos.</p>
                 <!-- Formulario de contacto de la plataforma -->
-                <!-- REVISARLO Y DEJARLO CONFIGURADO PARA HTML5  -->
-                <form id="signup" method="post" action="/plataforma/backoffice.php?comando=core:signup:procesa">
-                    <h2 class="subtitulo">Datos de usuario:</h2>
-                    <div class="campos-formulario">
-                        <label for="frm-usuario">Nombre de usuario:</label>
-                        <input type="text" name="frm-usuario" id="frm-usuario" placeholder="Escribe tu nombre de usuario..." require>
-                        <label for="frm-pasword">Contraseña:</label>
-                        <input type="password" name="frm-password" id="frm-password" placeholder="Escribe tu contraseña..." require>
-                    </div>
-                    <h2 class="subtitulo">Datos de personales:</h2>
+                <h2 class="cta">Rellena el formulario con tus datos</h2>
+                <form id="signup" class="contenido-core" method="post" action="/plataforma/backoffice.php?comando=core:signup:procesa">                    
                     <div class="campos-formulario">
                         <label for="frm-dni">Documento de identidad:</label>
                         <input type="text" name="frm-dni" id="frm-dni" placeholder="Escribe tu DNI.." require>    
@@ -53,9 +45,14 @@
                         <input type="email" name="frm-email" id="frm-email" placeholder="Escribe tu correo electrónico..." require>
                         <label for="frm-localidad">Tu localidad:</label>
                         <select id="frm-localidad" name="frm-localidad"></select>
-                        {* <input type="text" name="frm-localidad" id="frm-localidad" placeholder="Escribe tu localidad..." require> *}
                     </div>
-                    <button type="submit" class="boton-enviar">Registrarme</button>
+                    <div class="campos-formulario">
+                        <label for="frm-usuario">Usuario:</label>
+                        <input type="text" name="frm-usuario" id="frm-usuario" placeholder="Escribe tu nombre de usuario..." require>
+                        <label for="frm-pasword">Contraseña:</label>
+                        <input type="password" name="frm-password" id="frm-password" placeholder="Escribe tu contraseña..." require>
+                    </div>                    
+                    <button type="submit" class="boton-enviar">Unirme a la plataforma</button>
                 </form>
                 <!-- Invitación a unirse a la plataforma -->
                 <h3 class="cta">¿Te has perdido?</h3>

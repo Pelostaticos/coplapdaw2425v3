@@ -68,9 +68,9 @@
                         <!-- Cabecera del listado de jornadas -->
                         <thead>
                             <th>Titulo</th>
-                            <th>Observatorio</th>
+                            <th id="observatorio">Observatorio</th>
                             <th>Fecha</th>
-                            <th>Estado</th>
+                            <th id="estado">Estado</th>
                             <th>Acciones</th>
                         </thead>
                         <!-- Contenido del listado de jornadas -->
@@ -80,9 +80,9 @@
                             <tr>
                                 <!-- Celdas con datos de cada jornada -->
                                 <td>{$fila.titulo}</td>
-                                <td>{$fila.observatorio}</td>
+                                <td class="visibilidad">{$fila.observatorio}</td>
                                 <td>{$fila.fecha|date_format:"%d-%m-%Y"}</td>
-                                <td>{$fila.estado}</td>
+                                <td class="visibilidad">{$fila.estado}</td>
                                 <!-- Celda con acciones permitidas para cada jornada  -->
                                 <td>
                                     <form method="post" action="/plataforma/backoffice.php?comando=jornadas:default">

@@ -63,9 +63,9 @@
                         <!-- Cabecera del listado de usuarios -->
                         <thead>
                             <th>Usuario</th>
-                            <th>Nombre</th>
-                            <th>Estado</th>
-                            <th>Rol</th>
+                            <th >Nombre</th>
+                            <th id="estado">Estado</th>
+                            <th id="rol">Rol</th>
                             <th>Acciones</th>
                         </thead>
                         <!-- Contenido del listado de usuarios -->
@@ -80,8 +80,8 @@
                                 {else}
                                     <td>{$fila.nombre}</td>
                                 {/if}
-                                <td>{$fila.estado}</td>
-                                <td>{$fila.rol}</td>
+                                <td class="visibilidad">{$fila.estado}</td>
+                                <td class="visibilidad">{$fila.rol}</td>
                                 <!-- Celda con acciones permitidas para cada usuario  -->
                                 <td>
                                     <form method="post" action="/plataforma/backoffice.php?comando=usuarios:default">

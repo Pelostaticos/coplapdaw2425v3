@@ -26,13 +26,21 @@
                 <h1 class="titulo">Inicio de sesión</h1>
                 <p>Parece que has llegado a la página de inicio de sesión. Si eres nuevo aquí, te invitamos a registrarte para unirte a nuestra comunidad. Si ya tienes una cuenta, por favor verifica tus datos de acceso. Si tienes algún problema, no dudes en contactarnos.</p>
                 <!-- Formulario de contacto de la plataforma -->
-                <!-- REVISARLO Y DEJARLO CONFIGURADO PARA HTML5  -->
-                <form id="login" method="post" action="/plataforma/backoffice.php?comando=core:login:procesa">
-                    <label for="frm-usuario">Nombre de usuario:</label>
-                    <input type="text" name="frm-usuario" id="frm-usuario" placeholder="Escribe tu nombre de usuario..." require>
-                    <label for="frm-pasword">Contraseña:</label>
-                    <input type="password" name="frm-password" id="frm-password" placeholder="Escribe tu contraseña..." require>
-                    <button type="submit" class="boton-enviar">Iniciar sesión</button>
+                <h3 class="cta">Inserta tus credenciales de acceso</h3>
+                <form id="login" class="contenido-core" method="post" action="/plataforma/backoffice.php?comando=core:login:procesa">
+                    <div class="campos-core">
+                        <p class="medio">
+                            <label for="frm-usuario">Usuario:</label>                    
+                            <input type="text" name="frm-usuario" id="frm-usuario" placeholder="Escribe tu nombre de usuario..." require>
+                        </p>
+                        <p class="medio">
+                            <label for="frm-pasword">Contraseña:</label>
+                            <input type="password" name="frm-password" id="frm-password" placeholder="Escribe tu contraseña..." require>                            
+                        </p>
+                        <p class="corto">
+                            <button type="submit" class="boton-accion-core">Iniciar sesión</button>
+                        </p>
+                    </div>                                        
                 </form>
                 <!-- Invitación a unirse a la plataforma -->
                 <h3 class="cta">¿Te has perdido?</h3>
