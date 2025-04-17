@@ -37,9 +37,9 @@
             <!-- Botonera de navegacion del encabezado de página -->
             <div class="botonera-nav">
                 <!-- Botón acceso al backoffice de la plataforma correplayas -->
-                <a href="/plataforma/backoffice.php?comando=core:login:vista" class="boton-nav"><span class="iconos-nav-portal">login</span> Acceso</a> 
+                <a id="acceso" href="/plataforma/backoffice.php?comando=core:login:vista" class="boton-nav"><span class="iconos-nav-portal">login</span> Acceso</a> 
                 <!-- Botón CTA invitando a la participación -->
-                <a href="#participa" class="boton-nav">¡Participa!</a>
+                <a id="participa" href="#participa" class="boton-nav">¡Participa!</a>
             </div>
         </nav>
     </header>

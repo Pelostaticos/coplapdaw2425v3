@@ -27,33 +27,45 @@
                 <p>Parece que has llegado a la página de registro de usuario. Si no eres nuevo aquí, te invitamos a que inicies de sesión para participar en nuestra comunidad. Si ya tienes una cuenta, por favor verifica tus datos de acceso. Si tienes algún problema, no dudes en contactarnos.</p>
                 <!-- Formulario de contacto de la plataforma -->
                 <h2 class="cta">Rellena el formulario con tus datos</h2>
-                <form id="signup" class="contenido-core" method="post" action="/plataforma/backoffice.php?comando=core:signup:procesa">                    
-                    <div class="campos-formulario">
-                        <label for="frm-dni">Documento de identidad:</label>
-                        <input type="text" name="frm-dni" id="frm-dni" placeholder="Escribe tu DNI.." require>    
-                        <label for="frm-nombre">Tu Nombre:</label>
-                        <input type="text" name="frm-nombre" id="frm-nombre" placeholder="Escribe tu nombre..." require>                        
-                    </div>                        
-                    <div class="campos-formulario">
-                        <label for="frm-apellido1">Tu primer apellido:</label>
-                        <input type="text" name="frm-apellido1" id="frm-apellido1" placeholder="Escribe tu primer apellido..." require>
-                        <label for="frm-apellido2">Tu segundo apellido:</label>
-                        <input type="text" name="frm-apellido2" id="frm-apellido2" placeholder="Escribe tu primer apellido..." require>    
-                    </div>
-                    <div class="campos-formulario">
-                        <label for="frm-email">Tu correo electrónico:</label>
-                        <input type="email" name="frm-email" id="frm-email" placeholder="Escribe tu correo electrónico..." require>
-                        <label for="frm-localidad">Tu localidad:</label>
-                        <select id="frm-localidad" name="frm-localidad"></select>
-                    </div>
-                    <div class="campos-formulario">
-                        <label for="frm-usuario">Usuario:</label>
-                        <input type="text" name="frm-usuario" id="frm-usuario" placeholder="Escribe tu nombre de usuario..." require>
-                        <label for="frm-pasword">Contraseña:</label>
-                        <input type="password" name="frm-password" id="frm-password" placeholder="Escribe tu contraseña..." require>
-                    </div>                    
-                    <button type="submit" class="boton-enviar">Unirme a la plataforma</button>
-                </form>
+                <div  class="contenido-core">
+                    <form id="signup" method="post" action="/plataforma/backoffice.php?comando=core:signup:procesa">                                        
+                        <div class="campos-core">
+                            <label for="frm-dni">Documento de identidad:</label>
+                            <input type="text" name="frm-dni" id="frm-dni" placeholder="Escribe tu DNI.." require>
+                        </div>
+                        <div class="campos-core">
+                            <label for="frm-nombre">Nombre:</label>
+                            <input type="text" name="frm-nombre" id="frm-nombre" placeholder="Escribe tu nombre..." require>                        
+                        </div>                        
+                        <div class="campos-core">
+                            <label for="frm-apellido1">Primer apellido:</label>
+                            <input type="text" name="frm-apellido1" id="frm-apellido1" placeholder="Escribe tu primer apellido..." require>
+                        </div>
+                        <div class="campos-core">
+                            <label for="frm-apellido2">Segundo apellido:</label>
+                            <input type="text" name="frm-apellido2" id="frm-apellido2" placeholder="Escribe tu segundo apellido..." require>    
+                        </div>
+                        <div class="campos-core">
+                            <label for="frm-email">Correo electrónico:</label>
+                            <input type="email" name="frm-email" id="frm-email" placeholder="Escribe tu correo electrónico..." require>
+                        </div>
+                        <div class="campos-core">
+                            <label for="frm-localidad">Localidad:</label>
+                            <select id="frm-localidad" name="frm-localidad"></select>
+                        </div>
+                        <div class="campos-core">
+                            <label for="frm-usuario">Usuario:</label>
+                            <input type="text" name="frm-usuario" id="frm-usuario" placeholder="Escribe tu nombre de usuario..." require>
+                        </div>
+                        <div class="campos-core">
+                            <label for="frm-pasword">Contraseña:</label>
+                            <input type="password" name="frm-password" id="frm-password" placeholder="Escribe tu contraseña..." require>
+                        </div>
+                    </form>
+                    <div class="botonera-core"> 
+                        <button form="signup" type="submit" class="boton-accion-core">Registrarme</button>
+                    </div>                
+                </div>                    
                 <!-- Invitación a unirse a la plataforma -->
                 <h3 class="cta">¿Te has perdido?</h3>
                 <p class="mensaje-notificacion">Si has llegado a esta página de registro de usuario por error, no te preocupes, entendemos que a veces puede suceder. Queremos asegurarnos de que encuentres el camino correcto, así que aquí tienes algunas opciones para continuar:</p>

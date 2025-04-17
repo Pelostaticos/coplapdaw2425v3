@@ -451,6 +451,14 @@ footer {
     }
 }
 
+/* Estilos para ajustar visibilidad botones de botonera de navegación*/
+@media (max-width:599px) {
+    /* Oculto visibilidad botón participa */
+    a#participa.boton-nav {
+        display: none;
+    }
+}
+
 /* Estilos para móviles gama baja */
 @media (max-width: 479px) {
     /* Oculto el titulo del sitio web  */

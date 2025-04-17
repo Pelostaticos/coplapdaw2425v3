@@ -208,6 +208,7 @@ a {
     flex-direction: row;
     justify-content: space-around;
     align-items: center;
+    margin-top: 10px;
 }
 .botonera-superior-listados {
     display: flex;
@@ -396,8 +397,8 @@ article img {
 .contenido-core {
     width: 80%;
     border-radius: 10px;
-    margin: 10px auto;
     padding: 10px;
+    margin: 10px auto;
     font-size: var(--tamaño-fuente-h4-escritorio);
     text-align: center;
     color: var(--color-primario);
@@ -407,42 +408,28 @@ article img {
     display: flex;
     flex-direction: row;
     justify-content: flex-start;
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
     align-items: center;
-    padding: 0px;
-}
-div.campos-core p {
-    display: flex;
-    flex-direction: row;
-}
-.campos-core p.corto {
-    margin: 0px;
-    padding: 10px;
-    width: 10em;
-    font-size: var(--tamaño-fuente-h5-escritorio);
-}
-.campos-core p.medio {
-    margin: 0px;
-    padding: 10px;
-    width: 15em;
-    font-size: var(--tamaño-fuente-h5-escritorio);
-}
-.campos-core p.largo {
-    margin: 0px;
-    padding: 10px;
-    width: 22em;
-    font-size: var(--tamaño-fuente-h5-escritorio);
-}
-.campos-core p input,
-.campos-core p select,
-.campos-core p textarea
- {
-    padding-left: 5px;
-    margin-right: 5px;
+    margin-top: 10px;
     flex-grow: 1;
 }
+div.contenido-core form#login {
+    padding: 2% 20%;
+    flex-direction: column;
+    flex-wrap: wrap;
+}
+ div.contenido-core form#signup {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+}  
+.botonera-core {
+    display:flex;
+    flex-direction: row;
+    justify-content: center;
+    margin-top: 10px;
+}
 .boton-accion-core {
-    align-self: center;
     border-radius: 5px;
     margin-top: 5px;
     padding: 10px;
@@ -472,12 +459,14 @@ section#formulario form input {
     margin-right: 5px;
     font-size: var(--tamaño-fuente-p-escritorio);
     font-weight: 400;
+    flex-grow: 1;
 }
 section#formulario form select {
     margin-top: 10px;
     margin-right: 5px;
     font-size: var(--tamaño-fuente-p-escritorio);
     font-weight: 400;
+    flex-grow: 1;
 }
 section#formulario form textarea {
     font-size: var(--tamaño-fuente-p-escritorio);
@@ -489,12 +478,6 @@ section#formulario form textarea {
     justify-content: flex-start;
     flex-wrap: wrap;
     align-items: center;
-}
-.campos-formulario input {
-    flex-grow: 1;
-}
-.campos-formulario select {
-    flex-grow: 1;
 }
 .boton-enviar {
     align-self: flex-start;
@@ -852,6 +835,32 @@ footer {
     }
 
     /* Ajusto tamaños de tipografias específicas */
+    .contenido-core {
+        font-size: var(--tamaño-fuente-h5-moviles);
+    }
+    .campos-core {
+        flex-direction: row;
+        align-items: flex-start;
+        flex-grow: 1;
+    }
+    div.contenido-core form#login {
+        padding: 10px;
+        flex-direction: column;
+        flex-wrap: wrap;
+    }    
+    div.contenido-core form#signup {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+    }  
+    .boton-accion-core {       
+        border-radius: 5px;
+        padding: 5px;
+        background-color: var(--color-primario);
+        color: var(--color-azul-cielo);
+        font-size: var(--tamaño-fuente-h5-moviles);  
+        font-weight: 600;
+    }
     p.titulo-gestor {
         font-size: var(--tamaño-fuente-h3-moviles);
     }
@@ -915,20 +924,42 @@ footer {
         display:none;
     }
 
+    /* Ajusto estilos de la zona de contenidos */
+    article {
+        width: 90%;
+        margin: 25px auto;
+    
+    }
+    article img {
+        align-self: center;
+        border-radius: 20px;
+        width: 100%;
+    }    
+
     /* Ajusto estilos para formulario de contacto */
     section#formulario form label {
+        margin-top: 0px;
         font-size: var(--tamaño-fuente-h6-moviles);
     }
     section#formulario form input {
-        font-size: var(--tamaño-fuente-p-moviles);
+        margin-top: 0px;
+        margin-right: 0px;        
+        font-size: var(--tamaño-fuente-h6-moviles) !important;
+        flex-grow: 1;
     }
     section#formulario form select {
-        font-size: var(--tamaño-fuente-p-moviles);
+        margin-top: 0px;
+        margin-right: 0px;           
+        font-size: var(--tamaño-fuente-h6-moviles) !important; 
+        flex-grow: 1;
     }
     section#formulario form textarea {
         font-size: var(--tamaño-fuente-p-moviles);
     }     
-
+    .campos-formulario {
+        flex-direction: column;        
+        align-items: start;
+    }    
     /* Ajusto estilos para vistas de gestores */
     .logo-gestor {
         width: 50%;
@@ -943,7 +974,7 @@ footer {
 }
 
 /* Estilos para móviles normales */
-@media (max-width: 768px) {
+@media (min-width: 481px) and (max-width: 768px) {
     /* Ajusto los tamaños de letras */
     h1 {
         font-size: var(--tamaño-fuente-h1-moviles);
@@ -1037,16 +1068,45 @@ footer {
         font-size: var(--tamaño-fuente-h6-moviles);
     }
     section#formulario form input {
-        font-size: var(--tamaño-fuente-p-moviles);
+        font-size: var(--tamaño-fuente-h6-moviles) !important;
+        flex-grow: 1;
     }
     section#formulario form select {
-        font-size: var(--tamaño-fuente-p-moviles);
+        font-size: var(--tamaño-fuente-h6-moviles) !important;
+        flex-grow: 1;
     }
     section#formulario form textarea {
         font-size: var(--tamaño-fuente-p-moviles);
     }    
 
     /* Ajusto estilos para vistas gestores */
+    .contenido-core {        
+        font-size: var(--tamaño-fuente-h5-moviles);
+    }
+    .campos-core {
+        flex-direction: row;
+        align-items: flex-start;
+        flex-grow: 1;
+    }
+    div.contenido-core form#login {
+        /* padding:10px; */
+        padding: 5% 10%;
+        flex-direction: column;
+        flex-wrap: wrap;
+    }       
+    div.contenido-core form#signup {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+    }     
+    .boton-accion-core {       
+        border-radius: 5px;
+        padding: 10px;
+        background-color: var(--color-primario);
+        color: var(--color-azul-cielo);
+        font-size: var(--tamaño-fuente-h5-moviles);  
+        font-weight: 600;
+    }    
     p.titulo-gestor {
         font-size: var(--tamaño-fuente-h3-moviles);
     }
@@ -1153,15 +1213,43 @@ footer {
     }
     section#formulario form input {
         font-size: var(--tamaño-fuente-p-tabletas);
+        flex-grow: 1;
     }
     section#formulario form select {
         font-size: var(--tamaño-fuente-p-tabletas);
+        flex-grow: 1;
     }
     section#formulario form textarea {
         font-size: var(--tamaño-fuente-p-tabletas);
     } 
 
     /* Ajustes de estilos para vistas de gestores */
+    .contenido-core {
+        font-size: var(--tamaño-fuente-h5-moviles);
+    }
+    .campos-core {
+        flex-direction: row;
+        align-items: flex-start;
+        flex-grow: 1;
+    }
+    div.contenido-core form#login {
+        padding: 2% 20%;
+        flex-direction: column;
+        flex-wrap: wrap;
+    }      
+    div.contenido-core form#signup {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+    }      
+    .boton-accion-core {       
+        border-radius: 5px;
+        padding: 5px;
+        background-color: var(--color-primario);
+        color: var(--color-azul-cielo);
+        font-size: var(--tamaño-fuente-h5-moviles);  
+        font-weight: 600;
+    }   
     p.titulo-gestor {
         font-size: var(--tamaño-fuente-h3-tabletas);
     }
