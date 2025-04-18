@@ -352,16 +352,20 @@ class Core {
      * 
      * RECUERDA: Los DNI para pruebas que pasan oficialmente el validador son:
      * 
-     *   12345678Z (usado)
-     *   87654321K (usado)
-     *   00000000T (usado)
-     *   99999999X
-     *   48273645N
-     *   71829304P
-     *   25364758Y
-     *   59483726M
-     *   36574869Q
-     *   62738495L
+     * 12345678Z (usado)
+     * 00000000T (usado)
+     * 36574869Q (usado)
+     * 48273645N
+     * 71829304P
+     * 25364758Y
+     * 59483726M
+     * 62738495L
+     * 87654321K 
+     * 99999999X
+     * 34691785X
+     * 78965432W
+     * 11223344K
+     * 55667788Q
      * 
      */
     public static function mostrarRegistroVoluntario($smarty) {
@@ -381,16 +385,20 @@ class Core {
      * 
      * RECUERDA: Los DNI para pruebas que pasan oficialmente el validador son:
      * 
-     *   12345678Z (usado)
-     *   87654321K (usado)
-     *   00000000T (usado)
-     *   99999999X
-     *   48273645N
-     *   71829304P
-     *   25364758Y
-     *   59483726M
-     *   36574869Q
-     *   62738495L
+     * 12345678Z (usado)
+     * 00000000T (usado)
+     * 36574869Q (usado)
+     * 48273645N
+     * 71829304P
+     * 25364758Y
+     * 59483726M
+     * 62738495L
+     * 87654321K 
+     * 99999999X
+     * 34691785X
+     * 78965432W
+     * 11223344K
+     * 55667788Q
      * 
      */
     public static function registrarVoluntario($smarty) {
