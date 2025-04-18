@@ -345,9 +345,24 @@ class Core {
 
     /**
      * Método estático que muestra la vista del registro de un nuevo voluntario
+     * 
      *
      * @param Smarty $smarty Contiene el objeto del motor de plantillas Smarty
      * @return void No devuelve valor alguno
+     * 
+     * RECUERDA: Los DNI para pruebas que pasan oficialmente el validador son:
+     * 
+     *   12345678Z (usado)
+     *   87654321K (usado)
+     *   00000000T (usado)
+     *   99999999X
+     *   48273645N
+     *   71829304P
+     *   25364758Y
+     *   59483726M
+     *   36574869Q
+     *   62738495L
+     * 
      */
     public static function mostrarRegistroVoluntario($smarty) {
         // Asigno las variables de la plantilla de registro de voluntario
@@ -358,6 +373,26 @@ class Core {
     }
 
 
+    /**
+     * Método estático que procesa el registro de un nuevo usuario en la plataforma
+     *
+     * @param Smarty $smarty Objeto que contiene al motor de plantillas Smarty
+     * @return void No devuelve valor alguno
+     * 
+     * RECUERDA: Los DNI para pruebas que pasan oficialmente el validador son:
+     * 
+     *   12345678Z (usado)
+     *   87654321K (usado)
+     *   00000000T (usado)
+     *   99999999X
+     *   48273645N
+     *   71829304P
+     *   25364758Y
+     *   59483726M
+     *   36574869Q
+     *   62738495L
+     * 
+     */
     public static function registrarVoluntario($smarty) {
         // Recupero los datos del formulario de registro de un nuevo usuario: Datos de usuario
         $datosUsuario = [':codigo' => '',
