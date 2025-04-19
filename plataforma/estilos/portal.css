@@ -454,7 +454,7 @@ footer {
 /* Estilos para ajustar visibilidad botones de botonera de navegación*/
 @media (max-width:599px) {
     /* Oculto visibilidad botón participa */
-    a#participa.boton-nav {
+    a#participar.boton-nav {
         display: none;
     }
 }
