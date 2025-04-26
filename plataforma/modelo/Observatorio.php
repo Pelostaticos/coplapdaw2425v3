@@ -200,7 +200,6 @@ class Observatorio {
     }    
 
     // E) Defino los métodos estáticos de la clase Observatorio
-    // RECUERDA: Sólo se implementan los estrictamentes necesarios para interactuar con el gestor de Jornadas.
 
     /**
      * Método estático que permite consultar datos de un observatorio
@@ -247,6 +246,8 @@ class Observatorio {
             // De lo contario devolveré nulo
             return null;
     }   
+
+    //
 
 }
 
