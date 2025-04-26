@@ -53,7 +53,57 @@ class Observatorio {
     }
 
     // C) Defino los métodos propios de la clase Observatorio
-    // RECUERDA: No están implementados porque se ha descartado el gestor de observatorios.
+    /**
+    * Método para actualizar los datos de un observatorio en la base de datos
+    *
+    * @return boolean Devuelve verdadero si se actualizo el observatorio
+    *                 Devuelve falso si no se pudo actualizarse el observatorio
+    */
+    public function actualizarObservatorio(): ?bool {       
+        // Construyo la sentencia SQL para actualizar a la jornada de la base de datos     
+        $sql="UPDATE pdaw_observatorios SET nombre=:nombre, direccion=:direccion, localidad=:localidad,
+            gps=:gps, historia=:historia, imagen=:imagen, url=:url WHERE codigo=:codigo";
+        // Preparo los datos de la jornada a actualizar en la base de datos
+        $datos = [':nombre' => $this->nombre, ':direccion' => $this->direccion, ':localidad' => $this->localidad,
+            ':gps' => $this->gps, ':historia' => $this->historia, ':imagen' => $this->imagen,
+            ':url' => $this->url,':codigo' => $this->codigo];
+        // Ejecuto la sentencia SQL para actualizar al observatorio de la base de datos
+        $res=Core::ejecutarSql($sql,$datos);
+        // Si el resultado es mayor de cero entonces:
+        if ($res > 0)        
+        {
+            // Devuelvo verdadero para indicar que el observatorio se ha actualizado correctamente
+            return true;
+        }
+        else {
+            // De lo contario devuelvo falso para indicar que el observatorio no se ha actualizado correctamente
+            return false;
+        }
+    }
+    
+    /**
+     * Método para eliminar a un observatorio de la base de datos
+     *
+     * @return boolean Devuelve verdadero si se eliminó al observatorio de la base de datos
+     *                 Devuelve falso si NO se eliminó al observatorio de la base de datos
+     */
+    public function eliminarJornada(): ?bool {
+        // Construyo la sentencia SQL para eliminar al observatorio de la base de datos     
+        $sql="DELETE FROM pdaw_observatorios WHERE codigo=:icodigo";
+        // Preparo el código del observatorio que se desea eliminar de la base de datos
+        $codigo = [':codigo' => $this->codigo];
+        // Ejecuto la sentencia SQL para eliminar al observatorio de la base de datos
+        $res=Core::ejecutarSql($sql,$codigo);
+        // Si el resultado es mayor que cero entonces:
+        if ($res > 0)        
+        {
+            // Devuelvo verdadero para indicar que el observatorio se ha eliminado correctamente
+            return true;
+        }
+        else
+            // De lo contario devuelvo falso para indicar que el observatorio NO se ha eliminado correctamente
+            return false;
+    }    
 
     // D) Defino los métodos getter y setter de la clase Observatorio
 
@@ -202,6 +252,29 @@ class Observatorio {
     // E) Defino los métodos estáticos de la clase Observatorio
 
     /**
+     * Método estático para crear un nuevo observatorio en la base de datos
+     *
+     * @param Array $datos Array asociativo con los datos a insertar del nuevo observatorio en la base de datos
+     * @return boolean Devuelve verdadero si el observatorio se creó correctamente
+     *                 Devuelve falso si el observatorio no pudo crearse correctamente
+     */
+    public static function crearObservatorio($datos): ?bool
+    {       
+        // Construyo la sentencia SQL para añadir un nuevo observatorio a la tabla Observatorios de la base datos
+        $sql="INSERT INTO pdaw_observatorios (nombre, direccion, localidad, gps,
+            historia, imagen, url) VALUES (:nombre, :direccion, :localidad, :gps,
+            :historia, :imagen, :url)";
+        // Si al ejecutar la sentencia SQL me devuelve uno
+        if (Core::ejecutarSql($sql,$datos)===1)
+        {
+            // Entonces devuelvo verdadero porque el observatorio se ha creado correctamente.
+            return true;
+        }        
+        // De lo contrario devuelvo falso porque el observatorio NO se ha creado correctamente.
+        else return false;
+    }
+
+    /**
      * Método estático que permite consultar datos de un observatorio
      *
      * @param string $codigo Código del observatorio del que se quiere consultar sus datos
@@ -246,8 +319,66 @@ class Observatorio {
             // De lo contario devolveré nulo
             return null;
     }   
+    
+    /**
+     * Método estático para buscar Observatorios en la base de datos.
+     *
+     * @param string $busqueda Término de busqueda de observatorios
+     * @param string $ordenarPor Campo utilizado para ordenar resultados de observatorios
+     * @param string $orden Establece el orden ascendente o descendente de los resultados
+     * @return Array|null Devuelve un array con los resultados de la búsqueda de Observatorios
+     *                    Devuelve nulo si el criterio de búsqueda no ha encontrado Observatorios
+     */
+    public static function buscarUsuarios($busqueda, $ordenarPor, $orden) {
 
-    //
+        // Defino las columnas de busqueda para encontrar Observatorios
+        $columnas = ['o.nombre', 'o.direccion', 'o.localidad'];
+
+        // Defino una array vacio en donde generar las condiciones de búsqueda
+        $condiciones = [];
+
+        // Defino un array asociativo con los parámetros de busqueda
+        $parametros = [];
+
+        // Genero las condiciones de búsqueda para encontrar Observatorios.
+        foreach($columnas as $columna) {
+            $parametro = str_replace('.','',$columna);
+            $parametros[":".$parametro] = "%$busqueda%";
+            $condiciones[] = "$columna LIKE :$parametro";                      
+        }
+
+        // Construyo la sentencia SQL para realizar la búsqueda de Observatorios
+        $sql="SELECT o.codigo as codigo, o.nombre as nombre, o.direccion as direccion, o.localidad as localidad
+            FROM pdaw_observatorios o";
+
+        // Añado las condiciones de búsqueda a la sentencia SQL anterior
+        if (!empty($condiciones)) {
+            // Genero la cadena completa con todas las condiciones de búsqueda SQL.
+            $sql .= " WHERE " . implode(" OR ", $condiciones);
+        }
+
+        // Añado la funcionalidad para ordenar el resultado de la búsqueda
+        $columnasPermitidas = ['nombre', 'direccion', 'localidad'];
+        $ordenesPemritidos = ['ASC', 'DESC'];
+
+        if (in_array($ordenarPor, $columnasPermitidas) && in_array($orden, $ordenesPemritidos)) {
+            $sql .= " ORDER BY $ordenarPor $orden";
+        }
+
+        // Ejecuto la sentencia SQL para recuperar a los observatorios de la base de datos que coincidan el criterio de búsqueda
+        $res=Core::ejecutarSql($sql, $parametros);
+        // Si el resultado devuelto tras ejecución contiene un array de un elemento
+        if (is_array($res) && count($res)>0)        
+        {
+            // Devuelvo el resultado con los observatorios encontrados en la base de datos
+            return $res;
+        }
+        else {
+            // De lo contario devolveré nulo
+            return null;
+        }
+        
+    }    
 
 }
 
