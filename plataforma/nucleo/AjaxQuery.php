@@ -56,6 +56,9 @@ class AjaxQuery {
                 case "jornadas:actualizar":
                     AjaxQuery::prepararDatosAjaxVistaRegistroEdicionJornada();
                     break;
+                case "observatorios:registrar":
+                    AjaxQuery::prepararDatosAjaxVistaRegistroObservatorio();
+                    break;
                 default:
                     // Por defecto si la petición Ajax es desconocida le respondo con un error
                     $mensaje = ['error' => 'Petición Ajax no soportada por plataforma!!!'];
@@ -187,6 +190,24 @@ class AjaxQuery {
         }
         // Respongo al frontend con los datos solicitados en la petición Ajax
         AjaxQuery::responderPeticionAjax($datosRespuestaAjax);             
+    }
+
+    /**
+     * Método estático auxiliar para responder una petición Ajax de la vista de registro de observatorio
+     *
+     * @return void No devuelve valor alguno
+     */    
+    private static function prepararDatosAjaxVistaRegistroObservatorio() {
+        // Defino el array asociativo con los datos de la respuesta a la petición Ajax
+        $datosRespuestaAjax = [];
+        // Obtengo los observatorios disponibles en la plataforma
+        $localidades = Localidad::listarLocalidades();
+        // Genero los datos de la respuesta Ajax con el formato adecuado para procesar el selector observatorio.
+        foreach($localidades as $localidad) {
+            $datosRespuestaAjax[] = ['valor' => $localidad, 'nombre' => $localidad];
+        }
+        // Respongo al frontend con los datos solicitados en la petición Ajax
+        AjaxQuery::responderPeticionAjax($datosRespuestaAjax);   
     }
 
 }

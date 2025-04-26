@@ -272,7 +272,15 @@ try {
             case "observatorios:filtrar":
                 // Solicito al controlador de observatorios  que filtre el listado de observatorios disponibles en la plataforma
                 Observatorios::filtrarObservatoriosPlataforma($smarty);
-                break;                
+                break;
+            case "observatorios:registrar:vista":
+                // Solicito al controlador de observatorios que muestre la vista para registrar un nuevo observatorio
+                Observatorios::mostrarRegistroObservatorioPlataforma($smarty);
+                break;
+            case "observatorios:registrar:procesa":
+                // Solicito al controlador de observatorios que procese el registro de un nuevo observatorio
+                Observatorios::registrarObservatorioPlataforma($smarty);
+                break;
             default:
                 // Solicito al núcleo que muestre la página de inicio del backoffice de la plataforma.
                 Core::default($smarty);

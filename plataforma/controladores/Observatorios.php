@@ -221,4 +221,66 @@ class Observatorios {
         }
     }        
 
+    /**
+     * Método estático general para mostrar la vista de registro de nuevos observatorios en la plataforma
+     *
+     * @param Smarty $smarty Obtejo que contiene al motor de plantilla Smarty
+     * @return void No devuelve valor alguno
+     */
+    public static function mostrarRegistroObservatorioPlataforma($smarty) {
+        // Recupero al usuario logueado de la sesión
+        $usuario = $_SESSION['usuario'];
+        // Asigno las variables de la plantilla de registro de observatorio
+        $smarty->assign('usuario', $usuario->getUsuario());
+        $smarty->assign('anyo', date('Y'));
+        $smarty->assign('hoy', date('Y-m-d'));
+        // Muestro la plantilla para el registro de un nuevo observatorio
+        $smarty->display('observatorios/registro.tpl');    
+    }
+
+    /**
+     * Método estático general para procesar el registro de un nuevo observatorio en la plataforma 
+     *
+     * @param Smarty $smarty Objeto que contiene al motor de plantillas Smarty
+     * @return void No devuelve valor alguno
+     * @throws AppException Excepción cuando existe algún problema al registrar un observatorio
+     */
+    public static function registrarObservatorioPlataforma($smarty) {
+
+        // Recupero los datos del nuevo observatorio desde el formulario de registro
+        $datosObservatorio = [':nombre' => filter_input(INPUT_POST,'frm-nombre'),
+            ':direccion' => filter_input(INPUT_POST,'frm-direccion'),
+            ':localidad' => filter_input(INPUT_POST,'frm-localidad'),
+            ':gps' => filter_input(INPUT_POST,'frm-gps'),
+            ':historia' => filter_input(INPUT_POST,'frm-historia'),
+            ':imagen' => 'default.png', 
+            ':url' => filter_input(INPUT_POST,'frm-url')];
+
+        // Intento registrar al nuevo observatorio
+        try { 
+            // Registro al nuevo observatorio en la base de datos
+            $ob = Observatorio::crearObservatorio($datosObservatorio);            
+
+            // Compruebo que el nuevo observatorio se crearo correctamente
+            if ($ob) {
+                // Notifico al usuario el resultado de registrar un nuevo observatorio en la plataforma
+                ErrorController::mostrarMensajeInformativo($smarty, "Nuevo observatorio registrado con éxito!!", "/plataforma/backoffice.php?comando=observatorios:default");
+            } else {
+                // Lanzo excepción para notificar al usuario que hubo algún problema durante el proceso de registro
+                throw new AppException("Fallo al registrar el nuevo observatorio en la plataforma","/plataforma/backoffice.php?comando=observatorios:default");
+            } 
+
+        // Manejo la excepción que se haya producido para notificarla al usuario
+        } catch (AppException $ae) {
+            // Si se produce una violación de restricción al registrarlos
+            if ($ae->getCode() === AppException::DB_CONSTRAINT_VIOLATION_IN_QUERY)
+            {
+                ErrorController::handleException($ae, $smarty, '/plataforma/backoffice.php?comando=observatorios:default', "Este observatorio ya esta registrado!!");
+            }
+            else
+                ErrorController::handleException($ae, $smarty, '/plataforma/backoffice.php');
+        }     
+    }
+
+
 }

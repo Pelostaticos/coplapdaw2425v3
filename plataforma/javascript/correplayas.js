@@ -402,12 +402,65 @@ function validarInscripcionJornada(event) {
 
 }
 
+// C.9) Función para validar el formulario de registro de un observatorio en la plataforma
+function validarRegistroObservatorio(event) {
+
+  // Obtengo los datos introducidos en los campos del formulario
+  let nombre = document.getElementById('frm-nombre').value;
+  let direccion = document.getElementById('frm-direccion').value;
+  let localidad = document.getElementById('frm-localidad').value;
+  let gps = document.getElementById('frm-gps').value;
+  let url = document.getElementById('frm-url').value;
+  let historia = document.getElementById('frm-historia').value;
+    
+  // Creo un array para almacenar los errores de validación detectados
+  let errores = [];
+
+  // Validación para nombre del observatorio
+  if (!nombre.trim()) {
+    errores.push('Por favor, establezca el nombre del observatorio.');
+  }
+
+  // Validación para dirección del observatorio
+  if (!direccion.trim()) {
+    errores.push('Por favor, establezca la dirección del observatorio.');
+  }  
+
+  // Validación para localidad del observatorio
+  if (!localidad.trim()) {
+    errores.push('Por favor, establezca la localidad del observatorio.');
+  } 
+
+  // Validación de URL con ubicación GPS del observatorio en un mapa
+  const UrlRegex = /^(ftp|http|https):\/\/[^ "]+$/;
+  if (!gps.trim() || !UrlRegex.test(gps)) {
+    errores.push('Por favor, establezca una URL de ubicación del observatorio correcta!!.');
+  }
+
+  // Validación de URL con ubicación GPS del observatorio en un mapa
+  if (!url.trim() || !UrlRegex.test(url)) {
+    errores.push('Por favor, establezca una URL de información adicional del observatorio correcta!!.');
+  }  
+
+  // Inicializar historia con el valor por defecto
+  if (!historia.trim()) {
+    document.getElementById('frm-historia').value = "Ninguna";
+  }    
+
+  // Si se detectan error detengo el envio del formulario y se los notifico al usuario.
+  if (errores.length > 0) {
+    event.preventDefault();
+    alert(errores.join('\n'));
+  }
+
+}
+
 // D) Manipulación de eventos para las validaciones de formularios.
 // D.0) Array asociativos con los formularios disponibles en la plataforma y sus validadores.
 const validadoresFormularios = {'contactenos': validarContactenos, 'login': validarLogin
   , 'signup':validarSignup, 'edicion-usuario': validarEdicionUsuarios, 'password': validarCambioPassword
   , 'registro-jornada': validarRegistroJornada, 'edicion-jornada': validarEdicionJornada
-  , 'inscripcion-jornada': validarInscripcionJornada};
+  , 'inscripcion-jornada': validarInscripcionJornada, 'registro-observatorio': validarRegistroObservatorio};
 // D.1) Cargo el manipulador de evento para válidar el(los) formulario(s) presente en la página actual.
 const formularios = document.querySelectorAll('form');
 formularios.forEach(formulario => {

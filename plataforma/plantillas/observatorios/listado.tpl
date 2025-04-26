@@ -59,7 +59,7 @@
                     </form>                    
                     <!-- Bóton para la acción de registrar uno nuevo observatorio en la plataforma -->
                     <div class="botonera-superior-listados">
-                        <a class="boton-accion-superior" href="/plataforma/backoffice.php?comando=observatorio:registrar:vista" title="Añadir un nuevo observatorio a la plataforma">Añadir observatorio</a>                    
+                        <a class="boton-accion-superior" href="/plataforma/backoffice.php?comando=observatorios:registrar:vista" title="Añadir un nuevo observatorio a la plataforma">Añadir observatorio</a>                    
                     </div>                    
                     <!-- Tabla que representa al listado de observatorios -->
                      <table id="listado-gestor">
