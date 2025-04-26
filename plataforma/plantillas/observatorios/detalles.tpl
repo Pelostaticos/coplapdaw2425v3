@@ -36,8 +36,8 @@
                         <p class="extralargo"><span>Observatorio</span>:&nbsp;{$perfil.observatorio}</p>
                     </div>
                     <div class="campos-gestor">
-                        <p class="largo"><span>Dirección</span>:&nbsp;{$perfil.direccion}</p>
-                        <p class="largo"><span>Estado</span>:&nbsp;{$perfil.localidad}</p>
+                        <p class="extralargo"><span>Dirección</span>:&nbsp;{$perfil.direccion}</p>
+                        <p class="largo"><span>Localidad</span>:&nbsp;{$perfil.localidad}</p>
                     </div>                    
                     <div class="campos-gestor">
                         {if $perfil.historia === "-" || empty($perfil.historia)}

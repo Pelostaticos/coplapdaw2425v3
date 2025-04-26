@@ -35,7 +35,7 @@
                     <form id="busqueda-gestor" name="busqueda-gestor" method="post" action="/plataforma/backoffice.php?comando=observatorios:filtrar">
                         <p class="corto">
                             <label for="frm-busqueda">Busqueda</label>:&nbsp;
-                            <input type="text" id="frm-busqueda" name="frm-busqueda" placeholder="Busqueda de jornadas...">
+                            <input type="text" id="frm-busqueda" name="frm-busqueda" placeholder="Busqueda de observatorios...">
                         </p>
                         <p class="medio">
                             <label for="frm-ordenarpor">Ordenar por</label>:&nbsp;
@@ -59,7 +59,7 @@
                     </form>                    
                     <!-- Bóton para la acción de registrar uno nuevo observatorio en la plataforma -->
                     <div class="botonera-superior-listados">
-                        <a class="boton-accion-gestor" href="/plataforma/backoffice.php?comando=observatorio:registrar:vista" title="Añadir un nuevo observatorio a la plataforma">Añadir observatorio</a>                    
+                        <a class="boton-accion-superior" href="/plataforma/backoffice.php?comando=observatorio:registrar:vista" title="Añadir un nuevo observatorio a la plataforma">Añadir observatorio</a>                    
                     </div>                    
                     <!-- Tabla que representa al listado de observatorios -->
                      <table id="listado-gestor">
