@@ -329,7 +329,7 @@ class Observatorio {
      * @return Array|null Devuelve un array con los resultados de la búsqueda de Observatorios
      *                    Devuelve nulo si el criterio de búsqueda no ha encontrado Observatorios
      */
-    public static function buscarUsuarios($busqueda, $ordenarPor, $orden) {
+    public static function buscarObservatorios($busqueda, $ordenarPor, $orden) {
 
         // Defino las columnas de busqueda para encontrar Observatorios
         $columnas = ['o.nombre', 'o.direccion', 'o.localidad'];

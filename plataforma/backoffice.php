@@ -268,8 +268,11 @@ try {
             case "observatorios:default":
                 // Solicito al controlador de observatorios que muestre las vista por defecto según rol del usuario
                 Observatorios::default($smarty);
-                // OBSERVACIONES: El gestor de censos no se encuentra implementado por falta de tiempo
                 break;
+            case "observatorios:filtrar":
+                // Solicito al controlador de observatorios  que filtre el listado de observatorios disponibles en la plataforma
+                Observatorios::filtrarObservatoriosPlataforma($smarty);
+                break;                
             default:
                 // Solicito al núcleo que muestre la página de inicio del backoffice de la plataforma.
                 Core::default($smarty);
