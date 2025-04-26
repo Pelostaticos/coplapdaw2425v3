@@ -126,7 +126,7 @@ class Observatorios {
      *
      * @param Smarty $smarty Objeto que contiene al motor de plantillas Smarty
      * @return void No devuelve valor alguno
-     * @throws AppException Excepción cuando existe algún problema al mostrar detalles de una jornada
+     * @throws AppException Excepción cuando existe algún problema al mostrar detalles de un observatorio
      */
     public static function consultarDetallesObservatorioPlataforma($smarty) {
 
@@ -139,9 +139,45 @@ class Observatorios {
         // Compruebo si el usuario logueado tiene permiso para ejecutar la consulta de detalles 
         // de un observatorio determinado de la plataforma
         if ($permisosUsuario->getPermisoConsultarJornada()) {
+                // El usuario ha elegido un observatorio del listado. Entonces:
+                // Recupero el identificador del observatorio elegido por el usuario
+                $codigo = $_SESSION['listado'];
+                // Desestablezco el identificador del observatorio elegido por el usuario desde la sesion porque
+                // ya ha cumpplido su función aquí
+                unset($_SESSION['listado']);                
+                // Recupero los datos del observatorio elegido por el usuario
+                $observatorio = Observatorio::consultarObservatorio($codigo);
+                // Compruebo si la jornada elegida existe en la base de datos
+                if ($observatorio instanceof Observatorio) {
+                    // Se ha posido recuperar al observatorio. Entonces:
+                    // Recopilo la información de la plantilla para mostrar detalles del observatorio
+                    $perfil = ['observatorio' => $observatorio->getNombreObservatorio(),
+                        'direccion' => $observatorio->getDireccionObservatorio(),
+                        'localidad' => $observatorio->getLocalidadObservatorio(),
+                        'gps' => $observatorio->getGpsObservatorio(),
+                        'historia' => $observatorio->getHistoriaObservatorio(),
+                        'imagen' => $observatorio->getImagenObservatorio(),
+                        'url' => $observatorio->getUrlObservatorio()];
+                    // Asigno las variables requeridas por la plantila de detalles de un observatorio
+                    $smarty->assign('usuario', $usuario->getUsuario());
+                    $smarty->assign('permisos', $permisosUsuario);
+                    $smarty->assign('perfil', $perfil);
+                    $smarty->assign('volver', $_SESSION['volver']);
+                    $smarty->assign('anyo', date('Y'));
+                    // Desentablezco la variable de sesion volver porque aqui cumplió ya su función
+                    unset($_SESSION['volver']);
+                    // Muestro la plantilla de detalles de una jornada con sus datos
+                    $smarty->display('observatorios/detalles.tpl');
 
+                } else {
+                    // De lo contario, lanzo una excepción para notificar al usuario que la
+                    // jornada deseada no existe en la base de datos
+                    throw new AppException(message: "El observatorio elegido no existe en la base de datos!!!",
+                    urlAceptar: "/plataforma/backoffice.php?comando=observatorios:default");
+                }                
         } else {
-
+            // Lanzo excepción para notificar al usuario que no tiene permiso para mostrar detalles de un observatorio
+            throw new AppException("Su rol en la plataforma no le permite mostrar su detalles de un observatorio");
         }
     }        
 
