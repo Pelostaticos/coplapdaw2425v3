@@ -46,9 +46,9 @@ class Observatorios {
         // Compruebo si el usuario logueado es administrador
         if ($permisosUsuario->hasPermisoAdministradorGestor()) {
             // El usuario logueado es administrador. Entonces:
-            // Le muestro un mensaje informativo indicandole que el gestor no se encuentra implementado
-            ErrorController::mostrarMensajeInformativo($smarty, "Por cuestiones técnicas el gestor de observatorios no
-                se encuentra implementado en la plataforma. Disculpe las molestias!!");
+            // AQUÍ DEBO IMPLEMENTAR UNA LÓGICA DE FUNCIONAMIENTO SIMILAR AL CONTROLADOR DE JORNADAS
+            
+
         } else {
             // De lo contario, el usuario logueado no tiene permisos para ejecutar este gestor
             // Por tanto, lanzo una excepción para notificar del error asl usuario
@@ -57,6 +57,6 @@ class Observatorios {
 
     }
 
-    // RECUERDA: He descartado la implementación de este gestor por falta de tiempo para cumplir con plazos de entrega
+
 
 }
