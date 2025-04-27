@@ -281,6 +281,10 @@ try {
                 // Solicito al controlador de observatorios que procese el registro de un nuevo observatorio
                 Observatorios::registrarObservatorioPlataforma($smarty);
                 break;
+            case "observatorios:actualizar:procesa":
+                // Solicito al controlador de observatorios que procese la edición de un observatorio
+                Observatorios::actualizarObservatorioPlataforma($smarty);
+                break;
             default:
                 // Solicito al núcleo que muestre la página de inicio del backoffice de la plataforma.
                 Core::default($smarty);

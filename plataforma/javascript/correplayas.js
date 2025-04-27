@@ -460,7 +460,8 @@ function validarRegistroObservatorio(event) {
 const validadoresFormularios = {'contactenos': validarContactenos, 'login': validarLogin
   , 'signup':validarSignup, 'edicion-usuario': validarEdicionUsuarios, 'password': validarCambioPassword
   , 'registro-jornada': validarRegistroJornada, 'edicion-jornada': validarEdicionJornada
-  , 'inscripcion-jornada': validarInscripcionJornada, 'registro-observatorio': validarRegistroObservatorio};
+  , 'inscripcion-jornada': validarInscripcionJornada, 'registro-observatorio': validarRegistroObservatorio
+  , 'edicion-observatorios': validarRegistroObservatorio};
 // D.1) Cargo el manipulador de evento para válidar el(los) formulario(s) presente en la página actual.
 const formularios = document.querySelectorAll('form');
 formularios.forEach(formulario => {

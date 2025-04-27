@@ -41,9 +41,12 @@ function realizarPeticionesAjax(comando) {
                     case "jornadas:actualizar":
                         cargarSelectEdicionJornadas(datos);
                         break;
-                    case "registro-observatorio":
+                    case "observatorios:registrar":
                         cargarSelectRegistroObservatorios(datos);
                         break;
+                    case "observatorios:actualizar":
+                        cargarSelectEdicionObservatorios(datos);
+                        break;                        
                     // Por defecto: Cargo dinámicamente los selectores disponibles en la vista de registro de usuario.
                     default:
                         cargarSelectRegistroUsuarios(datos);
@@ -198,6 +201,32 @@ function cargarSelectRegistroObservatorios(datos) {
     }
 }
 
+// A.6) Función para cargar dinámicamente los selectores de la vista de edicion de observatorios
+function cargarSelectEdicionObservatorios(datos) {
+    // Intento cargar dinámicamente los elementos select del formulario de edicion de observatorios
+    try {
+        // 0º) Obtengo el elemento select "localidad" del formulario de edicion de observatorios
+        const selectLocalidades = document.getElementById('frm-localidad');
+
+        // 1º) Obtengo los valores actuales de los selectores del formulario de edición de observatorios
+        const localidadActual = selectLocalidades.querySelector('option[selected]');
+
+        // 2º) Limpio las opciones existente en el selector "localidad" obtenido
+        selectLocalidades.innerHTML = '';
+
+        // 3º) Cargo las localidades en el selector correspondiente del formulario
+        datos.forEach(opcion => {
+            const option = document.createElement('option');
+            option.value = opcion.valor;
+            option.textContent = opcion.nombre;
+            if (opcion.valor === localidadActual.value) {option.selected=true;}
+            selectLocalidades.appendChild(option);
+        });   
+    } catch(error) {
+        // Muestro por consola el error producido al cargar selectores en la vista deseada
+        console.error(error);
+    }
+}
 
 // B) Funcionaes de actualización dinámica de datos por clic en elemento select.
 // RECUERDA: Descartado por falta de tiempo para cumplir fecha de entrega del Proyecto DAW
@@ -207,7 +236,8 @@ function cargarSelectRegistroObservatorios(datos) {
 try {
     // C.1) Array asociativos con los formularios disponibles en la plataforma y sus comandos de peticion Ajax.
     const peticionesSelectAjax = {'signup':'usuarios:registro', 'edicion-usuario':'usuarios:actualizar',
-        'registro-jornada': 'jornadas:registrar', 'registro-observatorio': 'observatorios:registrar'};
+        'registro-jornada': 'jornadas:registrar', 'registro-observatorio': 'observatorios:registrar',
+        'edicion-observatorios': 'observatorios:actualizar'};
     // C.2) Añado el manipulador de evento para controlar que el contenido del DOM se ha cargado.
     document.addEventListener('DOMContentLoaded', function() { 
         // Obtengo todos los formularios disponible en la página actual ya cargada..

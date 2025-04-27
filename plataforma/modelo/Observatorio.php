@@ -87,7 +87,7 @@ class Observatorio {
      * @return boolean Devuelve verdadero si se eliminó al observatorio de la base de datos
      *                 Devuelve falso si NO se eliminó al observatorio de la base de datos
      */
-    public function eliminarJornada(): ?bool {
+    public function eliminarObservatorio(): ?bool {
         // Construyo la sentencia SQL para eliminar al observatorio de la base de datos     
         $sql="DELETE FROM pdaw_observatorios WHERE codigo=:icodigo";
         // Preparo el código del observatorio que se desea eliminar de la base de datos

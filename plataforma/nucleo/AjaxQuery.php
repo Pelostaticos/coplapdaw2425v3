@@ -57,7 +57,10 @@ class AjaxQuery {
                     AjaxQuery::prepararDatosAjaxVistaRegistroEdicionJornada();
                     break;
                 case "observatorios:registrar":
-                    AjaxQuery::prepararDatosAjaxVistaRegistroObservatorio();
+                    AjaxQuery::prepararDatosAjaxVistaRegistroEdicionObservatorio();
+                    break;
+                case "observatorios:actualizar":
+                    AjaxQuery::prepararDatosAjaxVistaRegistroEdicionObservatorio();
                     break;
                 default:
                     // Por defecto si la petición Ajax es desconocida le respondo con un error
@@ -174,7 +177,7 @@ class AjaxQuery {
     }
 
     /**
-     * Método estático auxiliar para responder una petición Ajax de la visa de registro de jornada
+     * Método estático auxiliar para responder una petición Ajax de la vista de registro/edicion de jornada
      *
      * @return void No devuelve valor alguno
      */    
@@ -193,11 +196,11 @@ class AjaxQuery {
     }
 
     /**
-     * Método estático auxiliar para responder una petición Ajax de la vista de registro de observatorio
+     * Método estático auxiliar para responder una petición Ajax de la vista de registro/edición de observatorio
      *
      * @return void No devuelve valor alguno
      */    
-    private static function prepararDatosAjaxVistaRegistroObservatorio() {
+    private static function prepararDatosAjaxVistaRegistroEdicionObservatorio() {
         // Defino el array asociativo con los datos de la respuesta a la petición Ajax
         $datosRespuestaAjax = [];
         // Obtengo los observatorios disponibles en la plataforma

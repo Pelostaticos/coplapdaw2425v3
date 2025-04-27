@@ -56,6 +56,10 @@ class Observatorios {
                 $_SESSION['listado'] = $_POST['codigo'];                
                 // Gestiono la vista que debo mostrarle al administrador según la acción solicitada
                 switch($accion) {
+                    case "actualizar":
+                        // Muestro la vista específica de edición de un observatorio de la plataforma
+                        Observatorios::mostrarEdicionObservatorioPlataforma($smarty);
+                        break;
                     default:
                         // Establezco la variable de sesión volver al gestor de observatorios tras consultar
                         // los detalles de un observatorio disponible en la plataforma
@@ -114,9 +118,122 @@ class Observatorios {
         }
     }
 
+    /**
+     * Método auxiliar para mostrar la vista de edición de un observatorio de la plataforma
+     *
+     * @param Smarty $smarty Objeto que contiene al motor de plantillas Smarty
+     * @return void No devuelve valor alguno
+     * @throws AppException Excepción cuando existe problemas para mostrar la vista de edición de observatorios
+     */
+    private static function mostrarEdicionObservatorioPlataforma($smarty) {
+        // Recupero al usuario logueado en la plataforma
+        $usuario = $_SESSION['usuario'];
 
+        // Recupero los permisos del usuario logueado desde su sesión
+        $permisosUsuario = $_SESSION['permisos'];
+
+        // Compruebo si el usuario logueado es administrador para
+        // poder ejecutar la edición de un observatorio de la plataforma
+        if ($permisosUsuario->hasPermisoAdministradorGestor()) {
+            // El usuario logueado es administrador. Entonces:
+            // Compruebo que el usuario haya elegido un observatorio del listado
+            if (isset($_SESSION['listado'])) {
+                // El usuario ha elegido un observatorio del listado. Entonces:
+                // Recupero el identificador del observatorio elegido por el usuario
+                $codigo = $_SESSION['listado'];
+                // Desestablezco el identificador de observatorio elegido por el usuario desde la sesion porque
+                // ya ha cumpplido su función aquí
+                unset($_SESSION['listado']);                
+                // Recupero los datos del observatorio elegido por el usuario
+                $observatorio = Observatorio::consultarObservatorio($codigo);
+                // Compruebo si la jornada elegida existe en la base de datos
+                if ($observatorio instanceof Observatorio) {
+                    // Recopilo la información de la plantilla para mostrar edición del observatorio
+                    $perfil = ['codigo' => $codigo,
+                    'nombre' => $observatorio->getNombreObservatorio(),
+                    'direccion' => $observatorio->getDireccionObservatorio(),
+                    'localidad' => $observatorio->getLocalidadObservatorio(),
+                    'gps' => $observatorio->getGpsObservatorio(),
+                    'historia' => $observatorio->getHistoriaObservatorio(),
+                    'imagen' => 'default.png',
+                    'url' => $observatorio->getUrlObservatorio()];
+                    // Asigno las variables requeridas por la plantila de edición de un observatorio
+                    $smarty->assign('usuario', $usuario->getUsuario());
+                    $smarty->assign('permisos', $permisosUsuario);
+                    $smarty->assign('perfil', $perfil);
+                    $smarty->assign('anyo', date('Y'));
+                    // Muestro la plantilla de edición de un observatorio con sus datos
+                    $smarty->display('observatorios/edicion.tpl');
+                } else {
+                    // De lo contario, lanzo una excepción para notificar al usuario que el
+                    // observatorio deseada no existe en la base de datos
+                    throw new AppException(message: "Elobservatorio elegido no existe en la base de datos!!!",
+                    urlAceptar: "/plataforma/backoffice.php?comando=observatorios:default");                    
+                }         
+            } else {
+                // Lanzo una excepción para notificar que el usuario no eligió un observatorio del listado
+                throw new AppException("No ha elegido un observatorio del listado. Por favor, eliga una. Gracias!");
+            }
+        } else {
+            // Lanzo excepción para notificar al usuario que no tiene permiso para actualizar una observatorio
+            throw new AppException("Su rol en la plataforma no le permite actualizar un observatorio");
+        }
+    }
     
     // B) Métodos estáticos públicos para procesar los datos de las vistas específicas
+
+    /**
+     * Método estático para actualizar un observatorio de la plataforma
+     *
+     * @param Smarty $smarty Objeto que contiene al motor de plantillas Smarty
+     * @return void No devuelve valor alguno
+     * @throws AppException Excepción cuando existe algún probelma para actualizar el observatorio
+     */
+    public static function actualizarObservatorioPlataforma($smarty) {
+
+        // Recupero los permisos del usuario logueado desde su sesión
+        $permisosUsuario = $_SESSION['permisos']; 
+
+        // Compruebo si el usuario tiene rol de administrador
+        if ($permisosUsuario->hasPermisoAdministradorGestor()) {
+            // El usuario logueado es administrador. Entonces:
+            // Recupero el identificador del observatorio elegido por el usuario
+            $codigo = filter_input(INPUT_POST, 'frm-codigo');
+            // Recupero los datos del observatorio elegido por el usuario
+            $observatorio = Observatorio::consultarObservatorio($codigo);
+            // Compruebo si el observatorio elegido existe en la base de datos
+            if ($observatorio instanceof Observatorio) {
+                // Recupero del formulario de edición de observatorio los datos y actualizo el objeto
+                $observatorio->setNombreObservatorio(filter_input(INPUT_POST,'frm-nombre'));
+                $observatorio->setDireccionObservatorio(filter_input(INPUT_POST,'frm-direccion'));
+                $observatorio->setLocalidadObservatorio(filter_input(INPUT_POST,'frm-localidad'));
+                $observatorio->setGpsbservatorio(filter_input(INPUT_POST,'frm-gps'));
+                $observatorio->setHistoriaObservatorio(filter_input(INPUT_POST,'frm-historia'));
+                $observatorio->setImagenObservatorio(filter_input(INPUT_POST,'frm-imagen'));
+                $observatorio->setUrlObservatorio(filter_input(INPUT_POST,'frm-url'));
+                // Actulizo los datos del observatorio y muestro la notificación del resultado
+                if ($observatorio->actualizarObservatorio()) {
+                    // Notifico al usuario que la actualización del observatorio fue existosa
+                    ErrorController::mostrarMensajeInformativo($smarty, "Observatorio actualizado con éxito!!", 
+                        "/plataforma/backoffice.php?comando=observatorios:default");
+                } else {
+                    // Lanzo una excepción para indicar que no es posible obtener valores por defecto del observatorio
+                    throw new AppException(message: "No es posible actualizar el observatorio", 
+                        urlAceptar: "/plataforma/backoffice.php?comando=observatorios:default");
+                }                    
+            } else {
+                // De lo contario, lanzo una excepción para notificar al usuario que el
+                // observatorio deseado no existe en la base de datos
+                throw new AppException(message: "El observatorio elegido no existe en la base de datos!!!",
+                urlAceptar: "/plataforma/backoffice.php?comando=jornadas:default");                    
+            }
+        } else {
+            // Lanzo excepción para notificar al usuario que no tiene permiso para actualizar un observatoro
+            throw new AppException("Su rol en la plataforma no le permite actualizar un observatorio");
+        }
+
+    }
+
 
     /**
      * Método estático para filtrar listados de observatorios de la plataforma
