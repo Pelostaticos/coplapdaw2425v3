@@ -60,6 +60,10 @@ class Observatorios {
                         // Muestro la vista específica de edición de un observatorio de la plataforma
                         Observatorios::mostrarEdicionObservatorioPlataforma($smarty);
                         break;
+                    case "eliminar":
+                        // Muestro la vista específica con el mensaje de confirmación de baja de un observatorio de la plataforma
+                        Observatorios::mostrarConfirmaciónBajaObservatorioPlataforma($smarty);
+                        break;
                     default:
                         // Establezco la variable de sesión volver al gestor de observatorios tras consultar
                         // los detalles de un observatorio disponible en la plataforma
@@ -179,7 +183,40 @@ class Observatorios {
             throw new AppException("Su rol en la plataforma no le permite actualizar un observatorio");
         }
     }
-    
+
+    /**
+     * Método auxiliar para mostrar la confirmación de baja de un observatorio de la plataforma
+     *
+     * @param Smarty $smarty Objeto que contiene al motor de plantillas Smarty
+     * @return void No devuelve valor alguno
+     * @throws AppException Excepción cuando existe algún problema para mostrar confirmación de baja observatorio
+     */
+    private static function mostrarConfirmaciónBajaObservatorioPlataforma($smarty) {
+        // Recupero los permisos del usuario logueado desde su sesión
+        $permisosUsuario = $_SESSION['permisos'];
+
+        // Compruebo que el usuario logueado es un administrador
+        if ($permisosUsuario->hasPermisoAdministradorGestor()) {
+            // El usuario logueado es administrador. Entonces:
+            // Compruebo que el usuario haya elegido un observatorio del listado
+            if (isset($_POST['codigo'])) {
+                // Establezco la configuración del mensaje de confirmación para el usuario autorizado
+                $mensaje = "Has solicitado eliminar un observatorio de la plataforma";
+                $pregunta = "¿Estás seguro que quieres eliminar a dicho observatorio?";
+                $urlCancelar = "/plataforma/backoffice.php?comando=observatorios:default";
+                $urlAceptar = "/plataforma/backoffice.php?comando=observatorios:eliminar:procesa";
+                // Muestro el mensaje de confirmación de baja al usuario
+                ErrorController::mostarMensajeAdvertencia($smarty,$mensaje,$pregunta,$urlCancelar,$urlAceptar);
+            } else {
+                // Lanzo una excepción para notificar que el usuario no eligió un observatorio del listado
+                throw new AppException("No ha elegido un observatorio del listado. Por favor, eliga una. Gracias!");                
+            }
+        } else {
+            // Lanzo excepción para notificar al usuario que no tiene permiso para eliminar un observatorio
+            throw new AppException("Su rol en la plataforma no le permite eliminar una observatorio");            
+        }
+    }    
+
     // B) Métodos estáticos públicos para procesar los datos de las vistas específicas
 
     /**
@@ -234,6 +271,49 @@ class Observatorios {
 
     }
 
+    /**
+     * Método estático para eliminar a un observatorio de la plataforma
+     *
+     * @param Smarty $smarty Objeto que contiene al motor de plantillas Smarty
+     * @return void No devuelve valor alguno
+     * @throws AppException Excepción cuando existe algún problema al eliminar un observatorio
+     */
+    public static function eliminarObservatorioPlataforma($smarty) {
+
+        // Recupero los permisos del usuario logueado desde su sesión
+        $permisosUsuario = $_SESSION['permisos'];
+
+        // Compruebo que el usuario tiene rol de administrador
+        if ($permisosUsuario->hasPermisoAdministradorGestor()) {
+            // El usuario logueado es administrador. Entonces:
+            // Compruebo que el usuario loqueado eligió un observatorio del listado
+            if (isset($_SESSION['listado'])) {
+                // Recupero el identificador del observatorio elegido por el usuario desde su sesion
+                $codigo = $_SESSION['listado'];
+                // Desestablezco el identificador del observatorio elegido por el usuario desde la sesion porque
+                // ya ha cumpplido su función aquí
+                unset($_SESSION['listado']);
+                // Recupero observatorio elegido por el usuario que desea eleiminar
+                $observatorio = Observatorio::consultarObservatorio($codigo);
+                // Procedo a eliminar el observatorio y compruebo su resultado
+                if ($observatorio->eliminarObservatorio()) {
+                    // Notifico al usuario que el observatorio se ha eliminado correctamente y lo devuelvo a su vista por defecto
+                    ErrorController::mostrarMensajeInformativo($smarty, "El observatorio indicado se ha elminado correctamente!",
+                        "/plataforma/backoffice.php?comando=observatorios:default");
+                } else {
+                    // Lanzo una excepción para indicar que existe algún problema para dar de baja a un observatorio
+                    throw new AppException("No es posible dar de baja al observatorio indicado!");
+                }
+            } else {
+                // Lanzo una excepción para notificar que el usuario no eligió un observatorio del listado
+                throw new AppException("No ha elegido un observatorio del listado. Por favor, eliga una. Gracias!");
+            }         
+        } else {
+            // Lanzo excepción para notificar al usuario que no tiene permiso para eliminar un observatorio
+            throw new AppException("Su rol en la plataforma no le permite eliminar un observatorio");
+        }
+
+    }
 
     /**
      * Método estático para filtrar listados de observatorios de la plataforma

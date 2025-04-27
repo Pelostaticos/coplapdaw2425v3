@@ -89,7 +89,7 @@ class Observatorio {
      */
     public function eliminarObservatorio(): ?bool {
         // Construyo la sentencia SQL para eliminar al observatorio de la base de datos     
-        $sql="DELETE FROM pdaw_observatorios WHERE codigo=:icodigo";
+        $sql="DELETE FROM pdaw_observatorios WHERE codigo=:codigo";
         // Preparo el código del observatorio que se desea eliminar de la base de datos
         $codigo = [':codigo' => $this->codigo];
         // Ejecuto la sentencia SQL para eliminar al observatorio de la base de datos

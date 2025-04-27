@@ -285,6 +285,10 @@ try {
                 // Solicito al controlador de observatorios que procese la edición de un observatorio
                 Observatorios::actualizarObservatorioPlataforma($smarty);
                 break;
+            case "observatorios:eliminar:procesa":
+                // Solicito al controlador de observatorios que procese la baja de un observatorio
+                Observatorios::eliminarObservatorioPlataforma($smarty);
+                break;
             default:
                 // Solicito al núcleo que muestre la página de inicio del backoffice de la plataforma.
                 Core::default($smarty);
