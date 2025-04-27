@@ -217,6 +217,20 @@ a {
     align-items: center;
     padding: 0px 20px;
 }
+.boton-accion-superior {
+    align-self: center;
+    border-radius: 5px;
+    margin-top: 5px;
+    padding: 10px;
+    background-color: var(--color-primario);
+    color: var(--color-azul-cielo);    
+    font-weight: 600;
+    width: 11em;
+}
+.boton-accion-superior:hover {
+    background-color: var(--color-azul-cielo);
+    color: var(--color-textos-principal);
+}
 
 /* Iconos utilizados en el backoffice */ 
 .iconos-nav-backoffice {

@@ -268,7 +268,26 @@ try {
             case "observatorios:default":
                 // Solicito al controlador de observatorios que muestre las vista por defecto según rol del usuario
                 Observatorios::default($smarty);
-                // OBSERVACIONES: El gestor de censos no se encuentra implementado por falta de tiempo
+                break;
+            case "observatorios:filtrar":
+                // Solicito al controlador de observatorios  que filtre el listado de observatorios disponibles en la plataforma
+                Observatorios::filtrarObservatoriosPlataforma($smarty);
+                break;
+            case "observatorios:registrar:vista":
+                // Solicito al controlador de observatorios que muestre la vista para registrar un nuevo observatorio
+                Observatorios::mostrarRegistroObservatorioPlataforma($smarty);
+                break;
+            case "observatorios:registrar:procesa":
+                // Solicito al controlador de observatorios que procese el registro de un nuevo observatorio
+                Observatorios::registrarObservatorioPlataforma($smarty);
+                break;
+            case "observatorios:actualizar:procesa":
+                // Solicito al controlador de observatorios que procese la edición de un observatorio
+                Observatorios::actualizarObservatorioPlataforma($smarty);
+                break;
+            case "observatorios:eliminar:procesa":
+                // Solicito al controlador de observatorios que procese la baja de un observatorio
+                Observatorios::eliminarObservatorioPlataforma($smarty);
                 break;
             default:
                 // Solicito al núcleo que muestre la página de inicio del backoffice de la plataforma.
