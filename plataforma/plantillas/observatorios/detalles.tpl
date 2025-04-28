@@ -47,7 +47,7 @@
                         {/if}
                     </div>                 
                 </div>
-                <!-- Acciones permitidas por el gestor de jornadas -->
+                <!-- Acciones permitidas por el gestor de observatorios -->
                 <div class="botonera">
                     <a class="boton-accion-gestor" href="{$volver}" title="Volver al atrás">Volver</a>
                     <a class="boton-accion-gestor" href="{$perfil.gps}" target="_blank" title="Ubicación en el mapa">GPS</a>

@@ -32,7 +32,7 @@ class Familia {
     // A) Defino los atributos de la clase auxiliar Familia
     private $familia;
     private $descripcion;
-    private Orden $codOrden;
+    private Orden $orden;
     
     
     // B) Defino el constructor privado de la clase auxiliar Familia
@@ -42,13 +42,13 @@ class Familia {
             // Los datos de la familia están establecidos. Entonces:
             // Incializo los atributos de Familia con dichos datos
             $this->familia=$familia['familia'];
-            $this->descripcion=$familia['descripcion'];
-            $this->codOrden=Orden::asignarOrden(filter_var($familia['codOrden'], FILTER_SANITIZE_NUMBER_INT));    
+            $this->descripcion=$familia['descripción'];
+            $this->orden=Orden::asignarOrden(filter_var($familia['codOrden'], FILTER_SANITIZE_NUMBER_INT));    
         } else {
             // De lo contrario, inicializo Familia con datos por defecto
             $this->familia="Desconocida";
             $this->descripcion="Ninguna";
-            $this->codOrden=Orden::asignarOrden(0);
+            $this->orden=Orden::asignarOrden(0);
         }
     }
         
@@ -75,10 +75,10 @@ class Familia {
     /**
      * Método GET para obtener el código del orden asociado a la familia del ave
      *
-     * @return integer Devuelve el código del orden asopciado a la familia del ave
+     * @return Orden Devuelve el código del orden asopciado a la familia del ave
      */
-    public function getCodigoOrden(): int {
-        return (int) $this->codOrden;
+    public function getOrden(): Orden {
+        return $this->orden;
     }
 
     // D) Defino los métodos estáticos de la clase auxiliar Familia    

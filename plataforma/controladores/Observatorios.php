@@ -384,7 +384,7 @@ class Observatorios {
                 unset($_SESSION['listado']);                
                 // Recupero los datos del observatorio elegido por el usuario
                 $observatorio = Observatorio::consultarObservatorio($codigo);
-                // Compruebo si la jornada elegida existe en la base de datos
+                // Compruebo si el observatorio elegido existe en la base de datos
                 if ($observatorio instanceof Observatorio) {
                     // Se ha posido recuperar al observatorio. Entonces:
                     // Recopilo la información de la plantilla para mostrar detalles del observatorio
@@ -403,12 +403,12 @@ class Observatorios {
                     $smarty->assign('anyo', date('Y'));
                     // Desentablezco la variable de sesion volver porque aqui cumplió ya su función
                     unset($_SESSION['volver']);
-                    // Muestro la plantilla de detalles de una jornada con sus datos
+                    // Muestro la plantilla de detalles de un observatorio con sus datos
                     $smarty->display('observatorios/detalles.tpl');
 
                 } else {
-                    // De lo contario, lanzo una excepción para notificar al usuario que la
-                    // jornada deseada no existe en la base de datos
+                    // De lo contario, lanzo una excepción para notificar al usuario que el
+                    // observatorio deseada no existe en la base de datos
                     throw new AppException(message: "El observatorio elegido no existe en la base de datos!!!",
                     urlAceptar: "/plataforma/backoffice.php?comando=observatorios:default");
                 }                

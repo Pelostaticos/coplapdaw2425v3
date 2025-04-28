@@ -115,7 +115,7 @@ class Ave {
     /**
      * Método GET para obtener la familia de la especie del ave disponible en la base de datos
      *
-     * @return string Devuelve la familia de la especie del ave
+     * @return Familia Devuelve la familia de la especie del ave
      */
     public function getFamiliaAve(): Familia {
         return $this->familia;
