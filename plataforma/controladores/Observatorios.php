@@ -108,12 +108,12 @@ class Observatorios {
             // Genero el listado de observatorios  disponibles en la plataforma
             $datos = Observatorio::listarObservatorios();
 
-            // Asigno las variables requeridas por la plantila del listado de jornadas
+            // Asigno las variables requeridas por la plantila del listado de observatorios
             $smarty->assign('usuario', $usuario->getUsuario());
             $smarty->assign('permisosUsuario', $permisosUsuario);
             $smarty->assign('filas', $datos);
             $smarty->assign('anyo', date('Y'));
-            // Muestro la plantilla del listado de jornadas
+            // Muestro la plantilla del listado de observatorios
             $smarty->display('observatorios/listado.tpl');   
         } else {
             // Lanzo una excepción para notificar al usuario que no tiene permisos para listar y filtrar observatorios
