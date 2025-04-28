@@ -34,8 +34,17 @@ class Orden {
 
     // B) Defino el constructor privado de la clase auxiliar Orden
     public function __construct($orden) {
-        $this->codigoOrden=$orden['codOrden'];
-        $this->orden=filter_var($orden['orden'], FILTER_SANITIZE_NUMBER_INT);        
+        // Compruebo si está establecido el orden del ave
+        if (isset($orden)) {
+            // El orden del ave está establecido. Entonces:
+            // Inicializo los atributos del objeto Orden
+            $this->codigoOrden=filter_var($orden['codOrden'], FILTER_SANITIZE_NUMBER_INT);
+            $this->orden=$orden['orden'];            
+        } else {
+            // De lo contrario, establezco los atributos de objeto por defecto
+            $this->codigoOrden=0;
+            $this->orden="Desconocido";
+        }
     }
 
     // C) Defino los métodos getter y setter de la clase auxiliar Orden
@@ -64,10 +73,10 @@ class Orden {
      * Método éstatico para asignar un orden a entidades de la plataforma que lo requieran
      *
      * @param int $codOrden Código del orden que se desea recuperar
-     * @return Orden|null Devuelve un objeto Orden con los datos recuperados
+     * @return Orden Devuelve un objeto Orden con los datos recuperados
      *                    Devuelve nulo si no puedo recuperar el orden indicado por parámetro
      */
-    public static function asignarOrden($codigoOrden): ?Orden { 
+    public static function asignarOrden($codigoOrden): Orden { 
         // Construyo la sentencia SQL para recuperar el orden de la base de datos     
         $sql="SELECT * from pdaw_ordenes where codOrden=:codOrden";
         // Ejecuto la sentencia SQL para recuperar al orden de la base de datos
@@ -79,8 +88,8 @@ class Orden {
             return new Orden($res[0]);
         }
         else
-            // De lo contario devolveré nulo
-            return null;        
+            // De lo contario devolveré un objeto Orden con los atributos por defecto
+            return new Orden([]);        
     }
 
     /**

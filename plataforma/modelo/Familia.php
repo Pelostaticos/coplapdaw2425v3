@@ -22,6 +22,7 @@ namespace correplayas\modelo;
 
 // Defino los espacios de mombres que voy a utilizar en esta clase
 use \correplayas\nucleo\Core;
+use \correplayas\modelo\Orden;
 
 /**
  * Clase auxiliar del modelo de datos para trabajar con Familias
@@ -31,14 +32,24 @@ class Familia {
     // A) Defino los atributos de la clase auxiliar Familia
     private $familia;
     private $descripcion;
-    private $codOrden;
+    private Orden $codOrden;
     
     
     // B) Defino el constructor privado de la clase auxiliar Familia
-    public function __construct($familia) {        
-        $this->familia=$familia['familia'];
-        $this->descripcion=$familia['descripcion'];
-        $this->codOrden=filter_var($familia['codOrden'], FILTER_SANITIZE_NUMBER_INT);
+    public function __construct($familia) {     
+        // Compruebo si los datos de la familia del ave están establecidos
+        if (isset($familia)) {
+            // Los datos de la familia están establecidos. Entonces:
+            // Incializo los atributos de Familia con dichos datos
+            $this->familia=$familia['familia'];
+            $this->descripcion=$familia['descripcion'];
+            $this->codOrden=Orden::asignarOrden(filter_var($familia['codOrden'], FILTER_SANITIZE_NUMBER_INT));    
+        } else {
+            // De lo contrario, inicializo Familia con datos por defecto
+            $this->familia="Desconocida";
+            $this->descripcion="Ninguna";
+            $this->codOrden=Orden::asignarOrden(0);
+        }
     }
         
     // C) Defino los métodos getter y setter de la clase auxiliar Familia
@@ -76,10 +87,9 @@ class Familia {
      * Método éstatico para asignar una familia a entidades de la plataforma que lo requieran
      *
      * @param String $familia Nombre de la familia que se desea recuperar
-     * @return Familia|null Devuelve un objeto Familia con los datos recuperados
-     *                        Devuelve nulo si no puedo recuperar la indicada indicada por parámetro
+     * @return Familia Devuelve un objeto Familia con los datos recuperados o vacío si no puedo hacerlo     
      */
-    public static function asignarFamilia($familia): ?Familia {
+    public static function asignarFamilia($familia): Familia {
         // Construyo la sentencia SQL para recuperar la familia de la base de datos     
         $sql="SELECT * from pdaw_familias where familia=:familia";
         // Ejecuto la sentencia SQL para recuperar a la familia de la base de datos
@@ -91,8 +101,8 @@ class Familia {
             return new Familia($res[0]);
         }
         else
-            // De lo contario devolveré nulo
-            return null;
+            // De lo contario devolveré un objeto Familia con los atributos por defecto
+            return new Familia([]);
     }
 
     /**
