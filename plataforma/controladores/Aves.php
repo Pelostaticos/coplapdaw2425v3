@@ -235,5 +235,67 @@ class Aves {
         }
     }        
 
+    /**
+     * Método estático general para mostrar la vista de registro de nuevas aves en la plataforma
+     *
+     * @param Smarty $smarty Obtejo que contiene al motor de plantilla Smarty
+     * @return void No devuelve valor alguno
+     */
+    public static function mostrarRegistroAvePlataforma($smarty) {
+        // Recupero al usuario logueado de la sesión
+        $usuario = $_SESSION['usuario'];
+        // Asigno las variables de la plantilla de registro de ave
+        $smarty->assign('usuario', $usuario->getUsuario());
+        $smarty->assign('anyo', date('Y'));
+        $smarty->assign('hoy', date('Y-m-d'));
+        // Muestro la plantilla para el registro de una nueva ave
+        $smarty->display('aves/registro.tpl');    
+    }    
+
+    /**
+     * Método estático general para procesar el registro de una nueva ave en la plataforma 
+     *
+     * @param Smarty $smarty Objeto que contiene al motor de plantillas Smarty
+     * @return void No devuelve valor alguno
+     * @throws AppException Excepción cuando existe algún problema al registrar un ave
+     */
+    public static function registrarAvePlataforma($smarty) {
+
+        // Recupero los datos de la nueva ave desde el formulario de registro
+        $datosAve = [':especie' => filter_input(INPUT_POST,'frm-especie'),
+            ':familia' => filter_input(INPUT_POST,'frm-familia'),
+            ':abreviatura' => filter_input(INPUT_POST,'frm-codigo'),
+            ':comun' => filter_input(INPUT_POST,'frm-comun'),
+            ':ingles' => filter_input(INPUT_POST,'frm-ingles'),
+            ':imagen' => 'default.png', 
+            ':url' => filter_input(INPUT_POST,'frm-url')];
+
+        // Intento registrar a la nueva ave
+        try { 
+            // Registro a la nueva ave en la base de datos
+            $av = Ave::crearAve($datosAve);            
+
+            // Compruebo que la nueva ave se creó correctamente
+            if ($av) {
+                // Notifico al usuario el resultado de registrar una nueva ave en la plataforma
+                ErrorController::mostrarMensajeInformativo($smarty, "Nueva ave registrada con éxito!!", "/plataforma/backoffice.php?comando=aves:default");
+            } else {
+                // Lanzo excepción para notificar al usuario que hubo algún problema durante el proceso de registro
+                throw new AppException("Fallo al registrar la nueva ave en la plataforma","/plataforma/backoffice.php?comando=aves:default");
+            } 
+
+        // Manejo la excepción que se haya producido para notificarla al usuario
+        } catch (AppException $ae) {
+            // Si se produce una violación de restricción al registrarlos
+            if ($ae->getCode() === AppException::DB_CONSTRAINT_VIOLATION_IN_QUERY)
+            {
+                ErrorController::handleException($ae, $smarty, '/plataforma/backoffice.php?comando=aves:default', "Este ave ya esta registrada!!");
+            }
+            else {
+                ErrorController::handleException($ae, $smarty, '/plataforma/backoffice.php');
+            }
+                
+        }     
+    }
 
 }

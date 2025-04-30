@@ -1,4 +1,4 @@
-{* Plantilla Smarty para vista de registro de un nuevo observatorio de la plataforma correplayas
+{* Plantilla Smarty para vista de registro de una nueva ave de la plataforma correplayas
 * Proyecto DAW Cursos 2024/25 - I.E.S AGUADULCE
 * Nombre del proyecto: Plataforma Correplayas
 * Tutor PDAW: Jośe Antonio Morales Álvarez.
@@ -12,58 +12,69 @@
 *
 *}
 
-{include file="comunes/header.tpl" titulo="Registro de observatorio" usuario=$usuario}
-    <!-- Contenidos de la página para el registro de nuevo observatorio de la plataforma correplayas -->
+{include file="comunes/header.tpl" titulo="Registro de aves" usuario=$usuario}
+    <!-- Contenidos de la página para el registro de nueva ave de la plataforma correplayas -->
     <main id="inicio">        
-        <!-- Sección para el gestor de Observatorios de la plataforma correplayas -->
+        <!-- Sección para el gestor de Aves de la plataforma correplayas -->
          <section id="correplayas">
             <!-- Artículo que describe el proyecto de la plataforma correplayas -->
             <article>
-                <!-- Encabezado del gestor de observatorio -->
-                <h1 class="titulo-accion-gestor">Registro de observatorio</h1>                    
+                <!-- Encabezado del gestor de aves -->
+                <h1 class="titulo-accion-gestor">Registro de aves</h1>                    
                 <div class="cabecera-gestor">
-                    <img class="logo-gestor" src="/plataforma/imagenes/gestor-observatorios.png" alt="encabezado gestor observatorio"/>
+                    <img class="logo-gestor" src="/plataforma/imagenes/gestor-aves.png" alt="encabezado gestor aves"/>
                     <div class="gestor">
                         <small>Gestor</small>
-                        <p class="titulo-gestor">Observatorios</p>
+                        <p class="titulo-gestor">Aves</p>
                     </div>            
                 </div>                
-                <!-- Información del gestor de observatorio  -->
-                <form id="registro-observatorio" method="post" action="/plataforma/backoffice.php?comando=observatorios:registrar:procesa">
+                <!-- Información del gestor de aves  -->
+                <form id="registro-ave" method="post" action="/plataforma/backoffice.php?comando=aves:registrar:procesa">
                     <div class="contenido-gestor">                        
                         <div class="campos-gestor">
-                            <p class="extraextralargo">
-                                <label for="frm-nombre">Observatorio:&nbsp;</label>
-                                <input type="text" name="frm-nombre" id="frm-nombre" placeholder="Nombre del observatorio..." required>
+                            <p class="medio">
+                                <label for="frm-codigo">Código:&nbsp;</label>
+                                <input type="text" name="frm-codigo" id="frm-codigo" placeholder="Código del ave..." required>
+                            </p>
+                            <p class="extralargo">
+                                <label for="frm-especie">Especie:&nbsp;</label>
+                                <input type="text" name="frm-especie" id="frm-especie" placeholder="Especie del ave..." required>
+                            </p>                            
+                        </div>
+                        <div class="campos-gestor">
+                            <small><span>RECUERDA</span>:&nbsp;El código del ave se forma con las tres primeras letras de cada palabra de la especie, todo junto y en mayúsculas.</small>
+                        </div>
+                        <div class="campos-gestor">
+                            <p class="extralargo">
+                                <label for="frm-familia">Familia:&nbsp;</label>
+                                <select name="frm-familia" id="frm-familia" required></select>
+                            </p>
+                            <p class="extralargo">
+                                <label for="frm-orden">Orden:&nbsp;</label>
+                                <input type="text" name="frm-orden" id="frm-orden" value="Desconocido" required>
                             </p>
                         </div>
                         <div class="campos-gestor">
-                            <p class="extraextralargo">
-                                <label for="frm-direccion">Dirección:&nbsp;</label>
-                                <input name="frm-direccion" id="frm-direccion" type="text" placeholder="Dirección del observatorio..." required>
-                                <label for="frm-localidad">Localidad:&nbsp;</label>
-                                <select id="frm-localidad" name="frm-localidad" required></select>
-                            </p>
+                            <p class="extralargo">
+                                <label for="frm-comun">Nombre común:&nbsp;</label>
+                                <input type="text" name="frm-comun" id="frm-comun" placeholder="Nombre común del ave..." required>
+                            </p>                        
+                            <p class="extralargo">
+                                <label for="frm-ingles">Nombre inglés:&nbsp;</label>
+                                <input type="text" name="frm-ingles" id="frm-ingles" placeholder="Nombre inglés del ave..." required>
+                            </p> 
                         </div>
                         <div class="campos-gestor">
                             <p class="extraextralargo">
-                                <label for="frm-gps">GPS:&nbsp;</label>
-                                <input type="text" name="frm-gps" id="frm-gps" placeholder="URL de ubicación en mapa..." required>
                                 <label for="frm-url">URL:&nbsp;</label>
-                                <input type="text" name="frm-url" id="frm-url" placeholder="URL de información adicional..." required>
-                            </p>
-                        </div>
-                        <div class="campos-gestor">
-                            <p class="extraextralargo">
-                                <label for="frm-historia">Historia:&nbsp;</label>
-                                <textarea name="frm-historia" id="frm-historia" rows="3" maxleng="200" placeholder="Escribe aquí su historía (Max: 200 caracteres; Opcional)..."></textarea>
+                                <input type="text" name="frm-url" id="frm-url" placeholder="URL con información adicional del ave..." required>
                             </p>
                         </div>
                     </div>
-                    <!-- Acciones permitidas por el gestor de observatorios -->
+                    <!-- Acciones permitidas por el gestor de aves -->
                     <div class="botonera">
-                        <a class="boton-accion-gestor" href="/plataforma/backoffice.php?comando=observatorios:default" title="Volver al atrás">Volver</a>
-                        <button type="submit" class="boton-accion-gestor" title="Crear observatorio">Crear</button>
+                        <a class="boton-accion-gestor" href="/plataforma/backoffice.php?comando=aves:default" title="Volver al atrás">Volver</a>
+                        <button type="submit" class="boton-accion-gestor" title="Crear ave">Crear</button>
                     </div>
                 </form>
             </article>

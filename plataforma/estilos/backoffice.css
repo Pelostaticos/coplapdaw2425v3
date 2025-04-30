@@ -660,7 +660,8 @@ form#busqueda-gestor input, form#busqueda-gestor select {
 form#busqueda-gestor button {
     margin-left: 40px;
 }
-form#busqueda-gestor small {
+form#busqueda-gestor small,
+div.campos-gestor small {
     margin-left: 10px;
     margin-right: 10px;
     background-color: var(--color-destacado);

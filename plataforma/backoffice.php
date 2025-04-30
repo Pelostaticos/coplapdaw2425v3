@@ -271,7 +271,15 @@ try {
             case "aves:filtrar":
                 // Solicirto al controlador de aves que filtre el listado de aves disponibles en la plataforma
                 Aves::filtrarAvesPlataforma($smarty);
-                break;      
+                break;
+            case "aves:registrar:vista":
+                // Solicito al controlador de aves que muestre la vista para el registro de una nueva ave
+                Aves::mostrarRegistroAvePlataforma($smarty);
+                break;
+            case "aves:registrar:procesa":
+                // Solicito al controlador de aves que procese el registro de un nuevo ave en la plataforma
+                Aves::registrarAvePlataforma($smarty);
+                break; 
             case "observatorios:default":
                 // Solicito al controlador de observatorios que muestre las vista por defecto según rol del usuario
                 Observatorios::default($smarty);

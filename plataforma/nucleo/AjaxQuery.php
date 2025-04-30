@@ -21,6 +21,7 @@ namespace correplayas\nucleo;
 
 // 1º) Defino los espacios de nombres que voy a utilizar en esta clase
 
+use correplayas\modelo\Familia;
 use correplayas\modelo\Localidad;
 use correplayas\modelo\Observatorio;
 use correplayas\modelo\Rol;
@@ -40,13 +41,16 @@ class AjaxQuery {
      * @return void
      */
     public static function default() {
-        // Recupero el comando del intercambio de datos asincrono desde la petición AJAX
+        // Recupero la petición AJAX  del intercambio de datos asincrono
         $peticionAjax = AjaxQuery::recuperarPeticionAjax();
-        $peticionAjax = isset($peticionAjax['ajaxquery']) ? $peticionAjax['ajaxquery'] : '';
+        // Recupero el comando del intercambio de datos asincrono desde la petición AJAX
+        $comandoAjax = isset($peticionAjax['ajaxquery']) ? $peticionAjax['ajaxquery'] : '';
+        // Recupero el parámetro selección asociado a una petición AJAX
+        $seleccion = isset($peticionAjax['seleccion']) ? $peticionAjax['seleccion'] : '';
         // Compruebo que hay una sesión de usuario iniciada antes de procesar la petición AJAX
         if (isset($_SESSION['usuario'])) {
             // Gestiono la petición AJAX para usuarios logueados
-            switch ($peticionAjax) {
+            switch ($comandoAjax) {
                 case "usuarios:actualizar":
                     AjaxQuery::prepararDatosAjaxVistaEdicionUsuario();
                     break;
@@ -62,6 +66,12 @@ class AjaxQuery {
                 case "observatorios:actualizar":
                     AjaxQuery::prepararDatosAjaxVistaRegistroEdicionObservatorio();
                     break;
+                case "aves:registrar":
+                    AjaxQuery::prepararDatosAjaxVistaRegistroAve();
+                    break;
+                case "aves:registrar:orden":
+                    AjaxQuery::prepararDatosAjaxOrdenRegistronAve($seleccion);
+                    break;
                 default:
                     // Por defecto si la petición Ajax es desconocida le respondo con un error
                     $mensaje = ['error' => 'Petición Ajax no soportada por plataforma!!!'];
@@ -70,7 +80,7 @@ class AjaxQuery {
             }
         } else {
             // Gestiono la petición AJAX para usuarios visitantes
-            switch ($peticionAjax) {
+            switch ($comandoAjax) {
                 case "usuarios:registro":
                     AjaxQuery::prepararDatosAjaxVistaRegistroUsuario();
                     break;
@@ -212,6 +222,42 @@ class AjaxQuery {
         // Respongo al frontend con los datos solicitados en la petición Ajax
         AjaxQuery::responderPeticionAjax($datosRespuestaAjax);   
     }
+
+    /**
+     * Método estático auxiliar para responder una petición Ajax de la vista de registro/edición de ave
+     *
+     * @return void No devuelve valor alguno
+     */    
+    private static function prepararDatosAjaxVistaRegistroAve() {
+        // Defino el array asociativo con los datos de la respuesta a la petición Ajax
+        $datosRespuestaAjax = [];
+        // Obtengo las familias de las aves disponibles en la plataforma
+        $familias = Familia::listarFamilias();
+        // Genero los datos de la respuesta Ajax con el formato adecuado para procesar el selector familias.
+        foreach($familias as $familia) {
+            $datosRespuestaAjax[] = ['valor' => $familia['familia'], 'nombre' => $familia['familia']];
+        }
+        // Respongo al frontend con los datos solicitados en la petición Ajax
+        AjaxQuery::responderPeticionAjax($datosRespuestaAjax);   
+    }    
+
+    /**
+     * Método estático auxiliar para responder una petición Ajax con las ordenes de aves en el registro/edición de ave
+     *
+     * @return void No devuelve valor alguno
+     */    
+    private static function prepararDatosAjaxOrdenRegistronAve($familia) {
+        // Asingo la familia del ave en registro
+        $familiaAve = Familia::asignarFamilia($familia);
+        // Obtengo el orden de la familia asifnada al ave en registro
+        $ordenAve = $familiaAve->getOrden();
+        // Obtengo el nombre del orden asociado a la familia del ave en registro
+        $nombreOrden = $ordenAve->getOrden();
+        // Genero los datos de la respuesta Ajax con el formato adecuado para cargar el campo asociado al selector familias.
+        $datosRespuestaAjax['valor'] = $nombreOrden;
+        // Respongo al frontend con los datos solicitados en la petición Ajax
+        AjaxQuery::responderPeticionAjax($datosRespuestaAjax);   
+    } 
 
 }
 
