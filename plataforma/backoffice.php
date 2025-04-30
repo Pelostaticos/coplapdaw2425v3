@@ -267,7 +267,11 @@ try {
                 // Solicito al controlador de aves que muestre las vista por defecto según rol del usuario
                 Aves::default($smarty);
                 // OBSERVACIONES: El gestor de censos no se encuentra implementado por falta de tiempo
-                break;                
+                break;
+            case "aves:filtrar":
+                // Solicirto al controlador de aves que filtre el listado de aves disponibles en la plataforma
+                Aves::filtrarAvesPlataforma($smarty);
+                break;      
             case "observatorios:default":
                 // Solicito al controlador de observatorios que muestre las vista por defecto según rol del usuario
                 Observatorios::default($smarty);

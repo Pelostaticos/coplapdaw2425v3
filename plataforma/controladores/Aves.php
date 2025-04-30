@@ -124,6 +124,46 @@ class Aves {
 
     // B) Métodos estáticos públicos para procesar los datos de las vistas específicas
     
+    /**
+     * Método estático para filtrar listados de aves de la plataforma
+     *
+     * @param Smarty $smarty Objeto que contiene al motor de plantillas Smarty
+     * @return void No devuelve valor alguno
+     * @throws AppException Excepcion cuando existe algún problema de permisos del usuario
+     */
+    public static function filtrarAvesPlataforma($smarty) {
+
+        // Obtengo al usuario de la sesión del navegacion
+        $usuario = $_SESSION['usuario'];
+
+        // Recupero los permisos del usuario logueado desde su sesión
+        $permisosUsuario = $_SESSION['permisos'];
+
+        // Compruebo si el usuario logueado tiene el rol de administrador  :
+        if ($permisosUsuario->hasPermisoAdministradorGestor()) {
+            // El usuario logueado es administrador. Entonces:
+            // Obtengo el campo de busqueda introducido por el usuario
+            $busqueda = filter_input(INPUT_POST,'frm-busqueda', FILTER_SANITIZE_SPECIAL_CHARS);
+            // Obtengo la columna por la que se desea ordenar los resultados
+            $ordenarPor = filter_input(INPUT_POST, 'frm-ordenarpor', FILTER_SANITIZE_SPECIAL_CHARS);
+            // Obtengo el modo de ordenarlos
+            $orden = filter_input(INPUT_POST, 'frm-orden', FILTER_SANITIZE_SPECIAL_CHARS);
+            // Obtengo los resultados del filtrado de aves en la plataforma            
+            $resultados = Ave::buscarAves($busqueda, $ordenarPor, $orden);
+            // Asigno las variables requeridas por la plantila del listado de aves
+            $smarty->assign('usuario', $usuario->getUsuario());
+            $smarty->assign('permisosUsuario', $permisosUsuario);            
+            $smarty->assign('filas', $resultados);
+            $smarty->assign('anyo', date('Y'));
+            // Muestro la plantilla del listado de aves
+            $smarty->display('aves/listado.tpl');               
+        } else {
+            // Lanzo una excepción para notificar al usuario que no tiene permisos para listar y filtrar aves
+            throw new AppException(message: "Tu rol en la plataforma no te permite listar ni filtrar aves", 
+                urlAceptar: "/plataforma/backoffice.php");
+        }
+
+    } 
     
     // C) Métodos estáticos públicos para vistas generales y su procesamiento de datos asociados    
 
