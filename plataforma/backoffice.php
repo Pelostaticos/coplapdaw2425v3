@@ -279,7 +279,15 @@ try {
             case "aves:registrar:procesa":
                 // Solicito al controlador de aves que procese el registro de un nuevo ave en la plataforma
                 Aves::registrarAvePlataforma($smarty);
-                break; 
+                break;
+            case "aves:actualizar:procesa":
+                // Solicito al controladorr de aves que procese la edición de un ave en la plataforma
+                Aves::actualizarAvePlataforma($smarty);
+                break;
+            case "aves:eliminar:procesa":
+                // Solicito al controlador de aves que procese la eliminación de un ave de la plataforma
+                Aves::eliminarAvePlataforma($smarty);
+                break;
             case "observatorios:default":
                 // Solicito al controlador de observatorios que muestre las vista por defecto según rol del usuario
                 Observatorios::default($smarty);

@@ -150,7 +150,7 @@ class Observatorios {
                 unset($_SESSION['listado']);                
                 // Recupero los datos del observatorio elegido por el usuario
                 $observatorio = Observatorio::consultarObservatorio($codigo);
-                // Compruebo si la jornada elegida existe en la base de datos
+                // Compruebo si el observatorio elegido existe en la base de datos
                 if ($observatorio instanceof Observatorio) {
                     // Recopilo la información de la plantilla para mostrar edición del observatorio
                     $perfil = ['codigo' => $codigo,
@@ -171,7 +171,7 @@ class Observatorios {
                 } else {
                     // De lo contario, lanzo una excepción para notificar al usuario que el
                     // observatorio deseada no existe en la base de datos
-                    throw new AppException(message: "Elobservatorio elegido no existe en la base de datos!!!",
+                    throw new AppException(message: "El observatorio elegido no existe en la base de datos!!!",
                     urlAceptar: "/plataforma/backoffice.php?comando=observatorios:default");                    
                 }         
             } else {
@@ -262,7 +262,7 @@ class Observatorios {
                 // De lo contario, lanzo una excepción para notificar al usuario que el
                 // observatorio deseado no existe en la base de datos
                 throw new AppException(message: "El observatorio elegido no existe en la base de datos!!!",
-                urlAceptar: "/plataforma/backoffice.php?comando=jornadas:default");                    
+                urlAceptar: "/plataforma/backoffice.php?comando=observatorios:default");                    
             }
         } else {
             // Lanzo excepción para notificar al usuario que no tiene permiso para actualizar un observatoro

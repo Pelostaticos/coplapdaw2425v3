@@ -59,11 +59,11 @@ class Aves {
                 switch($accion) {
                     case "actualizar":
                         // Muestro la vista específica de edición de un ave de la plataforma
-                        // Aves Observatorios::mostrarEdicionObservatorioPlataforma($smarty);
+                        Aves::mostrarEdicionAvePlataforma($smarty);
                         break;
                     case "eliminar":
                         // Muestro la vista específica con el mensaje de confirmación de baja de un ave de la plataforma
-                        // Aves Observatorios::mostrarConfirmaciónBajaObservatorioPlataforma($smarty);
+                        Aves::mostrarConfirmaciónBajaAvePlataforma($smarty);
                         break;
                     default:
                         // Establezco la variable de sesión volver al gestor de aves tras consultar
@@ -86,7 +86,7 @@ class Aves {
     }
 
     // A) Método estáticos privados para gestioanr las vistas específicas solicitada desde el listado
-
+   
     /**
      * Método estático auxiliar para mostrar la vista con el listado de aves disponibles en la plataforma
      *
@@ -122,8 +122,201 @@ class Aves {
         }
     }
 
-    // B) Métodos estáticos públicos para procesar los datos de las vistas específicas
-    
+    /**
+     * Método auxiliar para mostrar la vista de edición de un ave de la plataforma
+     *
+     * @param Smarty $smarty Objeto que contiene al motor de plantillas Smarty
+     * @return void No devuelve valor alguno
+     * @throws AppException Excepción cuando existe problemas para mostrar la vista de edición de aves
+     */
+    private static function mostrarEdicionAvePlataforma($smarty) {
+        // Recupero al usuario logueado en la plataforma
+        $usuario = $_SESSION['usuario'];
+
+        // Recupero los permisos del usuario logueado desde su sesión
+        $permisosUsuario = $_SESSION['permisos'];
+
+        // Compruebo si el usuario logueado es administrador para
+        // poder ejecutar la edición de un ave de la plataforma
+        if ($permisosUsuario->hasPermisoAdministradorGestor()) {
+            // El usuario logueado es administrador. Entonces:
+            // Compruebo que el usuario haya elegido un ave del listado
+            if (isset($_SESSION['listado'])) {
+                // El usuario ha elegido un ave del listado. Entonces:
+                // Recupero el identificador del ave elegido por el usuario
+                $especie = $_SESSION['listado'];
+                // Desestablezco el identificador del ave elegido por el usuario desde la sesion porque
+                // ya ha cumpplido su función aquí
+                unset($_SESSION['listado']);                
+                // Recupero los datos del ave elegido por el usuario
+                $ave = Ave::consultarAve($especie);
+                // Compruebo si el ave elegida existe en la base de datos
+                if ($ave instanceof Ave) {
+                    // Recupero la información acerca de la familia y orden del ave
+                    $familia=$ave->getFamiliaAve();
+                    $nombreFamilia=$familia->getFamilia();
+                    $orden=$familia->getOrden();
+                    $nombreOrden=$orden->getOrden();                    
+                    // Recopilo la información de la plantilla para mostrar edición del ave
+                    $perfil = ['especie' => $especie,
+                    'familia' => $nombreFamilia,
+                    'orden' => $nombreOrden,
+                    'abreviatura' => $ave->getAbreviaturaAve(),
+                    'comun' => $ave->getNombreComunAve(),
+                    'ingles' => $ave->getNombreInglesAve(),
+                    'imagen' => 'default.png',
+                    'url' => $ave->getUrlAve()];
+                    // Asigno las variables requeridas por la plantila de edición de un ave
+                    $smarty->assign('usuario', $usuario->getUsuario());
+                    $smarty->assign('permisos', $permisosUsuario);
+                    $smarty->assign('perfil', $perfil);
+                    $smarty->assign('anyo', date('Y'));
+                    // Muestro la plantilla de edición de un ave con sus datos
+                    $smarty->display('aves/edicion.tpl');
+                } else {
+                    // De lo contario, lanzo una excepción para notificar al usuario que el
+                    // ave deseada no existe en la base de datos
+                    throw new AppException(message: "El ave elegida no existe en la base de datos!!!",
+                    urlAceptar: "/plataforma/backoffice.php?comando=aves:default");                    
+                }         
+            } else {
+                // Lanzo una excepción para notificar que el usuario no eligió un ave del listado
+                throw new AppException("No ha elegido un ave del listado. Por favor, eliga una. Gracias!");
+            }
+        } else {
+            // Lanzo excepción para notificar al usuario que no tiene permiso para actualizar un ave
+            throw new AppException("Su rol en la plataforma no le permite actualizar un ave");
+        }
+    }
+
+    /**
+     * Método auxiliar para mostrar la confirmación de baja de un ave de la plataforma
+     *
+     * @param Smarty $smarty Objeto que contiene al motor de plantillas Smarty
+     * @return void No devuelve valor alguno
+     * @throws AppException Excepción cuando existe algún problema para mostrar confirmación de baja ave
+     */
+    private static function mostrarConfirmaciónBajaAvePlataforma($smarty) {
+        // Recupero los permisos del usuario logueado desde su sesión
+        $permisosUsuario = $_SESSION['permisos'];
+
+        // Compruebo que el usuario logueado es un administrador
+        if ($permisosUsuario->hasPermisoAdministradorGestor()) {
+            // El usuario logueado es administrador. Entonces:
+            // Compruebo que el usuario haya elegido un ave del listado
+            if (isset($_POST['especie'])) {
+                // Establezco la configuración del mensaje de confirmación para el usuario autorizado
+                $mensaje = "Has solicitado eliminar un ave de la plataforma";
+                $pregunta = "¿Estás seguro que quieres eliminar a dicha ave?";
+                $urlCancelar = "/plataforma/backoffice.php?comando=aves:default";
+                $urlAceptar = "/plataforma/backoffice.php?comando=aves:eliminar:procesa";
+                // Muestro el mensaje de confirmación de baja al usuario
+                ErrorController::mostarMensajeAdvertencia($smarty,$mensaje,$pregunta,$urlCancelar,$urlAceptar);
+            } else {
+                // Lanzo una excepción para notificar que el usuario no eligió un observatorio del listado
+                throw new AppException("No ha elegido un ave del listado. Por favor, eliga una. Gracias!");                
+            }
+        } else {
+            // Lanzo excepción para notificar al usuario que no tiene permiso para eliminar un observatorio
+            throw new AppException("Su rol en la plataforma no le permite eliminar un ave");            
+        }
+    }    
+
+    // B) Métodos estáticos públicos para procesar los datos de las vistas específicas    
+
+    /**
+     * Método estático para actualizar un ave de la plataforma
+     *
+     * @param Smarty $smarty Objeto que contiene al motor de plantillas Smarty
+     * @return void No devuelve valor alguno
+     * @throws AppException Excepción cuando existe algún probelma para actualizar el ave
+     */
+    public static function actualizarAvePlataforma($smarty) {
+
+        // Recupero los permisos del usuario logueado desde su sesión
+        $permisosUsuario = $_SESSION['permisos']; 
+
+        // Compruebo si el usuario tiene rol de administrador
+        if ($permisosUsuario->hasPermisoAdministradorGestor()) {
+            // El usuario logueado es administrador. Entonces:
+            // Recupero el identificador del ave elegido por el usuario
+            $especie = filter_input(INPUT_POST, 'frm-especie');
+            // Recupero los datos del ave elegida por el usuario
+            $ave = Ave::consultarAve($especie);
+            // Compruebo si el ave elegida existe en la base de datos
+            if ($ave instanceof Ave) {
+                // Recupero del formulario de edición de ave los datos y actualizo el objeto
+                $ave->setNombreComunAve(filter_input(INPUT_POST,'frm-comun'));
+                $ave->setNombreInglesAve(filter_input(INPUT_POST,'frm-ingles'));
+                $ave->setImagenAve(filter_input(INPUT_POST,'frm-imagen'));
+                $ave->setUrlAve(filter_input(INPUT_POST,'frm-url'));
+                // Actulizo los datos del ave y muestro la notificación del resultado
+                if ($ave->actualizarAve()) {
+                    // Notifico al usuario que la actualización del ave fue existosa
+                    ErrorController::mostrarMensajeInformativo($smarty, "Ave actualizada con éxito!!", 
+                        "/plataforma/backoffice.php?comando=aves:default");
+                } else {
+                    // Lanzo una excepción para indicar que no es posible obtener valores por defecto del ave
+                    throw new AppException(message: "No es posible actualizar el ave", 
+                        urlAceptar: "/plataforma/backoffice.php?comando=aves:default");
+                }                    
+            } else {
+                // De lo contario, lanzo una excepción para notificar al usuario que el
+                // ave deseada no existe en la base de datos
+                throw new AppException(message: "El ave elegida no existe en la base de datos!!!",
+                urlAceptar: "/plataforma/backoffice.php?comando=aves:default");                    
+            }
+        } else {
+            // Lanzo excepción para notificar al usuario que no tiene permiso para actualizar un ave
+            throw new AppException("Su rol en la plataforma no le permite actualizar un ave");
+        }
+
+    }
+
+    /**
+     * Método estático para eliminar a un ave de la plataforma
+     *
+     * @param Smarty $smarty Objeto que contiene al motor de plantillas Smarty
+     * @return void No devuelve valor alguno
+     * @throws AppException Excepción cuando existe algún problema al eliminar un ave
+     */
+    public static function eliminarAvePlataforma($smarty) {
+
+        // Recupero los permisos del usuario logueado desde su sesión
+        $permisosUsuario = $_SESSION['permisos'];
+
+        // Compruebo que el usuario tiene rol de administrador
+        if ($permisosUsuario->hasPermisoAdministradorGestor()) {
+            // El usuario logueado es administrador. Entonces:
+            // Compruebo que el usuario loqueado eligió un ave del listado
+            if (isset($_SESSION['listado'])) {
+                // Recupero el identificador del ave elegida por el usuario desde su sesion
+                $especie = $_SESSION['listado'];
+                // Desestablezco el identificador del ave elegida por el usuario desde la sesion porque
+                // ya ha cumpplido su función aquí
+                unset($_SESSION['listado']);
+                // Recupero el ave elegida por el usuario que desea eleiminar
+                $ave = Ave::consultarAve($especie);
+                // Procedo a eliminar el ave y compruebo su resultado
+                if ($ave->eliminarAve()) {
+                    // Notifico al usuario que el ave se ha eliminado correctamente y lo devuelvo a su vista por defecto
+                    ErrorController::mostrarMensajeInformativo($smarty, "El ave indicada se ha elminado correctamente!",
+                        "/plataforma/backoffice.php?comando=aves:default");
+                } else {
+                    // Lanzo una excepción para indicar que existe algún problema para dar de baja a un ave
+                    throw new AppException("No es posible dar de baja al ave indicada!");
+                }
+            } else {
+                // Lanzo una excepción para notificar que el usuario no eligió un ave del listado
+                throw new AppException("No ha elegido un ave del listado. Por favor, eliga una. Gracias!");
+            }         
+        } else {
+            // Lanzo excepción para notificar al usuario que no tiene permiso para eliminar un ave
+            throw new AppException("Su rol en la plataforma no le permite eliminar un ave");
+        }
+
+    }
+
     /**
      * Método estático para filtrar listados de aves de la plataforma
      *
