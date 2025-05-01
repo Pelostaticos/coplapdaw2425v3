@@ -10,12 +10,23 @@
 
 // A) Funciones de carga dinámica de elementos select en formularios.
 // A.0) Función para realizar peticiones AJAX al backend de la plataforma correplayas
-function realizarPeticionesAjax(comando) {
+function realizarPeticionesAjax(comando, parametro="") {
 
-    // 0º) Inicio la petición AJAX al backend de la plataforma correplayas
+    // 0.0º) Preparo la petición AJAX a realizar al backend de la plataforma correplayas
+    // Compruebo si la paetición AJAX contiene parámetros de seleccion
+    if (parametro.trim()) {
+        // La petición AJAX contiene parámetros. Entonces
+        // Envio el comando y los parámetros de seleccion de la petiición
+        peticion = { ajaxquery: comando, seleccion: parametro }
+    } else {
+        // De lo contario, la petición AJAX sólo contiene el comando
+        peticion = { ajaxquery: comando }
+    }
+
+    // 0.1º) Inicio la petición AJAX al backend de la plataforma correplayas
     fetch('/plataforma/backoffice.php?comando=ajax:query:core', {
         method: 'POST',
-        body: JSON.stringify({ ajaxquery: comando }),
+        body: JSON.stringify(peticion),
         headers: { 'Content-Type': 'application/json' }
     })
         // 1º) Manejo la respuesta del servidor de la plataforma correplayas
@@ -46,7 +57,13 @@ function realizarPeticionesAjax(comando) {
                         break;
                     case "observatorios:actualizar":
                         cargarSelectEdicionObservatorios(datos);
-                        break;                        
+                        break;
+                    case "aves:registrar":
+                        cargarSelectRegistroAves(datos);
+                        break;
+                    case "aves:registrar:orden":
+                        cargarOrdenRegistroEdicionAves(datos);
+                        break;            
                     // Por defecto: Cargo dinámicamente los selectores disponibles en la vista de registro de usuario.
                     default:
                         cargarSelectRegistroUsuarios(datos);
@@ -228,8 +245,47 @@ function cargarSelectEdicionObservatorios(datos) {
     }
 }
 
+// A.7) Función para cargar dinámicamente los selectores de la vista de registro de aves
+function cargarSelectRegistroAves(datos) {
+    // Intento cargar dinámicamente los elementos select del formulario de registro de aves
+    try {
+        // 0º) Obtengo el elemento select "familia" del formulario de registro de aves
+        const selectFamilia = document.getElementById('frm-familia');
+
+        // 1º) Limpio las opciones existente en el selector "familia" obtenido
+        selectFamilia.innerHTML = '';
+
+        // 2º) Cargo las familias en el selector de formulario obtenido
+        datos.forEach(opcion => {
+            const option = document.createElement('option');
+            option.value = opcion.valor;
+            option.textContent = opcion.nombre;
+            selectFamilia.appendChild(option);
+        });  
+        
+        // 3º) Fuerzo la carga dinámica inicial del campo orden asociado al selector familias
+        realizarPeticionesAjax("aves:registrar:orden", selectFamilia.value)
+
+    } catch(error) {
+        // Muestro por consola el error producido al cargar selectores en la vista deseada
+        console.error(error);
+    }
+}
+
 // B) Funcionaes de actualización dinámica de datos por clic en elemento select.
-// RECUERDA: Descartado por falta de tiempo para cumplir fecha de entrega del Proyecto DAW
+// B.1) Funcion para cargar dinamicamente el valor del campo orden al seleccionar una fanilia en el registro/edicion de aves
+function cargarOrdenRegistroEdicionAves(datos) {
+    // Intento cargar dinámicamente el valor del campo orden del formulario de registro de observatorios
+    try { 
+        // 0º) Obtengo el elemento input "orden" del formulario de registro de aves
+        const inputOrden = document.getElementById('frm-orden');
+        // 1º) Asingo el valor del orden asociado a la famailia elegida en el selector familias
+        inputOrden.value = datos['valor'];
+    }  catch(error) {
+        // Muestro por consola el error producido al cargar campo orden del selector familias en la vista deseada
+        console.error(error);
+    }
+}
 
 // C) Manejadores de eventos control dináimico de datos en formualrios.
 // C.0) Intentp manejar los eventos de control dinámico de datos en formularios
@@ -237,7 +293,7 @@ try {
     // C.1) Array asociativos con los formularios disponibles en la plataforma y sus comandos de peticion Ajax.
     const peticionesSelectAjax = {'signup':'usuarios:registro', 'edicion-usuario':'usuarios:actualizar',
         'registro-jornada': 'jornadas:registrar', 'registro-observatorio': 'observatorios:registrar',
-        'edicion-observatorios': 'observatorios:actualizar'};
+        'edicion-observatorios': 'observatorios:actualizar', 'registro-ave': 'aves:registrar'};
     // C.2) Añado el manipulador de evento para controlar que el contenido del DOM se ha cargado.
     document.addEventListener('DOMContentLoaded', function() { 
         // Obtengo todos los formularios disponible en la página actual ya cargada..
@@ -259,16 +315,27 @@ try {
 }
 
 // D) Manejadores de eventos control clics en elementos select en formualrios.
-
-// <<<--- Código de referencia para adaptarlo a la nueva funcionalidad:
-
-
-  // D.1) Cargo el manipulador de evento para cargar dinámicamente los selectores en el/lo formulario(s) presente en la página actual.
-  
-//   selectores.forEach(seelctor => {
-//     // Compruebo si alguno de los formularios presentes en la página actual tiene selector.
-//     if (validadoresFormularios.hasOwnProperty(selector.id)) {
-//       // Añado el manipulador del evento load para el formulario presente en la página web
-//       document.getElementById(formulario.id).addEventListener('DOMContentLoaded', validadoresFormularios[formulario.id]);
-//     }
-//   });  
+// D.0) Intento manejar los clic en los selectores para solicitar carga dinámica de valores asociados
+try {
+    // D.1) Array asociativo con los selectores disponibles en la plataforma y su petición AJax tras clic en ellos
+    const peticionesAjaxClicSelectores = {'frm-familia': 'aves:registrar:orden'};
+    // D.2) Obtengo todos los selectores disponibles en formularios de la página actual
+    const selectores = document.querySelectorAll('select');
+    // D.3) Cargo el manipulador de evento para enviar petición Ajax al hacer clic en un determinado selector de un formulario.
+    selectores.forEach(selector => {
+        // Compruebo si el selector actual requiere petición Ajax al seleccionar un valor del mismo
+        if (peticionesAjaxClicSelectores.hasOwnProperty(selector.id)) {
+            // Añado el manipulador del evento submit para el formulario presente en la página web
+            document.getElementById(selector.id).addEventListener('change', function(event) {
+                // Muestro el mensaje por consola de que un elementor selector está haciendo una petición Ajax
+                console.info("Se está haciendo una petición Ajax procedente de " + selector.id + " para el parametro " + this.value);
+                // Realizo la petición Ajax asociada a la selección de un valor en un selector de un formulario
+                realizarPeticionesAjax(peticionesAjaxClicSelectores[selector.id], this.value);
+            });
+        }
+    });      
+} catch (error) {
+    // Manejo las posibles excepciones que se produzcan durante el manejos de eventos de clics en selectores
+    // de datos en formularios de la plataforma para carga dinámica de valores asociados.
+    console.error(error);
+}

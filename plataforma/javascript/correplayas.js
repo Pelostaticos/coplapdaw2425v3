@@ -455,13 +455,73 @@ function validarRegistroObservatorio(event) {
 
 }
 
+// C.10)  Función para validar el formulario de registro de un observatorio en la plataforma
+function validarRegistroAve(event) {
+
+  // Obtengo los datos introducidos en los campos del formulario
+  let especie = document.getElementById('frm-especie').value;
+  let familia = document.getElementById('frm-familia').value;
+  let orden = document.getElementById('frm-orden').value;
+  let abreviatura = document.getElementById('frm-codigo').value;
+  let comun = document.getElementById('frm-comun').value;
+  let ingles = document.getElementById('frm-ingles').value;
+  let url = document.getElementById('frm-url').value;
+ 
+    
+  // Creo un array para almacenar los errores de validación detectados
+  let errores = [];
+
+  // Validación para especie del ave
+  if (!especie.trim()) {
+    errores.push('Por favor, establezca la especie del ave.');
+  }
+
+  // Validación para familia del ave
+  if (!familia.trim()) {
+    errores.push('Por favor, establezca la familia del ave.');
+  }
+
+  // Validación para orden del ave
+  if (!orden.trim()) {
+    errores.push('Por favor, establezca el orden del ave.');
+  }  
+
+  // Validación para abreviatura del ave
+  if (!abreviatura.trim()) {
+    errores.push('Por favor, establezca la abreviatura del ave.');
+  }
+
+  // Validación para nombre común del ave
+  if (!comun.trim()) {
+    errores.push('Por favor, establezca el nombre común del ave.');
+  }
+  
+  // Validación para nombre inglés del ave
+  if (!ingles.trim()) {
+    errores.push('Por favor, establezca el nombre en inglés del ave.');
+  }
+
+  // Validación de URL con información adicional del ave
+  const UrlRegex = /^(ftp|http|https):\/\/[^ "]+$/;
+  if (!url.trim() || !UrlRegex.test(url)) {
+    errores.push('Por favor, establezca una URL con información adicional del ave correcta!!!');
+  }
+
+  // Si se detectan error detengo el envio del formulario y se los notifico al usuario.
+  if (errores.length > 0) {
+    event.preventDefault();
+    alert(errores.join('\n'));
+  }
+
+}
+
 // D) Manipulación de eventos para las validaciones de formularios.
 // D.0) Array asociativos con los formularios disponibles en la plataforma y sus validadores.
 const validadoresFormularios = {'contactenos': validarContactenos, 'login': validarLogin
   , 'signup':validarSignup, 'edicion-usuario': validarEdicionUsuarios, 'password': validarCambioPassword
   , 'registro-jornada': validarRegistroJornada, 'edicion-jornada': validarEdicionJornada
   , 'inscripcion-jornada': validarInscripcionJornada, 'registro-observatorio': validarRegistroObservatorio
-  , 'edicion-observatorios': validarRegistroObservatorio};
+  , 'edicion-observatorios': validarRegistroObservatorio, 'registro-ave': validarRegistroAve};
 // D.1) Cargo el manipulador de evento para válidar el(los) formulario(s) presente en la página actual.
 const formularios = document.querySelectorAll('form');
 formularios.forEach(formulario => {

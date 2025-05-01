@@ -604,6 +604,12 @@ div.campos-gestor p {
     width: 42em;
     font-size: var(--tamaño-fuente-h5-escritorio);
 }
+.campos-gestor p.muyextraextraextralargo {
+    margin: 0px;
+    padding: 10px;
+    width: 50em;
+    font-size: var(--tamaño-fuente-h5-escritorio);
+}
 .campos-gestor p span,
 .campos-gestor p label span
  {
@@ -654,7 +660,8 @@ form#busqueda-gestor input, form#busqueda-gestor select {
 form#busqueda-gestor button {
     margin-left: 40px;
 }
-form#busqueda-gestor small {
+form#busqueda-gestor small,
+div.campos-gestor small {
     margin-left: 10px;
     margin-right: 10px;
     background-color: var(--color-destacado);

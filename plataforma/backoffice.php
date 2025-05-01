@@ -23,13 +23,16 @@ namespace correplayas;
 // 1º) Cargo el fichero de configuración y clases de la plataforma web
 require_once(__DIR__ . '/config/config-inc.php');
 require_once(__DIR__ . '/excepciones/AppException.php');
-require_once(__DIR__ . '/modelo/Localidad.php');
-require_once(__DIR__ . '/modelo/Persona.php');
-require_once(__DIR__ . '/modelo/Usuario.php');
+require_once(__DIR__ . '/modelo/Ave.php');
+require_once(__DIR__ . '/modelo/Familia.php');
 require_once(__DIR__ . '/modelo/Jornada.php');
+require_once(__DIR__ . '/modelo/Localidad.php');
 require_once(__DIR__ . '/modelo/Participante.php');
+require_once(__DIR__ . '/modelo/Persona.php');
 require_once(__DIR__ . '/modelo/Observatorio.php');
+require_once(__DIR__ . '/modelo/Orden.php');
 require_once(__DIR__ . '/modelo/Rol.php');
+require_once(__DIR__ . '/modelo/Usuario.php');
 require_once(__DIR__ . '/controladores/Usuarios.php');
 require_once(__DIR__ . '/controladores/Jornadas.php');
 require_once(__DIR__ . '/controladores/Participantes.php');
@@ -264,7 +267,27 @@ try {
                 // Solicito al controlador de aves que muestre las vista por defecto según rol del usuario
                 Aves::default($smarty);
                 // OBSERVACIONES: El gestor de censos no se encuentra implementado por falta de tiempo
-                break;                
+                break;
+            case "aves:filtrar":
+                // Solicirto al controlador de aves que filtre el listado de aves disponibles en la plataforma
+                Aves::filtrarAvesPlataforma($smarty);
+                break;
+            case "aves:registrar:vista":
+                // Solicito al controlador de aves que muestre la vista para el registro de una nueva ave
+                Aves::mostrarRegistroAvePlataforma($smarty);
+                break;
+            case "aves:registrar:procesa":
+                // Solicito al controlador de aves que procese el registro de un nuevo ave en la plataforma
+                Aves::registrarAvePlataforma($smarty);
+                break;
+            case "aves:actualizar:procesa":
+                // Solicito al controladorr de aves que procese la edición de un ave en la plataforma
+                Aves::actualizarAvePlataforma($smarty);
+                break;
+            case "aves:eliminar:procesa":
+                // Solicito al controlador de aves que procese la eliminación de un ave de la plataforma
+                Aves::eliminarAvePlataforma($smarty);
+                break;
             case "observatorios:default":
                 // Solicito al controlador de observatorios que muestre las vista por defecto según rol del usuario
                 Observatorios::default($smarty);

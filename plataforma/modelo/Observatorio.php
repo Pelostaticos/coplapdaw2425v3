@@ -6,10 +6,8 @@
  * Nombre del proyecto: Plataforma Correplayas
  * Tutor PDAW: Jośe Antonio Morales Álvarez.
  * 
- * Contiene parcialmente las funciones y métodos para el manejo de la tabla "Jornadas" de la base
- * de datos de la plataforma correplayas, correspondiente al modelo de patrón MVC. Aquellas que son
- * estrictamente necesarias para interactuar con el gestor de jornada. Dado que el gestor de observatorios
- * se ha descartado su implementación por falta de tiempo para cumplir con entrega del proyecto DAW.
+ * Contiene todas las funciones y métodos para el manejo de la tabla "Observatorios" de la base
+ * de datos de la plataforma correplayas, correspondiente al modelo de patrón MVC.
  *
  * @category "Modelo"
  * @package  Correplayas
@@ -60,10 +58,10 @@ class Observatorio {
     *                 Devuelve falso si no se pudo actualizarse el observatorio
     */
     public function actualizarObservatorio(): ?bool {       
-        // Construyo la sentencia SQL para actualizar a la jornada de la base de datos     
+        // Construyo la sentencia SQL para actualizar al observatorio de la base de datos     
         $sql="UPDATE pdaw_observatorios SET nombre=:nombre, direccion=:direccion, localidad=:localidad,
             gps=:gps, historia=:historia, imagen=:imagen, url=:url WHERE codigo=:codigo";
-        // Preparo los datos de la jornada a actualizar en la base de datos
+        // Preparo los datos del observatorio a actualizar en la base de datos
         $datos = [':nombre' => $this->nombre, ':direccion' => $this->direccion, ':localidad' => $this->localidad,
             ':gps' => $this->gps, ':historia' => $this->historia, ':imagen' => $this->imagen,
             ':url' => $this->url,':codigo' => $this->codigo];
@@ -283,14 +281,14 @@ class Observatorio {
      */
     public static function consultarObservatorio($codigo): ?Observatorio
     {   
-        // Construyo la sentencia SQL para recuperar a la jornada de la base de datos     
+        // Construyo la sentencia SQL para recuperar al observatorio de la base de datos     
         $sql="SELECT * FROM pdaw_observatorios WHERE codigo=:codigo";
-        // Ejecuto la sentencia SQL para recuperar a la jornada de la base de datos
+        // Ejecuto la sentencia SQL para recuperar al observatorio de la base de datos
         $res=Core::ejecutarSql($sql,[':codigo'=>$codigo]);
         // Si el resultado devuelto tras ejecución contiene un array de un elemento
         if (is_array($res) && count($res)===1)        
         {
-            // Devuelvo a la jornada recuperada de la base de datos
+            // Devuelvo al observatorio recuperado de la base de datos
             return new Observatorio($res[0]);
         }
         else
