@@ -23,7 +23,9 @@ namespace correplayas\controladores;
 
 // Defino los espacios de mombres que voy a utilizar en esta clase
 use correplayas\controladores\ErrorController;
+use correplayas\excepciones\AppException;
 use correplayas\controladores\Jornadas;
+use correplayas\modelo\Censo;
 use Smarty\Smarty;
 use DateTime;
 
@@ -44,7 +46,7 @@ class Censos {
         $permisosUsuario = $_SESSION['permisos'];
 
         // Compruebo si es usuario logueado tiene permiso de acceso al modo restringido del gestor de censos
-        if ($permisosUsuario->hasPermisoGestorCensos() && isset($_SESSION['admincensos'])) {
+        if ($permisosUsuario->hasPermisoGestorCensos() && $_SESSION['admincensos']===true) {
             // El usuario logueado no tiene permisos de acceso al modo restringuido del gestor de censos. Entonces:
             // Compruebo si está establecida la accion en el supergobal POST.
             if (isset($_POST['accion'])) {
@@ -96,6 +98,7 @@ class Censos {
                 switch ($accion) {
                     case "historico:detalles":
                         // Muestro la vista con los detalles censales de la jornada
+                        Censos::mostrarVistaCensoAves($smarty);
                         break;
                     case "historico:edicion":
                         // Muestro la vista con los detalles centales de la jornada en modo edición
@@ -154,6 +157,29 @@ class Censos {
      */    
     private static function listarJornadasCensalesPlataforma($smarty) {
 
+        // Obtengo al usuario de la sesión del navegacion
+        $usuario = $_SESSION['usuario'];
+
+        // Recupero los permisos del usuario logueado desde su sesión
+        $permisosUsuario = $_SESSION['permisos'];
+
+        // Compruebo si es usuario logueado tiene permiso de acceso al modo restringido del gestor de censos
+        if ($permisosUsuario->hasPermisoGestorCensos() && isset($_SESSION['admincensos'])) {
+            // Genero el listado de jornadas  disponibles en la plataforma
+            $datos = Censo::listarJornadasCensales();
+
+            // Asigno las variables requeridas por la plantila del listado de jornadas
+            $smarty->assign('usuario', $usuario->getUsuario());
+            $smarty->assign('permisos', $permisosUsuario);
+            $smarty->assign('filas', $datos);
+            $smarty->assign('anyo', date('Y'));
+            // Muestro la plantilla del listado de jornadas
+            $smarty->display('censos/listado.tpl');              
+        } else {
+            // lazo una excepción para notificar al usuario que no tiene permisos para incribirse a jornadas en la plataforma
+            throw new AppException("Su usuario NO tiene permisos para censar aves en la plataforma!!!");            
+        }
+
     }
 
     /**
@@ -165,6 +191,23 @@ class Censos {
      */    
     private static function mostrarHistoricosCensos($smarty) {
 
+        // Obtengo al usuario de la sesión de navegacion
+        $usuario = $_SESSION['usuario'];
+
+        // Recupero los permisos del usuario logueado desde su sesión
+        $permisosUsuario = $_SESSION['permisos'];        
+
+        // Genero el listado de jornadas  disponibles en la plataforma
+        $datos = Censo::listarHistoricoCensos();
+
+        // Asigno las variables requeridas por la plantila del listado de jornadas
+        $smarty->assign('usuario', $usuario->getUsuario());
+        $smarty->assign('permisos', $permisosUsuario);
+        $smarty->assign('filas', $datos);
+        $smarty->assign('anyo', date('Y'));
+        // Muestro la plantilla del listado de jornadas
+        $smarty->display('censos/historico.tpl');  
+
     }
 
     /**
@@ -175,6 +218,20 @@ class Censos {
      * @throws AppException Excepción cuando existe algún problema de permisos del usuario
      */     
     private static function mostrarVistaCensoAves($smarty) {
+
+        // Obtengo al usuario de la sesión del navegacion
+        $usuario = $_SESSION['usuario'];
+
+        // Recupero los permisos del usuario logueado desde su sesión
+        $permisosUsuario = $_SESSION['permisos'];
+
+        // Compruebo que el usuario loqueado eligió una jornada del listado
+        if (isset($_SESSION['listado'])) {   
+        
+        } else {
+            // Lanzo una excepción para notificar que el usuario no eligió una inscripción del listado
+            throw new AppException("No ha elegido una jornada del listado. Por favor, eliga una. Gracias!");            
+        }
 
     }
 

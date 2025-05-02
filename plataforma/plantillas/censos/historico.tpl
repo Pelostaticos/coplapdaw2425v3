@@ -63,12 +63,15 @@
                         rango de fechas. El formato para fecha única es DD-MM-YYYY, mientras que el formato para el rango de fechas es DD-MM-YYYY a DD-MM-YYYYY. Para
                         filtrar por realizada debes usar el término realizada:si o realizada:no.</small>
                     </form>
-                    <!-- Bóton para la acción de mostrar el histórico de censos en la plataforma -->
-                    <div class="botonera-superior-listados">
-                        <form method="post" action="/plataforma/backoffice.php?comando=censos:default">
-                            <button class="boton-accion-gestor" type="submit" name="accion" value="historico:censar" title="Abre el listado de jornadas censales">Censar aves</button>
-                        </form>
-                    </div>                                        
+                    <!-- Compruebo si el usuario logueado tiene permiso de acceso al modo restringido del gestor de censos -->
+                    {if ($permisos->hasPermisoGestorCensos())}
+                        <!-- Bóton para la acción de mostrar el histórico de censos en la plataforma -->
+                        <div class="botonera-superior-listados">
+                            <form method="post" action="/plataforma/backoffice.php?comando=censos:default">
+                                <button class="boton-accion-gestor" type="submit" name="accion" value="historico:censar" title="Abre el listado de jornadas censales">Censar aves</button>
+                            </form>
+                        </div>
+                    {{/if}}                                      
                     <!-- Tabla que representa al histórico de censos -->
                     <table id="listado-gestor">
                         <!-- Cabecera del histórico de censos -->
@@ -91,19 +94,21 @@
                                     <!-- Fila con los datos de cada inscripción del histórico de censos  -->
                                     <tr>
                                         <!-- Celdas con datos de cada inscripción del histórico de censos -->
-                                        <td>{$fila.titulo}</td>
+                                        <td>{$fila.jornada->getTituloJornada()}</td>
                                         <td>{$fila.observatorio}</td>
-                                        <td>{$fila.fecha}</td>
+                                        <td>{$fila.jornada->getFechaJornada()|date_format:"%d-%m-%Y"}</td>
                                         <td>{$fila.registros}</td>
                                         <td>{$fila.censadas}</td>
                                         <!-- Celda con acciones permitidas para cada jornada del histórico de censos  -->
                                         <td>
                                             <form method="post" action="/plataforma/backoffice.php?comando=censos:default">
-                                                <input type="hidden" name="idJornada" value="{$fila.idJornada}">
+                                                <input type="hidden" name="idJornada" value="{$fila.jornada->getIdJornada()}">
                                                 <button class="boton-accion-listado-gestor" type="submit" name="accion" value="historico:detalles" title="Mostrar detalles de un censo"><span class="iconos-acciones-listados">search</span></button>
-                                                {if $censable}
+                                                {if $fila.jornada->esJornadaCensable($permisos->hasPermisoGestorCensos())}
                                                     <button class="boton-accion-listado-gestor" type="submit" name="accion" value="historico:edicion" title="Editar censo"><span class="iconos-acciones-listados">edit</span></button>
-                                                    <button class="boton-accion-listado-gestor" type="submit" name="accion" value="historico:borrado" title="Eliminar censo"><span class="iconos-acciones-listados">delete</span></button>
+                                                    <button class="boton-accion-listado-gestor" type="submit" name="accion" value="historico:borrado" title="Eliminar censo"><span class="iconos-acciones-listados">delete</span></button>                                                    
+                                                {/if}
+                                                {if $fila.jornada->esJornadaIniciada()}
                                                     <button class="boton-accion-listado-gestor" type="submit" name="accion" value="historico:cierre" title="Finalizar censo"><span class="iconos-acciones-listados">stop_circle</span></button>
                                                 {/if}
                                             </form>

@@ -24,6 +24,7 @@ namespace correplayas;
 require_once(__DIR__ . '/config/config-inc.php');
 require_once(__DIR__ . '/excepciones/AppException.php');
 require_once(__DIR__ . '/modelo/Ave.php');
+require_once(__DIR__ . '/modelo/Censo.php');
 require_once(__DIR__ . '/modelo/Familia.php');
 require_once(__DIR__ . '/modelo/Jornada.php');
 require_once(__DIR__ . '/modelo/Localidad.php');
@@ -261,12 +262,10 @@ try {
             case "censos:default":
                 // Solicito al controlador de censos que muestre las vista por defecto según rol del usuario
                 Censos::default($smarty);
-                // OBSERVACIONES: El gestor de censos no se encuentra implementado por falta de tiempo
                 break;                
             case "aves:default":
                 // Solicito al controlador de aves que muestre las vista por defecto según rol del usuario
                 Aves::default($smarty);
-                // OBSERVACIONES: El gestor de censos no se encuentra implementado por falta de tiempo
                 break;
             case "aves:filtrar":
                 // Solicirto al controlador de aves que filtre el listado de aves disponibles en la plataforma

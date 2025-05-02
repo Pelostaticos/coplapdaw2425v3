@@ -21,7 +21,8 @@ namespace correplayas\modelo;
 
 // Defino los espacios de mombres que voy a utilizar en esta clase
 use correplayas\excepciones\AppException;
-use \correplayas\nucleo\Core;
+use correplayas\modelo\Jornada;
+use correplayas\nucleo\Core;
 use DateTime;
 
 /**
@@ -424,7 +425,7 @@ class Censo {
             j.estado as estado, ob.localidad as localidad FROM pdaw_jornadas j 
             JOIN pdaw_observatorios ob ON j.observatorio=ob.codigo WHERE j.fecha=:hoy AND j.estado='ABIERTA'";
         // Preparo los paŕametros requeridos por la consulta de jornadas censales a la base de datos        
-        $datos=[':hoy' => date('Y-m-d H:i:s')];
+        $datos=[':hoy' => date('Y-m-d')];
         // Ejecuto la sentencia SQL para recuperar a las jornadas censales de la base de datos
         $res=Core::ejecutarSql($sql, $datos);
         // Si el resultado devuelto tras ejecución contiene un array de un elemento
@@ -445,21 +446,39 @@ class Censo {
      *                    Devuelve un array vacio cuando no es posible listar el históricos de jornadas censales realizadas
      */
     public static function listarHistoricoCensos(): ?Array {
+        // Defino array asociativo para generar el listado con el histórico de censos definitivo
+        $historicoCensos=[];
         // Construyo la sentencia SQL base para recuperar el histórico de jornadas censales realizadas de la base de datos     
-        $sql="SELECT j.id_jornada as idJornada, j.titulo as titulo, ob.nombre as observatorio, j.fecha as fecha,
-            j.estado as estado, ob.localidad as localidad, COUNT(cn.especie) as registros, SUM(cn.cantidad) as censadas 
+        // $sql="SELECT j.id_jornada as idJornada, j.titulo as titulo, ob.nombre as observatorio, j.fecha as fecha,
+        //     j.estado as estado, ob.localidad as localidad, COUNT(cn.especie) as registros, SUM(cn.cantidad) as censadas 
+        //     FROM pdaw_jornadas j 
+        //     JOIN pdaw_observatorios ob ON j.observatorio=ob.codigo 
+        //     JOIN pdaw_censos cn ON cn.id_jornada=j.id_jornada
+        //     WHERE j.estado='CERRADA'
+        //     GROUP BY cn.id_jornada";
+        // <<<--- Consulta SQL de pruebas ---
+        $sql="SELECT j.id_jornada as idJornada, ob.nombre as observatorio, ob.localidad as localidad, 
+            COUNT(cn.especie) as registros, SUM(cn.cantidad) as censadas 
             FROM pdaw_jornadas j 
             JOIN pdaw_observatorios ob ON j.observatorio=ob.codigo 
             JOIN pdaw_censos cn ON cn.id_jornada=j.id_jornada
             WHERE j.estado='CERRADA'
-            GROUP BY cn.id_jornada";
+            GROUP BY cn.id_jornada";        
         // Ejecuto la sentencia SQL para recuperar al histórico de jornadas censales de la base de datos
-        $res=Core::ejecutarSql($sql);
+        $resultados=Core::ejecutarSql($sql);
         // Si el resultado devuelto tras ejecución contiene un array con elementos
-        if (is_array($res) && count($res)>0)        
+        if (is_array($resultados) && count($resultados)>0)        
         {
+            // Proceso los resultados para generar el listado del historico de censos definitivo
+            foreach($resultados as $resultado) {
+                $historicoCensos[]=['jornada' => Jornada::consultarJornada($resultado['idJornada']),
+                    'observatorio' => $resultado['observatorio'],
+                    'localidad' => $resultado['localidad'],
+                    'registros' => $resultado['registros'],
+                    'censadas' => $resultado['censadas']];
+            }
             // Devuelvo al histórico con jornadas censales recuperadas de la base de datos
-            return $res;
+            return $historicoCensos;
         }
         else
             // De lo contario devolveré nulo
@@ -473,7 +492,7 @@ class Censo {
      * @return Array|null Devuelve un array asociativo con el listado de registros censales para una jornada determinada
      *                    Devuelve un array vacío cuando no es posible listar los registros decnsales de una jornada determinada
      */
-    public function listarRegistrosCensales($idJornada): ?Array {
+    public static function listarRegistrosCensales($idJornada): ?Array {
         // Construyo la sentencia SQL base para recuperar a las jornadas de la base de datos     
         $sql="SELECT * FROM pdaw_censos WHERE id_jornada=:idJornada";
         // Preparo los paŕametros requeridos por la consulta de jornadas censales a la base de datos        
@@ -498,7 +517,7 @@ class Censo {
      * @return Array|null Devuelve un array asociativo con el listado de participantes para una jornada determinada
      *                    Devuelve un array vacío cuando no es posible listar a los participantes de una jornada determinada
      */
-    public function listarParticipantesJornadaCensal($idJornada): ?Array {
+    public static function listarParticipantesJornadaCensal($idJornada): ?Array {
         // Construyo la sentencia SQL base para recuperar a los participantes de una jornada censal de la base de datos     
         $sql="SELECT u.nombre FROM pdaw_participantes pt JOIN pdaw_usuarios u ON u.codigo=pt.usuario
                 WHERE pt.id_jornada=:idJornada";

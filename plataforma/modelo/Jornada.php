@@ -245,11 +245,11 @@ class Jornada {
     /**
       * Método para comprobar si una jornada censal es censable por el usuario
       *
-      * @param string $rol Rol del usuario para quien se desea comprobar su capacidad de censo en la plataforma
+      * @param boolean $permisos Permiso del usuario para el acceso al modo restringido
       * @return boolean Verdadero cuando la jornada censal es censable por el usuario
       *                 Falso cuando la jornada censal NO es censable por el usuario      
       */
-    public function esJornadaCensable($tienePermisoGestorCensos): bool {
+    public function esJornadaCensable($permisos): bool {
 
         /* COORDINADORES: ¿Cuando pueden censar? 
             >> Obviamente tiene permiso para acceder al modo restringido del gestor de censos
@@ -258,20 +258,28 @@ class Jornada {
             >> La fecha actual coincide con la fecha de la jornada deseada
         */
 
-        $censaCoordinador = $tienePermisoGestorCensos && $this->estado==='CERRADA';
-        $censaCoordinador = $censaCoordinador && ($this->asistencia==='0' ? true : false);
-        $censaCoordinador = $censaCoordinador && date('Y-m-d') === $this->fecha;
+        $censaCoordinador = $permisos && $this->esJornadaIniciada() && date('Y-m-d') === $this->fecha;
 
         /* ADMINISTRADORES: ¿Cuando pueden censar?
             >> Siempre tiene permiso para acceder al modo restringido del gestor censos
             >> La jornada elegida tiene el estado de cerrada.            
         ?*/
 
-        $censaAdministrador = $tienePermisoGestorCensos && $this->estado==='CERRADA';
+        $censaAdministrador = $permisos && $this->estado==='CERRADA';
 
         // Evaluo si se cumplen los requisitos para censar una determinada jornada
         return ($censaCoordinador || $censaAdministrador);
 
+    }
+
+    /**
+     * Método para comprobar que una jornada está iniciada al censo de aves
+     *
+     * @return boolean Verdadero cuando la jornada está iniciada al censo de aves
+     *                 Falso cuando la jornada NO está iniciada al censo de aves
+     */
+    public function esJornadaIniciada(): bool {
+        return $this->estado==='CERRADA' && ($this->asistencia==='0' ? true : false);
     }
 
     // E) Defino los métodos estáticos de la clase Jornada
