@@ -242,6 +242,38 @@ class Jornada {
         $this->asistencia=$asistencia;
     }        
 
+    /**
+      * Método para comprobar si una jornada censal es censable por el usuario
+      *
+      * @param string $rol Rol del usuario para quien se desea comprobar su capacidad de censo en la plataforma
+      * @return boolean Verdadero cuando la jornada censal es censable por el usuario
+      *                 Falso cuando la jornada censal NO es censable por el usuario      
+      */
+    public function esJornadaCensable($tienePermisoGestorCensos): bool {
+
+        /* COORDINADORES: ¿Cuando pueden censar? 
+            >> Obviamente tiene permiso para acceder al modo restringido del gestor de censos
+            >> La jornada elegida tiene el estado de cerrada.
+            >> La jornada elegida NO tiene confirmada la asistencia.
+            >> La fecha actual coincide con la fecha de la jornada deseada
+        */
+
+        $censaCoordinador = $tienePermisoGestorCensos && $this->estado==='CERRADA';
+        $censaCoordinador = $censaCoordinador && ($this->asistencia==='0' ? true : false);
+        $censaCoordinador = $censaCoordinador && date('Y-m-d') === $this->fecha;
+
+        /* ADMINISTRADORES: ¿Cuando pueden censar?
+            >> Siempre tiene permiso para acceder al modo restringido del gestor censos
+            >> La jornada elegida tiene el estado de cerrada.            
+        ?*/
+
+        $censaAdministrador = $tienePermisoGestorCensos && $this->estado==='CERRADA';
+
+        // Evaluo si se cumplen los requisitos para censar una determinada jornada
+        return ($censaCoordinador || $censaAdministrador);
+
+    }
+
     // E) Defino los métodos estáticos de la clase Jornada
 
     /**

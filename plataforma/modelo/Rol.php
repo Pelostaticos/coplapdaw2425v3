@@ -464,6 +464,16 @@ class Rol {
         return $this->rol === 'administrador' ? true : false;
     }
 
+    /**
+     * Método para comprobar ue un usuario tiene permiso para acceder a modo restringido del gestor de censos
+     *
+     * @return boolean Verdadero para permitir el acceso al modo restringido del gestor de censos
+     *                 Falso para prohibir el acceso al modo restringido del gestor de censos
+     */
+    public function hasPermisoGestorCensos() {
+        return $this->rol === 'voluntario' ? false : true;
+    }
+
     // D) Defino los métodos estáticos de la clase auxiliar Rol
     
     /**
