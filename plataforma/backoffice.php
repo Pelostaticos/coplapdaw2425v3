@@ -262,6 +262,18 @@ try {
             case "censos:default":
                 // Solicito al controlador de censos que muestre las vista por defecto según rol del usuario
                 Censos::default($smarty);
+                break;
+            case "censos:iniciar:procesa":
+                // Solicito al controlador de censos que procese el inicio de un censo de aves en la plataforma
+                Censos::iniciarCensosAvesPlatforma($smarty);
+                break;              
+            case "censos:cancelar:procesa":
+                // Solicito al controlador de censos que procese la cancelación de un censo de aves en la plataforma
+                Censos::cancelarCensosAvesPlatforma($smarty);
+                break;
+            case "censos:finalizar:procesa":
+                // Solicito al controlador de censos que procese el fin de un censo de aves en la plataforma
+                Censos::finalizarCensosAvesPlatforma($smarty);
                 break;              
             case "aves:default":
                 // Solicito al controlador de aves que muestre las vista por defecto según rol del usuario

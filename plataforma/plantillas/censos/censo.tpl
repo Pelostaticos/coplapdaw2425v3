@@ -111,15 +111,14 @@
                      </table>
                 </div>                  
                 <!-- Acciones permitidas por el gestor de censos -->
-                <div class="botonera">
-                    <form name="volverCensoAves" id="volverCensoAves" method="post" action="/plataforma/backoffice.php?comando=censos:default">
-                        {if $censable}
-                            <button form="volverCensoAves" type="submit" class="boton-accion-gestor" name="accion" value="censo:salir" title="Salir del censo">Salir</button>
-                            <button form="volverCensoAves" type="submit" class="boton-accion-gestor" name="accion" value="censo:finalizar" title="Finalizar el censo">Finalizar</button>
-                        {else}
-                            <button form="volverCensoAves" type="submit" class="boton-accion-gestor" name="accion" value="censo:salir" title="Salir del censo">Salir</button>
-                        {/if}
-                    </form>
+                <form name="volverCensoAves" id="volverCensoAves" method="post" action="/plataforma/backoffice.php?comando=censos:default"></form>
+                <div class="botonera">                
+                    {if $censable}
+                        <button class="boton-accion-gestor" form="volverCensoAves" type="submit" name="accion" value="censo:salir" title="Salir del censo">Salir</button>
+                        <button class="boton-accion-gestor" form="volverCensoAves" type="submit" name="accion" value="censo:finalizar" title="Finalizar el censo">Finalizar</button>
+                    {else}
+                        <button class="boton-accion-gestor" form="volverCensoAves" type="submit" name="accion" value="censo:salir" title="Salir del censo">Salir</button>
+                    {/if}                    
                 </div>
             </article>
         </section>

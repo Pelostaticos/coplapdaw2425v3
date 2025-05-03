@@ -551,15 +551,15 @@ p.titulo-gestor {
 .titulo-contenido-gestor {    
     border-bottom: 5px solid var(--color-destacado);    
     font-size: var(--tamaño-fuente-h1-escritorio);
-    margin: 10px 20px;
+    margin: 10px 10px;
 }
 .subtitulo-contenido-gestor {        
     border-bottom: 3px solid var(--color-destacado);
     font-size: var(--tamaño-fuente-h4-escritorio);
-    margin: 10px 20px;
+    margin: 10px 10px;
 }
 .texto-contenido-gestor {
-    margin: 5px 20px;
+    margin: 5px 10px;
 }
 .contenido-gestor {
     border: 5px solid var(--color-secundario);
