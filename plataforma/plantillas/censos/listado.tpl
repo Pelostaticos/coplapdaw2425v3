@@ -9,6 +9,7 @@
 *   >> usuario: Nombre del usuario logueado.
 *   >> permisos: Conjunto de permisos del usuario logueado.
 *   >> filas: Conjunto de datos para generar el listado.
+*   >> hoy: Fecha del día presente para la información al usuario.
 *   >> anyo: Año en curso para copyright y copyleft del sitio web.
 *
 *}
@@ -30,7 +31,12 @@
                     </div>            
                 </div>                
                 <!-- Información del gestor de censos  -->
-                <div class="contenido-gestor">                   
+                <div class="contenido-gestor">
+                    <!-- Encabezado del listado con los registros censales de la jornada -->
+                    <h2 class="subtitulo-contenido-gestor">Listado de jornada(s) disponibles hoy para el censo de aves</h2>
+                    <p class="texto-contenido-gestor">Se presentan las jornadas habilitadas para el censo de aves en la fecha actual, del [{$hoy}]. 
+                    Por favor, seleccione su jornada asignada para acceder a la información o registrar su participación. Además como responsable
+                    dispone de las acciones esenciales para llevarla a cabo, que disfrutes. ¡Muchas gracias por participar!</p>                               
                     <!-- Tabla que representa al listado de jornadas para el censo -->
                     <table id="listado-gestor">
                         <!-- Cabecera del listado de jornadas para el censo -->

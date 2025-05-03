@@ -460,7 +460,7 @@ class Rol {
      * @return boolean Verdadero para permitir el acceso al gestor restringido al rol administrador
      *                 Falso para no permitir el acceso al gesor al resto de roles
      */
-    public function hasPermisoAdministradorGestor() {
+    public function hasPermisoAdministradorGestor(): bool {
         return $this->rol === 'administrador' ? true : false;
     }
 
@@ -470,8 +470,19 @@ class Rol {
      * @return boolean Verdadero para permitir el acceso al modo restringido del gestor de censos
      *                 Falso para prohibir el acceso al modo restringido del gestor de censos
      */
-    public function hasPermisoGestorCensos() {
+    public function hasPermisoGestorCensos(): bool {
         return $this->rol === 'voluntario' ? false : true;
+    }
+
+
+    /**
+     * Método para verificar que el rol de un usuario es conocido por la plataforma
+     *
+     * @return boolean Verdadero si el rol del usuario es conocido por la plataforma
+     *                 Falso si el rol del usuario es desconocido por la plataforma
+     */
+    public function hasRolDesconocidoPlataforma(): bool {
+        return in_array($this->rol, Rol::listarRoles(), true);
     }
 
     // D) Defino los métodos estáticos de la clase auxiliar Rol

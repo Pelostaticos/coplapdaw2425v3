@@ -41,14 +41,19 @@
                         <p class="extralargo"><span>Horario</span>:&nbsp;{$perfil.horario}</p>
                     </div>
                     <div class="campos-gestor">
-                        <p class="extraextralargo"><span>Lugar</span>:&nbsp;{$perfil.lugar}</p>
+                        <p class="extraextraextralargo"><span>Lugar</span>:&nbsp;{$perfil.lugar}</p>
                     </div>
                     <div class="campos-gestor">
-                        <p class="extraextralargo"><span>Observacion</span>:&nbsp;{$perfil.observacion}</p>
+                        <p class="extraextralargo"><span>Observaciones</span>:&nbsp;{$perfil.observaciones}</p>
                     </div>                
                 </div>
                 <!-- B) Información del gestor de censos: Listado de registros censales de la jornada  -->
                 <div class="contenido-gestor">
+                    <!-- Encabezado del listado con los registros censales de la jornada -->
+                    <h2 class="subtitulo-contenido-gestor">Registros censales de la jornada</h2>
+                    <p class="texto-contenido-gestor">Se pone a disposición el listado detallado de los registros censales pertenecientes a la 
+                    jornada del [{$perfil.fecha}]. La información contenida en este listado es exhaustiva y representa la totalidad de los registros 
+                    para este periodo. Además se le presentan las acciones permitidas para su rol dentro de la plataforma.</p>
                     <!-- Si la jornada es censable muestro la botonera superior del listado de registros censales -->
                     {if $censable}
                         <!-- Bóton para la acción de mostrar el listado de registros censales de la jornada en la plataforma -->
@@ -64,8 +69,9 @@
                         <!-- Cabecera del listado de registros censales de la jornada en la plataforma -->
                         <thead>
                             <th>Codigo</th>
-                            <th>Nombre</th>
-                            <th>Hora</th>
+                            <th>Hora</th>                            
+                            <th>Nombre común</th>
+                            <th>Especie</th>
                             <th>Cantidad</th>
                             <th>Acciones</th>
                         </thead>
@@ -81,8 +87,9 @@
                                     <tr>
                                         <!-- Celdas con datos de cada registro censal -->
                                         <td>{$fila.codigo}</td>
+                                        <td>{$fila.hora}</td>
                                         <td>{$fila.comun}</td>
-                                        <td>{$fila.hora|time_format:"%H:%M:%S"}</td>
+                                        <td>{$fila.especie}</td>
                                         <td>{$fila.cantidad}</td>
                                         <!-- Celda con acciones permitidas para cada registro  -->
                                         <td>

@@ -494,7 +494,12 @@ class Censo {
      */
     public static function listarRegistrosCensales($idJornada): ?Array {
         // Construyo la sentencia SQL base para recuperar a las jornadas de la base de datos     
-        $sql="SELECT * FROM pdaw_censos WHERE id_jornada=:idJornada";
+        $sql="SELECT av.abreviatura as codigo, av.comun as comun, cn.hora as hora, cn.cantidad as cantidad,
+            cn.id_jornada as idJornada, cn.especie as especie
+            FROM pdaw_censos cn 
+            JOIN pdaw_aves av ON cn.especie=av.especie
+            WHERE cn.id_jornada=:idJornada
+            ORDER BY cn.hora ASC";
         // Preparo los paŕametros requeridos por la consulta de jornadas censales a la base de datos        
         $datos=[':idJornada' => $idJornada];
         // Ejecuto la sentencia SQL para recuperar a las jornadas censales de la base de datos
@@ -519,7 +524,7 @@ class Censo {
      */
     public static function listarParticipantesJornadaCensal($idJornada): ?Array {
         // Construyo la sentencia SQL base para recuperar a los participantes de una jornada censal de la base de datos     
-        $sql="SELECT u.nombre FROM pdaw_participantes pt JOIN pdaw_usuarios u ON u.codigo=pt.usuario
+        $sql="SELECT u.nombre as usuario FROM pdaw_participantes pt JOIN pdaw_usuarios u ON u.codigo=pt.usuario
                 WHERE pt.id_jornada=:idJornada";
         // Preparo los paŕametros requeridos por la consulta de particioantes a una jornada censal a la base de datos        
         $datos=[':idJornada' => $idJornada];

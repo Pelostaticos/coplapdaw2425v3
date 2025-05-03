@@ -262,7 +262,7 @@ try {
             case "censos:default":
                 // Solicito al controlador de censos que muestre las vista por defecto según rol del usuario
                 Censos::default($smarty);
-                break;                
+                break;              
             case "aves:default":
                 // Solicito al controlador de aves que muestre las vista por defecto según rol del usuario
                 Aves::default($smarty);

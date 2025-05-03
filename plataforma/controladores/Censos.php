@@ -26,6 +26,8 @@ use correplayas\controladores\ErrorController;
 use correplayas\excepciones\AppException;
 use correplayas\controladores\Jornadas;
 use correplayas\modelo\Censo;
+use correplayas\modelo\Jornada;
+use correplayas\modelo\Observatorio;
 use Smarty\Smarty;
 use DateTime;
 
@@ -44,6 +46,9 @@ class Censos {
 
         // Recupero los permisos del usuario logueado desde su sesión
         $permisosUsuario = $_SESSION['permisos'];
+
+        // Inicializo por defecto el modo restringido del gestor de censos para usuarios autorizados a deshabilitado
+        if (!isset($_SESSION['admincensos'])) {$_SESSION['admincensos']=false;}
 
         // Compruebo si es usuario logueado tiene permiso de acceso al modo restringido del gestor de censos
         if ($permisosUsuario->hasPermisoGestorCensos() && $_SESSION['admincensos']===true) {
@@ -172,6 +177,7 @@ class Censos {
             $smarty->assign('usuario', $usuario->getUsuario());
             $smarty->assign('permisos', $permisosUsuario);
             $smarty->assign('filas', $datos);
+            $smarty->assign('hoy', date('d-m-Y'));
             $smarty->assign('anyo', date('Y'));
             // Muestro la plantilla del listado de jornadas
             $smarty->display('censos/listado.tpl');              
@@ -197,16 +203,24 @@ class Censos {
         // Recupero los permisos del usuario logueado desde su sesión
         $permisosUsuario = $_SESSION['permisos'];        
 
-        // Genero el listado de jornadas  disponibles en la plataforma
-        $datos = Censo::listarHistoricoCensos();
+        // Compruebo que el usuario logueado tenga un rol conocido por la plataforma
+        if ($permisosUsuario->hasRolDesconocidoPlataforma()) {
 
-        // Asigno las variables requeridas por la plantila del listado de jornadas
-        $smarty->assign('usuario', $usuario->getUsuario());
-        $smarty->assign('permisos', $permisosUsuario);
-        $smarty->assign('filas', $datos);
-        $smarty->assign('anyo', date('Y'));
-        // Muestro la plantilla del listado de jornadas
-        $smarty->display('censos/historico.tpl');  
+            // Genero el listado de jornadas  disponibles en la plataforma
+            $datos = Censo::listarHistoricoCensos();
+
+            // Asigno las variables requeridas por la plantila del listado de jornadas
+            $smarty->assign('usuario', $usuario->getUsuario());
+            $smarty->assign('permisos', $permisosUsuario);
+            $smarty->assign('filas', $datos);
+            $smarty->assign('anyo', date('Y'));
+            // Muestro la plantilla del listado de jornadas
+            $smarty->display('censos/historico.tpl');  
+
+        } else {
+            // lazo una excepción para notificar al usuario que no tiene permisos para incribirse a jornadas en la plataforma
+            throw new AppException("No está autorizado a ejecutar esta acción porque su rol en la plataforma es desconocido!!!");
+        }
 
     }
 
@@ -225,12 +239,74 @@ class Censos {
         // Recupero los permisos del usuario logueado desde su sesión
         $permisosUsuario = $_SESSION['permisos'];
 
-        // Compruebo que el usuario loqueado eligió una jornada del listado
-        if (isset($_SESSION['listado'])) {   
-        
+        // Compruebo que el usuario logueado tenga un rol conocido por la plataforma
+        if ($permisosUsuario->hasRolDesconocidoPlataforma()) {
+            // El usuario tiene un rol reconocido por la plataforma. Entonces:
+            // Compruebo que el usuario loqueado eligió una jornada del listado
+            if (isset($_SESSION['listado'])) {   
+                // Recupero el identificador de la jornada elegida por el usuario desde su sesion
+                $idJornada = $_SESSION['listado'];
+                // Desestablezco el identificador de jornada elegido por el usuario desde la sesion porque
+                // ya ha cumpplido su función aquí
+                unset($_SESSION['listado']);
+                // Recupero la jornada censal elegida por el usuario que desea consultar detalles del censo
+                $jornada = Jornada::consultarJornada($idJornada);
+                // Compruebo si la jornada elegida existe en la base de datos
+                if ($jornada instanceof Jornada) {
+                    // Se ha podido recuperar la jornada de la base de datos. Entonces:
+                    // Recupero los datos del observatorio asociado a la jornada elegida
+                    $observatorio=Observatorio::consultarObservatorio($jornada->getIdObservatorioJornada());
+                    // Compruebo si el observatorio asociado a la jornada existe en la base de datos
+                    if ($observatorio instanceof Observatorio) {
+                        // Se ha posido recuperar al observatorio asociadp a la jornada. Entonces:
+                        // Recupero el listado de participantes de la jornada censal deseada
+                        $participantes=Censo::listarParticipantesJornadaCensal($idJornada);
+                        foreach($participantes as $participante) {
+                            $listaParticipantes[]=$participante['usuario'];
+                        }
+                        $participantes=implode("|", $listaParticipantes);
+                        // Genero el lugar donde se desarrolla la jornada donde se inscribe
+                        $lugar=$observatorio->getNombreObservatorio() . " - " . $observatorio->getDireccionObservatorio() . 
+                            " - " . $observatorio->getLocalidadObservatorio();
+                        // Recupero la fecha de la jornada en formato DD-MM-YYYY
+                        $fechaJornada = new DateTime($jornada->getFechaJornada());
+                        // Genero el horario de la jornada a la que se inscribe
+                        $horario=$fechaJornada->format('d-m-Y') . " (" . $jornada->getHoraInicioJornada() . " - " 
+                            . $jornada->getHoraFinJornada() . ")";
+                        // Recopilo la información de la plantilla para mostrar inscripción a una jornada
+                        $perfil = ['participantes' => $participantes, 'titulo' => $jornada->getTituloJornada(),
+                            'lugar' => $lugar, 'fecha' => $fechaJornada->format('d-m-Y'),'horario' => $horario, 
+                            'observaciones' => $jornada->getInformacionJornada()];
+                        // Recupero los registros censales de la jornada censal deseada
+                        $registrosCensales=Censo::listarRegistrosCensales($idJornada);
+                        // Asigno las variables requeridas por la plantila de detalles de una jornada
+                        $smarty->assign('usuario', $usuario->getUsuario());
+                        $smarty->assign('permisos', $permisosUsuario);
+                        $smarty->assign('censable', false);
+                        $smarty->assign('perfil', $perfil);
+                        $smarty->assign('filas', $registrosCensales);
+                        $smarty->assign('anyo', date('Y'));
+                        // Muestro la plantilla de detalles del censo de una jornada censal con sus datos
+                        $smarty->display('censos/censo.tpl');  
+                    } else {
+                        // De lo contario, lanzo una excepción para notificar al usuario que el
+                        // observatorio asociado a la jornada censal deseada no existe en la base de datos
+                        throw new AppException(message: "El observatorio de la jornada censal elegida no existe en la base de datos!!!",
+                        urlAceptar: "/plataforma/backoffice.php?comando=censos:default");
+                    }
+                } else {
+                    // De lo contario, lanzo una excepción para notificar al usuario que la
+                    // jornada censal deseada no existe en la base de datos
+                    throw new AppException(message: "La jornada censal elegida no existe en la base de datos!!!",
+                    urlAceptar: "/plataforma/backoffice.php?comando=censos:default");  
+                }         
+            } else {
+                // Lanzo una excepción para notificar que el usuario no eligió un censo del listado
+                throw new AppException("No ha elegido una jornada censal del listado. Por favor, eliga una. Gracias!");            
+            }
         } else {
-            // Lanzo una excepción para notificar que el usuario no eligió una inscripción del listado
-            throw new AppException("No ha elegido una jornada del listado. Por favor, eliga una. Gracias!");            
+            // lazo una excepción para notificar al usuario que no tiene permisos para incribirse a jornadas en la plataforma
+            throw new AppException("No está autorizado a ejecutar esta acción porque su rol en la plataforma es desconocido!!!");
         }
 
     }
