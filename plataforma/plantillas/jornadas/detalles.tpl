@@ -38,7 +38,7 @@
                         <p class="corto"><span>Asistencia</span>:&nbsp;{$perfil.asistencia}</p>
                     </div>
                     <div class="campos-gestor">
-                        <p class="extralargo"><span>Observatorio</span>:&nbsp;{$perfil.observatorio} ({$perfil.localidad})</p>
+                        <p class="extraextralargo"><span>Observatorio</span>:&nbsp;{$perfil.observatorio} ({$perfil.localidad})</p>
                     </div>
                     <div class="campos-gestor">
                         <p class="corto"><span>Fecha</span>:&nbsp;{$perfil.fecha|date_format:"%d-%m-%Y"}</p>
