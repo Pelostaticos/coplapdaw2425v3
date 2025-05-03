@@ -73,9 +73,11 @@ class Censos {
                         break;
                     case "listado:iniciar:censo":
                         // Inicio el censo de aves de la jornada censal
+                        Censos::mostrarConfirmacionInicioCensoPlataforma($smarty);
                         break;
                     case "listado:cancelar:censo":
                         // Cancelo el censo de aves  de la jornada censal
+                        Censos::mostrarConfirmacionCancelacionCensoPlataforma($smarty);
                         break;
                     default:
                         // La acción por defecto es salir del modo restringido del gestor de censos
@@ -107,12 +109,15 @@ class Censos {
                         break;
                     case "historico:edicion":
                         // Muestro la vista con los detalles centales de la jornada en modo edición
+                        Censos::mostrarVistaCensoAves($smarty, modoEdicion: true);
                         break;
                     case "historico:borrado":
                         // Muestro la confirmación de baja de una jornada censal
+                        Censos::mostrarConfirmacionBorradoCensoPlataforma($smarty);
                         break;
                     case "historico:cierre":
                         // Muestro la confirmación para cerrar una jornada al censo de aves
+                        Censos::mostrarConfirmacionFinalizacionCensoPlataforma($smarty);
                         break;
                     case "censo:registrar":
                         // Muestro la vista para añadir un registro censal a la plataforma
@@ -151,7 +156,43 @@ class Censos {
 
     }
 
-    // A) Método estáticos privados para gestioanr las vistas específicas solicitada desde el listado
+    /**
+     * Método estático auxiliar para mostrar la vista por defecto con el histórico de censos en la plataforma
+     *
+     * @param Smarty $smarty Objeto que contiene al motor de plantillas Smarty
+     * @return void No devuelve valor alguno
+     * @throws AppException Excepción cuando existe algún problema de permisos del usuario
+     */    
+    private static function mostrarHistoricosCensos($smarty) {
+
+        // Obtengo al usuario de la sesión de navegacion
+        $usuario = $_SESSION['usuario'];
+
+        // Recupero los permisos del usuario logueado desde su sesión
+        $permisosUsuario = $_SESSION['permisos'];        
+
+        // Compruebo que el usuario logueado tenga un rol conocido por la plataforma
+        if ($permisosUsuario->hasRolDesconocidoPlataforma()) {
+
+            // Genero el listado de jornadas  disponibles en la plataforma
+            $datos = Censo::listarHistoricoCensos();
+
+            // Asigno las variables requeridas por la plantila del listado de jornadas
+            $smarty->assign('usuario', $usuario->getUsuario());
+            $smarty->assign('permisos', $permisosUsuario);
+            $smarty->assign('filas', $datos);
+            $smarty->assign('anyo', date('Y'));
+            // Muestro la plantilla del listado de jornadas
+            $smarty->display('censos/historico.tpl');  
+
+        } else {
+            // lazo una excepción para notificar al usuario que no tiene permisos para incribirse a jornadas en la plataforma
+            throw new AppException("No está autorizado a ejecutar esta acción porque su rol en la plataforma es desconocido!!!");
+        }
+
+    }
+
+    // A) Método estáticos privados para gestioanr las vistas específicas solicitada desde el historico
 
     /**
      * Método estático auxiliar para mostrar la vista con el listado de jornadas censales disponibles en la plataforma
@@ -189,49 +230,16 @@ class Censos {
     }
 
     /**
-     * Método estático auxiliar para mostrar la vista con el histórico de censos en la plataforma
+     * Método estático auxiliar para mostrar la vista con detalles de un censo de la plataforma
      *
      * @param Smarty $smarty Objeto que contiene al motor de plantillas Smarty
-     * @return void No devuelve valor alguno
-     * @throws AppException Excepción cuando existe algún problema de permisos del usuario
-     */    
-    private static function mostrarHistoricosCensos($smarty) {
-
-        // Obtengo al usuario de la sesión de navegacion
-        $usuario = $_SESSION['usuario'];
-
-        // Recupero los permisos del usuario logueado desde su sesión
-        $permisosUsuario = $_SESSION['permisos'];        
-
-        // Compruebo que el usuario logueado tenga un rol conocido por la plataforma
-        if ($permisosUsuario->hasRolDesconocidoPlataforma()) {
-
-            // Genero el listado de jornadas  disponibles en la plataforma
-            $datos = Censo::listarHistoricoCensos();
-
-            // Asigno las variables requeridas por la plantila del listado de jornadas
-            $smarty->assign('usuario', $usuario->getUsuario());
-            $smarty->assign('permisos', $permisosUsuario);
-            $smarty->assign('filas', $datos);
-            $smarty->assign('anyo', date('Y'));
-            // Muestro la plantilla del listado de jornadas
-            $smarty->display('censos/historico.tpl');  
-
-        } else {
-            // lazo una excepción para notificar al usuario que no tiene permisos para incribirse a jornadas en la plataforma
-            throw new AppException("No está autorizado a ejecutar esta acción porque su rol en la plataforma es desconocido!!!");
-        }
-
-    }
-
-    /**
-     * Método estático auxiliar para mostrar la vista con el histórico de censos en la plataforma
-     *
-     * @param Smarty $smarty Objeto que contiene al motor de plantillas Smarty
+     * @param boolean $modoEdicion Bandera de controlar el modo de la vista censo de aves
+     *                      >> true: Se muestra el modo edición al usuario autorizado.
+     *                      >> false: Se muestra el modo detalles a cualquier usuario. (Por defecto)
      * @return void No devuelve valor alguno
      * @throws AppException Excepción cuando existe algún problema de permisos del usuario
      */     
-    private static function mostrarVistaCensoAves($smarty) {
+    private static function mostrarVistaCensoAves($smarty, $modoEdicion=false) {
 
         // Obtengo al usuario de la sesión del navegacion
         $usuario = $_SESSION['usuario'];
@@ -279,10 +287,20 @@ class Censos {
                             'observaciones' => $jornada->getInformacionJornada()];
                         // Recupero los registros censales de la jornada censal deseada
                         $registrosCensales=Censo::listarRegistrosCensales($idJornada);
+                        // Compruebo la configuración establecida para em modo de la vista censo de aves
+                        if ($modoEdicion) {
+                            // El modo edición está habilitado para la vista censo de aves. Entonecs:
+                            // Determino si la jornada es censable para el usuario logueado.
+                            $censable=$jornada->esJornadaCensable($permisosUsuario->hasPermisoGestorCensos());
+                        } else {
+                            // De lo contrario, el modo edición está deshabilitadp y por tanto se considera que
+                            // la jornada censal elegida no es censable por defecto.
+                            $censable=false;
+                        }
                         // Asigno las variables requeridas por la plantila de detalles de una jornada
                         $smarty->assign('usuario', $usuario->getUsuario());
                         $smarty->assign('permisos', $permisosUsuario);
-                        $smarty->assign('censable', false);
+                        $smarty->assign('censable', $censable);
                         $smarty->assign('perfil', $perfil);
                         $smarty->assign('filas', $registrosCensales);
                         $smarty->assign('anyo', date('Y'));
@@ -311,10 +329,55 @@ class Censos {
 
     }
 
-    // B) Métodos estáticos públicos para procesar los datos de las vistas específicas
+    // B) Método estáticos privados para gestioanr las vistas específicas solicitada desde el listado
+
+    /**
+     * Método auxiliar para mostrar la confirmación del inicio de un censo de aves en la plataforma
+     *
+     * @param Smarty $smarty Objeto que contiene al motor de plantillas Smarty
+     * @return void No devuelve valor alguno
+     */
+    private static function mostrarConfirmacionInicioCensoPlataforma($smarty) {
+
+    }
+
+    /**
+     * Método auxiliar para mostrar la confirmación de la cancelacion de un censo de aves en la plataforma
+     *
+     * @param Smarty $smarty Objeto que contiene al motor de plantillas Smarty
+     * @return void No devuelve valor alguno
+     */
+    private static function mostrarConfirmacionCancelacionCensoPlataforma($smarty) {
+
+    }
+    
+    /**
+     * Método auxiliar para mostrar la confirmación del borrado de un censo de aves en la plataforma
+     *
+     * @param Smarty $smarty Objeto que contiene al motor de plantillas Smarty
+     * @return void No devuelve valor alguno
+     */
+    private static function mostrarConfirmacionBorradoCensoPlataforma($smarty) {
+
+    }
+    
+    /**
+     * Método auxiliar para mostrar la confirmación de la finalizacion de un censo de aves en la plataforma
+     *
+     * @param Smarty $smarty Objeto que contiene al motor de plantillas Smarty
+     * @return void No devuelve valor alguno
+     */
+    private static function mostrarConfirmacionFinalizacionCensoPlataforma($smarty) {
+
+    }     
+
+    // C) Método estáticos privados para gestioanr las vistas específicas solicitada desde el censo
+
+
+    // D) Métodos estáticos públicos para procesar los datos de las vistas específicas
     
     
-    // C) Métodos estáticos públicos para vistas generales y su procesamiento de datos asociados    
+    // E) Métodos estáticos públicos para vistas generales y su procesamiento de datos asociados    
 
 }
 
