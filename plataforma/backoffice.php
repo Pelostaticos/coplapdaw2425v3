@@ -260,6 +260,20 @@ try {
                 Participantes::filtrarInscripcionesParticipantesPlataforma($smarty);
                 break;
             case "censos:default":
+                // Compruebo si hay acción establecida en la sesión del usuario
+                if (isset($_SESSION['accion'])) {
+                    // Hay una acción establecida en la variable de sesión del usuario. Entonces:
+                    // Simulo un POST de una acción espécifica del gestor de CENSOS que es
+                    // solicitada desde el propio código de procesamiento de una acción previa.
+                    // EJEMPLOS: Acciones específicas de actualizar, eliminar, finalizar de la plataforma.
+                    //           donde ambos al concluir su procesamiento piden volver al histórico de censos
+                    // MOTIVO: Mi inexperiencia en el desarrollo de aplicaciones web tan complejas, me ha hecho que a priori
+                    // no contemplase todos los casos posibles de redirecciones que necesitaria el usuario en fase de diseño,
+                    // y por ello esta solución parcial para dar funcionalidad al gestor y poder continuar con el desarrollo.
+                    $_POST['accion']=$_SESSION['accion'];
+                    // Desestablezco la variable acción de la sesión de usuario porque aquí ya cumplió su función
+                    unset($_SESSION['accion']);
+                }                
                 // Solicito al controlador de censos que muestre las vista por defecto según rol del usuario
                 Censos::default($smarty);
                 break;
@@ -267,14 +281,14 @@ try {
                 // Solicito al controlador de censos que procese el inicio de un censo de aves en la plataforma
                 Censos::iniciarCensosAvesPlatforma($smarty);
                 break;              
-            case "censos:cancelar:procesa":
-                // Solicito al controlador de censos que procese la cancelación de un censo de aves en la plataforma
-                Censos::cancelarCensosAvesPlatforma($smarty);
-                break;
             case "censos:finalizar:procesa":
-                // Solicito al controlador de censos que procese el fin de un censo de aves en la plataforma
+                // Solicito al controlador de censos que procese la finalización de un censo de aves en la plataforma
                 Censos::finalizarCensosAvesPlatforma($smarty);
-                break;              
+                break;
+            case "censos:validar:procesa":
+                // Solicito al controlador de censos que procese la validación  de un censo de aves en la plataforma
+                Censos::validarCensosAvesPlatforma($smarty);
+                break;
             case "aves:default":
                 // Solicito al controlador de aves que muestre las vista por defecto según rol del usuario
                 Aves::default($smarty);

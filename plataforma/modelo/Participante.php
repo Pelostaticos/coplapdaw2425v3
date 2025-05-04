@@ -282,6 +282,33 @@ class Participante {
     }
 
     /**
+     * 
+     * Método estático para listar a los participantes de una deterinada jornada censal
+     *
+     * @return Array|null Devuelve un array asociativo con el listado de participantes para una jornada determinada
+     *                    Devuelve un array vacío cuando no es posible listar a los participantes de una jornada determinada
+     */
+    public static function listarParticipantesJornadaCensal($idJornada): ?Array {
+        // Construyo la sentencia SQL base para recuperar a los participantes de una jornada censal de la base de datos     
+        $sql="SELECT u.nombre as usuario, pt.usuario as hashUsuario, pt.asiste as asiste 
+                FROM pdaw_participantes pt JOIN pdaw_usuarios u ON u.codigo=pt.usuario
+                WHERE pt.id_jornada=:idJornada";
+        // Preparo los paŕametros requeridos por la consulta de particioantes a una jornada censal a la base de datos        
+        $datos=[':idJornada' => $idJornada];
+        // Ejecuto la sentencia SQL para recuperar a los participantes a una jornada censal de la base de datos
+        $res=Core::ejecutarSql($sql, $datos);
+        // Si el resultado devuelto tras ejecución contiene un array de un elemento
+        if (is_array($res) && count($res)>0)        
+        {
+            // Devuelvo a los participantes de la jornada censal recuperados de la base de datos
+            return $res;
+        }
+        else
+            // De lo contario devolveré nulo
+            return null;
+    }    
+
+    /**
      * Método estático para buscar Inscripciones en la base de datos.
      *
      * @param string $busqueda Cadena de busqueda en las Inscripciones de la base de datos
@@ -399,6 +426,30 @@ class Participante {
         
     }
 
+    /**
+     * Método estático para verificar que el usuario responsable ha confirmado asistencia d eparticipantes 
+     *
+     * @return boolean Verdadero cuando el usuario responsable ha confirmado la asistencia de participantes
+     *                 Falso cuando el usuario responsable NO ha confirmado la asistencia de participantes
+     */
+    public static function verificarAsistenciaParticipantesConfirmada($idJornada): bool {
+        // Construyo la sentencia SQL base para recuperar a los participantes de una jornada censal de la base de datos     
+        $sql="SELECT u.nombre as usuario FROM pdaw_participantes pt JOIN pdaw_usuarios u ON u.codigo=pt.usuario
+                WHERE pt.id_jornada=:idJornada AND pt.asiste='1'";
+        // Preparo los paŕametros requeridos por la consulta de particioantes a una jornada censal a la base de datos        
+        $datos=[':idJornada' => $idJornada];
+        // Ejecuto la sentencia SQL para recuperar a los participantes a una jornada censal de la base de datos
+        $res=Core::ejecutarSql($sql, $datos);
+        // Si el resultado devuelto tras ejecución contiene un array de un elemento
+        if (is_array($res) && count($res)>0)        
+        {
+            // Devuelvo verdadero porque hay participantes con su asistencia confirmada
+            return true;
+        }
+        else
+            // Devuelvo falso porque no hay participantes con su sistencia confirmada
+            return false;
+    }
 
     // F) Métodos estáticos privados de apoyo a la búsquedas de jornadas por fechas y rango de fechas
 

@@ -449,14 +449,6 @@ class Censo {
         // Defino array asociativo para generar el listado con el histórico de censos definitivo
         $historicoCensos=[];
         // Construyo la sentencia SQL base para recuperar el histórico de jornadas censales realizadas de la base de datos     
-        // $sql="SELECT j.id_jornada as idJornada, j.titulo as titulo, ob.nombre as observatorio, j.fecha as fecha,
-        //     j.estado as estado, ob.localidad as localidad, COUNT(cn.especie) as registros, SUM(cn.cantidad) as censadas 
-        //     FROM pdaw_jornadas j 
-        //     JOIN pdaw_observatorios ob ON j.observatorio=ob.codigo 
-        //     JOIN pdaw_censos cn ON cn.id_jornada=j.id_jornada
-        //     WHERE j.estado='CERRADA'
-        //     GROUP BY cn.id_jornada";
-        // <<<--- Consulta SQL de pruebas ---
         $sql="SELECT j.id_jornada as idJornada, ob.nombre as observatorio, ob.localidad as localidad, 
             COUNT(cn.especie) as registros, SUM(cn.cantidad) as censadas 
             FROM pdaw_jornadas j 
@@ -514,45 +506,19 @@ class Censo {
             // De lo contario devolveré nulo
             return null;
     }
-    
+       
     /**
-     * 
-     * Método estático para listar a los participantes de una deterinada jornada censal
+     * Método estático para buscar Censos en la base de datos.
      *
-     * @return Array|null Devuelve un array asociativo con el listado de participantes para una jornada determinada
-     *                    Devuelve un array vacío cuando no es posible listar a los participantes de una jornada determinada
-     */
-    public static function listarParticipantesJornadaCensal($idJornada): ?Array {
-        // Construyo la sentencia SQL base para recuperar a los participantes de una jornada censal de la base de datos     
-        $sql="SELECT u.nombre as usuario FROM pdaw_participantes pt JOIN pdaw_usuarios u ON u.codigo=pt.usuario
-                WHERE pt.id_jornada=:idJornada";
-        // Preparo los paŕametros requeridos por la consulta de particioantes a una jornada censal a la base de datos        
-        $datos=[':idJornada' => $idJornada];
-        // Ejecuto la sentencia SQL para recuperar a los participantes a una jornada censal de la base de datos
-        $res=Core::ejecutarSql($sql, $datos);
-        // Si el resultado devuelto tras ejecución contiene un array de un elemento
-        if (is_array($res) && count($res)>0)        
-        {
-            // Devuelvo a los participantes de la jornada censal recuperados de la base de datos
-            return $res;
-        }
-        else
-            // De lo contario devolveré nulo
-            return null;
-    }
-    
-    /**
-     * Método estático para buscar Inscripciones en la base de datos.
-     *
-     * @param string $busqueda Cadena de busqueda en las Inscripciones de la base de datos
+     * @param string $busqueda Cadena de busqueda en los Censos de la base de datos
      * @param string $ordenar Por Campo por el que se quiere ordenar los resultado
      * @param string $orden El tipo de orden que se desea para los resultados
-     * @return Array|null Devuelve un array con los resultados de la búsqueda de Inscripciones
-     *                    Devuelve nulo si el criterio de búsqueda no ha encontrado Inscripciones
+     * @return Array|null Devuelve un array con los resultados de la búsqueda de Censos
+     *                    Devuelve nulo si el criterio de búsqueda no ha encontrado Censos
      */
     public static function buscarCensos($busqueda, $ordenarPor, $orden) {
 
-        // Defino las columnas de busqueda para encontrar inscripciones
+        // Defino las columnas de busqueda para encontrar censos
         $columnas = ['av.comun', 'av.ingles', 'av.familia','cn.especie', 'ob.nombre', 'ob.localidad'];
 
         // Defino una array vacio en donde generar las condiciones de búsqueda
@@ -570,7 +536,7 @@ class Censo {
         $fechaRegex = '/^\d{2}-\d{2}-\d{4}$/';
         $rangoFechaRegex = '/^\d{2}-\d{2}-\d{4}\s+(a)\s+\d{2}-\d{2}-\d{4}$/';
 
-        // Detecto el tipo de búsqueda de jornadas que ha solicitado el usuario
+        // Detecto el tipo de búsqueda de censos que ha solicitado el usuario
         // CASO-A: Detecta búsqueda por fecha única
         if (preg_match($fechaRegex, $busqueda)) {
             // Obtengo la fecha de búsqueda en el formato correcto para la consulta SQL
@@ -590,7 +556,7 @@ class Censo {
             // Genero los parámetros para la consulta SQL preparada
             $parametros[':fechaInicio']=$fechaInicio;
             $parametros[':fechaFin']=$fechaFin;        
-        // CASO-C: Detecta búsqueda por titulo, observatorio o localidad.
+        // CASO-C: Detecta búsqueda por Nombre común, nombre inglés, especie, familia, observatorio o localidad.
         } else {
             // Genero las condiciones de búsqueda para encontrar jornadas por los campos.
             // Nombre común, nombre inglés, especie, familia, observatorio y localidad.
@@ -601,7 +567,7 @@ class Censo {
             }
         }
 
-        // Construyo la sentencia SQL base para recuperar el histórico de participación del usuario de la base de datos     
+        // Construyo la sentencia SQL base para recuperar el histórico de censos del usuario de la base de datos     
         $sql="SELECT j.id_jornada as idJornada, j.titulo as titulo, ob.nombre as observatorio, j.fecha as fecha,
             j.estado as estado, ob.localidad as localidad, cn.especie as esppecie, av.familia as familia, 
             av.comun as comun, av.ingles as ingles FROM pdaw_jornadas j 
@@ -626,12 +592,12 @@ class Censo {
             $sql .= " ORDER BY $ordenarPor $orden";
         }
 
-        // Ejecuto la sentencia SQL para recuperar a los usuario de la base de datos que coincidan el criterio de búsqueda
+        // Ejecuto la sentencia SQL para recuperar a los censos de la base de datos que coincidan el criterio de búsqueda
         $res=Core::ejecutarSql($sql, $parametros);
         // Si el resultado devuelto tras ejecución contiene un array de un elemento
         if (is_array($res) && count($res)>0)        
         {
-            // Devuelvo al usuario recuperado de la base de datos
+            // Devuelvo los censos recuperados de la base de datos
             return $res;
         }
         else {

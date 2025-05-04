@@ -28,6 +28,7 @@ use correplayas\controladores\Jornadas;
 use correplayas\modelo\Censo;
 use correplayas\modelo\Jornada;
 use correplayas\modelo\Observatorio;
+use correplayas\modelo\Participante;
 use Smarty\Smarty;
 use DateTime;
 
@@ -141,7 +142,11 @@ class Censos {
                     case "censo:validar":
                         // Muestro la confirmación para validar el censo de aves de una jornada
                         Censos::mostrarConfirmacionValidacionCensoPlataforma($smarty);
-                        break;                        
+                        break;
+                    case "cancelacion:confirmo":
+                        // Proceso la cancelación de la jornadaa censal deseada
+                        Censos::cancelarCensosAvesPlatforma($smarty);
+                        break;                      
                     case "censo:salir":
                         // Muestro la vista del histórico de censos
                         Censos::mostrarHistoricosCensos($smarty);
@@ -273,7 +278,7 @@ class Censos {
                     if ($observatorio instanceof Observatorio) {
                         // Se ha posido recuperar al observatorio asociadp a la jornada. Entonces:
                         // Recupero el listado de participantes de la jornada censal deseada
-                        $participantes=Censo::listarParticipantesJornadaCensal($idJornada);
+                        $participantes=Participante::listarParticipantesJornadaCensal($idJornada);
                         foreach($participantes as $participante) {
                             $listaParticipantes[]=$participante['usuario'];
                         }
@@ -408,7 +413,7 @@ class Censos {
                     if ($observatorio instanceof Observatorio) {
                         // Se ha posido recuperar al observatorio asociadp a la jornada. Entonces:
                         // Recupero el listado de participantes de la jornada censal deseada
-                        $participantes=Censo::listarParticipantesJornadaCensal($idJornada);
+                        $participantes=Participante::listarParticipantesJornadaCensal($idJornada);
                         foreach($participantes as $participante) {
                             $listaParticipantes[]=$participante['usuario'];
                         }
@@ -531,6 +536,8 @@ class Censos {
      * @return void No devuelve valor alguno
      */
     public static function iniciarCensosAvesPlatforma($smarty) {
+        // Obtengo al usuario de la sesión del navegacion
+        $usuario = $_SESSION['usuario'];        
         // Recupero los permisos del usuario logueado desde su sesión
         $permisosUsuario = $_SESSION['permisos'];        
 
@@ -550,8 +557,20 @@ class Censos {
                 if ($jornada instanceof Jornada) {
                     // Establezco el estado de la jornada a iniciar el censo de aves como: CERRADA
                     $jornada->setEstadoJornada('CERRADA');
+                    // Añado marca de trazabilidad de la jornada censal
+                    $observaciones=$jornada->getInformacionJornada();
+                    $observaciones .= "<br><<--- El usuario responsable " . $usuario->getUsuario();
+                    $observaciones .= " ha iniciado la jornada a las: " . date('d-m-Y H:i:s');
+                    $jornada->setInformacionJornada($observaciones);                    
                     // Actualizo la jornada en la base de datos de la plataforma
                     if ($jornada->actualizarJornada()) {
+                        // Emulo aquí que el usuario hace clic en el listado de jornadas
+                        $_SESSION['listado']=$idJornada;
+                        /* OBSERVACIONES: Se trata solución poco elegante pero funcional dado que mi inexpereciencia
+                        en el desarrollo de aplicaciones web, ha hecho que no tenga en cuenta adecuamdamente la lógica
+                        de navegación por las distintas interfaces del usuario tanto redirección como variables para el
+                        funcionamiento de las acciones que se llaman desde cada una de las vista */
+
                         // Muestro la vista del censo de aves en modo edición
                         Censos::mostrarVistaCensoAves($smarty, modoEdicion: true);
                     } else {
@@ -584,6 +603,9 @@ class Censos {
      * @return void No devuelve valor alguno
      */
     public static function cancelarCensosAvesPlatforma($smarty) {
+        // Obtengo al usuario de la sesión del navegacion
+        $usuario = $_SESSION['usuario'];
+
         // Recupero los permisos del usuario logueado desde su sesión
         $permisosUsuario = $_SESSION['permisos'];        
 
@@ -603,6 +625,12 @@ class Censos {
                 if ($jornada instanceof Jornada) {
                     // Establezco el estado de la jornada a cancelar el censo de aves como: CANCELADA
                     $jornada->setEstadoJornada('CANCELADA');
+                    // Añado los motivos de cancelación a las observaciones de la jornada
+                    $observaciones=$jornada->getInformacionJornada();
+                    $motivos=filter_input(INPUT_POST,'frm-motivos');
+                    $observaciones .= "<br><<--- El usuario responsable " . $usuario->getUsuario() . " cancelar esta jornada por los motivos: ";
+                    $observaciones .= $motivos;
+                    $jornada->setInformacionJornada($observaciones);
                     // Actualizo la jornada en la base de datos de la plataforma
                     if ($jornada->actualizarJornada()) {
                         // Notifico al usuario que la cancelación de la jornada censal fue existosa
@@ -638,8 +666,11 @@ class Censos {
      * @return void No devuelve valor alguno
      */
     public static function finalizarCensosAvesPlatforma($smarty) {
+        // Obtengo al usuario de la sesión del navegacion
+        $usuario = $_SESSION['usuario'];
+
         // Recupero los permisos del usuario logueado desde su sesión
-        $permisosUsuario = $_SESSION['permisos'];        
+        $permisosUsuario = $_SESSION['permisos'];
 
         // Compruebo que el usuario logueado tiene permiso de acceso al modo restringido del gestor de censos
         if ($permisosUsuario->hasPermisoGestorCensos() && isset($_SESSION['admincensos'])) {
@@ -653,13 +684,17 @@ class Censos {
                 unset($_SESSION['listado']);
                 // Recupero la jornada censal elegida por el usuario que desea finalizar el censo de aves
                 $jornada = Jornada::consultarJornada($idJornada);
-                // Compruebo si el usuario responsable de la jornada censal confirmado asistencia
-                // --->> Aquí debo llamar a la junto que comprueba la asistencia de los participantes 
-                $confirmaAsistencia=true;
+                // Compruebo si el usuario responsable de la jornada censal confirmado asistencia                
+                $confirmaAsistencia=Participante::verificarAsistenciaParticipantesConfirmada($idJornada);
                 // Compruebo si la jornada elegida existe en la base de datos y confirma asistencia participantes
                 if ($jornada instanceof Jornada && $confirmaAsistencia) {
                     // Establezco la confirmación de asistebcia a la jornada censal
                     $jornada->setControlAsistenciaJornada('1');
+                    // Añado marca de trazabilidad de la jornada censal
+                    $observaciones=$jornada->getInformacionJornada();
+                    $observaciones .= "<br><<--- El usuario responsable " . $usuario->getUsuario();
+                    $observaciones .= " ha finalizado la jornada a las: " . date('d-m-Y H:i:s');
+                    $jornada->setInformacionJornada($observaciones);                      
                     // Actualizo la jornada en la base de datos de la plataforma
                     if ($jornada->actualizarJornada()) {
                         // Notifico al usuario que la finalización de la jornada censal fue existosa
@@ -695,6 +730,9 @@ class Censos {
      * @return void No devuelve valor alguno
      */
     public static function validarCensosAvesPlatforma($smarty) {
+        // Obtengo al usuario de la sesión del navegacion
+        $usuario = $_SESSION['usuario'];
+
         // Recupero los permisos del usuario logueado desde su sesión
         $permisosUsuario = $_SESSION['permisos'];        
 
@@ -714,6 +752,11 @@ class Censos {
                 if ($jornada instanceof Jornada) {
                     // Establezco el estado de la jornada a validar el censo de aves como: VALIDADA
                     $jornada->setEstadoJornada('VALIDADA');
+                    // Añado marca de trazabilidad de la jornada censal
+                    $observaciones=$jornada->getInformacionJornada();
+                    $observaciones .= "<br><<--- El usuario administrador " . $usuario->getUsuario();
+                    $observaciones .= " ha validado la jornada a las: " . date('d-m-Y H:i:s');
+                    $jornada->setInformacionJornada($observaciones);                       
                     // Actualizo la jornada en la base de datos de la plataforma
                     if ($jornada->actualizarJornada()) {
                         // Notifico al usuario que la validación de la jornada censal fue existosa
