@@ -243,13 +243,23 @@ class Jornada {
     }        
 
     /**
+     * Método para comprobar que una jornada está iniciada al censo de aves
+     *
+     * @return boolean Verdadero cuando la jornada está iniciada al censo de aves
+     *                 Falso cuando la jornada NO está iniciada al censo de aves
+     */
+    public function esJornadaIniciada(): bool {
+        return $this->estado==='CERRADA' && ($this->asistencia==='0' ? true : false);
+    }
+
+    /**
       * Método para comprobar si una jornada censal es censable por el usuario
       *
-      * @param boolean $permisos Permiso del usuario para el acceso al modo restringido
+      * @param Rol $permisosUsuaerioLogueado Permisos del usuario logueado
       * @return boolean Verdadero cuando la jornada censal es censable por el usuario
       *                 Falso cuando la jornada censal NO es censable por el usuario      
       */
-    public function esJornadaCensable($permisos): bool {
+    public function esJornadaCensable($permisosUsuarioLogueado): bool {
 
         /* COORDINADORES: ¿Cuando pueden censar? 
             >> Obviamente tiene permiso para acceder al modo restringido del gestor de censos
@@ -258,14 +268,15 @@ class Jornada {
             >> La fecha actual coincide con la fecha de la jornada deseada
         */
 
-        $censaCoordinador = $permisos && $this->esJornadaIniciada() && date('Y-m-d') === $this->fecha;
+        $censaCoordinador = $permisosUsuarioLogueado->hasPermisoGestorCensos() && 
+            $this->esJornadaIniciada() && date('Y-m-d') === $this->fecha;
 
         /* ADMINISTRADORES: ¿Cuando pueden censar?
-            >> Siempre tiene permiso para acceder al modo restringido del gestor censos
-            >> La jornada elegida tiene el estado de cerrada.            
+            >> Tiene permiso para acceder al modo restringido del gestor censos
+            >> Siempre que la jornada elegida tenga el estado de cerrada.            
         ?*/
 
-        $censaAdministrador = $permisos && $this->estado==='CERRADA';
+        $censaAdministrador = $permisosUsuarioLogueado->hasPermisoGestorCensos() && $this->estado==='CERRADA';
 
         // Evaluo si se cumplen los requisitos para censar una determinada jornada
         return ($censaCoordinador || $censaAdministrador);
@@ -273,13 +284,22 @@ class Jornada {
     }
 
     /**
-     * Método para comprobar que una jornada está iniciada al censo de aves
+     * Método para comprobar que una jornada es validable al censo de aves finalizado
      *
-     * @return boolean Verdadero cuando la jornada está iniciada al censo de aves
-     *                 Falso cuando la jornada NO está iniciada al censo de aves
+     * @param Rol $persmisosUsuarioLogueado Permisos del usuario logueado
+     * @return boolean Verdadero cuando la jornada es validable a un censo de aves finalizado
+     *                 Falso cuando la jornada NO es validable a un censo de aves finalizado
      */
-    public function esJornadaIniciada(): bool {
-        return $this->estado==='CERRADA' && ($this->asistencia==='0' ? true : false);
+    public function esJornadaValidable($persmisosUsuarioLogueado): bool {
+
+        /* Una jornada es validable cuando:
+            >> A) El usuario logueado tiene el rol de administrador.
+            >> B) La jornada censal tiene el estado de CERRADA.
+            >> C) La jornada censal tiene confirmada la asistencia
+            Sólo entonces un administrador puede validar un censo y cerrarlo oficialmente a edición.
+        */
+        return $persmisosUsuarioLogueado->hasPermisoAdministradorGestor() && $this->estado==='CERRADA' && 
+            ($this->asistencia==='1' ? true : false);
     }
 
     // E) Defino los métodos estáticos de la clase Jornada

@@ -104,7 +104,7 @@
                                             <form method="post" action="/plataforma/backoffice.php?comando=censos:default">
                                                 <input type="hidden" name="idJornada" value="{$fila.jornada->getIdJornada()}">
                                                 <button class="boton-accion-listado-gestor" type="submit" name="accion" value="historico:detalles" title="Mostrar detalles de un censo"><span class="iconos-acciones-listados">search</span></button>
-                                                {if $fila.jornada->esJornadaCensable($permisos->hasPermisoGestorCensos())}
+                                                {if $fila.jornada->esJornadaCensable($permisos)}
                                                     <button class="boton-accion-listado-gestor" type="submit" name="accion" value="historico:edicion" title="Editar censo de aves"><span class="iconos-acciones-listados">edit</span></button>                                                    
                                                     {if $fila.jornada->esJornadaIniciada()}
                                                         <button class="boton-accion-listado-gestor" type="submit" name="accion" value="historico:cierre" title="Finalizar censo de aves"><span class="iconos-acciones-listados">stop_circle</span></button>

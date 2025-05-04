@@ -9,6 +9,7 @@
 *   >> usuario: Nombre del usuario logueado.
 *   >> permisos: Conjunto de permisos del usuario logueado.
 *   >> censable: Bandera que controla la visibilidad de acciones al usuario cuando una jornada es censable
+*   >> validable: Bandera que controla si el censo mostrado es validable por el usuario o no
 *   >> perfil: Información básica sobre la jornada censal en curso
 *   >> filas: Conjunto de datos para generar el listado.
 *   >> anyo: Año en curso para copyright y copyleft del sitio web.
@@ -117,7 +118,12 @@
                         <button class="boton-accion-gestor" form="volverCensoAves" type="submit" name="accion" value="censo:salir" title="Salir del censo">Salir</button>
                         <button class="boton-accion-gestor" form="volverCensoAves" type="submit" name="accion" value="censo:finalizar" title="Finalizar el censo">Finalizar</button>
                     {else}
-                        <button class="boton-accion-gestor" form="volverCensoAves" type="submit" name="accion" value="censo:salir" title="Salir del censo">Salir</button>
+                        {if $validable}
+                            <button class="boton-accion-gestor" form="volverCensoAves" type="submit" name="accion" value="censo:salir" title="Salir del censo">Salir</button>
+                            <button class="boton-accion-gestor" form="volverCensoAves" type="submit" name="accion" value="censo:validar" title="Validar el censo">Validar</button>
+                        {else}
+                            <button class="boton-accion-gestor" form="volverCensoAves" type="submit" name="accion" value="censo:salir" title="Salir del censo">Salir</button>
+                        {/if}
                     {/if}                    
                 </div>
             </article>

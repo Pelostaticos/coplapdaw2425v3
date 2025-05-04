@@ -135,8 +135,13 @@ class Censos {
                         // Muestra la confirmación de baja de un registro censal determinado
                         break;                                                
                     case "censo:finalizar":
-                        // Muestro la confirmación para cerrar una jornada al censo de aves 
+                        // Muestro la confirmación para cerrar una jornada al censo de aves
+                        Censos::mostrarConfirmacionFinalizacionCensoPlataforma($smarty);
                         break;
+                    case "censo:validar":
+                        // Muestro la confirmación para validar el censo de aves de una jornada
+                        Censos::mostrarConfirmacionValidacionCensoPlataforma($smarty);
+                        break;                        
                     case "censo:salir":
                         // Muestro la vista del histórico de censos
                         Censos::mostrarHistoricosCensos($smarty);
@@ -290,17 +295,21 @@ class Censos {
                         // Compruebo la configuración establecida para em modo de la vista censo de aves
                         if ($modoEdicion) {
                             // El modo edición está habilitado para la vista censo de aves. Entonecs:
-                            // Determino si la jornada es censable para el usuario logueado.
-                            $censable=$jornada->esJornadaCensable($permisosUsuario->hasPermisoGestorCensos());
+                            // Determino si la jornada es censable por el usuario logueado.
+                            $censable=$jornada->esJornadaCensable($permisosUsuario);
+                            // Determino si la jornada es validable por el usuario logueado
+                            $validable=$jornada->esJornadaValidable($permisosUsuario);
                         } else {
                             // De lo contrario, el modo edición está deshabilitadp y por tanto se considera que
                             // la jornada censal elegida no es censable por defecto.
                             $censable=false;
+                            $validable=false;
                         }
                         // Asigno las variables requeridas por la plantila de detalles de una jornada
                         $smarty->assign('usuario', $usuario->getUsuario());
                         $smarty->assign('permisos', $permisosUsuario);
                         $smarty->assign('censable', $censable);
+                        $smarty->assign('validable', $validable);
                         $smarty->assign('perfil', $perfil);
                         $smarty->assign('filas', $registrosCensales);
                         $smarty->assign('anyo', date('Y'));
@@ -476,7 +485,39 @@ class Censos {
             // Lanzo excepción para notificar al usuario que no tiene permiso para finalizar el censo de aves
             throw new AppException("Su rol en la plataforma no le permite finalizar el censo de aves");            
         }
-    }     
+    }
+
+    /**
+     * Método auxiliar para mostrar la confirmación de la validación de un censo de aves en la plataforma
+     *
+     * @param Smarty $smarty Objeto que contiene al motor de plantillas Smarty
+     * @return void No devuelve valor alguno
+     */
+    private static function mostrarConfirmacionValidacionCensoPlataforma($smarty) {
+        // Recupero los permisos del usuario logueado desde su sesión
+        $permisosUsuario = $_SESSION['permisos'];        
+
+        // Compruebo que el usuario logueado tiene permiso de acceso al modo restringido del gestor de censos
+        if ($permisosUsuario->hasPermisoGestorCensos() && isset($_SESSION['admincensos'])) {
+            // El usuario logueado tiene permiso de acceso al modo restringido del gestor de censos. Entonces:
+            // Compruebo que el usuario haya elegido una jornada del listado de la que desea iniciar el censo
+            if (isset($_POST['idJornada'])) {
+                // Establezco la configuración del mensaje de confirmación para el usuario autorizado
+                $mensaje = "Has solicitado validar el censo de una jornada de la plataforma";
+                $pregunta = "¿Estás seguro que quieres validar dicho censo?";
+                $urlCancelar = "/plataforma/backoffice.php?comando=censos:default";
+                $urlAceptar = "/plataforma/backoffice.php?comando=censos:validar:procesa";
+                // Muestro el mensaje de confirmación de validación del censo de aves al usuario
+                ErrorController::mostarMensajeAdvertencia($smarty,$mensaje,$pregunta,$urlCancelar,$urlAceptar);
+            } else {
+                // Lanzo una excepción para notificar que el usuario no eligió una jornada del listado
+                throw new AppException("No ha elegido una jornada del listado. Por favor, eliga una. Gracias!");                
+            }
+        } else {
+            // Lanzo excepción para notificar al usuario que no tiene permiso para validar el censo de aves
+            throw new AppException("Su rol en la plataforma no le permite validar el censo de aves");            
+        }
+    }    
 
     // C) Método estáticos privados para gestioanr las vistas específicas solicitada desde el censo
 
@@ -490,7 +531,50 @@ class Censos {
      * @return void No devuelve valor alguno
      */
     public static function iniciarCensosAvesPlatforma($smarty) {
+        // Recupero los permisos del usuario logueado desde su sesión
+        $permisosUsuario = $_SESSION['permisos'];        
 
+        // Compruebo que el usuario logueado tiene permiso de acceso al modo restringido del gestor de censos
+        if ($permisosUsuario->hasPermisoGestorCensos() && isset($_SESSION['admincensos'])) {
+            // El usuario logueado tiene permiso de acceso al modo restringido del gestor de censos. Entonces:
+            // Compruebo que el usuario haya elegido una jornada del listado de la que desea iniciar el censo
+            if (isset($_POST['idJornada'])) {
+                // Recupero el identificador de la jornada elegida por el usuario desde su sesion
+                $idJornada = $_SESSION['listado'];
+                // Desestablezco el identificador de jornada elegido por el usuario desde la sesion porque
+                // ya ha cumpplido su función aquí
+                unset($_SESSION['listado']);
+                // Recupero la jornada censal elegida por el usuario que desea iniciar el censo de aves
+                $jornada = Jornada::consultarJornada($idJornada);
+                // Compruebo si la jornada elegida existe en la base de datos
+                if ($jornada instanceof Jornada) {
+                    // Establezco el estado de la jornada a iniciar el censo de aves como: CERRADA
+                    $jornada->setEstadoJornada('CERRADA');
+                    // Actualizo la jornada en la base de datos de la plataforma
+                    if ($jornada->actualizarJornada()) {
+                        // Muestro la vista del censo de aves en modo edición
+                        Censos::mostrarVistaCensoAves($smarty, modoEdicion: true);
+                    } else {
+                        // De lo contario, lanzo una excepción para notificar al usuario que NO es 
+                        // posible iniciar el censo de aves de la jornada deseada
+                        throw new AppException(message: "No es posible iniciar el censo de aves en la jornada deseada!!!
+                        Conctacte con los administradores para mayor información. ¡Gracias por participar!",
+                        urlAceptar: "/plataforma/backoffice.php?comando=core:email:vista");  
+                    }
+                } else {
+                    // De lo contario, lanzo una excepción para notificar al usuario que la
+                    // jornada censal deseada no existe en la base de datos
+                    throw new AppException(message: "La jornada censal elegida no existe en la base de datos!!!",
+                    urlAceptar: "/plataforma/backoffice.php?comando=censos:default");                      
+                }
+            } else {
+                // Lanzo una excepción para notificar que el usuario no eligió una jornada del listado
+                throw new AppException("No ha elegido una jornada del listado. Por favor, eliga una. Gracias!");                 
+            }
+        } else {
+            // Lanzo excepción para notificar al usuario que no tiene permiso para censar aves
+            throw new AppException("Su rol en la plataforma no le permite iniciar el censo de aves");            
+        }
     }
 
     /**
@@ -500,7 +584,51 @@ class Censos {
      * @return void No devuelve valor alguno
      */
     public static function cancelarCensosAvesPlatforma($smarty) {
+        // Recupero los permisos del usuario logueado desde su sesión
+        $permisosUsuario = $_SESSION['permisos'];        
 
+        // Compruebo que el usuario logueado tiene permiso de acceso al modo restringido del gestor de censos
+        if ($permisosUsuario->hasPermisoGestorCensos() && isset($_SESSION['admincensos'])) {
+            // El usuario logueado tiene permiso de acceso al modo restringido del gestor de censos. Entonces:
+            // Compruebo que el usuario haya elegido una jornada del listado de la que desea cancelar el censo
+            if (isset($_POST['idJornada'])) {
+                // Recupero el identificador de la jornada elegida por el usuario desde su sesion
+                $idJornada = $_SESSION['listado'];
+                // Desestablezco el identificador de jornada elegido por el usuario desde la sesion porque
+                // ya ha cumpplido su función aquí
+                unset($_SESSION['listado']);
+                // Recupero la jornada censal elegida por el usuario que desea cancelar el censo de aves
+                $jornada = Jornada::consultarJornada($idJornada);
+                // Compruebo si la jornada elegida existe en la base de datos
+                if ($jornada instanceof Jornada) {
+                    // Establezco el estado de la jornada a cancelar el censo de aves como: CANCELADA
+                    $jornada->setEstadoJornada('CANCELADA');
+                    // Actualizo la jornada en la base de datos de la plataforma
+                    if ($jornada->actualizarJornada()) {
+                        // Notifico al usuario que la cancelación de la jornada censal fue existosa
+                        ErrorController::mostrarMensajeInformativo($smarty, "Jornada censal cancelada con éxito!!", 
+                            "/plataforma/backoffice.php?comando=censos:default");
+                    } else {
+                        // De lo contario, lanzo una excepción para notificar al usuario que NO es 
+                        // posible cancelar el censo de aves de la jornada deseada
+                        throw new AppException(message: "No es posible cancelar el censo de aves en la jornada deseada!!!
+                        Conctacte con los administradores para mayor información. ¡Gracias por participar!",
+                        urlAceptar: "/plataforma/backoffice.php?comando=core:email:vista");  
+                    }
+                } else {
+                    // De lo contario, lanzo una excepción para notificar al usuario que la
+                    // jornada censal deseada no existe en la base de datos
+                    throw new AppException(message: "La jornada censal elegida no existe en la base de datos!!!",
+                    urlAceptar: "/plataforma/backoffice.php?comando=censos:default");                      
+                }
+            } else {
+                // Lanzo una excepción para notificar que el usuario no eligió una jornada del listado
+                throw new AppException("No ha elegido una jornada del listado. Por favor, eliga una. Gracias!");                 
+            }
+        } else {
+            // Lanzo excepción para notificar al usuario que no tiene permiso para cancelar un censo de aves
+            throw new AppException("Su rol en la plataforma no le permite cancelar el censo de aves");            
+        }
     }
     
     /**
@@ -510,8 +638,109 @@ class Censos {
      * @return void No devuelve valor alguno
      */
     public static function finalizarCensosAvesPlatforma($smarty) {
+        // Recupero los permisos del usuario logueado desde su sesión
+        $permisosUsuario = $_SESSION['permisos'];        
 
-    }    
+        // Compruebo que el usuario logueado tiene permiso de acceso al modo restringido del gestor de censos
+        if ($permisosUsuario->hasPermisoGestorCensos() && isset($_SESSION['admincensos'])) {
+            // El usuario logueado tiene permiso de acceso al modo restringido del gestor de censos. Entonces:
+            // Compruebo que el usuario haya elegido una jornada del listado de la que desea finalizar el censo
+            if (isset($_POST['idJornada'])) {
+                // Recupero el identificador de la jornada elegida por el usuario desde su sesion
+                $idJornada = $_SESSION['listado'];
+                // Desestablezco el identificador de jornada elegido por el usuario desde la sesion porque
+                // ya ha cumpplido su función aquí
+                unset($_SESSION['listado']);
+                // Recupero la jornada censal elegida por el usuario que desea finalizar el censo de aves
+                $jornada = Jornada::consultarJornada($idJornada);
+                // Compruebo si el usuario responsable de la jornada censal confirmado asistencia
+                // --->> Aquí debo llamar a la junto que comprueba la asistencia de los participantes 
+                $confirmaAsistencia=true;
+                // Compruebo si la jornada elegida existe en la base de datos y confirma asistencia participantes
+                if ($jornada instanceof Jornada && $confirmaAsistencia) {
+                    // Establezco la confirmación de asistebcia a la jornada censal
+                    $jornada->setControlAsistenciaJornada('1');
+                    // Actualizo la jornada en la base de datos de la plataforma
+                    if ($jornada->actualizarJornada()) {
+                        // Notifico al usuario que la finalización de la jornada censal fue existosa
+                        ErrorController::mostrarMensajeInformativo($smarty, "Jornada censal finalizada con éxito!!", 
+                            "/plataforma/backoffice.php?comando=censos:default");
+                    } else {
+                        // De lo contario, lanzo una excepción para notificar al usuario que NO es 
+                        // posible cancelar el censo de aves de la jornada deseada
+                        throw new AppException(message: "No es posible cancelar el censo de aves en la jornada deseada!!!
+                        Conctacte con los administradores para mayor información. ¡Gracias por participar!",
+                        urlAceptar: "/plataforma/backoffice.php?comando=core:email:vista");  
+                    }
+                } else {
+                    // De lo contario, lanzo una excepción para notificar al usuario que la
+                    // jornada censal deseada no existe en la base de datos
+                    throw new AppException(message: "Jornada censal no disponible o asistencia sin confirmar!!!",
+                    urlAceptar: "/plataforma/backoffice.php?comando=censos:default");                      
+                }
+            } else {
+                // Lanzo una excepción para notificar que el usuario no eligió una jornada del listado
+                throw new AppException("No ha elegido una jornada del listado. Por favor, eliga una. Gracias!");                 
+            }
+        } else {
+            // Lanzo excepción para notificar al usuario que no tiene permiso para cancelar un censo de aves
+            throw new AppException("Su rol en la plataforma no le permite cancelar el censo de aves");            
+        }
+    }
+
+    /**
+     * Método estático para validar el censo de aves en una jornada censal de la plataforma
+     *
+     * @param Smarty $smarty Objeto que contiene al motor de plantillas Smarty
+     * @return void No devuelve valor alguno
+     */
+    public static function validarCensosAvesPlatforma($smarty) {
+        // Recupero los permisos del usuario logueado desde su sesión
+        $permisosUsuario = $_SESSION['permisos'];        
+
+        // Compruebo que el usuario logueado tiene permiso de acceso al modo restringido del gestor de censos
+        if ($permisosUsuario->hasPermisoGestorCensos() && isset($_SESSION['admincensos'])) {
+            // El usuario logueado tiene permiso de acceso al modo restringido del gestor de censos. Entonces:
+            // Compruebo que el usuario haya elegido una jornada del listado de la que desea validar el censo
+            if (isset($_POST['idJornada'])) {
+                // Recupero el identificador de la jornada elegida por el usuario desde su sesion
+                $idJornada = $_SESSION['listado'];
+                // Desestablezco el identificador de jornada elegido por el usuario desde la sesion porque
+                // ya ha cumpplido su función aquí
+                unset($_SESSION['listado']);
+                // Recupero la jornada censal elegida por el usuario que desea validar el censo de aves
+                $jornada = Jornada::consultarJornada($idJornada);
+                // Compruebo si la jornada elegida existe en la base de datos
+                if ($jornada instanceof Jornada) {
+                    // Establezco el estado de la jornada a validar el censo de aves como: VALIDADA
+                    $jornada->setEstadoJornada('VALIDADA');
+                    // Actualizo la jornada en la base de datos de la plataforma
+                    if ($jornada->actualizarJornada()) {
+                        // Notifico al usuario que la validación de la jornada censal fue existosa
+                        ErrorController::mostrarMensajeInformativo($smarty, "Jornada censal validada con éxito!!", 
+                            "/plataforma/backoffice.php?comando=censos:default");
+                    } else {
+                        // De lo contario, lanzo una excepción para notificar al usuario que NO es 
+                        // posible validar el censo de aves de la jornada deseada
+                        throw new AppException(message: "No es posible validar el censo de aves en la jornada deseada!!!
+                        Conctacte con los administradores para mayor información. ¡Gracias por participar!",
+                        urlAceptar: "/plataforma/backoffice.php?comando=core:email:vista");  
+                    }
+                } else {
+                    // De lo contario, lanzo una excepción para notificar al usuario que la
+                    // jornada censal deseada no existe en la base de datos
+                    throw new AppException(message: "La jornada censal elegida no existe en la base de datos!!!",
+                    urlAceptar: "/plataforma/backoffice.php?comando=censos:default");                      
+                }
+            } else {
+                // Lanzo una excepción para notificar que el usuario no eligió una jornada del listado
+                throw new AppException("No ha elegido una jornada del listado. Por favor, eliga una. Gracias!");                 
+            }
+        } else {
+            // Lanzo excepción para notificar al usuario que no tiene permiso para validar un censo de aves
+            throw new AppException("Su rol en la plataforma no le permite validar el censo de aves");            
+        }
+    }       
     
     // E) Métodos estáticos públicos para vistas generales y su procesamiento de datos asociados    
 
