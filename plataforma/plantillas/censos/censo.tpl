@@ -45,7 +45,7 @@
                         <p class="extraextraextralargo"><span>Lugar</span>:&nbsp;{$perfil.lugar}</p>
                     </div>
                     <div class="campos-gestor">
-                        <p class="extraextralargo"><span>Observaciones</span>:&nbsp;{$perfil.observaciones}</p>
+                        <p class="extraextraextralargo"><span>Observaciones</span>:&nbsp;{$perfil.observaciones}</p>
                     </div>                
                 </div>
                 <!-- B) Información del gestor de censos: Listado de registros censales de la jornada  -->
@@ -80,7 +80,7 @@
                         <tbody>
                             {if $filas|@count === 0}
                                 <tr>
-                                    <td colspan="5">Lo sentimos!!! No hay registros censales disponibles</td>
+                                    <td colspan="6">Lo sentimos!!! No hay registros censales disponibles</td>
                                 </tr>
                             {else}                        
                                 {foreach $filas as $fila}
@@ -115,15 +115,15 @@
                 <form name="volverCensoAves" id="volverCensoAves" method="post" action="/plataforma/backoffice.php?comando=censos:default"></form>
                 <div class="botonera">                
                     {if $censable}
-                        <button class="boton-accion-gestor" form="volverCensoAves" type="submit" name="accion" value="censo:salir" title="Salir del censo">Salir</button>
-                        <button class="boton-accion-gestor" form="volverCensoAves" type="submit" name="accion" value="censo:finalizar" title="Finalizar el censo">Finalizar</button>
-                    {else}
                         {if $validable}
                             <button class="boton-accion-gestor" form="volverCensoAves" type="submit" name="accion" value="censo:salir" title="Salir del censo">Salir</button>
                             <button class="boton-accion-gestor" form="volverCensoAves" type="submit" name="accion" value="censo:validar" title="Validar el censo">Validar</button>
                         {else}
                             <button class="boton-accion-gestor" form="volverCensoAves" type="submit" name="accion" value="censo:salir" title="Salir del censo">Salir</button>
+                            <button class="boton-accion-gestor" form="volverCensoAves" type="submit" name="accion" value="censo:finalizar" title="Finalizar el censo">Finalizar</button>                                
                         {/if}
+                    {else}
+                        <button class="boton-accion-gestor" form="volverCensoAves" type="submit" name="accion" value="censo:salir" title="Salir del censo">Salir</button>
                     {/if}                    
                 </div>
             </article>

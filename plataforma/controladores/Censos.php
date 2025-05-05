@@ -76,6 +76,12 @@ class Censos {
                         // Inicio el censo de aves de la jornada censal
                         Censos::mostrarConfirmacionInicioCensoPlataforma($smarty);
                         break;
+                    case "listado:continuar:censo":
+                        // Salgo del modo restringido del gestor de censos
+                        $_SESSION['admincensos']=false;                        
+                        // Continuo el censo de aves de la jornada censal
+                        Censos::mostrarVistaCensoAves($smarty, modoEdicion: true);
+                        break;                        
                     case "listado:cancelar:censo":
                         // Cancelo el censo de aves  de la jornada censal
                         Censos::mostrarConfirmacionCancelacionCensoPlataforma($smarty);
@@ -142,6 +148,10 @@ class Censos {
                     case "censo:validar":
                         // Muestro la confirmación para validar el censo de aves de una jornada
                         Censos::mostrarConfirmacionValidacionCensoPlataforma($smarty);
+                        break;
+                    case "censo:sinasistencia":
+                        // Muestro la vista del censo de aves tras un intento de finalización fallido
+                        Censos::mostrarVistaCensoAves($smarty, modoEdicion: true);
                         break;
                     case "cancelacion:confirmo":
                         // Proceso la cancelación de la jornadaa censal deseada
@@ -221,8 +231,14 @@ class Censos {
 
         // Compruebo si es usuario logueado tiene permiso de acceso al modo restringido del gestor de censos
         if ($permisosUsuario->hasPermisoGestorCensos() && isset($_SESSION['admincensos'])) {
-            // Genero el listado de jornadas  disponibles en la plataforma
-            $datos = Censo::listarJornadasCensales();
+            // Genero el listado de jornadas disponibles en la plataforma
+            $listadoJornadaCensalessDisponibles = Censo::listarJornadasCensalesDisponibles();
+
+            // Genero el listado de jornadas iniciadas en la plataforma
+            $listadoJornadaCensalesIniciadas=Censo::listarJornadasCensalesIniciadas();
+
+            // Genero el listado definitivo con las jornadas censales disponibles al censo de aves
+            $datos=array_merge($listadoJornadaCensalessDisponibles, $listadoJornadaCensalesIniciadas);
 
             // Asigno las variables requeridas por la plantila del listado de jornadas
             $smarty->assign('usuario', $usuario->getUsuario());
@@ -304,12 +320,19 @@ class Censos {
                             $censable=$jornada->esJornadaCensable($permisosUsuario);
                             // Determino si la jornada es validable por el usuario logueado
                             $validable=$jornada->esJornadaValidable($permisosUsuario);
+                            // Emulo aquí que el usuario hace clic en el listado de jornadas
+                            $_SESSION['listado']=$idJornada;
+                            /* OBSERVACIONES: Se trata solución poco elegante pero funcional dado que mi inexpereciencia
+                            en el desarrollo de aplicaciones web, ha hecho que no tenga en cuenta adecuamdamente la lógica
+                            de navegación por las distintas interfaces del usuario tanto redirección como variables para el
+                            funcionamiento de las acciones que se llaman desde cada una de las vista */                            
                         } else {
                             // De lo contrario, el modo edición está deshabilitadp y por tanto se considera que
                             // la jornada censal elegida no es censable por defecto.
                             $censable=false;
                             $validable=false;
                         }
+
                         // Asigno las variables requeridas por la plantila de detalles de una jornada
                         $smarty->assign('usuario', $usuario->getUsuario());
                         $smarty->assign('permisos', $permisosUsuario);
@@ -474,7 +497,7 @@ class Censos {
         if ($permisosUsuario->hasPermisoGestorCensos() && isset($_SESSION['admincensos'])) {
             // El usuario logueado tiene permiso de acceso al modo restringido del gestor de censos. Entonces:
             // Compruebo que el usuario haya elegido una jornada del listado de la que desea iniciar el censo
-            if (isset($_POST['idJornada'])) {
+            if (isset($_SESSION['listado'])) {
                 // Establezco la configuración del mensaje de confirmación para el usuario autorizado
                 $mensaje = "Has solicitado finalizar el censo de una jornada de la plataforma";
                 $pregunta = "¿Estás seguro que quieres dar por finalizado a dicho censo?";
@@ -676,7 +699,7 @@ class Censos {
         if ($permisosUsuario->hasPermisoGestorCensos() && isset($_SESSION['admincensos'])) {
             // El usuario logueado tiene permiso de acceso al modo restringido del gestor de censos. Entonces:
             // Compruebo que el usuario haya elegido una jornada del listado de la que desea finalizar el censo
-            if (isset($_POST['idJornada'])) {
+            if (isset($_SESSION['listado'])) {
                 // Recupero el identificador de la jornada elegida por el usuario desde su sesion
                 $idJornada = $_SESSION['listado'];
                 // Desestablezco el identificador de jornada elegido por el usuario desde la sesion porque
@@ -689,7 +712,7 @@ class Censos {
                 // Compruebo si la jornada elegida existe en la base de datos y confirma asistencia participantes
                 if ($jornada instanceof Jornada && $confirmaAsistencia) {
                     // Establezco la confirmación de asistebcia a la jornada censal
-                    $jornada->setControlAsistenciaJornada('1');
+                    $jornada->setControlAsistenciaJornada(1);
                     // Añado marca de trazabilidad de la jornada censal
                     $observaciones=$jornada->getInformacionJornada();
                     $observaciones .= "<br><<--- El usuario responsable " . $usuario->getUsuario();
@@ -708,7 +731,13 @@ class Censos {
                         urlAceptar: "/plataforma/backoffice.php?comando=core:email:vista");  
                     }
                 } else {
-                    // De lo contario, lanzo una excepción para notificar al usuario que la
+                    // De lo contario, establezco la accion de volver a la vista de censos de aves
+                    // en la sesión dado que ña acción solicitada desde ahí no se puede ejecutar
+                    $_SESSION['accion']="censo:sinasistencia";
+                    // Emulo que el usuario logueado vuelve a hacer clic en el historico para abrir la vista
+                    // de censos de aves en la jornada cuya finalización ha sido fallida
+                    $_SESSION['listado']=$idJornada;
+                    // lanzo una excepción para notificar al usuario que la
                     // jornada censal deseada no existe en la base de datos
                     throw new AppException(message: "Jornada censal no disponible o asistencia sin confirmar!!!",
                     urlAceptar: "/plataforma/backoffice.php?comando=censos:default");                      

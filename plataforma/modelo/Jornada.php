@@ -22,9 +22,9 @@ namespace correplayas\modelo;
 // Defino los espacios de mombres que voy a utilizar en esta clase
 
 use correplayas\excepciones\AppException;
+use correplayas\modelo\Participante;
 use \correplayas\nucleo\Core;
 use DateTime;
-use Exception;
 
 /**
  * Clase del modelo de datos para trabajar con Jornadas
@@ -249,7 +249,7 @@ class Jornada {
      *                 Falso cuando la jornada NO está iniciada al censo de aves
      */
     public function esJornadaIniciada(): bool {
-        return $this->estado==='CERRADA' && ($this->asistencia==='0' ? true : false);
+        return $this->estado==='CERRADA' && ($this->asistencia===0 ? true : false);
     }
 
     /**
@@ -299,7 +299,17 @@ class Jornada {
             Sólo entonces un administrador puede validar un censo y cerrarlo oficialmente a edición.
         */
         return $persmisosUsuarioLogueado->hasPermisoAdministradorGestor() && $this->estado==='CERRADA' && 
-            ($this->asistencia==='1' ? true : false);
+            ($this->asistencia===1 ? true : false);
+    }
+
+    /**
+     * Método para comprobar que la jornada tiene inscritos a usuarios participantes
+     *
+     * @return boolean Verdadero cuando la jornada tiene usuarios participantes inscritos
+     *                 Falso cuando la jornada NO tiene usuarios participantes inscritos
+     */
+    public function tieneJornadaParticipantes(): bool {
+        return count(Participante::listarParticipantesJornadaCensal($this->idJornada))>0;
     }
 
     // E) Defino los métodos estáticos de la clase Jornada

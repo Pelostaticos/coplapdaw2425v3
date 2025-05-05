@@ -47,9 +47,9 @@
                     </div>                     
                     <div class="campos-gestor">
                         {if $perfil.informacion === "-" || empty($perfil.informacion)}
-                            <p class="extraextralargo"><span>Informacion</span>:&nbsp;Sin datos</p>
+                            <p class="extraextraextralargo"><span>Informacion</span>:&nbsp;Sin datos</p>
                         {else}
-                            <p class="extraextralargo"><span>Informacion</span>:&nbsp;{$perfil.informacion}</p>
+                            <p class="extraextraextralargo"><span>Informacion</span>:&nbsp;{$perfil.informacion}</p>
                         {/if}
                     </div>                 
                 </div>

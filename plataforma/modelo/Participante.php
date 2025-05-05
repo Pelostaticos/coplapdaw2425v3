@@ -285,10 +285,10 @@ class Participante {
      * 
      * Método estático para listar a los participantes de una deterinada jornada censal
      *
-     * @return Array|null Devuelve un array asociativo con el listado de participantes para una jornada determinada
-     *                    Devuelve un array vacío cuando no es posible listar a los participantes de una jornada determinada
+     * @return Array Devuelve un array asociativo con el listado de participantes para una jornada determinada
+     *               Devuelve un array vacío cuando no es posible listar a los participantes de una jornada determinada
      */
-    public static function listarParticipantesJornadaCensal($idJornada): ?Array {
+    public static function listarParticipantesJornadaCensal($idJornada): Array {
         // Construyo la sentencia SQL base para recuperar a los participantes de una jornada censal de la base de datos     
         $sql="SELECT u.nombre as usuario, pt.usuario as hashUsuario, pt.asiste as asiste 
                 FROM pdaw_participantes pt JOIN pdaw_usuarios u ON u.codigo=pt.usuario
@@ -305,7 +305,7 @@ class Participante {
         }
         else
             // De lo contario devolveré nulo
-            return null;
+            return [];
     }    
 
     /**
@@ -435,7 +435,7 @@ class Participante {
     public static function verificarAsistenciaParticipantesConfirmada($idJornada): bool {
         // Construyo la sentencia SQL base para recuperar a los participantes de una jornada censal de la base de datos     
         $sql="SELECT u.nombre as usuario FROM pdaw_participantes pt JOIN pdaw_usuarios u ON u.codigo=pt.usuario
-                WHERE pt.id_jornada=:idJornada AND pt.asiste='1'";
+                WHERE pt.id_jornada=:idJornada AND pt.asiste=1";
         // Preparo los paŕametros requeridos por la consulta de particioantes a una jornada censal a la base de datos        
         $datos=[':idJornada' => $idJornada];
         // Ejecuto la sentencia SQL para recuperar a los participantes a una jornada censal de la base de datos

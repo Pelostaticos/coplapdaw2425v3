@@ -414,12 +414,12 @@ class Censo {
     }    
 
     /**
-     * Método estático para listar las jornadas censales en la base de datos
+     * Método estático para listar las jornadas censales abiertas al censo en la base de datos
      *
      * @return Array|null Devuelve un array asociativo con el listado de jornadas abiertas al censo
      *                    Devuelve nulo si NO pudo obtnerse un listado de jornadas abiertas al censo
      */
-    public static function listarJornadasCensales(): ?Array {
+    public static function listarJornadasCensalesDisponibles(): ?Array {
         // Construyo la sentencia SQL base para recuperar a las jornadas de la base de datos     
         $sql="SELECT j.id_jornada as idJornada, j.titulo as titulo, ob.nombre as observatorio, j.fecha as fecha,
             j.estado as estado, ob.localidad as localidad FROM pdaw_jornadas j 
@@ -427,17 +427,58 @@ class Censo {
         // Preparo los paŕametros requeridos por la consulta de jornadas censales a la base de datos        
         $datos=[':hoy' => date('Y-m-d')];
         // Ejecuto la sentencia SQL para recuperar a las jornadas censales de la base de datos
-        $res=Core::ejecutarSql($sql, $datos);
+        $resultados=Core::ejecutarSql($sql, $datos);
         // Si el resultado devuelto tras ejecución contiene un array de un elemento
-        if (is_array($res) && count($res)>0)        
+        if (is_array($resultados) && count($resultados)>0)        
         {
+            // Proceso los resultados para generar el listado del jornadas definitivo
+            foreach($resultados as $resultado) {
+                $listadoJornadasCensalesDisponibles[]=['jornada' => Jornada::consultarJornada($resultado['idJornada']),
+                    'observatorio' => $resultado['observatorio'],
+                    'localidad' => $resultado['localidad']];
+            }            
             // Devuelvo a las jornadas censales recuperadas de la base de datos
-            return $res;
+            return $listadoJornadasCensalesDisponibles;
         }
         else
             // De lo contario devolveré nulo
-            return null;
+            return [];
     }
+
+    /**
+     * Método estático para listar las jornadas censales iniciadas en la base de datos
+     *
+     * @return Array|null Devuelve un array asociativo con el listado de jornadas iniciadas al censo
+     *                    Devuelve nulo si NO pudo obtnerse un listado de jornadas iniciadas al censo
+     */
+    public static function listarJornadasCensalesIniciadas(): ?Array {
+        // Construyo la sentencia SQL base para recuperar a las jornadas censales iniciadas de la base de datos     
+        $sql="SELECT j.id_jornada as idJornada, j.titulo as titulo, ob.nombre as observatorio, j.fecha as fecha,
+            j.estado as estado, ob.localidad as localidad              
+            FROM pdaw_jornadas j 
+            JOIN pdaw_observatorios ob ON j.observatorio=ob.codigo 
+            LEFT JOIN pdaw_censos cn ON cn.id_jornada=j.id_jornada
+            WHERE j.fecha=:hoy AND j.estado='CERRADA' AND cn.id_jornada IS NULL";
+        // Preparo los paŕametros requeridos por la consulta de jornadas censales iniciadas a la base de datos        
+        $datos=[':hoy' => date('Y-m-d')];
+        // Ejecuto la sentencia SQL para recuperar a las jornadas censales iniciadas de la base de datos
+        $resultados=Core::ejecutarSql($sql, $datos);
+        // Si el resultado devuelto tras ejecución contiene un array de un elemento
+        if (is_array($resultados) && count($resultados)>0)        
+        {
+            // Proceso los resultados para generar el listado censos definitivo
+            foreach($resultados as $resultado) {
+                $listadoJornadasCensalesIniciadas[]=['jornada' => Jornada::consultarJornada($resultado['idJornada']),
+                    'observatorio' => $resultado['observatorio'],
+                    'localidad' => $resultado['localidad']];
+            }            
+            // Devuelvo a las jornadas censales iniciadas recuperadas de la base de datos
+            return $listadoJornadasCensalesIniciadas;
+        }
+        else
+            // De lo contario devolveré un array vacío
+            return [];
+    }    
 
     /**
      * Método estatico para listar el histórico de jornadas censales realizadas
@@ -454,7 +495,7 @@ class Censo {
             FROM pdaw_jornadas j 
             JOIN pdaw_observatorios ob ON j.observatorio=ob.codigo 
             JOIN pdaw_censos cn ON cn.id_jornada=j.id_jornada
-            WHERE j.estado='CERRADA'
+            WHERE j.estado IN ('CERRADA', 'VALIDADA')
             GROUP BY cn.id_jornada";        
         // Ejecuto la sentencia SQL para recuperar al histórico de jornadas censales de la base de datos
         $resultados=Core::ejecutarSql($sql);
@@ -570,7 +611,8 @@ class Censo {
         // Construyo la sentencia SQL base para recuperar el histórico de censos del usuario de la base de datos     
         $sql="SELECT j.id_jornada as idJornada, j.titulo as titulo, ob.nombre as observatorio, j.fecha as fecha,
             j.estado as estado, ob.localidad as localidad, cn.especie as esppecie, av.familia as familia, 
-            av.comun as comun, av.ingles as ingles FROM pdaw_jornadas j 
+            av.comun as comun, av.ingles as ingles, COUNT(cn.especie) as registros, SUM(cn.cantidad) as censadas
+            FROM pdaw_jornadas j 
             JOIN pdaw_observatorios ob ON j.observatorio=ob.codigo 
             JOIN pdaw_censos cn ON cn.id_jornada=j.id_jornada
             JOIN pdaw_aves av ON av.especie=cn.especie";
@@ -581,7 +623,9 @@ class Censo {
         // Añado las condiciones de búsqueda a la sentencia SQL anterior
         if (!empty($condiciones)) {
             // Genero la cadena completa con todas las condiciones de búsqueda SQL.
-            $sql .= " WHERE j.id_jornada IN (:subconsulta) AND j.estado='CERRADA' AND (" . implode(" OR ", $condiciones) . ")";
+            $sql .= " WHERE j.id_jornada IN (:subconsulta) AND j.estado IN ('CERRADA', 'VALIDADA') AND (" . implode(" OR ", $condiciones) . ")";
+            // Agrupo los resultado de la búsqueda por el id_jornada de lso registros censales para hacer resumenes
+            $sql .= " GROUP BY cn.id_jornada;";
         }
 
         // Añado la funcionalidad para ordenar el resultado de la búsqueda
@@ -593,12 +637,20 @@ class Censo {
         }
 
         // Ejecuto la sentencia SQL para recuperar a los censos de la base de datos que coincidan el criterio de búsqueda
-        $res=Core::ejecutarSql($sql, $parametros);
+        $resultados=Core::ejecutarSql($sql, $parametros);
         // Si el resultado devuelto tras ejecución contiene un array de un elemento
-        if (is_array($res) && count($res)>0)        
+        if (is_array($resultados) && count($resultados)>0)        
         {
-            // Devuelvo los censos recuperados de la base de datos
-            return $res;
+            // Proceso los resultados para generar el listado con resultados de búsqueda de censos definitivo
+            foreach($resultados as $resultado) {
+                $resultadosBusquedaCensos[]=['jornada' => Jornada::consultarJornada($resultado['idJornada']),
+                    'observatorio' => $resultado['observatorio'],
+                    'localidad' => $resultado['localidad'],
+                    'registros' => $resultado['registros'],
+                    'censadas' => $resultado['censadas']];
+            }            
+            // Devuelvo el resultado definitivo de la búsqueda de censos recuperados de la base de datos
+            return $resultadosBusquedaCensos;
         }
         else {
             // De lo contario devolveré nulo

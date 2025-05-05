@@ -121,7 +121,7 @@
                 </div>
                 <!-- Acciones permitidas por el gestor de censos -->
                 <div class="botonera">
-                    <a class="boton-accion-gestor" href="/plataforma/backoffice.php" title="Volver al inicio del backoffice">Volver</a>
+                    <a class="boton-accion-gestor" href="/plataforma/backoffice.php" title="Vuelve al inicio del backoffice">Salir</a>
                 </div>
             </article>
         </section>
