@@ -131,6 +131,7 @@ class Censos {
                         break;
                     case "censo:asistencia":
                         // Muestro vista para la confirmación de asistencia de los participantes
+                        Censos::mostrarVistaConfirmaciónAsistencia($smarty);
                         break;
                     case "censo:detalles":
                         // Muestro los detalles de un registro censal determinado
@@ -152,14 +153,22 @@ class Censos {
                     case "censo:sinasistencia":
                         // Muestro la vista del censo de aves tras un intento de finalización fallido
                         Censos::mostrarVistaCensoAves($smarty, modoEdicion: true);
-                        break;
-                    case "cancelacion:confirmo":
-                        // Proceso la cancelación de la jornadaa censal deseada
-                        Censos::cancelarCensosAvesPlatforma($smarty);
                         break;                      
                     case "censo:salir":
                         // Muestro la vista del histórico de censos
                         Censos::mostrarHistoricosCensos($smarty);
+                        break;
+                    case "cancelacion:confirmo":
+                        // Proceso la cancelación de la jornadaa censal deseada
+                        Censos::cancelarCensosAvesPlatforma($smarty);
+                        break;
+                    case "asistencia:cancelar":
+                        // Muestro la vista del censo de aves tras cancelar la confirmación de asistencia al censo
+                        Censos::mostrarVistaCensoAves($smarty, modoEdicion: true);
+                        break;                        
+                    case "asistencia:aceptar":
+                        // Proceso la confirmación de asistencia de participantes al censo de aves
+                        Censos::confirmarAsistenciaParticipantes($smarty);
                         break;
                     default:
                         // La acción por defecto es activarle el modo restringido del gestor de censos a los usuarios autorizados
@@ -192,7 +201,7 @@ class Censos {
         $permisosUsuario = $_SESSION['permisos'];        
 
         // Compruebo que el usuario logueado tenga un rol conocido por la plataforma
-        if ($permisosUsuario->hasRolDesconocidoPlataforma()) {
+        if (!$permisosUsuario->hasRolDesconocidoPlataforma()) {
 
             // Genero el listado de jornadas  disponibles en la plataforma
             $datos = Censo::listarHistoricoCensos();
@@ -274,7 +283,7 @@ class Censos {
         $permisosUsuario = $_SESSION['permisos'];
 
         // Compruebo que el usuario logueado tenga un rol conocido por la plataforma
-        if ($permisosUsuario->hasRolDesconocidoPlataforma()) {
+        if (!$permisosUsuario->hasRolDesconocidoPlataforma()) {
             // El usuario tiene un rol reconocido por la plataforma. Entonces:
             // Compruebo que el usuario loqueado eligió una jornada del listado
             if (isset($_SESSION['listado'])) {   
@@ -549,6 +558,56 @@ class Censos {
 
     // C) Método estáticos privados para gestioanr las vistas específicas solicitada desde el censo
 
+    /**
+     * Método auxiliar para mostrar la vista de confirmación de asistencia de participantes al censo de aves
+     *
+     * @param Smarty $smarty Objeto que contiene al motor de plantillas Smarty
+     * @return void No devuelve valor alguno
+     */
+    private static function mostrarVistaConfirmaciónAsistencia($smarty) {
+        
+        // Obtengo al usuario de la sesión del navegacion
+        $usuario = $_SESSION['usuario'];        
+        
+        // Recupero los permisos del usuario logueado desde su sesión
+        $permisosUsuario = $_SESSION['permisos'];
+
+        // Compruebo si existe una jornada censal previamente elegida por el usuario logueado
+        if (isset($_SESSION['listado'])) {
+            // Recupero el identificador de la jornada elegida por el usuario desde su sesion
+            $idJornada = $_SESSION['listado'];
+            // Desestablezco el identificador de jornada elegido por el usuario desde la sesion porque
+            // ya ha cumpplido su función aquí
+            unset($_SESSION['listado']);
+            // Recupero la jornada censal elegida por el usuario que desea consultar detalles del censo
+            $jornada = Jornada::consultarJornada($idJornada);
+            // Evaluo si la jornada censal deseada es editable por el usuario logueado
+            $jornadaEditable=$jornada->esJornadaCensable($permisosUsuario) xor $jornada->esJornadaValidable($permisosUsuario);
+            // Compruebo si la jornada elegida existe en la base de datos y el usuario loguerado tiene permisos de edición de censos
+            if ($jornada instanceof Jornada && $jornadaEditable) {
+                // Emulo que el usuario logueado hizo clic en una jornada censal previamente
+                $_SESSION['listado']=$idJornada;
+                // Recupero el listado de participantes de la jornada censal deseada
+                $participantes=Participante::listarParticipantesJornadaCensal($idJornada);
+                // Asigno las variables requeridas por la plantila de detalles de una jornada
+                $smarty->assign('usuario', $usuario->getUsuario());
+                $smarty->assign('permisos', $permisosUsuario);
+                $smarty->assign('jornada', $jornada);
+                $smarty->assign('filas', $participantes);
+                $smarty->assign('anyo', date('Y'));
+                // Muestro la plantilla de detalles del censo de una jornada censal con sus datos
+                $smarty->display('censos/asistencia.tpl');  
+            } else {
+                // lazo una excepción para notificar al usuario que no está autorizado a confirmar asistencia a jornadas censales
+                throw new AppException("No está autorizado a confirma la asistencia a jornadas censales!!!");
+            }
+        } else {
+            // Lanzo una excepción para notificar que el usuario no eligió un censo del listado
+            throw new AppException("No ha elegido una jornada censal del listado. Por favor, eliga una. Gracias!");            
+        }
+
+    }
+
 
     // D) Métodos estáticos públicos para procesar los datos de las vistas específicas
     
@@ -812,7 +871,81 @@ class Censos {
             // Lanzo excepción para notificar al usuario que no tiene permiso para validar un censo de aves
             throw new AppException("Su rol en la plataforma no le permite validar el censo de aves");            
         }
-    }       
+    }
+
+    /**
+     * Método estático para confirmar las asistencia a un censo de aves de la plataforma
+     *
+     * @param Smarty $smarty Objeto que contiene al motor de plantillas Smarty
+     * @return void No devuelve valor alguno
+     */    
+    public static function confirmarAsistenciaParticipantes($smarty) {
+
+        // Obtengo al usuario de la sesión del navegacion
+        $usuario = $_SESSION['usuario'];        
+        
+        // Recupero los permisos del usuario logueado desde su sesión
+        $permisosUsuario = $_SESSION['permisos'];
+
+        // Compruebo si existe una jornada censal previamente elegida por el usuario logueado
+        if (isset($_SESSION['listado'])) {
+            // Recupero el identificador de la jornada elegida por el usuario desde su sesion
+            $idJornada = $_SESSION['listado'];
+            // Desestablezco el identificador de jornada elegido por el usuario desde la sesion porque
+            // ya ha cumpplido su función aquí
+            unset($_SESSION['listado']);
+            // Recupero la jornada censal elegida por el usuario que desea consultar detalles del censo
+            $jornada = Jornada::consultarJornada($idJornada);
+            // Evaluo si la jornada censal deseada es editable por el usuario logueado
+            $jornadaEditable=$jornada->esJornadaCensable($permisosUsuario) xor $jornada->esJornadaValidable($permisosUsuario);
+            // Compruebo si la jornada elegida existe en la base de datos y el usuario loguerado tiene permisos de edición de censos
+            if ($jornada instanceof Jornada && $jornadaEditable) {
+                // Compruebo que se ha enviado el formulario de asistencia de participantes
+                if (isset($_POST['asistencia']) && is_array($_POST['asistencia'])) {
+                    // inicializo el contador de actualizaciones de asistencia fallidas
+                    $fallidas=0;
+                    // Recupero la asistencia de los participantes al censo desde el formulario
+                    $asistenciaParticipantes=$_POST['asistencia'];
+                    // Proceso la asistencia de los participantes para registrarla en la base de datos
+                    foreach ($asistenciaParticipantes as $participante) {
+                        // Genero el identificador de inscripción del participante al censo de aves
+                        $idInscripcion=['idJornada' => $idJornada, 'usuario' => $participante];
+                        // Recupero la inscripcion del participante desde la base de datos de la plataforma
+                        $inscripcion=Participante::consultarInscripcion($idInscripcion);
+                        // Marco en la inscripción de participante su asistencia a la jornada censal
+                        $inscripcion->setAsiste(true);
+                        // Actualizo la inscripción del participante a la jornada censal
+                        if (!$inscripcion->actualizarInscripción()) {$fallidas += 1;}
+                    }
+                    // Notifico al usuario del resultado de la confirmación de asistencia a la jornada censal
+                    // para ello compruebo si hay o no actualizaciones de asistencia fallidas.
+                    if ($fallidas>0) {
+                        // Lanzo una excepción para notificar que el usuario que hubo actualizaciones de asistencia fallidas
+                        throw new AppException(message: "Hay actualizaciones de asistencia fallidas!!! Por favor, contacte con los administradores", 
+                        urlAceptar: "/plataforma/backoffice.php?comando=core:email:vista");
+                    } else {
+                        // Emulo que el usuario logueazo solitico como acción mostrar la vista de censo de aves
+                        $_SESSION['accion']="historicos:edicion";                        
+                        // Emulo que el usuario logueado hizo clic en una jornada censal previamente
+                        $_SESSION['listado']=$idJornada;
+                        // Notifico al usuario que la actualización de la inscripción fue existosa
+                        ErrorController::mostrarMensajeInformativo($smarty, "Confirmación asistencia actualizada con éxito!!", 
+                            "/plataforma/backoffice.php?comando=censos:default");
+                    }
+                } else {
+                    // Lanzo una excepción para notificar que el usuario que confirme la asistencia al censo de aves
+                    throw new AppException("Por favor, confirme la asistencia de participantes. Gracias!");
+                }
+            } else {
+                // lazo una excepción para notificar al usuario que no está autorizado a confirmar asistencia a jornadas censales
+                throw new AppException("No está autorizado a confirma la asistencia a jornadas censales!!!");                
+            }
+        } else {
+            // Lanzo una excepción para notificar que el usuario no eligió un censo del listado
+            throw new AppException("No ha elegido una jornada censal del listado. Por favor, eliga una. Gracias!");
+        }
+
+    }
     
     // E) Métodos estáticos públicos para vistas generales y su procesamiento de datos asociados    
 

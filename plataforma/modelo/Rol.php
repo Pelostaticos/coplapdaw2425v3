@@ -482,7 +482,7 @@ class Rol {
      *                 Falso si el rol del usuario es desconocido por la plataforma
      */
     public function hasRolDesconocidoPlataforma(): bool {
-        return in_array($this->rol, Rol::listarRoles(), true);
+        return !in_array($this->rol, Rol::listarRoles(), true);
     }
 
     // D) Defino los métodos estáticos de la clase auxiliar Rol
