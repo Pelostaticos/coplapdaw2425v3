@@ -30,9 +30,8 @@
                     </div>            
                 </div>
                 <!-- A) Información del gestor de censos: Formulario para la edición de un registro censal.  -->
-                <form id="añadir-registro-censal" method="post" action="/plataforma/backoffice.php?comando=censos:registrar:procesa">
+                <form id="edicion-registro-censal" method="post" action="/plataforma/backoffice.php?comando=censos:registrar:procesa">
                     <input name="frm-idjornada" id="frm-idjornada" type="hidden" value="{$perfil.idJornada}">
-                    <input name="frm-especie" id="frm-especie" type="hidden" value="{$perfil.especie}">
                     <input name="frm-hora" id="frm-hora" type="hidden" value="{$perfil.hora}">
                     <div class="contenido-gestor">
                         <!-- Encabezado del formulario para la edición de registros censales de la jornada -->
@@ -42,7 +41,12 @@
                         <!-- Campos del formulario para añadir registros censales de la jornada -->
                         <div class="campos-gestor">
                             <p class="corto"><span>Hora</span>:&nbsp;{$perfil.hora}</p>
-                            <p class="largo"><span>Especie</span>:&nbsp;{$perfil.especie}</p>
+                            <p class="extralargo">
+                                <label for="frm-especie">Especie:&nbsp;</label>
+                                <select name="frm-especie" id="frm-especie" required>
+                                    <option value="{$perfil.especie}" selected>{$perfil.especie}</option>
+                                </select>
+                            </p>
                             <p class="largo"><span>Familia</span>:&nbsp;{$perfil.familia}</p>
                         </div>
                         <div class="campos-gestor">
@@ -147,9 +151,9 @@
                                 <label for="frm-altvuelo">Altura vuelo:&nbsp;</label>
                                 <select name="frm-altvuelo" id="frm-altvuelo" required>                                    
                                     <option value="0" {if $perfil.altvuelo==='0'}selected{/if}>0-(Posada en superficie)</option>
-                                    <option value="1" {if $perfil.altvuelo==='1'}selected{/if}>1-(Vuelo rasante - 5 m)</option>
+                                    <option value="1" {if $perfil.altvuelo==='1'}selected{/if}>1-(Vuelo rasante-5 metros)</option>
                                     <option value="2" {if $perfil.altvuelo==='2'}selected{/if}>2-(6-25 metros)</option>
-                                    <option value="3" {if $perfil.altvuelo==='3'}selected{/if}>3-(26-50 metros)-</option>
+                                    <option value="3" {if $perfil.altvuelo==='3'}selected{/if}>3-(26-50 metros)</option>
                                     <option value="4" {if $perfil.altvuelo==='4'}selected{/if}>4-(51-75 metros)</option>
                                     <option value="5" {if $perfil.altvuelo==='5'}selected{/if}>5-(76-100 metros)</option>
                                     <option value="6" {if $perfil.altvuelo==='6'}selected{/if}>6-(+100 metros)</option>

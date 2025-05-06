@@ -32,7 +32,6 @@
                 <!-- A) Información del gestor de censos: Formulario para añadir un registro censal.  -->
                 <form id="añadir-registro-censal" method="post" action="/plataforma/backoffice.php?comando=censos:registrar:procesa">
                     <input name="frm-idjornada" id="frm-idjornada" type="hidden" value="{$perfil.idJornada}">
-                    <input name="frm-hora" id="frm-hora" type="hidden" value="{$perfil.hora}">
                     <div class="contenido-gestor">
                         <!-- Encabezado del formulario para añadir registros censales de la jornada -->
                         <h2 class="subtitulo-contenido-gestor">Añadir un nuevo registro censal</h2>
@@ -44,7 +43,10 @@
                                 <label for="frm-especie">Especie:&nbsp;</label>
                                 <select name="frm-especie" id="frm-especie" required></select>
                             </p>
-                            <p class="corto"><span>Hora</span>:&nbsp;{$perfil.hora}</p>
+                            <p class="corto">
+                                <label for="frm-hora">Hora:&nbsp;</label>
+                                <input name="frm-hora" id="frm-hora" type="time" value="{$perfil.hora}" required>
+                            </p>
                             <p class="medio">
                                 <label for="frm-cantidad">Cantidad:&nbsp;</label>
                                 <input type="text" name="frm-cantidad" id="frm-cantidad" placeholder="Cantidad aves observadas..." required>                                
@@ -145,9 +147,9 @@
                                 <label for="frm-altvuelo">Altura vuelo:&nbsp;</label>
                                 <select name="frm-altvuelo" id="frm-altvuelo" required>                                    
                                     <option value="0">0-(Posada en superficie)</option>
-                                    <option value="1">1-(Vuelo rasante - 5 m)</option>
+                                    <option value="1">1-(Vuelo rasante-5 metros)</option>
                                     <option value="2">2-(6-25 metros)</option>
-                                    <option value="3">3-(26-50 metros)-</option>
+                                    <option value="3">3-(26-50 metros)</option>
                                     <option value="4">4-(51-75 metros)</option>
                                     <option value="5">5-(76-100 metros)</option>
                                     <option value="6">6-(+100 metros)</option>

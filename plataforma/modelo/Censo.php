@@ -165,8 +165,54 @@ class Censo {
      *
      * @return string Devuelve la nubosidad en momento del registro censal del ave
      */
-    public function getNubosidad() {
-        return $this->nubosidad;
+    public function getNubosidad($detalles=false) {
+        // Compruebo si se desea la nubosidad en formato descriptivo o codificado
+        if ($detalles) {
+            switch ($this->nubosidad) {
+                case "Ninguna":
+                    $nubosidad="Ninguna";
+                case "10":
+                    $nubosidad="10% cubierto";
+                    break;
+                case "20":
+                    $nubosidad="20% cubierto";
+                    break;
+                case "30":
+                    $nubosidad="30% cubierto";
+                    break;
+                case "40":
+                    $nubosidad="40% cubierto";
+                    break;
+                case "50":
+                    $nubosidad="50% cubierto";
+                    break;
+                case "60":
+                    $nubosidad="60% cubierto";
+                    break;
+                case "70":
+                    $nubosidad="70% cubierto";
+                    break;
+                case "80":
+                    $nubosidad="80% cubierto";
+                    break;
+                case "90":
+                    $nubosidad="90% cubierto";
+                    break;
+                case "100":
+                    $nubosidad="100% cubierto";
+                    break;
+                case "Desconocida":
+                    $nubosidad="Desconocida";
+                    break;
+                default:
+                    $nubosidad="Sin datos";
+                    break;
+            }
+        } else {
+            $nubosidad=$this->nubosidad;
+        }
+        // Devuelvo la nubosidad asociada al resgitro censal del ave
+        return $nubosidad;
     }
 
     /**
@@ -174,8 +220,37 @@ class Censo {
      *
      * @return string Devuelve la visibilidad en momento del registro censal del ave
      */
-    public function getVisibilidad() {
-        return $this->visibilidad;
+    public function getVisibilidad($detalles=false) {
+        // Compruebo si se desea la visibilidad en formato descriptivo o codificado
+        if ($detalles) {
+            switch ($this->visibilidad) {
+                case "0":
+                    $visibilidad="0-Niebla costera espesa";
+                    break;
+                case "1":
+                    $visibilidad="1-Brumas marinas";
+                    break;
+                case "2":
+                    $visibilidad="2-Ligeras calimas o brumas";
+                    break;
+                case "3":
+                    $visibilidad="3-Buena";
+                    break;
+                case "4":
+                    $visibilidad="4-Muy buena";
+                    break;
+                case "5":
+                    $visibilidad="5-Dificultosa por contraluces";
+                    break;                                                                                                    
+                default:
+                    $visibilidad="Sin datos";
+                    break;
+            }
+        } else {
+            $visibilidad=$this->visibilidad;
+        }
+        // Devuelvo la visibilidad asociada al resgitro censal del ave
+        return $visibilidad;     
     }
 
     /**
@@ -183,8 +258,52 @@ class Censo {
      *
      * @return string Devuelve la dirección del viento en momento del registro censal del ave
      */
-    public function getDireccionViento() {
-        return $this->dirViento;
+    public function getDireccionViento($detalles=false) {
+        // Compruebo si se desea la dirección del en formato descriptivo o codificado
+        if ($detalles) {
+            switch ($this->dirViento) {
+                case "SIN":
+                    $dirViento="Sin viento";
+                    break;
+                case "N":
+                    $dirViento="Norte";
+                    break;
+                case "NE":
+                    $dirViento="Noreste";
+                    break;
+                case "E":
+                    $dirViento="Este-";
+                    break;
+                case "SE":
+                    $dirViento="Sureste";
+                    break;
+                case "S":
+                    $dirViento="Sur";
+                    break;
+                case "SO":
+                    $dirViento="Suroeste";
+                    break;
+                case "O":
+                    $dirViento="Oeste";
+                    break;
+                case "NO":
+                    $dirViento="Noroeste";
+                    break;
+                case "VAR":
+                    $dirViento="Variable";
+                    break;
+                case "DES":
+                    $dirViento="Desconocida";
+                    break;                
+                default:
+                    $dirViento="Sin datos";
+                    break;
+            }
+        } else {
+            $dirViento=$this->dirViento;
+        }
+        // Devuelvo la dirección del viento asociada al resgitro censal del ave
+        return $dirViento;
     }
     
     /**
@@ -192,8 +311,52 @@ class Censo {
      *
      * @return string Devuelve la velocidad del viento en momento del registro censal del ave
      */
-    public function getVelocidadViento() {
-        return $this->velViento;
+    public function getVelocidadViento($detalles=false) {
+        // Compruebo si se desea la velocidad del viento en formato descriptivo o codificado
+        if ($detalles) {
+            switch ($this->velViento) {
+                case "0":
+                    $velViento="0-Beaufort";
+                    break;
+                case "1":
+                    $velViento="1-Beaufort";
+                    break;
+                case "2":
+                    $velViento="2-Beaufort";
+                    break;
+                case "3":
+                    $velViento="3-Beaufort-";
+                    break;
+                case "4":
+                    $velViento="4-Beaufort";
+                    break;
+                case "5":
+                    $velViento="5-Beaufort";
+                    break;
+                case "6":
+                    $velViento="6-Beaufort";
+                    break;
+                case "7":
+                    $velViento="7-Beaufort";
+                    break;
+                case "8":
+                    $velViento="8-Beaufort";
+                    break;
+                case "9":
+                    $velViento="9-Beaufort";
+                    break;
+                case "10":
+                    $velViento="10-Beaufort";
+                    break;                
+                default:
+                    $velViento="Sin datos";
+                    break;
+            }
+        } else {
+            $velViento=$this->velViento;
+        }
+        // Devuelvo la velocidad del viento asociada al resgitro censal del ave        
+        return $velViento;
     }
 
     /**
@@ -201,8 +364,43 @@ class Censo {
      *
      * @return string Devuelve la procedencia del ave en momento del registro censal
      */
-    public function getProcedenciaAve() {
-        return $this->procedencia;
+    public function getProcedenciaAve($detalles=false) {
+        // Compruebo si se desea ladirección de procedencia en formato descriptivo o codificado
+        if ($detalles) {
+            switch ($this->procedencia) {
+                case "NE":
+                    $procedencia="Noreste";
+                    break;
+                case "E":
+                    $procedencia="Este-";
+                    break;
+                case "SE":
+                    $procedencia="Sureste";
+                    break;
+                case "S":
+                    $procedencia="Sur";
+                    break;
+                case "SO":
+                    $procedencia="Suroeste";
+                    break;
+                case "O":
+                    $procedencia="Oeste";
+                    break;
+                case "NO":
+                    $procedencia="Noroeste";
+                    break;
+                case "DES":
+                    $procedencia="Desconocida";
+                    break;                
+                default:
+                    $procedencia="Sin datos";
+                    break;
+            }
+        } else {
+            $procedencia=$this->procedencia;
+        }
+        // Devuelvo la dirección de procedencia asociada al resgitro censal del ave
+        return $procedencia;
     }
     
     /**
@@ -210,8 +408,43 @@ class Censo {
      *
      * @return string Devuelve la destino del ave en momento del registro censal
      */
-    public function getDestinoAve() {
-        return $this->destino;
+    public function getDestinoAve($detalles=false) {
+        // Compruebo si se desea la dirección de destino en formato descriptivo o codificado
+        if ($detalles) {
+            switch ($this->destino) {
+                case "NE":
+                    $destino="Noreste";
+                    break;
+                case "E":
+                    $destino="Este-";
+                    break;
+                case "SE":
+                    $destino="Sureste";
+                    break;
+                case "S":
+                    $destino="Sur";
+                    break;
+                case "SO":
+                    $destino="Suroeste";
+                    break;
+                case "O":
+                    $destino="Oeste";
+                    break;
+                case "NO":
+                    $destino="Noroeste";
+                    break;
+                case "DES":
+                    $destino="Desconocida";
+                    break;                
+                default:
+                    $destino="Sin datos";
+                    break;
+            }
+        } else {
+            $destino=$this->destino;
+        }
+        // Devuelvo la dirección de destino asociada al resgitro censal del ave
+        return $destino;
     }
     
     /**
@@ -219,8 +452,40 @@ class Censo {
      *
      * @return string Devuelve la altura de vuelo del ave en momento del registro censal
      */
-    public function getAltturaVueloAve() {
-        return $this->altVuelo;
+    public function getAltturaVueloAve($detalles=false) {
+        // Compruebo si se desea la alttura de vuelo en formato descriptivo o codificado
+        if ($detalles) {
+            switch ($this->altVuelo) {
+                case "0":
+                    $altVuelo="0-(Posada en superficie)";
+                    break;
+                case "1":
+                    $altVuelo="1-(Vuelo rasante-5 metros)";
+                    break;
+                case "2":
+                    $altVuelo="2-(6-25 metros)";
+                    break;
+                case "3":
+                    $altVuelo="3-(26-50 metros)";
+                    break;
+                case "4":
+                    $altVuelo="4-(51-75 metros)";
+                    break;
+                case "5":
+                    $altVuelo="5-(76-100 metros)";
+                    break;
+                case "6":
+                    $altVuelo="6-(+100 metros)";
+                    break;
+                default:
+                    $altVuelo="Sin datos";
+                    break;
+            }
+        } else {
+            $altVuelo=$this->altVuelo;
+        }
+        // Devuelvo la altura de vuelo asociada al resgitro censal del ave
+        return $altVuelo;
     }
     
     /**
@@ -228,8 +493,37 @@ class Censo {
      *
      * @return string Devuelve la forma de vuelo del bando de aves en momento del registro censal
      */
-    public function getFormsaVueloAve() {
-        return $this->formaVuelo;
+    public function getFormsaVueloAve($detalles=false) {
+        // Compruebo si se desea la formación de vuelo en formato descriptivo o codificado
+        if ($detalles) {
+            switch ($this->formaVuelo) {
+                case "LINHOR":
+                    $formaVuelo="LINHOR-Lineal Formacion Horizontal";
+                    break;
+                case "LINVER":
+                    $formaVuelo="LINVER-Lineal Formacion Vertical";
+                    break;
+                case "VSI":
+                    $formaVuelo="VSI-Formación en 'V' simétrica";
+                    break;
+                case "VAS":
+                    $formaVuelo="VAS-Formación en 'V' asimétrica";
+                    break;
+                case "AMO":
+                    $formaVuelo="AMO-Formación de vuelo amorfa";
+                    break;
+                case "OTR":
+                    $formaVuelo="OTR-Cualquier otra o desconocida";
+                    break;
+                default:
+                    $formaVuelo="Sin datos";
+                    break;
+            }
+        } else {
+            $formaVuelo=$this->formaVuelo;
+        }
+        // Devuelvo la formación de vuelo asociada al resgitro censal del ave
+        return $formaVuelo;
     }
 
     /**
@@ -237,8 +531,40 @@ class Censo {
      *
      * @return string Devuelve la distancia a costa del ave en momento del registro censal
      */
-    public function getDistanciaCostaAve() {
-        return $this->distCosta;
+    public function getDistanciaCostaAve($detalles=false) {
+        // Compruebo si se desea la distancia a costa en formato descriptivo o codificado
+        if($detalles) {
+            switch ($this->distCosta) {
+                case "DBO":
+                    $distCosta="LINHOR-Delante línea boyas o mar adentro";
+                    break;
+                case "BO":
+                    $distCosta="BO-Linea de boyas";
+                    break;
+                case "LMA":
+                    $distCosta="LMA-Línea de marea";
+                    break;
+                case "FR":
+                    $distCosta="FR-Frente dunar, acantilado, tierra adentro";
+                    break;
+                case "CAN":
+                    $distCosta="CAN-Cerca del cantil";
+                    break;
+                case "MED":
+                    $distCosta="MED-Media distancia al horizonte";
+                    break;
+                case "HOR":
+                    $distCosta="HOR-Cerca del horizzonte";
+                    break;
+                default:
+                    $distCosta="Sin Datos";
+                    break;
+            }
+        } else {
+            $distCosta=$this->distCosta;
+        }
+        // Devuelvo la distancia a costa asociada al resgitro censal del ave
+        return $distCosta;
     }
     
     /**

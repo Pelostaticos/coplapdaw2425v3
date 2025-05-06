@@ -780,11 +780,11 @@ class Censos {
                     // Recopilo la información de la plantilla para añadir registros censales a una jornada
                     $perfil = ['idJornada' => $idJornada, 'especie' => $especie, 'hora' => $hora,
                         'familia' => $ave->getFamiliaAve()->getFamilia(), 'orden' => $ave->getFamiliaAve()->getOrden()->getOrden(),
-                        'cantidad' => $censo->getCantidad(), 'nubosidad' => $censo->getNubosidad(),
-                        'visibilidad' => $censo->getVisibilidad(), 'dirviento' => $censo->getDireccionViento(),
-                        'velviento' => $censo->getVelocidadViento(), 'procedencia' => $censo->getProcedenciaAve(),
-                        'destino' => $censo->getDestinoAve(), 'altvuelo' => $censo->getAltturaVueloAve(),
-                        'formavuelo' => $censo->getFormsaVueloAve(), 'distcosta' => $censo->getDistanciaCostaAve(),
+                        'cantidad' => $censo->getCantidad(), 'nubosidad' => $censo->getNubosidad(detalles: true),
+                        'visibilidad' => $censo->getVisibilidad(detalles:true), 'dirviento' => $censo->getDireccionViento(detalles:true),
+                        'velviento' => $censo->getVelocidadViento(detalles:true), 'procedencia' => $censo->getProcedenciaAve(detalles:true),
+                        'destino' => $censo->getDestinoAve(detalles:true), 'altvuelo' => $censo->getAltturaVueloAve(detalles:true),
+                        'formavuelo' => $censo->getFormsaVueloAve(detalles:true), 'distcosta' => $censo->getDistanciaCostaAve(detalles:true),
                         'comentario' => $censo->getComentario()];
                     // Asigno las variables requeridas por la plantila de añadir registros censales a una jornada
                     $smarty->assign('usuario', $usuario->getUsuario());
