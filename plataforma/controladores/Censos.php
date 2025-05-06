@@ -25,6 +25,7 @@ namespace correplayas\controladores;
 use correplayas\controladores\ErrorController;
 use correplayas\excepciones\AppException;
 use correplayas\controladores\Jornadas;
+use correplayas\modelo\Ave;
 use correplayas\modelo\Censo;
 use correplayas\modelo\Jornada;
 use correplayas\modelo\Observatorio;
@@ -128,6 +129,7 @@ class Censos {
                         break;
                     case "censo:registrar":
                         // Muestro la vista para añadir un registro censal a la plataforma
+                        Censos::mostrarVistaAñadirRegistroCensal($smarty);
                         break;
                     case "censo:asistencia":
                         // Muestro vista para la confirmación de asistencia de los participantes
@@ -135,12 +137,15 @@ class Censos {
                         break;
                     case "censo:detalles":
                         // Muestro los detalles de un registro censal determinado
+                        Censos::mostrarVistaDetallesRegistroCensal($smarty);
                         break;
                     case "censo:edicion":
                         // Muestro la vista de edición de un registro censal determinado
+                        Censos::mostrarVistaEdicionRegistroCensal($smarty);
                         break;
                     case "censo:borrado":
                         // Muestra la confirmación de baja de un registro censal determinado
+                        Censos::mostrarVistaConfirmaciónBajaRegistroCensal($smarty);
                         break;                                                
                     case "censo:finalizar":
                         // Muestro la confirmación para cerrar una jornada al censo de aves
@@ -157,6 +162,10 @@ class Censos {
                     case "censo:salir":
                         // Muestro la vista del histórico de censos
                         Censos::mostrarHistoricosCensos($smarty);
+                        break;
+                    case "censo:volver":
+                        // Muestro la vista del censo de aves tras acción del registro censal
+                        Censos::mostrarVistaCensoAves($smarty, modoEdicion: true);
                         break;
                     case "cancelacion:confirmo":
                         // Proceso la cancelación de la jornadaa censal deseada
@@ -603,11 +612,232 @@ class Censos {
             }
         } else {
             // Lanzo una excepción para notificar que el usuario no eligió un censo del listado
-            throw new AppException("No ha elegido una jornada censal del listado. Por favor, eliga una. Gracias!");            
+            throw new AppException("No ha elegido una jornada censal del listado. Por favor, eliga una. Gracias!");
         }
 
     }
 
+    /**
+     * Método auxiliar para mostrar la vista para añadir nuevos registros censales de aves
+     *
+     * @param Smarty $smarty Objeto que contiene al motor de plantillas Smarty
+     * @return void No devuelve valor alguno
+     */    
+    private static function mostrarVistaAñadirRegistroCensal($smarty) {
+
+        // Recupero al usuario logueado de la sesión
+        $usuario = $_SESSION['usuario'];
+
+        // Recupero los permisos del usuario logueado desde su sesión
+        $permisosUsuario = $_SESSION['permisos'];
+
+        // Compruebo si existe una jornada censal previamente elegida por el usuario logueado
+        if (isset($_SESSION['listado'])) {
+            // Recupero el identificador de la jornada elegida por el usuario desde su sesion
+            $idJornada = $_SESSION['listado'];
+            // Desestablezco el identificador de jornada elegido por el usuario desde la sesion porque
+            // ya ha cumpplido su función aquí
+            unset($_SESSION['listado']);
+            // Recupero la jornada censal elegida por el usuario a la que desea añadir registros censales
+            $jornada = Jornada::consultarJornada($idJornada);
+            // Evaluo si la jornada censal deseada es editable por el usuario logueado
+            $jornadaEditable=$jornada->esJornadaCensable($permisosUsuario) xor $jornada->esJornadaValidable($permisosUsuario);
+            // Compruebo si la jornada elegida existe en la base de datos y el usuario loguerado tiene permisos de edición de censos
+            if ($jornada instanceof Jornada && $jornadaEditable) {
+                // Emulo que el usuario logueado hizo clic en una jornada censal previamente
+                $_SESSION['listado']=$idJornada;
+                // Recopilo la información de la plantilla para añadir registros censales a una jornada
+                $perfil = ['idJornada' => $idJornada, 'hora' => date('H:i:s')];
+                // Asigno las variables requeridas por la plantila de añadir registros censales a una jornada
+                $smarty->assign('usuario', $usuario->getUsuario());
+                $smarty->assign('permisos', $permisosUsuario);
+                $smarty->assign('perfil', $perfil);
+                $smarty->assign('anyo', date('Y'));
+                // Muestro la plantilla de añadir registris censales a una jornada con sus datos
+                $smarty->display('censos/registro.tpl');                 
+            } else {
+                // lazo una excepción para notificar al usuario que no está autorizado a añadir registros censales
+                throw new AppException("No está autorizado a añadir registros censales!!!");                
+            }
+        } else {
+            // Lanzo una excepción para notificar que el usuario no eligió un censo del listado
+            throw new AppException("No ha elegido una jornada censal del listado. Por favor, eliga una. Gracias!");
+        }
+
+    }
+
+    /**
+     * Método auxiliar para mostrar la vista para editar registros censales de aves
+     *
+     * @param Smarty $smarty Objeto que contiene al motor de plantillas Smarty
+     * @return void No devuelve valor alguno
+     */       
+    private static function mostrarVistaEdicionRegistroCensal($smarty) {
+        // Recupero al usuario logueado de la sesión
+        $usuario = $_SESSION['usuario'];
+
+        // Recupero los permisos del usuario logueado desde su sesión
+        $permisosUsuario = $_SESSION['permisos'];
+
+        // Compruebo si existe una jornada censal previamente elegida por el usuario logueado
+        if (isset($_SESSION['listado'])) {
+            // Recupero el identificador de la jornada elegida por el usuario desde su sesion
+            $idJornada = $_SESSION['listado'];
+            // Desestablezco el identificador de jornada elegido por el usuario desde la sesion porque
+            // ya ha cumpplido su función aquí
+            unset($_SESSION['listado']);
+            // Recupero la jornada censal elegida por el usuario que desea editar su registro censal
+            $jornada = Jornada::consultarJornada($idJornada);
+            // Evaluo si la jornada censal deseada es editable por el usuario logueado
+            $jornadaEditable=$jornada->esJornadaCensable($permisosUsuario) xor $jornada->esJornadaValidable($permisosUsuario);
+            // Compruebo si la jornada elegida existe en la base de datos y el usuario loguerado tiene permisos de edición de censos
+            if ($jornada instanceof Jornada && $jornadaEditable) {
+                // Recupero de los datos adicionales de la clave primaria de un registro censal
+                $especie=filter_input(INPUT_POST, 'especie');
+                $hora=filter_input(INPUT_POST, 'hora');
+                // Genero la clave primaria del registro censal que se desea editar
+                $registroCensal=['idJornada' => $idJornada,
+                    'especie' => $especie, 'hora' => $hora];
+                // Recupero al registro censal desde la base de datos por su clave primaria
+                $censo=Censo::consultarRegistroCensal($registroCensal);
+                // Recupero información del ave del registro censal recuperadp
+                $ave=Ave::consultarAve($especie);
+                // Compruebo si el registro censal deseado con su ave censada existen en la base de dato
+                if ($censo instanceof Censo && $ave instanceof Ave) {
+                    // Emulo que el usuario logueado hizo clic en una jornada censal previamente
+                    $_SESSION['listado']=$idJornada;
+                    // Recopilo la información de la plantilla para añadir registros censales a una jornada
+                    $perfil = ['idJornada' => $idJornada, 'especie' => $especie, 'hora' => $hora,
+                        'familia' => $ave->getFamiliaAve()->getFamilia(), 'orden' => $ave->getFamiliaAve()->getOrden()->getOrden(),
+                        'cantidad' => $censo->getCantidad(), 'nubosidad' => $censo->getNubosidad(),
+                        'visibilidad' => $censo->getVisibilidad(), 'dirviento' => $censo->getDireccionViento(),
+                        'velviento' => $censo->getVelocidadViento(), 'procedencia' => $censo->getProcedenciaAve(),
+                        'destino' => $censo->getDestinoAve(), 'altvuelo' => $censo->getAltturaVueloAve(),
+                        'formavuelo' => $censo->getFormsaVueloAve(), 'distcosta' => $censo->getDistanciaCostaAve(),
+                        'comentario' => $censo->getComentario()];
+                    // Asigno las variables requeridas por la plantila de añadir registros censales a una jornada
+                    $smarty->assign('usuario', $usuario->getUsuario());
+                    $smarty->assign('permisos', $permisosUsuario);
+                    $smarty->assign('perfil', $perfil);
+                    $smarty->assign('anyo', date('Y'));
+                    // Muestro la plantilla de añadir registris censales a una jornada con sus datos
+                    $smarty->display('censos/edicion.tpl');                       
+                } else {
+                    // lazo una excepción para notificar al usuario que no existe el registro censal deseado
+                    throw new AppException("No existe el registro censal indicado!!!");  
+                }
+            } else {
+                // lazo una excepción para notificar al usuario que no está autorizado a editar registros censales
+                throw new AppException("No está autorizado a editar registros censales!!!");   
+            } 
+        } else {
+            // Lanzo una excepción para notificar que el usuario no eligió un censo del listado
+            throw new AppException("No ha elegido una jornada censal del listado. Por favor, eliga una. Gracias!");
+        }     
+    }
+
+
+    /**
+     * Método auxiliar para mostrar la vista para mostrar detalles de un registro censal de aves
+     *
+     * @param Smarty $smarty Objeto que contiene al motor de plantillas Smarty
+     * @return void No devuelve valor alguno
+     */       
+    private static function mostrarVistaDetallesRegistroCensal($smarty) {
+        // Recupero al usuario logueado de la sesión
+        $usuario = $_SESSION['usuario'];
+
+        // Recupero los permisos del usuario logueado desde su sesión
+        $permisosUsuario = $_SESSION['permisos'];
+
+        // Compruebo si existe una jornada censal previamente elegida por el usuario logueado
+        if (isset($_SESSION['listado'])) {
+            // Recupero el identificador de la jornada elegida por el usuario desde su sesion
+            $idJornada = $_SESSION['listado'];
+            // Desestablezco el identificador de jornada elegido por el usuario desde la sesion porque
+            // ya ha cumpplido su función aquí
+            unset($_SESSION['listado']);
+            // Recupero la jornada censal elegida por el usuario que desea editar su registro censal
+            $jornada = Jornada::consultarJornada($idJornada);
+            // Evaluo si la jornada censal deseada es editable por el usuario logueado
+            $jornadaEditable=$jornada->esJornadaCensable($permisosUsuario) xor $jornada->esJornadaValidable($permisosUsuario);
+            // Compruebo si la jornada elegida existe en la base de datos y el usuario loguerado tiene permisos de edición de censos
+            if ($jornada instanceof Jornada && $jornadaEditable) {
+                // Recupero de los datos adicionales de la clave primaria de un registro censal
+                $especie=filter_input(INPUT_POST, 'especie');
+                $hora=filter_input(INPUT_POST, 'hora');
+                // Genero la clave primaria del registro censal que se desea consultar detalles
+                $registroCensal=['idJornada' => $idJornada,
+                    'especie' => $especie, 'hora' => $hora];
+                // Recupero al registro censal desde la base de datos por su clave primaria
+                $censo=Censo::consultarRegistroCensal($registroCensal);
+                // Recupero información del ave del registro censal recuperado
+                $ave=Ave::consultarAve($especie);
+                // Compruebo si el registro censal deseado con su ave censada existen en la base de dato
+                if ($censo instanceof Censo && $ave instanceof Ave) {
+                    // Emulo que el usuario logueado hizo clic en una jornada censal previamente
+                    $_SESSION['listado']=$idJornada;
+                    // Recopilo la información de la plantilla para añadir registros censales a una jornada
+                    $perfil = ['idJornada' => $idJornada, 'especie' => $especie, 'hora' => $hora,
+                        'familia' => $ave->getFamiliaAve()->getFamilia(), 'orden' => $ave->getFamiliaAve()->getOrden()->getOrden(),
+                        'cantidad' => $censo->getCantidad(), 'nubosidad' => $censo->getNubosidad(),
+                        'visibilidad' => $censo->getVisibilidad(), 'dirviento' => $censo->getDireccionViento(),
+                        'velviento' => $censo->getVelocidadViento(), 'procedencia' => $censo->getProcedenciaAve(),
+                        'destino' => $censo->getDestinoAve(), 'altvuelo' => $censo->getAltturaVueloAve(),
+                        'formavuelo' => $censo->getFormsaVueloAve(), 'distcosta' => $censo->getDistanciaCostaAve(),
+                        'comentario' => $censo->getComentario()];
+                    // Asigno las variables requeridas por la plantila de añadir registros censales a una jornada
+                    $smarty->assign('usuario', $usuario->getUsuario());
+                    $smarty->assign('permisos', $permisosUsuario);
+                    $smarty->assign('perfil', $perfil);
+                    $smarty->assign('anyo', date('Y'));
+                    // Muestro la plantilla de añadir registris censales a una jornada con sus datos
+                    $smarty->display('censos/detalles.tpl');                     
+                } else {
+                    // lazo una excepción para notificar al usuario que no existe el registro censal deseado
+                    throw new AppException("No existe el registro censal indicado!!!");  
+                }
+            } else {
+                // lazo una excepción para notificar al usuario que no está autorizado a editar registros censales
+                throw new AppException("No está autorizado a consultar registros censales!!!");   
+            }
+        } else {
+            // Lanzo una excepción para notificar que el usuario no eligió un censo del listado
+            throw new AppException("No ha elegido una jornada censal del listado. Por favor, eliga una. Gracias!");
+        }
+    }
+
+    /**
+     * Método auxiliar para mostrar la confirmación de la baja de un registro censal en la plataforma
+     *
+     * @param Smarty $smarty Objeto que contiene al motor de plantillas Smarty
+     * @return void No devuelve valor alguno
+     */
+    private static function mostrarVistaConfirmaciónBajaRegistroCensal($smarty) {
+        // Recupero los permisos del usuario logueado desde su sesión
+        $permisosUsuario = $_SESSION['permisos'];        
+
+        // Compruebo que el usuario logueado tiene permiso de acceso al modo restringido del gestor de censos
+        if ($permisosUsuario->hasPermisoGestorCensos() && isset($_SESSION['admincensos'])) {
+            // El usuario logueado tiene permiso de acceso al modo restringido del gestor de censos. Entonces:
+            // Compruebo que el usuario haya elegido una jornada del listado de la que desea iniciar el censo
+            if (isset($_POST['idJornada'])) {
+                // Establezco la configuración del mensaje de confirmación para el usuario autorizado
+                $mensaje = "Has solicitado eliminar un registro censal de una jornada de la plataforma";
+                $pregunta = "¿Estás seguro que quieres eliminar dicho registro censal?";
+                $urlCancelar = "/plataforma/backoffice.php?comando=censos:default";
+                $urlAceptar = "/plataforma/backoffice.php?comando=censos:eliminar:procesa";
+                // Muestro el mensaje de confirmación de validación del censo de aves al usuario
+                ErrorController::mostarMensajeAdvertencia($smarty,$mensaje,$pregunta,$urlCancelar,$urlAceptar);
+            } else {
+                // Lanzo una excepción para notificar que el usuario no eligió una jornada del listado
+                throw new AppException("No ha elegido una jornada del listado. Por favor, eliga una. Gracias!");                
+            }
+        } else {
+            // Lanzo excepción para notificar al usuario que no tiene permiso para validar el censo de aves
+            throw new AppException("Su rol en la plataforma no le permite eliminar un registro censal");            
+        }
+    }
 
     // D) Métodos estáticos públicos para procesar los datos de las vistas específicas
     

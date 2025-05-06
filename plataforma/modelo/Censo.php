@@ -51,7 +51,7 @@ class Censo {
         $this->idJornada=$censo['id_jornada'];
         $this->especie=$censo['especie'];
         $this->hora=$censo['hora'];
-        $this->cantidad=$censo['canrtidad'];
+        $this->cantidad=$censo['cantidad'];
         $this->nubosidad=$censo['nubosidad'];
         $this->visibilidad=$censo['visibilidad'];
         $this->dirViento=$censo['dirViento'];
@@ -60,6 +60,7 @@ class Censo {
         $this->destino=$censo['destino'];
         $this->altVuelo=$censo['altVuelo'];
         $this->formaVuelo=$censo['formaVuelo'];
+        $this->distCosta=$censo['distCosta'];
         $this->comentario=$censo['comentario'];
     }    
 
