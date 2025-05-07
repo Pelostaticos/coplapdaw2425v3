@@ -62,7 +62,7 @@ class Censos {
                 $accion = $_POST['accion'];
                 // Si desde un listado del gestor de participantes se envía el identificador de jornadas. Entonces:
                 // Establezco la variable sesion con el identificador de la jornada seleccionado en el listado
-                if (isset($_POST['idJornada'])) {$_SESSION['listado'] = $_POST['idJornada'];}
+                if (isset($_POST['idJornada'])) {$_SESSION['gcensos'] = $_POST['idJornada'];}
                 // Proceso la acción solicitadas por usuarios no administradores desde el gestor
                 switch ($accion) {
                     case "listado:detalles":
@@ -87,6 +87,10 @@ class Censos {
                         // Cancelo el censo de aves  de la jornada censal
                         Censos::mostrarConfirmacionCancelacionCensoPlataforma($smarty);
                         break;
+                    case "cancelacion:confirmo":
+                        // Proceso la cancelación de la jornadaa censal deseada
+                        Censos::cancelarCensosAvesPlatforma($smarty);
+                        break;                        
                     default:
                         // La acción por defecto es salir del modo restringido del gestor de censos
                         $_SESSION['admincensos']=false;
@@ -108,7 +112,7 @@ class Censos {
                 $accion = $_POST['accion'];
                 // Si desde un listado del gestor de participantes se envía el identificador de jornadas. Entonces:
                 // Establezco la variable sesion con el identificador de la jornada seleccionado en el listado
-                if (isset($_POST['idJornada'])) {$_SESSION['listado'] = $_POST['idJornada'];}
+                if (isset($_POST['idJornada'])) {$_SESSION['gcensos'] = $_POST['idJornada'];}
                 // Proceso la acción solicitadas por usuarios no administradores desde el gestor
                 switch ($accion) {
                     case "historico:detalles":
@@ -130,7 +134,7 @@ class Censos {
                     case "censo:registrar":
                         // Muestro la vista para añadir un registro censal a la plataforma
                         Censos::mostrarVistaAñadirRegistroCensal($smarty);
-                        break;
+                        break;                       
                     case "censo:asistencia":
                         // Muestro vista para la confirmación de asistencia de los participantes
                         Censos::mostrarVistaConfirmaciónAsistencia($smarty);
@@ -295,12 +299,12 @@ class Censos {
         if (!$permisosUsuario->hasRolDesconocidoPlataforma()) {
             // El usuario tiene un rol reconocido por la plataforma. Entonces:
             // Compruebo que el usuario loqueado eligió una jornada del listado
-            if (isset($_SESSION['listado'])) {   
+            if (isset($_SESSION['gcensos'])) {   
                 // Recupero el identificador de la jornada elegida por el usuario desde su sesion
-                $idJornada = $_SESSION['listado'];
+                $idJornada = $_SESSION['gcensos'];
                 // Desestablezco el identificador de jornada elegido por el usuario desde la sesion porque
                 // ya ha cumpplido su función aquí
-                unset($_SESSION['listado']);
+                unset($_SESSION['gcensos']);
                 // Recupero la jornada censal elegida por el usuario que desea consultar detalles del censo
                 $jornada = Jornada::consultarJornada($idJornada);
                 // Compruebo si la jornada elegida existe en la base de datos
@@ -339,7 +343,7 @@ class Censos {
                             // Determino si la jornada es validable por el usuario logueado
                             $validable=$jornada->esJornadaValidable($permisosUsuario);
                             // Emulo aquí que el usuario hace clic en el listado de jornadas
-                            $_SESSION['listado']=$idJornada;
+                            $_SESSION['gcensos']=$idJornada;
                             /* OBSERVACIONES: Se trata solución poco elegante pero funcional dado que mi inexpereciencia
                             en el desarrollo de aplicaciones web, ha hecho que no tenga en cuenta adecuamdamente la lógica
                             de navegación por las distintas interfaces del usuario tanto redirección como variables para el
@@ -439,10 +443,10 @@ class Censos {
             if (isset($_POST['idJornada'])) {
 
                 // Recupero el identificador de la jornada elegida por el usuario desde su sesion
-                $idJornada = $_SESSION['listado'];
+                $idJornada = $_SESSION['gcensos'];
                 // Desestablezco el identificador de jornada elegido por el usuario desde la sesion porque
                 // ya ha cumpplido su función aquí
-                unset($_SESSION['listado']);
+                unset($_SESSION['gcensos']);
                 // Recupero la jornada censal elegida por el usuario que desea cancelar el censo de aves
                 $jornada = Jornada::consultarJornada($idJornada);
                 // Compruebo si la jornada elegida existe en la base de datos
@@ -458,7 +462,7 @@ class Censos {
                         foreach($participantes as $participante) {
                             $listaParticipantes[]=$participante['usuario'];
                         }
-                        $participantes=implode("|", $listaParticipantes);
+                        $participantes=isset($listaParticipantes) ? implode("|", $listaParticipantes) : "No hay participantes inscritos";
                         // Genero el lugar donde se desarrolla la jornada donde se inscribe
                         $lugar=$observatorio->getNombreObservatorio() . " - " . $observatorio->getDireccionObservatorio() . 
                             " - " . $observatorio->getLocalidadObservatorio();
@@ -468,7 +472,7 @@ class Censos {
                         $horario=$fechaJornada->format('d-m-Y') . " (" . $jornada->getHoraInicioJornada() . " - " 
                             . $jornada->getHoraFinJornada() . ")";
                         // Recopilo la información de la plantilla para mostrar inscripción a una jornada
-                        $perfil = ['participantes' => $participantes, 'titulo' => $jornada->getTituloJornada(),
+                        $perfil = ['idJornada' => $idJornada,'participantes' => $participantes, 'titulo' => $jornada->getTituloJornada(),
                             'lugar' => $lugar, 'fecha' => $fechaJornada->format('d-m-Y'),'horario' => $horario, 
                             'observaciones' => $jornada->getInformacionJornada()];    
                         // Asigno las variables requeridas por la plantila de detalles de una jornada
@@ -515,7 +519,7 @@ class Censos {
         if ($permisosUsuario->hasPermisoGestorCensos() && isset($_SESSION['admincensos'])) {
             // El usuario logueado tiene permiso de acceso al modo restringido del gestor de censos. Entonces:
             // Compruebo que el usuario haya elegido una jornada del listado de la que desea iniciar el censo
-            if (isset($_SESSION['listado'])) {
+            if (isset($_SESSION['gcensos'])) {
                 // Establezco la configuración del mensaje de confirmación para el usuario autorizado
                 $mensaje = "Has solicitado finalizar el censo de una jornada de la plataforma";
                 $pregunta = "¿Estás seguro que quieres dar por finalizado a dicho censo?";
@@ -547,7 +551,7 @@ class Censos {
         if ($permisosUsuario->hasPermisoGestorCensos() && isset($_SESSION['admincensos'])) {
             // El usuario logueado tiene permiso de acceso al modo restringido del gestor de censos. Entonces:
             // Compruebo que el usuario haya elegido una jornada del listado de la que desea iniciar el censo
-            if (isset($_POST['idJornada'])) {
+            if (isset($_SESSION['gcensos'])) {
                 // Establezco la configuración del mensaje de confirmación para el usuario autorizado
                 $mensaje = "Has solicitado validar el censo de una jornada de la plataforma";
                 $pregunta = "¿Estás seguro que quieres validar dicho censo?";
@@ -582,12 +586,12 @@ class Censos {
         $permisosUsuario = $_SESSION['permisos'];
 
         // Compruebo si existe una jornada censal previamente elegida por el usuario logueado
-        if (isset($_SESSION['listado'])) {
+        if (isset($_SESSION['gcensos'])) {
             // Recupero el identificador de la jornada elegida por el usuario desde su sesion
-            $idJornada = $_SESSION['listado'];
+            $idJornada = $_SESSION['gcensos'];
             // Desestablezco el identificador de jornada elegido por el usuario desde la sesion porque
             // ya ha cumpplido su función aquí
-            unset($_SESSION['listado']);
+            unset($_SESSION['gcensos']);
             // Recupero la jornada censal elegida por el usuario que desea consultar detalles del censo
             $jornada = Jornada::consultarJornada($idJornada);
             // Evaluo si la jornada censal deseada es editable por el usuario logueado
@@ -595,7 +599,7 @@ class Censos {
             // Compruebo si la jornada elegida existe en la base de datos y el usuario loguerado tiene permisos de edición de censos
             if ($jornada instanceof Jornada && $jornadaEditable) {
                 // Emulo que el usuario logueado hizo clic en una jornada censal previamente
-                $_SESSION['listado']=$idJornada;
+                $_SESSION['gcensos']=$idJornada;
                 // Recupero el listado de participantes de la jornada censal deseada
                 $participantes=Participante::listarParticipantesJornadaCensal($idJornada);
                 // Asigno las variables requeridas por la plantila de detalles de una jornada
@@ -632,12 +636,12 @@ class Censos {
         $permisosUsuario = $_SESSION['permisos'];
 
         // Compruebo si existe una jornada censal previamente elegida por el usuario logueado
-        if (isset($_SESSION['listado'])) {
+        if (isset($_SESSION['gcensos'])) {
             // Recupero el identificador de la jornada elegida por el usuario desde su sesion
-            $idJornada = $_SESSION['listado'];
+            $idJornada = $_SESSION['gcensos'];
             // Desestablezco el identificador de jornada elegido por el usuario desde la sesion porque
             // ya ha cumpplido su función aquí
-            unset($_SESSION['listado']);
+            unset($_SESSION['gcensos']);
             // Recupero la jornada censal elegida por el usuario a la que desea añadir registros censales
             $jornada = Jornada::consultarJornada($idJornada);
             // Evaluo si la jornada censal deseada es editable por el usuario logueado
@@ -645,7 +649,7 @@ class Censos {
             // Compruebo si la jornada elegida existe en la base de datos y el usuario loguerado tiene permisos de edición de censos
             if ($jornada instanceof Jornada && $jornadaEditable) {
                 // Emulo que el usuario logueado hizo clic en una jornada censal previamente
-                $_SESSION['listado']=$idJornada;
+                $_SESSION['gcensos']=$idJornada;
                 // Recopilo la información de la plantilla para añadir registros censales a una jornada
                 $perfil = ['idJornada' => $idJornada, 'hora' => date('H:i:s')];
                 // Asigno las variables requeridas por la plantila de añadir registros censales a una jornada
@@ -680,12 +684,12 @@ class Censos {
         $permisosUsuario = $_SESSION['permisos'];
 
         // Compruebo si existe una jornada censal previamente elegida por el usuario logueado
-        if (isset($_SESSION['listado'])) {
+        if (isset($_SESSION['gcensos'])) {
             // Recupero el identificador de la jornada elegida por el usuario desde su sesion
-            $idJornada = $_SESSION['listado'];
+            $idJornada = $_SESSION['gcensos'];
             // Desestablezco el identificador de jornada elegido por el usuario desde la sesion porque
             // ya ha cumpplido su función aquí
-            unset($_SESSION['listado']);
+            unset($_SESSION['gcensos']);
             // Recupero la jornada censal elegida por el usuario que desea editar su registro censal
             $jornada = Jornada::consultarJornada($idJornada);
             // Evaluo si la jornada censal deseada es editable por el usuario logueado
@@ -705,7 +709,7 @@ class Censos {
                 // Compruebo si el registro censal deseado con su ave censada existen en la base de dato
                 if ($censo instanceof Censo && $ave instanceof Ave) {
                     // Emulo que el usuario logueado hizo clic en una jornada censal previamente
-                    $_SESSION['listado']=$idJornada;
+                    $_SESSION['gcensos']=$idJornada;
                     // Recopilo la información de la plantilla para añadir registros censales a una jornada
                     $perfil = ['idJornada' => $idJornada, 'especie' => $especie, 'hora' => $hora,
                         'familia' => $ave->getFamiliaAve()->getFamilia(), 'orden' => $ave->getFamiliaAve()->getOrden()->getOrden(),
@@ -751,12 +755,12 @@ class Censos {
         $permisosUsuario = $_SESSION['permisos'];
 
         // Compruebo si existe una jornada censal previamente elegida por el usuario logueado
-        if (isset($_SESSION['listado'])) {
+        if (isset($_SESSION['gcensos'])) {
             // Recupero el identificador de la jornada elegida por el usuario desde su sesion
-            $idJornada = $_SESSION['listado'];
+            $idJornada = $_SESSION['gcensos'];
             // Desestablezco el identificador de jornada elegido por el usuario desde la sesion porque
             // ya ha cumpplido su función aquí
-            unset($_SESSION['listado']);
+            unset($_SESSION['gcensos']);
             // Recupero la jornada censal elegida por el usuario que desea editar su registro censal
             $jornada = Jornada::consultarJornada($idJornada);
             // Evaluo si la jornada censal deseada es editable por el usuario logueado
@@ -776,7 +780,7 @@ class Censos {
                 // Compruebo si el registro censal deseado con su ave censada existen en la base de dato
                 if ($censo instanceof Censo && $ave instanceof Ave) {
                     // Emulo que el usuario logueado hizo clic en una jornada censal previamente
-                    $_SESSION['listado']=$idJornada;
+                    $_SESSION['gcensos']=$idJornada;
                     // Recopilo la información de la plantilla para añadir registros censales a una jornada
                     $perfil = ['idJornada' => $idJornada, 'especie' => $especie, 'hora' => $hora,
                         'familia' => $ave->getFamiliaAve()->getFamilia(), 'orden' => $ave->getFamiliaAve()->getOrden()->getOrden(),
@@ -857,12 +861,12 @@ class Censos {
         if ($permisosUsuario->hasPermisoGestorCensos() && isset($_SESSION['admincensos'])) {
             // El usuario logueado tiene permiso de acceso al modo restringido del gestor de censos. Entonces:
             // Compruebo que el usuario haya elegido una jornada del listado de la que desea iniciar el censo
-            if (isset($_POST['idJornada'])) {
+            if (isset($_SESSION['gcensos'])) {
                 // Recupero el identificador de la jornada elegida por el usuario desde su sesion
-                $idJornada = $_SESSION['listado'];
+                $idJornada = $_SESSION['gcensos'];
                 // Desestablezco el identificador de jornada elegido por el usuario desde la sesion porque
                 // ya ha cumpplido su función aquí
-                unset($_SESSION['listado']);
+                unset($_SESSION['gcensos']);
                 // Recupero la jornada censal elegida por el usuario que desea iniciar el censo de aves
                 $jornada = Jornada::consultarJornada($idJornada);
                 // Compruebo si la jornada elegida existe en la base de datos
@@ -877,7 +881,7 @@ class Censos {
                     // Actualizo la jornada en la base de datos de la plataforma
                     if ($jornada->actualizarJornada()) {
                         // Emulo aquí que el usuario hace clic en el listado de jornadas
-                        $_SESSION['listado']=$idJornada;
+                        $_SESSION['gcensos']=$idJornada;
                         /* OBSERVACIONES: Se trata solución poco elegante pero funcional dado que mi inexpereciencia
                         en el desarrollo de aplicaciones web, ha hecho que no tenga en cuenta adecuamdamente la lógica
                         de navegación por las distintas interfaces del usuario tanto redirección como variables para el
@@ -925,12 +929,12 @@ class Censos {
         if ($permisosUsuario->hasPermisoGestorCensos() && isset($_SESSION['admincensos'])) {
             // El usuario logueado tiene permiso de acceso al modo restringido del gestor de censos. Entonces:
             // Compruebo que el usuario haya elegido una jornada del listado de la que desea cancelar el censo
-            if (isset($_POST['idJornada'])) {
+            if (isset($_SESSION['gcensos'])) {
                 // Recupero el identificador de la jornada elegida por el usuario desde su sesion
-                $idJornada = $_SESSION['listado'];
+                $idJornada = $_SESSION['gcensos'];
                 // Desestablezco el identificador de jornada elegido por el usuario desde la sesion porque
                 // ya ha cumpplido su función aquí
-                unset($_SESSION['listado']);
+                unset($_SESSION['gcensos']);
                 // Recupero la jornada censal elegida por el usuario que desea cancelar el censo de aves
                 $jornada = Jornada::consultarJornada($idJornada);
                 // Compruebo si la jornada elegida existe en la base de datos
@@ -988,12 +992,12 @@ class Censos {
         if ($permisosUsuario->hasPermisoGestorCensos() && isset($_SESSION['admincensos'])) {
             // El usuario logueado tiene permiso de acceso al modo restringido del gestor de censos. Entonces:
             // Compruebo que el usuario haya elegido una jornada del listado de la que desea finalizar el censo
-            if (isset($_SESSION['listado'])) {
+            if (isset($_SESSION['gcensos'])) {
                 // Recupero el identificador de la jornada elegida por el usuario desde su sesion
-                $idJornada = $_SESSION['listado'];
+                $idJornada = $_SESSION['gcensos'];
                 // Desestablezco el identificador de jornada elegido por el usuario desde la sesion porque
                 // ya ha cumpplido su función aquí
-                unset($_SESSION['listado']);
+                unset($_SESSION['gcensos']);
                 // Recupero la jornada censal elegida por el usuario que desea finalizar el censo de aves
                 $jornada = Jornada::consultarJornada($idJornada);
                 // Compruebo si el usuario responsable de la jornada censal confirmado asistencia                
@@ -1014,8 +1018,8 @@ class Censos {
                             "/plataforma/backoffice.php?comando=censos:default");
                     } else {
                         // De lo contario, lanzo una excepción para notificar al usuario que NO es 
-                        // posible cancelar el censo de aves de la jornada deseada
-                        throw new AppException(message: "No es posible cancelar el censo de aves en la jornada deseada!!!
+                        // posible finalizar el censo de aves de la jornada deseada
+                        throw new AppException(message: "No es posible finalizar el censo de aves en la jornada deseada!!!
                         Conctacte con los administradores para mayor información. ¡Gracias por participar!",
                         urlAceptar: "/plataforma/backoffice.php?comando=core:email:vista");  
                     }
@@ -1025,7 +1029,7 @@ class Censos {
                     $_SESSION['accion']="censo:sinasistencia";
                     // Emulo que el usuario logueado vuelve a hacer clic en el historico para abrir la vista
                     // de censos de aves en la jornada cuya finalización ha sido fallida
-                    $_SESSION['listado']=$idJornada;
+                    $_SESSION['gcensos']=$idJornada;
                     // lanzo una excepción para notificar al usuario que la
                     // jornada censal deseada no existe en la base de datos
                     throw new AppException(message: "Jornada censal no disponible o asistencia sin confirmar!!!",
@@ -1058,12 +1062,12 @@ class Censos {
         if ($permisosUsuario->hasPermisoGestorCensos() && isset($_SESSION['admincensos'])) {
             // El usuario logueado tiene permiso de acceso al modo restringido del gestor de censos. Entonces:
             // Compruebo que el usuario haya elegido una jornada del listado de la que desea validar el censo
-            if (isset($_POST['idJornada'])) {
+            if (isset($_SESSION['gcensos'])) {
                 // Recupero el identificador de la jornada elegida por el usuario desde su sesion
-                $idJornada = $_SESSION['listado'];
+                $idJornada = $_SESSION['gcensos'];
                 // Desestablezco el identificador de jornada elegido por el usuario desde la sesion porque
                 // ya ha cumpplido su función aquí
-                unset($_SESSION['listado']);
+                unset($_SESSION['gcensos']);
                 // Recupero la jornada censal elegida por el usuario que desea validar el censo de aves
                 $jornada = Jornada::consultarJornada($idJornada);
                 // Compruebo si la jornada elegida existe en la base de datos
@@ -1159,12 +1163,12 @@ class Censos {
         $permisosUsuario = $_SESSION['permisos'];
 
         // Compruebo si existe una jornada censal previamente elegida por el usuario logueado
-        if (isset($_SESSION['listado'])) {
+        if (isset($_SESSION['gcensos'])) {
             // Recupero el identificador de la jornada elegida por el usuario desde su sesion
-            $idJornada = $_SESSION['listado'];
+            $idJornada = $_SESSION['gcensos'];
             // Desestablezco el identificador de jornada elegido por el usuario desde la sesion porque
             // ya ha cumpplido su función aquí
-            unset($_SESSION['listado']);
+            unset($_SESSION['gcensos']);
             // Recupero la jornada censal elegida por el usuario que desea consultar detalles del censo
             $jornada = Jornada::consultarJornada($idJornada);
             // Evaluo si la jornada censal deseada es editable por el usuario logueado
@@ -1192,13 +1196,13 @@ class Censos {
                     // para ello compruebo si hay o no actualizaciones de asistencia fallidas.
                     if ($fallidas>0) {
                         // Lanzo una excepción para notificar que el usuario que hubo actualizaciones de asistencia fallidas
-                        throw new AppException(message: "Hay actualizaciones de asistencia fallidas!!! Por favor, contacte con los administradores", 
-                        urlAceptar: "/plataforma/backoffice.php?comando=core:email:vista");
+                        throw new AppException(message: "Hay actualizaciones de asistencia sin cambios!!! Si detecta fallos notifiquelo ¡Gracias!", 
+                        urlAceptar: "/plataforma/backoffice.php?comando=censos:default");
                     } else {
                         // Emulo que el usuario logueazo solitico como acción mostrar la vista de censo de aves
                         $_SESSION['accion']="historicos:edicion";                        
                         // Emulo que el usuario logueado hizo clic en una jornada censal previamente
-                        $_SESSION['listado']=$idJornada;
+                        $_SESSION['gcensos']=$idJornada;
                         // Notifico al usuario que la actualización de la inscripción fue existosa
                         ErrorController::mostrarMensajeInformativo($smarty, "Confirmación asistencia actualizada con éxito!!", 
                             "/plataforma/backoffice.php?comando=censos:default");
@@ -1230,12 +1234,12 @@ class Censos {
         $permisosUsuario = $_SESSION['permisos'];
 
         // Compruebo si existe una jornada censal previamente elegida por el usuario logueado
-        if (isset($_SESSION['listado'])) {
+        if (isset($_SESSION['gcensos'])) {
             // Recupero el identificador de la jornada elegida por el usuario desde su sesion
-            $idJornada = $_SESSION['listado'];
+            $idJornada = $_SESSION['gcensos'];
             // Desestablezco el identificador de jornada elegido por el usuario desde la sesion porque
             // ya ha cumpplido su función aquí
-            unset($_SESSION['listado']);
+            unset($_SESSION['gcensos']);
             // Recupero la jornada censal elegida por el usuario que desea consultar detalles del censo
             $jornada = Jornada::consultarJornada($idJornada);
             // Evaluo si la jornada censal deseada es editable por el usuario logueado
@@ -1243,7 +1247,7 @@ class Censos {
             // Compruebo si la jornada elegida existe en la base de datos y el usuario loguerado tiene permisos de edición de censos
             if ($jornada instanceof Jornada && $jornadaEditable) {
                 // Recupero los datos del nuevo registro censal desde su formulario
-                $datosRegistroCensal=[':idJornada' => filter_input(INPUT_POST, 'frm-idJornada'), ':especie' => filter_input(INPUT_POST, 'frm-especie'),
+                $datosRegistroCensal=[':idJornada' => filter_input(INPUT_POST, 'frm-idjornada'), ':especie' => filter_input(INPUT_POST, 'frm-especie'),
                     ':hora' => filter_input(INPUT_POST, 'frm-hora'), ':cantidad' => filter_input(INPUT_POST, 'frm-cantidad'),
                     ':nubosidad' => filter_input(INPUT_POST, 'frm-nubosidad'), ':visibilidad' => filter_input(INPUT_POST, 'frm-visibilidad'),
                     ':dirViento' => filter_input(INPUT_POST, 'frm-dirviento'), ':velViento' => filter_input(INPUT_POST, 'frm-velviento'),
@@ -1258,16 +1262,16 @@ class Censos {
                     // Compruebo que la nueva ave se creó correctamente
                     if ($rca) {
                         // Emulo la elección del usuario logueado de una acción por haberla solicitado previamente
-                        $_SESSION['accion']="historico:detalles";
+                        $_SESSION['accion']="censo:volver";
                         // Emulo que el usuario logueado hizo clic en una jornada censal previamente
-                        $_SESSION['listado']=$idJornada;                        
+                        $_SESSION['gcensos']=$idJornada;                        
                         // Notifico al usuario el resultado de registrar una nueva ave en la plataforma
                         ErrorController::mostrarMensajeInformativo($smarty, "Nueva registro censal registrado con éxito!!", "/plataforma/backoffice.php?comando=censos:default");
                     } else {
                         // Emulo la elección del usuario logueado de una acción por haberla solicitado previamente
-                        $_SESSION['accion']="historico:detalles";
+                        $_SESSION['accion']="censo:volver";
                         // Emulo que el usuario logueado hizo clic en una jornada censal previamente
-                        $_SESSION['listado']=$idJornada;                        
+                        $_SESSION['gcensos']=$idJornada;                        
                         // Lanzo excepción para notificar al usuario que hubo algún problema durante el proceso de registro
                         throw new AppException("Fallo al registrar un nuevo registro censal en la plataforma","/plataforma/backoffice.php?comando=censos:default");
                     } 
@@ -1276,9 +1280,9 @@ class Censos {
                     // Si se produce una violación de restricción al registrarlos
                     if ($ae->getCode() === AppException::DB_CONSTRAINT_VIOLATION_IN_QUERY) {
                         // Emulo la elección del usuario logueado de una acción por haberla solicitado previamente
-                        $_SESSION['accion']="historico:detalles";
+                        $_SESSION['accion']="censo:volver";
                         // Emulo que el usuario logueado hizo clic en una jornada censal previamente
-                        $_SESSION['listado']=$idJornada;                        
+                        $_SESSION['gcensos']=$idJornada;                        
                         // Notifico al usuario que el registro censal que se desea crear ya existe en la plataforma
                         ErrorController::handleException($ae, $smarty, '/plataforma/backoffice.php?comando=censos:default', "Este registro censal ya esta registrado!!");
                     }
@@ -1309,12 +1313,12 @@ class Censos {
         $permisosUsuario = $_SESSION['permisos'];
 
         // Compruebo si existe una jornada censal previamente elegida por el usuario logueado
-        if (isset($_SESSION['listado'])) {
+        if (isset($_SESSION['gcensos'])) {
             // Recupero el identificador de la jornada elegida por el usuario desde su sesion
-            $idJornada = $_SESSION['listado'];
+            $idJornada = $_SESSION['gcensos'];
             // Desestablezco el identificador de jornada elegido por el usuario desde la sesion porque
             // ya ha cumpplido su función aquí
-            unset($_SESSION['listado']);
+            unset($_SESSION['gcensos']);
             // Recupero la jornada censal elegida por el usuario que desea consultar detalles del censo
             $jornada = Jornada::consultarJornada($idJornada);
             // Evaluo si la jornada censal deseada es editable por el usuario logueado
@@ -1342,17 +1346,17 @@ class Censos {
                 // Actualizo el registro censal y notifico al usuario del resultado
                 if ($registroCensal->actualizarRegistroCensal()) {
                     // Emulo la elección del usuario logueado de una acción por haberla solicitado previamente
-                    $_SESSION['accion']="historico:detalles";
+                    $_SESSION['accion']="censo:volver";
                     // Emulo que el usuario logueado hizo clic en una jornada censal previamente
-                    $_SESSION['listado']=$idJornada;                                   
+                    $_SESSION['gcensos']=$idJornada;                                   
                     // Notifico al usuario que la actualización del registro censal fue existosa
                     ErrorController::mostrarMensajeInformativo($smarty, "Registro censal actualizado con éxito!!", 
                         "/plataforma/backoffice.php?comando=censos:default");
                 } else {
                     // Emulo la elección del usuario logueado de una acción por haberla solicitado previamente
-                    $_SESSION['accion']="historico:detalles";
+                    $_SESSION['accion']="censo:volver";
                     // Emulo que el usuario logueado hizo clic en una jornada censal previamente
-                    $_SESSION['listado']=$idJornada;                      
+                    $_SESSION['gcensos']=$idJornada;                      
                     // Lanzo una excepción para indicar que no es posible actualizar el registro censal
                     throw new AppException(message: "No es posible actualizar el registro censal", 
                         urlAceptar: "/plataforma/backoffice.php?comando=censos:default");                    
@@ -1379,12 +1383,12 @@ class Censos {
         $permisosUsuario = $_SESSION['permisos'];
 
         // Compruebo si existe una jornada censal previamente elegida por el usuario logueado
-        if (isset($_SESSION['listado'])) {
+        if (isset($_SESSION['gcensos'])) {
             // Recupero el identificador de la jornada elegida por el usuario desde su sesion
-            $idJornada = $_SESSION['listado'];
+            $idJornada = $_SESSION['gcensos'];
             // Desestablezco el identificador de jornada elegido por el usuario desde la sesion porque
             // ya ha cumpplido su función aquí
-            unset($_SESSION['listado']);
+            unset($_SESSION['gcensos']);
             // Recupero la jornada censal elegida por el usuario que desea consultar detalles del censo
             $jornada = Jornada::consultarJornada($idJornada);
             // Evaluo si la jornada censal deseada es editable por el usuario logueado
@@ -1400,17 +1404,17 @@ class Censos {
                 // Elimino el registro censal y notifico al usuario del resultado
                 if ($registroCensal->eliminarRegistroCensal()) {
                     // Emulo la elección del usuario logueado de una acción por haberla solicitado previamente
-                    $_SESSION['accion']="historico:detalles";
+                    $_SESSION['accion']="censo:volver";
                     // Emulo que el usuario logueado hizo clic en una jornada censal previamente
-                    $_SESSION['listado']=$idJornada;                                   
+                    $_SESSION['gcensos']=$idJornada;                                   
                     // Notifico al usuario que la eliminación del registro censal fue existosa
                     ErrorController::mostrarMensajeInformativo($smarty, "Registro censal eliminado con éxito!!", 
                         "/plataforma/backoffice.php?comando=censos:default");
                 } else {
                     // Emulo la elección del usuario logueado de una acción por haberla solicitado previamente
-                    $_SESSION['accion']="historico:detalles";
+                    $_SESSION['accion']="censo:volver";
                     // Emulo que el usuario logueado hizo clic en una jornada censal previamente
-                    $_SESSION['listado']=$idJornada;                      
+                    $_SESSION['gcensos']=$idJornada;                      
                     // Lanzo una excepción para indicar que no es posible eliminar el registro censal
                     throw new AppException(message: "No es posible eliminar el registro censal", 
                         urlAceptar: "/plataforma/backoffice.php?comando=censos:default");                    

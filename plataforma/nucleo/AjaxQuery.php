@@ -71,10 +71,7 @@ class AjaxQuery {
                     AjaxQuery::prepararDatosAjaxVistaRegistroAve();
                     break;
                 case "censos:añadir":
-                    AjaxQuery::prepararDatosAjaxVistaAñadirEditarRegistrosCensales();
-                    break;
-                case "censos:editar":
-                    AjaxQuery::prepararDatosAjaxVistaAñadirEditarRegistrosCensales();
+                    AjaxQuery::prepararDatosAjaxVistaAñadirRegistrosCensales();
                     break;
                 case "censos:añadir:familiaorden":
                     AjaxQuery::prepararDatosAjaxFamiliaOrdenEdicionRegistroCensal($seleccion);
@@ -274,7 +271,7 @@ class AjaxQuery {
      *
      * @return void No devuelve valor alguno
      */    
-    private static function prepararDatosAjaxVistaAñadirEditarRegistrosCensales() {
+    private static function prepararDatosAjaxVistaAñadirRegistrosCensales() {
         // Defino el array asociativo con los datos de la respuesta a la petición Ajax
         $datosRespuestaAjax = [];
         // Obtengo las aves disponibles en la plataforma

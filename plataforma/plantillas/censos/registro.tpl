@@ -187,8 +187,8 @@
                         </div>
                         <div class="campos-gestor">
                             <p class="muyextraextraextralargo">
-                                <label for="frm-comentarios">Comentarios:&nbsp;</label>
-                                <textarea name="frm-comentarios" id="frm-comentarios" rows="3" maxleng="200" placeholder="Deje comentarios adicionales a la observacion (Max: 200 caracteres)..." required></textarea>
+                                <label for="frm-comentario">Comentarios:&nbsp;</label>
+                                <textarea name="frm-comentario" id="frm-comentarios" rows="3" maxleng="200" placeholder="Deje comentarios adicionales a la observacion (Max: 200 caracteres)..." required></textarea>
                             </p>
                         </div>                                                 
                     </div>
@@ -197,7 +197,7 @@
                 <form name="volverCensoAves" id="volverCensoAves" method="post" action="/plataforma/backoffice.php?comando=censos:default"></form>
                 <div class="botonera">                
                     <button class="boton-accion-gestor" form="volverCensoAves" type="submit" name="accion" value="censo:volver" title="Volver al censo">Volver</button>
-                    <button class="boton-accion-gestor" form="volverCensoAves" type="submit" name="accion" value="censo:añadir" title="Añadir registro censal">Añadir</button>             
+                    <button class="boton-accion-gestor" form="añadir-registro-censal" type="submit" name="accion" value="censos:registrar:procesa" title="Añadir registro censal">Añadir</button>             
                 </div>
             </article>
         </section>

@@ -41,12 +41,7 @@
                         <!-- Campos del formulario para añadir registros censales de la jornada -->
                         <div class="campos-gestor">
                             <p class="corto"><span>Hora</span>:&nbsp;{$perfil.hora}</p>
-                            <p class="extralargo">
-                                <label for="frm-especie">Especie:&nbsp;</label>
-                                <select name="frm-especie" id="frm-especie" required>
-                                    <option value="{$perfil.especie}" selected>{$perfil.especie}</option>
-                                </select>
-                            </p>
+                            <p class="extralargo"><span>Especie</span>:&nbsp;{$perfil.especie}</p>
                             <p id="frm-familia" class="largo"><span>Familia</span>:&nbsp;{$perfil.familia}</p>
                         </div>
                         <div class="campos-gestor">
@@ -197,7 +192,7 @@
                 <form name="volverCensoAves" id="volverCensoAves" method="post" action="/plataforma/backoffice.php?comando=censos:default"></form>
                 <div class="botonera">                
                     <button class="boton-accion-gestor" form="volverCensoAves" type="submit" name="accion" value="censo:volver" title="Volver al censo">Volver</button>
-                    <button class="boton-accion-gestor" form="volverCensoAves" type="submit" name="accion" value="censo:actualizar" title="Actualizar registro censal">Actualizar</button>              
+                    <button class="boton-accion-gestor" form="edicion-registro-censal" type="submit" name="accion" value="censo:actualizar" title="Actualizar registro censal">Actualizar</button>              
                 </div>
             </article>
         </section>

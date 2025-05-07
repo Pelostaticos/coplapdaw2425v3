@@ -56,8 +56,8 @@
                         <p class="largo"><span>Altura vuelo</span>:&nbsp;{$perfil.altvuelo}</p>
                     </div>
                     <div class="campos-gestor">
-                        <p class="extralargo"><span>Formación de vuelo</span>:&nbsp;{$perfil.formavuelo}</p>
-                        <p class="extralargo"><span>Distancia a costa</span>:&nbsp;{$perfil.distcosta}</p>
+                        <p class="extralargo"><span>Formación vuelo</span>:&nbsp;{$perfil.formavuelo}</p>
+                        <p class="extralargo"><span>Distancia costa</span>:&nbsp;{$perfil.distcosta}</p>
                     </div>
                     <div class="campos-gestor">
                         <p class="extraextraextralargo"><span>Comentario</span>:&nbsp;{$perfil.comentario}</p>

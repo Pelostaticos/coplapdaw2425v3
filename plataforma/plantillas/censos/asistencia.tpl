@@ -64,7 +64,7 @@
                                         <!-- Fila con los datos de cada paraticipante al censo de aves  -->
                                         <tr>
                                             <!-- Celdas con datos de cada participante  al censo de aves -->
-                                            <td><input type="checkbox" id="{$fila.hashUsuario}" name="asistencia[]" value="{$fila.hashUsuario}" {if $fila.asiste}checked{/if} required></td>
+                                            <td><input type="checkbox" id="{$fila.hashUsuario}" name="asistencia[]" value="{$fila.hashUsuario}" {if $fila.asiste}checked{/if}></td>
                                             <td>{$fila.usuario}</td>
                                             <td>{$fila.localidad}</td>
                                             <td>{$fila.inscrito|date_format:"%d-%m-%Y"}</td>

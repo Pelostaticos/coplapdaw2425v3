@@ -582,67 +582,72 @@ function validarAñadirActualizarRegistroCensal(event) {
   let errores = [];
 
   // Valido que la especie del ave no esté vacía y tenga formato alfabético
-  const esAlfabeticoInglesEspañol=/^[a-zA-ZáéíóúüñÁÉÍÓÚÜÑ]+$/;
-  if (!especieAve.trim() || esAlfabeticoInglesEspañol.test(especieAve)) {
+  const esAlfabeticoInglesEspañol=/^[a-zA-ZáéíóúüñÁÉÍÓÚÜÑ\s]+$/;
+  if (!especieAve.trim() || !esAlfabeticoInglesEspañol.test(especieAve)) {
     errores.push('Por favor, establezca una especie de ave correcta!!!');
   }
 
   // Valido que la hora del resgitro censal tiene el formato correcto
   const esHora24=/^([01]\d|2[0-3]):([0-5]\d):([0-5]\d)$/;
-  if (!horaregistroCensal.trim() || esHora24.test(horaregistroCensal)) {
+  if (!horaregistroCensal.trim() || !esHora24.test(horaregistroCensal)) {
     errores.push('Por favor, establezca una hora de registro censal correcta!!! (HH:MM:SS para 24 horas)')
   }
 
   // Valido que la cantidad de aves observadas en el registro censal es númerico
   const esNumerico=/^[0-9]+$/;
-  if (!cantidadAves.trim() || esNumerico.test(cantidadAves)) {
+  if (!cantidadAves.trim() || !esNumerico.test(cantidadAves)) {
     errores.push('Por favor, establezca una cantidad de ave entera positiva no igual a cero!!!');    
   }
 
   // Valido que la nubosidad asociada al resgitro censal tiene los códigos correctos
-  if (!nubosidad.trim() || codigosNubosidad.includes(nubosidad)) {
+  if (!nubosidad.trim() || !codigosNubosidad.includes(nubosidad)) {
     errores.push('Por favor, establezca un código de nubosidad correcto!!!');        
   }
 
   // Valido que la visibilidad asociada al resgitro censal tiene los códigos correctos
-  if (!visibilidad.trim() || codigosVisibilidad.includes(visibilidad)) {
+  if (!visibilidad.trim() || !codigosVisibilidad.includes(visibilidad)) {
     errores.push('Por favor, establezca un código de visibilidad correcto!!!');        
   }  
 
   // Valido que la dirección del viento asociada al resgitro censal tiene los códigos correctos
-  if (!dirViento.trim() || codigosDirViento.includes(dirViento)) {
+  if (!dirViento.trim() || !codigosDirViento.includes(dirViento)) {
     errores.push('Por favor, establezca un código de dirección del viento correcto!!!');        
   }   
   
   // Valido que la velocidad del viento asociada al resgitro censal tiene los códigos correctos
-  if (!velViento.trim() || codigosVelViento.includes(velViento)) {
+  if (!velViento.trim() || !codigosVelViento.includes(velViento)) {
     errores.push('Por favor, establezca un código de velocidad del viento correcto!!!');        
   } 
 
   // Valido que la dirección de procedencia del ave asociada al resgitro censal tiene los códigos correctos
-  if (!procedencia.trim() || codigosProcedenciaDestino.includes(procedencia)) {
+  if (!procedencia.trim() || !codigosProcedenciaDestino.includes(procedencia)) {
     errores.push('Por favor, establezca un código de dirección de procedencia del ave correcto!!!');        
   }  
 
   // Valido que la dirección de destino del ave asociada al resgitro censal tiene los códigos correctos
-  if (!destino.trim() || codigosProcedenciaDestino.includes(destino)) {
+  if (!destino.trim() || !codigosProcedenciaDestino.includes(destino)) {
     errores.push('Por favor, establezca un código de dirección de destino del ave correcto!!!');        
   }  
   
   // Valido que la altura de vuelo del ave asociada al resgitro censal tiene los códigos correctos
-  if (!altVuelo.trim() || codigosAlturaVuelo.includes(altVuelo)) {
+  if (!altVuelo.trim() || !codigosAlturaVuelo.includes(altVuelo)) {
     errores.push('Por favor, establezca un código de altura de vuelo del ave correcto!!!');        
   }
   
   // Valido que la formacion de vuelo del ave asociada al resgitro censal tiene los códigos correctos
-  if (!formaVuelo.trim() || codigosFormacionVuelo.includes(formaVuelo)) {
+  if (!formaVuelo.trim() || !codigosFormacionVuelo.includes(formaVuelo)) {
     errores.push('Por favor, establezca un código de formacion de vuelo del ave correcto!!!');        
   }   
 
   // Valido que la distancia a costa del ave asociada al resgitro censal tiene los códigos correctos
-  if (!distCosta.trim() || codigosDistanciaCosta.includes(distCosta)) {
+  if (!distCosta.trim() || !codigosDistanciaCosta.includes(distCosta)) {
     errores.push('Por favor, establezca un código de distancia a costa del ave correcto!!!');        
   } 
+
+  // Inicializar comentario con el valor por defecto
+  if (!comentario.trim()) {
+    document.getElementById('frm-comentario').value = "Ninguno";
+  }  
 
   // Si se detectan error detengo el envio del formulario y se los notifico al usuario.
   if (errores.length > 0) {
@@ -664,7 +669,6 @@ const validadoresFormularios = {'contactenos': validarContactenos, 'login': vali
 // D.1) Cargo el manipulador de evento para válidar el(los) formulario(s) presente en la página actual.
 const formularios = document.querySelectorAll('form');
 formularios.forEach(formulario => {
-  console.info(formulario.id);
   // Compruebo si alguno de los formularios presentes en la página actual tiene validador.
   if (validadoresFormularios.hasOwnProperty(formulario.id)) {
     console.info("Has encontrado al formulario en la página... " + formulario.id)

@@ -49,6 +49,7 @@
                 <div class="contenido-gestor">
                     <!-- Formulario para exponer los motivos de cancelación de la jornada censal -->
                     <form name="cancelarCensoAves" id="cancelarCensoAves" method="post" action="/plataforma/backoffice.php?comando=censos:default">
+                        <input type="hidden" name="idJornada" value="{$perfil.idJornada}">
                         <h2 class="subtitulo-contenido-gestor">Confirmación de cancelación censo aves</h2>
                         <p class="texto-contenido-gestor">Para poder cancelar la jornada censal, le pedimos que explique detalladamente las razones de su decisión 
                         en el siguiente formulario. Esta información es importante para la gestión y seguimiento de las jornadas. Si has llegado por error haz clic en rechazar. ¡Muchas gracias por participar!</p>
