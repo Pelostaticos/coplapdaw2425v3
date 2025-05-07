@@ -22,9 +22,9 @@ namespace correplayas\modelo;
 // Defino los espacios de mombres que voy a utilizar en esta clase
 
 use correplayas\excepciones\AppException;
+use correplayas\modelo\Participante;
 use \correplayas\nucleo\Core;
 use DateTime;
-use Exception;
 
 /**
  * Clase del modelo de datos para trabajar con Jornadas
@@ -241,6 +241,76 @@ class Jornada {
     public function setControlAsistenciaJornada($asistencia) {
         $this->asistencia=$asistencia;
     }        
+
+    /**
+     * Método para comprobar que una jornada está iniciada al censo de aves
+     *
+     * @return boolean Verdadero cuando la jornada está iniciada al censo de aves
+     *                 Falso cuando la jornada NO está iniciada al censo de aves
+     */
+    public function esJornadaIniciada(): bool {
+        return $this->estado==='CERRADA' && ($this->asistencia===0 ? true : false);
+    }
+
+    /**
+      * Método para comprobar si una jornada censal es censable por el usuario
+      *
+      * @param Rol $permisosUsuaerioLogueado Permisos del usuario logueado
+      * @return boolean Verdadero cuando la jornada censal es censable por el usuario
+      *                 Falso cuando la jornada censal NO es censable por el usuario      
+      */
+    public function esJornadaCensable($permisosUsuarioLogueado): bool {
+
+        /* COORDINADORES: ¿Cuando pueden censar? 
+            >> Obviamente tiene permiso para acceder al modo restringido del gestor de censos
+            >> La jornada elegida tiene el estado de cerrada.
+            >> La jornada elegida NO tiene confirmada la asistencia.
+            >> La fecha actual coincide con la fecha de la jornada deseada
+        */
+
+        $censaCoordinador = $permisosUsuarioLogueado->hasPermisoGestorCensos() && 
+            $this->esJornadaIniciada() && date('Y-m-d') === $this->fecha;
+
+        /* ADMINISTRADORES: ¿Cuando pueden censar?
+            >> Tiene permiso para acceder al modo restringido del gestor censos
+            >> Siempre que la jornada elegida tenga el estado de cerrada.            
+        ?*/
+
+        $censaAdministrador = $permisosUsuarioLogueado->hasPermisoGestorCensos() && $this->estado==='CERRADA';
+
+        // Evaluo si se cumplen los requisitos para censar una determinada jornada
+        return ($censaCoordinador || $censaAdministrador);
+
+    }
+
+    /**
+     * Método para comprobar que una jornada es validable al censo de aves finalizado
+     *
+     * @param Rol $persmisosUsuarioLogueado Permisos del usuario logueado
+     * @return boolean Verdadero cuando la jornada es validable a un censo de aves finalizado
+     *                 Falso cuando la jornada NO es validable a un censo de aves finalizado
+     */
+    public function esJornadaValidable($persmisosUsuarioLogueado): bool {
+
+        /* Una jornada es validable cuando:
+            >> A) El usuario logueado tiene el rol de administrador.
+            >> B) La jornada censal tiene el estado de CERRADA.
+            >> C) La jornada censal tiene confirmada la asistencia
+            Sólo entonces un administrador puede validar un censo y cerrarlo oficialmente a edición.
+        */
+        return $persmisosUsuarioLogueado->hasPermisoAdministradorGestor() && $this->estado==='CERRADA' && 
+            ($this->asistencia===1 ? true : false);
+    }
+
+    /**
+     * Método para comprobar que la jornada tiene inscritos a usuarios participantes
+     *
+     * @return boolean Verdadero cuando la jornada tiene usuarios participantes inscritos
+     *                 Falso cuando la jornada NO tiene usuarios participantes inscritos
+     */
+    public function tieneJornadaParticipantes(): bool {
+        return count(Participante::listarParticipantesJornadaCensal($this->idJornada))>0;
+    }
 
     // E) Defino los métodos estáticos de la clase Jornada
 

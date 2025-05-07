@@ -24,6 +24,7 @@ namespace correplayas;
 require_once(__DIR__ . '/config/config-inc.php');
 require_once(__DIR__ . '/excepciones/AppException.php');
 require_once(__DIR__ . '/modelo/Ave.php');
+require_once(__DIR__ . '/modelo/Censo.php');
 require_once(__DIR__ . '/modelo/Familia.php');
 require_once(__DIR__ . '/modelo/Jornada.php');
 require_once(__DIR__ . '/modelo/Localidad.php');
@@ -259,14 +260,54 @@ try {
                 Participantes::filtrarInscripcionesParticipantesPlataforma($smarty);
                 break;
             case "censos:default":
+                // Compruebo si hay acción establecida en la sesión del usuario
+                if (isset($_SESSION['accion'])) {
+                    // Hay una acción establecida en la variable de sesión del usuario. Entonces:
+                    // Simulo un POST de una acción espécifica del gestor de CENSOS que es
+                    // solicitada desde el propio código de procesamiento de una acción previa.
+                    // EJEMPLOS: Acciones específicas de actualizar, eliminar, finalizar de la plataforma.
+                    //           donde ambos al concluir su procesamiento piden volver al histórico de censos
+                    // MOTIVO: Mi inexperiencia en el desarrollo de aplicaciones web tan complejas, me ha hecho que a priori
+                    // no contemplase todos los casos posibles de redirecciones que necesitaria el usuario en fase de diseño,
+                    // y por ello esta solución parcial para dar funcionalidad al gestor y poder continuar con el desarrollo.
+                    $_POST['accion']=$_SESSION['accion'];
+                    // Desestablezco la variable acción de la sesión de usuario porque aquí ya cumplió su función
+                    unset($_SESSION['accion']);
+                }                
                 // Solicito al controlador de censos que muestre las vista por defecto según rol del usuario
                 Censos::default($smarty);
-                // OBSERVACIONES: El gestor de censos no se encuentra implementado por falta de tiempo
-                break;                
+                break;
+            case "censos:iniciar:procesa":
+                // Solicito al controlador de censos que procese el inicio de un censo de aves en la plataforma
+                Censos::iniciarCensosAvesPlatforma($smarty);
+                break;              
+            case "censos:finalizar:procesa":
+                // Solicito al controlador de censos que procese la finalización de un censo de aves en la plataforma
+                Censos::finalizarCensosAvesPlatforma($smarty);
+                break;
+            case "censos:validar:procesa":
+                // Solicito al controlador de censos que procese la validación  de un censo de aves en la plataforma
+                Censos::validarCensosAvesPlatforma($smarty);
+                break;
+            case "censos:registrar:procesa":
+                // Solicito al controlador de censos que procese un nuevo registro censal de aves en la plataforma
+                Censos::AñadirRegistroCensal($smarty);
+                break;                 
+            case "censos:actualizar:procesa":
+                // Solicito al controlador de censos que procese la actualización de un registro censal de la plataforma
+                Censos::actualizarRegistroCensal($smarty);
+                break;
+            case "censos:eliminar:procesa":
+                // Solicito al controlador de censos que procese la eliminación de un registro censal de la plataforma
+                Censos::eliminarRegistroCensal($smarty);
+                break;
+            case "censos:filtrar":
+                // Solicito al controlador de censos que procese el filtrado del historicos de censos de la plataforma
+                Censos::filtrarCensosAvesPlataforma($smarty);
+                break;
             case "aves:default":
                 // Solicito al controlador de aves que muestre las vista por defecto según rol del usuario
                 Aves::default($smarty);
-                // OBSERVACIONES: El gestor de censos no se encuentra implementado por falta de tiempo
                 break;
             case "aves:filtrar":
                 // Solicirto al controlador de aves que filtre el listado de aves disponibles en la plataforma

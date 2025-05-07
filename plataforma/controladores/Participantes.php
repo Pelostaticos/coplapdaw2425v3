@@ -257,6 +257,7 @@ class Participantes {
      *
      * @param Smarty $smarty Objeto que contiene al motor de plantillas Smarty
      * @return void No devuelve valor alguno
+     * @throws AppException Excepción cuando existe algún problema de permisos del usuario
      */
     private static function mostrarHistoricoParticipacionUsuarioPlataforma($smarty) {
         // Obtengo al usuario de la sesión de navegacion
