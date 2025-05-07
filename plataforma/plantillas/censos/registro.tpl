@@ -40,21 +40,25 @@
                         <!-- Campos del formulario para añadir registros censales de la jornada -->
                         <div class="campos-gestor">
                             <p class="extralargo">
-                                <label for="frm-especie">Especie:&nbsp;</label>
+                                <label for="frm-especie"><span>Especie</span>:&nbsp;</label>
                                 <select name="frm-especie" id="frm-especie" required></select>
                             </p>
+                            <p id="frm-familia" class="largo"><span>Familia</span>:&nbsp;Desconocida</p>
+                            <p id="frm-orden" class="largo"><span>Orden</span>:&nbsp;Desconocido</p>
+                        </div>
+                        <div class="campos-gestor">
                             <p class="corto">
-                                <label for="frm-hora">Hora:&nbsp;</label>
+                                <label for="frm-hora"><span>Hora</span>:&nbsp;</label>
                                 <input name="frm-hora" id="frm-hora" type="time" value="{$perfil.hora}" required>
                             </p>
                             <p class="medio">
-                                <label for="frm-cantidad">Cantidad:&nbsp;</label>
+                                <label for="frm-cantidad"><span>Cantidad</span>:&nbsp;</label>
                                 <input type="text" name="frm-cantidad" id="frm-cantidad" placeholder="Cantidad aves observadas..." required>                                
-                            </p>
+                            </p>                        
                         </div>
                         <div class="campos-gestor">
                             <p class="largo">
-                                <label for="frm-nubosidad">Nubosidad:&nbsp;</label>
+                                <label for="frm-nubosidad"><span>Nubosidad</span>:&nbsp;</label>
                                 <select name="frm-nubosidad" id="frm-nubosidad" required>
                                     <option value="Ninguno">Ninguno</option>
                                     <option value="10">10% cubierto</option>
@@ -71,7 +75,7 @@
                                 </select>
                             </p>
                             <p class="largo">
-                                <label for="frm-visibilidad">Visibilidad:&nbsp;</label>
+                                <label for="frm-visibilidad"><span>Visibilidad</span>:&nbsp;</label>
                                 <select name="frm-visibilidad" id="frm-visibilidad" required>                                    
                                     <option value="0">0-Niebla costera espesa</option>
                                     <option value="1">1-Brumas marinas</option>

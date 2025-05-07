@@ -289,6 +289,18 @@ try {
                 // Solicito al controlador de censos que procese la validación  de un censo de aves en la plataforma
                 Censos::validarCensosAvesPlatforma($smarty);
                 break;
+            case "censos:registrar:procesa":
+                // Solicito al controlador de censos que procese un nuevo registro censal de aves en la plataforma
+                Censos::AñadirRegistroCensal($smarty);
+                break;
+            case "censos:actualizar:procesa":
+                // Solicito al controlador de censos que procese la actualización de un registro censal de la plataforma
+                Censos::actualizarRegistroCensal($smarty);
+                break;
+            case "censos:eliminar:procesa":
+                // Solicito al controlador de censos que procese la eliminación de un registro censal de la plataforma
+                Censos::eliminarRegistroCensal($smarty);
+                break;
             case "aves:default":
                 // Solicito al controlador de aves que muestre las vista por defecto según rol del usuario
                 Aves::default($smarty);

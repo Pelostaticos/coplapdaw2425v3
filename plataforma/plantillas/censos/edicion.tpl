@@ -47,10 +47,10 @@
                                     <option value="{$perfil.especie}" selected>{$perfil.especie}</option>
                                 </select>
                             </p>
-                            <p class="largo"><span>Familia</span>:&nbsp;{$perfil.familia}</p>
+                            <p id="frm-familia" class="largo"><span>Familia</span>:&nbsp;{$perfil.familia}</p>
                         </div>
                         <div class="campos-gestor">
-                            <p class="largo"><span>Orden</span>:&nbsp;{$perfil.orden}</p>
+                            <p id="frm-orden" class="largo"><span>Orden</span>:&nbsp;{$perfil.orden}</p>
                             <p class="corto">
                                 <label for="frm-cantidad">Cantidad:&nbsp;</label>
                                 <input type="text" name="frm-cantidad" id="frm-cantidad" value="{$perfil.cantidad}" required>                                

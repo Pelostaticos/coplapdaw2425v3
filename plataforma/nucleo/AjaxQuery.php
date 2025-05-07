@@ -21,6 +21,7 @@ namespace correplayas\nucleo;
 
 // 1º) Defino los espacios de nombres que voy a utilizar en esta clase
 
+use correplayas\modelo\Ave;
 use correplayas\modelo\Familia;
 use correplayas\modelo\Localidad;
 use correplayas\modelo\Observatorio;
@@ -68,6 +69,15 @@ class AjaxQuery {
                     break;
                 case "aves:registrar":
                     AjaxQuery::prepararDatosAjaxVistaRegistroAve();
+                    break;
+                case "censos:añadir":
+                    AjaxQuery::prepararDatosAjaxVistaAñadirEditarRegistrosCensales();
+                    break;
+                case "censos:editar":
+                    AjaxQuery::prepararDatosAjaxVistaAñadirEditarRegistrosCensales();
+                    break;
+                case "censos:añadir:familiaorden":
+                    AjaxQuery::prepararDatosAjaxFamiliaOrdenEdicionRegistroCensal($seleccion);
                     break;
                 case "aves:registrar:orden":
                     AjaxQuery::prepararDatosAjaxOrdenRegistronAve($seleccion);
@@ -255,6 +265,47 @@ class AjaxQuery {
         $nombreOrden = $ordenAve->getOrden();
         // Genero los datos de la respuesta Ajax con el formato adecuado para cargar el campo asociado al selector familias.
         $datosRespuestaAjax['valor'] = $nombreOrden;
+        // Respongo al frontend con los datos solicitados en la petición Ajax
+        AjaxQuery::responderPeticionAjax($datosRespuestaAjax);   
+    } 
+
+    /**
+     * Método estático auxiliar para responder una petición Ajax de la vista de añadir/editar registros censales
+     *
+     * @return void No devuelve valor alguno
+     */    
+    private static function prepararDatosAjaxVistaAñadirEditarRegistrosCensales() {
+        // Defino el array asociativo con los datos de la respuesta a la petición Ajax
+        $datosRespuestaAjax = [];
+        // Obtengo las aves disponibles en la plataforma
+        $aves = Ave::listarAves();        
+        // Genero los datos de la respuesta Ajax con el formato adecuado para procesar el selector especies.
+        foreach($aves as $ave) {
+            $nombre=$ave['especie'] . ' (' . $ave['comun'] . ')';
+            $datosRespuestaAjax[] = ['valor' => $ave['especie'], 'nombre' => $nombre];
+        }
+        // Respongo al frontend con los datos solicitados en la petición Ajax
+        AjaxQuery::responderPeticionAjax($datosRespuestaAjax);   
+    }      
+
+    /**
+     * Método estático auxiliar para responder una petición Ajax con la familia y orden de una especie elegida en la vista edición de registros censales
+     *
+     * @return void No devuelve valor alguno
+     */    
+    private static function prepararDatosAjaxFamiliaOrdenEdicionRegistroCensal($especie) {
+        // Asingo la familia del ave en registro
+        $ave = Ave::consultarAve($especie);
+        // Obtengo la familia de la especie elegida en el selector especies
+        $familiaAve=$ave->getFamiliaAve();
+        // Obtengo el nombre de la familia de la especie elegida en el selector de especies
+        $nombreFamiliaAve=$familiaAve->getFamilia();
+        // Obtengo el orden de la familia asifnada al ave en registro
+        $ordenAve = $familiaAve->getOrden();
+        // Obtengo el nombre del orden asociado a la familia del ave en registro
+        $nombreOrden = $ordenAve->getOrden();
+        // Genero los datos de la respuesta Ajax con el formato adecuado para cargar el campo asociado al selector familias.
+        $datosRespuestaAjax=['familia' => $nombreFamiliaAve, 'orden' => $nombreOrden];
         // Respongo al frontend con los datos solicitados en la petición Ajax
         AjaxQuery::responderPeticionAjax($datosRespuestaAjax);   
     } 
