@@ -266,10 +266,10 @@ class Jornadas {
                 // Actulizo los datos de la jornada y muestro la notificación del resultado
                 if ($jornada->actualizarJornada()) {
                     // Notifico al usuario que la actualización de la jornada fue existosa
-                    ErrorController::mostrarMensajeInformativo($smarty, "Perfil de usuario actualizado con éxito!!", 
+                    ErrorController::mostrarMensajeInformativo($smarty, "Jornada actualizada con éxito!!", 
                         "/plataforma/backoffice.php?comando=jornadas:default");
                 } else {
-                    // Lanzo una excepción para indicar que no es posible obtener valores por defecto del perfil de usuario
+                    // Lanzo una excepción para indicar que no es posible recuperar a la jornada deseada
                     throw new AppException(message: "No es posible actualizar el perfil de usuario", 
                         urlAceptar: "/plataforma/backoffice.php?comando=jornadas:default");
                 }                    
