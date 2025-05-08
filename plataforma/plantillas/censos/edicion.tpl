@@ -47,13 +47,13 @@
                         <div class="campos-gestor">
                             <p id="frm-orden" class="largo"><span>Orden</span>:&nbsp;{$perfil.orden}</p>
                             <p class="corto">
-                                <label for="frm-cantidad">Cantidad:&nbsp;</label>
+                                <label for="frm-cantidad"><span>Cantidad</span>:&nbsp;</label>
                                 <input type="text" name="frm-cantidad" id="frm-cantidad" value="{$perfil.cantidad}" required>                                
                             </p>
                         </div>
                         <div class="campos-gestor">
                             <p class="largo">
-                                <label for="frm-nubosidad">Nubosidad:&nbsp;</label>
+                                <label for="frm-nubosidad"><span>Nubosidad</span>:&nbsp;</label>
                                 <select name="frm-nubosidad" id="frm-nubosidad" required>
                                     <option value="Ninguno" {if $perfil.nubosidad==='Ninguno'}selected{/if}>Ninguno</option>
                                     <option value="10" {if $perfil.nubosidad==='10'}selected{/if}>10% cubierto</option>
@@ -70,7 +70,7 @@
                                 </select>
                             </p>
                             <p class="largo">
-                                <label for="frm-visibilidad">Visibilidad:&nbsp;</label>
+                                <label for="frm-visibilidad"><span>Visibilidad</span>:&nbsp;</label>
                                 <select name="frm-visibilidad" id="frm-visibilidad" required>                                    
                                     <option value="0" {if $perfil.visibilidad==='0'}selected{/if}>0-Niebla costera espesa</option>
                                     <option value="1" {if $perfil.visibilidad==='1'}selected{/if}>1-Brumas marinas</option>
@@ -81,7 +81,7 @@
                                 </select>                                
                             </p>
                             <p class="largo">
-                                <label for="frm-dirviento">Dirección viento:&nbsp;</label>
+                                <label for="frm-dirviento"><span>Dirección viento</span>:&nbsp;</label>
                                 <select name="frm-dirviento" id="frm-dirviento" required>                                    
                                     <option value="SIN" {if $perfil.dirviento==='SIN'}selected{/if}>Sin viento</option>
                                     <option value="N" {if $perfil.dirviento==='N'}selected{/if}>Norte</option>
@@ -99,7 +99,7 @@
                         </div>
                         <div class="campos-gestor">
                             <p class="largo">
-                                <label for="frm-velviento">Velocidad viento:&nbsp;</label>
+                                <label for="frm-velviento"><span>Velocidad viento</span>:&nbsp;</label>
                                 <select name="frm-velviento" id="frm-velviento" required>                                    
                                     <option value="0" {if $perfil.velviento==='0'}selected{/if}>0-Beaufort</option>
                                     <option value="1" {if $perfil.velviento==='1'}selected{/if}>1-Beaufort</option>
@@ -115,7 +115,7 @@
                                 </select>                                
                             </p>
                             <p class="corto">
-                                <label for="frm-procedencia">Procedencia:&nbsp;</label>
+                                <label for="frm-procedencia"><span>Procedencia</span>:&nbsp;</label>
                                 <select name="frm-procedencia" id="frm-procedencia" required>                                    
                                     <option value="N" {if $perfil.procedencia==='N'}selected{/if}>Norte</option>
                                     <option value="NE"{if $perfil.procedencia==='NE'}selected{/if}>Noreste</option>
@@ -129,7 +129,7 @@
                                 </select>                                
                             </p>
                             <p class="corto">
-                                <label for="frm-destino">Destino:&nbsp;</label>
+                                <label for="frm-destino"><span>Destino</span>:&nbsp;</label>
                                 <select name="frm-destino" id="frm-destino" required>                                    
                                     <option value="N" {if $perfil.destino==='N'}selected{/if}>Norte</option>
                                     <option value="NE"{if $perfil.destino==='NE'}selected{/if}>Noreste</option>
@@ -143,7 +143,7 @@
                                 </select>                                
                             </p>
                             <p class="largo">
-                                <label for="frm-altvuelo">Altura vuelo:&nbsp;</label>
+                                <label for="frm-altvuelo"><span>Altura vuelo</span>:&nbsp;</label>
                                 <select name="frm-altvuelo" id="frm-altvuelo" required>                                    
                                     <option value="0" {if $perfil.altvuelo==='0'}selected{/if}>0-(Posada en superficie)</option>
                                     <option value="1" {if $perfil.altvuelo==='1'}selected{/if}>1-(Vuelo rasante-5 metros)</option>
@@ -157,7 +157,7 @@
                         </div>
                         <div class="campos-gestor">
                             <p class="extralargo">
-                                <label for="frm-formavuelo">Formación vuelo:&nbsp;</label>
+                                <label for="frm-formavuelo"><span>Formación vuelo</span>:&nbsp;</label>
                                 <select name="frm-formavuelo" id="frm-formavuelo" required>                                    
                                     <option value="LINHOR" {if $perfil.formavuelo==='LINHOR'}selected{/if}>LINHOR-Lineal Formacion Horizontal</option>
                                     <option value="LINVER" {if $perfil.formavuelo==='LINVER'}selected{/if}>LINVER-Lineal Formacion Vertical</option>
@@ -168,7 +168,7 @@
                                 </select>                                
                             </p>
                             <p class="extralargo">
-                                <label for="frm-distcosta">Distancia a costa:&nbsp;</label>
+                                <label for="frm-distcosta"><span>Distancia a costa</span>:&nbsp;</label>
                                 <select name="frm-distcosta" id="frm-distcosta" required>                                    
                                     <option value="DBO" {if $perfil.distcosta==='DBO'}selected{/if}>LINHOR-Delante línea boyas o mar adentro</option>
                                     <option value="BO" {if $perfil.distcosta==='BO'}selected{/if}>BO-Linea de boyas</option>
@@ -182,7 +182,7 @@
                         </div>
                         <div class="campos-gestor">
                             <p class="muyextraextraextralargo">
-                                <label for="frm-comentarios">Comentarios:&nbsp;</label>
+                                <label for="frm-comentarios"><span>Comentarios</span>:&nbsp;</label>
                                 <textarea name="frm-comentarios" id="frm-comentarios" rows="3" maxleng="200" required>{$perfil.comentario}</textarea>
                             </p>
                         </div>                                                 

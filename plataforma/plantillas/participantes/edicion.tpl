@@ -46,7 +46,7 @@
                         </div>
                         <div class="campos-gestor">
                             <p class="extraextralargo">
-                                <label for="frm-observacion">Observaciones:&nbsp;</label>
+                                <label for="frm-observacion"><span>Observaciones</span>:&nbsp;</label>
                                 <textarea name="frm-observacion" id="frm-observacion" rows="3" maxleng="200" >{$perfil.observacion}</textarea>
                             </p>
                         </div>

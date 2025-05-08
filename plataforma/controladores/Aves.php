@@ -297,14 +297,20 @@ class Aves {
                 unset($_SESSION['listado']);
                 // Recupero el ave elegida por el usuario que desea eleiminar
                 $ave = Ave::consultarAve($especie);
-                // Procedo a eliminar el ave y compruebo su resultado
-                if ($ave->eliminarAve()) {
-                    // Notifico al usuario que el ave se ha eliminado correctamente y lo devuelvo a su vista por defecto
-                    ErrorController::mostrarMensajeInformativo($smarty, "El ave indicada se ha elminado correctamente!",
-                        "/plataforma/backoffice.php?comando=aves:default");
-                } else {
-                    // Lanzo una excepción para indicar que existe algún problema para dar de baja a un ave
-                    throw new AppException("No es posible dar de baja al ave indicada!");
+                // Intento eliminar al ave deseada de la plataforma
+                try {
+                    // Procedo a eliminar el ave y compruebo su resultado
+                    if ($ave->eliminarAve()) {
+                        // Notifico al usuario que el ave se ha eliminado correctamente y lo devuelvo a su vista por defecto
+                        ErrorController::mostrarMensajeInformativo($smarty, "El ave indicada se ha elminado correctamente!",
+                            "/plataforma/backoffice.php?comando=aves:default");
+                    } else {
+                        // Lanzo una excepción para indicar que existe algún problema para dar de baja a un ave
+                        throw new AppException("No es posible dar de baja al ave indicada!");
+                    }
+                // Manejo la excepción que se haya producido para notificarla al usuario
+                } catch (AppException $ae) {
+                    ErrorController::handleException($ae, $smarty, '/plataforma/backoffice.php?comando=aves:default', "No puedes elminiar este ave porque está en uso en la plataforma!!");
                 }
             } else {
                 // Lanzo una excepción para notificar que el usuario no eligió un ave del listado

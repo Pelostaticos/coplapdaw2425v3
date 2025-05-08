@@ -55,7 +55,7 @@
                         en el siguiente formulario. Esta información es importante para la gestión y seguimiento de las jornadas. Si has llegado por error haz clic en rechazar. ¡Muchas gracias por participar!</p>
                         <div class="campos-gestor">
                             <p class="muyextraextraextralargo">
-                                <label for="frm-motivos">Motivos de cancelación:&nbsp;</label>
+                                <label for="frm-motivos"><span>Motivos de cancelación</span>:&nbsp;</label>
                                 <textarea name="frm-motivos" id="frm-motivos" rows="3" maxleng="200" placeholder="Escribe aquí los motivos de cancelación (Max: 200 caracteres)..." required></textarea>
                             </p>
                         </div>                        

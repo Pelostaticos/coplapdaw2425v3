@@ -171,7 +171,7 @@ class Jornadas {
                             'nombreObservatorio' => $nombreObservatorio];
                         // Establezco un array asociativo con los valores de estado del perfil posibles
                         $estadosJornada = ['Publicada' => 'PUBLICADA', 'Abierta' => 'ABIERTA', 
-                            'Cerrada' => 'CERRADA', 'Cancelada' => 'CANCELADA'];                            
+                            'Cerrada' => 'CERRADA', 'Validada' => 'VALIDADA','Cancelada' => 'CANCELADA'];                            
                         // Asigno las variables requeridas por la plantila de detalles de una jornada
                         $smarty->assign('usuario', $usuario->getUsuario());
                         $smarty->assign('permisos', $permisosUsuario);
@@ -266,10 +266,10 @@ class Jornadas {
                 // Actulizo los datos de la jornada y muestro la notificación del resultado
                 if ($jornada->actualizarJornada()) {
                     // Notifico al usuario que la actualización de la jornada fue existosa
-                    ErrorController::mostrarMensajeInformativo($smarty, "Perfil de usuario actualizado con éxito!!", 
+                    ErrorController::mostrarMensajeInformativo($smarty, "Jornada actualizada con éxito!!", 
                         "/plataforma/backoffice.php?comando=jornadas:default");
                 } else {
-                    // Lanzo una excepción para indicar que no es posible obtener valores por defecto del perfil de usuario
+                    // Lanzo una excepción para indicar que no es posible recuperar a la jornada deseada
                     throw new AppException(message: "No es posible actualizar el perfil de usuario", 
                         urlAceptar: "/plataforma/backoffice.php?comando=jornadas:default");
                 }                    
@@ -310,6 +310,8 @@ class Jornadas {
                 unset($_SESSION['listado']);
                 // Recupero la jornada elegida por el usuario que desea eleiminar
                 $jornada = Jornada::consultarJornada($idJornada);
+                // Intento eliminar la jornada deseada de la plataforma
+                try {
                 // Procedo a eliminar la jornada y compruebo su resultado
                 if ($jornada->eliminarJornada()) {
                     // Notifico al usuario que la jornada se ha eliminado correctamente y cierro su sesión
@@ -318,6 +320,10 @@ class Jornadas {
                 } else {
                     // Lanzo una excepción para indicar que existe algún problema para dar de baja a la jornada
                     throw new AppException("No es posible dar de baja a la jornada indicada!");
+                }
+                } catch (AppException $ae) {
+                    ErrorController::handleException($ae, $smarty, '/plataforma/backoffice.php?comando=aves:default',
+                        "No puedes eliminar a esta jornada porque está en uso en la plataforma!!");
                 }
             } else {
                 // Lanzo una excepción para notificar que el usuario no eligió una jornada del listado

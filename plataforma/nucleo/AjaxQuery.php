@@ -55,6 +55,9 @@ class AjaxQuery {
                 case "usuarios:actualizar":
                     AjaxQuery::prepararDatosAjaxVistaEdicionUsuario();
                     break;
+                case "usuarios:daralta":
+                    AjaxQuery::prepararDatosAjaxVistaEdicionUsuario();
+                    break;
                 case "jornadas:registrar":
                     AjaxQuery::prepararDatosAjaxVistaRegistroEdicionJornada();
                     break;

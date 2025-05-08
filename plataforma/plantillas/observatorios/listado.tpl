@@ -72,24 +72,30 @@
                         </thead>
                         <!-- Contenido del listado de observatorios -->
                         <tbody>
-                            {foreach $filas as $fila}
-                            <!-- Fila con los datos de cada observatorio  -->
-                            <tr>
-                                <!-- Celdas con datos de cada observatorio -->
-                                <td>{$fila.nombre}</td>
-                                <td class="visibilidad">{$fila.direccion}</td>
-                                <td class="visibilidad">{$fila.localidad}</td>
-                                <!-- Celda con acciones permitidas para cada observatorio  -->
-                                <td>
-                                    <form method="post" action="/plataforma/backoffice.php?comando=observatorios:default">
-                                        <input type="hidden" name="codigo" value="{$fila.codigo}">
-                                        <button class="boton-accion-listado-gestor" type="submit" name="accion" value="consultar" title="Mostrar detalles"><span class="iconos-acciones-listados">search</span></button>
-                                        <button class="boton-accion-listado-gestor" type="submit" name="accion" value="actualizar" title="Actualizar observatorio"><span class="iconos-acciones-listados">edit</span></button>
-                                        <button class="boton-accion-listado-gestor" type="submit" name="accion" value="eliminar" title="Eliminar observatorio"><span class="iconos-acciones-listados">delete</span></button>
-                                    </form>
-                                </td>
-                            </tr>
-                            {/foreach}
+                            {if $filas|@count === 0}
+                                <tr>
+                                    <td colspan="4">Lo sentimos!!! No hay observatorios disponibles para listar</td>
+                                </tr>
+                            {else}
+                                {foreach $filas as $fila}
+                                <!-- Fila con los datos de cada observatorio  -->
+                                <tr>
+                                    <!-- Celdas con datos de cada observatorio -->
+                                    <td>{$fila.nombre}</td>
+                                    <td class="visibilidad">{$fila.direccion}</td>
+                                    <td class="visibilidad">{$fila.localidad}</td>
+                                    <!-- Celda con acciones permitidas para cada observatorio  -->
+                                    <td>
+                                        <form method="post" action="/plataforma/backoffice.php?comando=observatorios:default">
+                                            <input type="hidden" name="codigo" value="{$fila.codigo}">
+                                            <button class="boton-accion-listado-gestor" type="submit" name="accion" value="consultar" title="Mostrar detalles"><span class="iconos-acciones-listados">search</span></button>
+                                            <button class="boton-accion-listado-gestor" type="submit" name="accion" value="actualizar" title="Actualizar observatorio"><span class="iconos-acciones-listados">edit</span></button>
+                                            <button class="boton-accion-listado-gestor" type="submit" name="accion" value="eliminar" title="Eliminar observatorio"><span class="iconos-acciones-listados">delete</span></button>
+                                        </form>
+                                    </td>
+                                </tr>
+                                {/foreach}
+                            {/if}
                         </tbody>
                      </table>
                 </div>

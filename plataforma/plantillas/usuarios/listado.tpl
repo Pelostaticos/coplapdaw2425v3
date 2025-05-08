@@ -7,7 +7,7 @@
 * Parámetros de plantilla:
 *
 *   >> usuario: Nombre del usuario logueado.
-*   >> permisos: Conjunto de permisos del usuario logueado.
+*   >> permisosUsuario: Conjunto de permisos del usuario logueado.
 *   >> filas: Conjunto de datos para generar el listado.
 *   >> anyo: Año en curso para copyright y copyleft del sitio web.
 *
@@ -58,6 +58,13 @@
                         <p class="corto"><button type="submit" class="boton-accion-gestor">Buscar</button></p>
                         <small><span>RECUERDA</span>:&nbsp;Puedes hacer búsqueda por el usuario, nombre, apellidos, estado y rol.</small>
                     </form>
+                    <!-- Compruebo si el usuario logueado tiene permiso de administrador para dar de alta usuarios -->
+                    {if $permisosUsuario->hasPermisoGestorCensos()}
+                        <!-- Bóton para la acción de dar alta usuarios en la plataforma -->
+                        <div class="botonera-superior-listados">
+                            <a class="boton-accion-gestor" href="/plataforma/backoffice.php?comando=usuarios:daralta:vista" title="Dar alta usuario">Alta usuario</a>
+                        </div>
+                    {/if}                      
                     <!-- Tabla que representa al listado de usuarios -->
                      <table id="listado-gestor">
                         <!-- Cabecera del listado de usuarios -->
@@ -70,40 +77,46 @@
                         </thead>
                         <!-- Contenido del listado de usuarios -->
                         <tbody>
-                            {foreach $filas as $fila}
-                            <!-- Fila con los datos de cada usuario  -->
-                            <tr>
-                                <!-- Celdas con datos de cada usuario -->
-                                <td>{$fila.usuario}</td>
-                                {if $fila.estado === "BAJA"}
-                                    <td>Datos persona desvinculados</td>
-                                {else}
-                                    <td>{$fila.nombre}</td>
-                                {/if}
-                                <td class="visibilidad">{$fila.estado}</td>
-                                <td class="visibilidad">{$fila.rol}</td>
-                                <!-- Celda con acciones permitidas para cada usuario  -->
-                                <td>
-                                    <form method="post" action="/plataforma/backoffice.php?comando=usuarios:default">
-                                        <input type="hidden" name="hashusuario" value="{$fila.hashusuario}">
-                                        {if $fila.estado === "BAJA"}
-                                            <button class="boton-accion-listado-gestor" type="submit" name="accion" value="reactivar" title="Reactivar usuario"><span class="iconos-acciones-listados">refresh</span></button>
-                                        {else}
-                                            <button class="boton-accion-listado-gestor" type="submit" name="accion" value="consultar" title="Mostrar detalles"><span class="iconos-acciones-listados">search</span></button>
-                                            <button class="boton-accion-listado-gestor" type="submit" name="accion" value="actualizar" title="Actualizar usuario"><span class="iconos-acciones-listados">edit</span></button>
-                                            <button class="boton-accion-listado-gestor" type="submit" name="accion" value="eliminar" title="Eliminar usuario"><span class="iconos-acciones-listados">delete</span></button>
-                                            <button class="boton-accion-listado-gestor" type="submit" name="accion" value="password" title="Cambiar password"><span class="iconos-acciones-listados">vpn_key</span></button>
-                                            {if $fila.estado === 'ACTIVO'}
-                                                <button class="boton-accion-listado-gestor" type="submit" name="accion" value="desactivar" title="Desactivar perfil"><span class="iconos-acciones-listados">visibility_off</span></button>
+                            {if $filas|@count === 0}
+                                <tr>
+                                    <td colspan="5">Lo sentimos!!! No hay usuarios disponibles para listar</td>
+                                </tr>
+                            {else}                          
+                                {foreach $filas as $fila}
+                                <!-- Fila con los datos de cada usuario  -->
+                                <tr>
+                                    <!-- Celdas con datos de cada usuario -->
+                                    <td>{$fila.usuario}</td>
+                                    {if $fila.estado === "BAJA"}
+                                        <td>Datos persona desvinculados</td>
+                                    {else}
+                                        <td>{$fila.nombre}</td>
+                                    {/if}
+                                    <td class="visibilidad">{$fila.estado}</td>
+                                    <td class="visibilidad">{$fila.rol}</td>
+                                    <!-- Celda con acciones permitidas para cada usuario  -->
+                                    <td>
+                                        <form method="post" action="/plataforma/backoffice.php?comando=usuarios:default">
+                                            <input type="hidden" name="hashusuario" value="{$fila.hashusuario}">
+                                            {if $fila.estado === "BAJA"}
+                                                <button class="boton-accion-listado-gestor" type="submit" name="accion" value="reactivar" title="Reactivar usuario"><span class="iconos-acciones-listados">refresh</span></button>
                                             {else}
-                                                <button class="boton-accion-listado-gestor" type="submit" name="accion" value="activar" title="Activar perfil"><span class="iconos-acciones-listados">visibility</span></button>
+                                                <button class="boton-accion-listado-gestor" type="submit" name="accion" value="consultar" title="Mostrar detalles"><span class="iconos-acciones-listados">search</span></button>
+                                                <button class="boton-accion-listado-gestor" type="submit" name="accion" value="actualizar" title="Actualizar usuario"><span class="iconos-acciones-listados">edit</span></button>
+                                                <button class="boton-accion-listado-gestor" type="submit" name="accion" value="eliminar" title="Eliminar usuario"><span class="iconos-acciones-listados">delete</span></button>
+                                                <button class="boton-accion-listado-gestor" type="submit" name="accion" value="password" title="Cambiar password"><span class="iconos-acciones-listados">vpn_key</span></button>
+                                                {if $fila.estado === 'ACTIVO'}
+                                                    <button class="boton-accion-listado-gestor" type="submit" name="accion" value="desactivar" title="Desactivar perfil"><span class="iconos-acciones-listados">visibility_off</span></button>
+                                                {else}
+                                                    <button class="boton-accion-listado-gestor" type="submit" name="accion" value="activar" title="Activar perfil"><span class="iconos-acciones-listados">visibility</span></button>
+                                                {/if}
                                             {/if}
-                                        {/if}
-                                        
-                                    </form>
-                                </td>
-                            </tr>
-                            {/foreach}
+                                            
+                                        </form>
+                                    </td>
+                                </tr>
+                                {/foreach}
+                            {/if}
                         </tbody>
                      </table>
                 </div>

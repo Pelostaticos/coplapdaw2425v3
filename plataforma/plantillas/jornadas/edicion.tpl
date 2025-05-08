@@ -52,14 +52,22 @@
                         <div class="campos-gestor">
                             <p class="corto"><span>Fecha</span>:&nbsp;{$perfil.fecha|date_format:"%d-%m-%Y"}</p>
                             <input name="frm-fecha" id="frm-fecha" type="hidden" value="{$perfil.fecha}">
-                            <p class="largo">
-                                <label for="frm-hora-inicio"><span>Hora de inicio</span>:&nbsp;</label>
-                                <input name="frm-hora-inicio" id="frm-hora-inicio" type="time" min="08:00:00" max="13:00:00" step="15" value="{$perfil.horaInicio}">
-                            </p>
-                            <p class="largo">
-                                <label for="frm-hora-fin"><span>Hora de fin</span>:&nbsp;</label>
-                                <input name="frm-hora-fin" id="frm-hora-fin" type="time" min="08:00:00" max="13:00:00" step="15" value="{$perfil.horaFin}">
-                            </p>
+                            {if $perfil.estado==='Cerrada'}
+                                <p class="largo"><span>Hora de inicio</span>:&nbsp;{$perfil.horaInicio}</p>
+                            {else}
+                                <p class="largo">
+                                    <label for="frm-hora-inicio"><span>Hora de inicio</span>:&nbsp;</label>
+                                    <input name="frm-hora-inicio" id="frm-hora-inicio" type="time" min="08:00:00" max="13:00:00" step="15" value="{$perfil.horaInicio}">
+                                </p>
+                            {/if}                                                      
+                            {if $perfil.estado==='Cerrada'}
+                                <p class="largo"><span>Hora de fin</span>:&nbsp;{$perfil.horaFin}</p>
+                            {else}
+                                <p class="largo">
+                                    <label for="frm-hora-fin"><span>Hora de fin</span>:&nbsp;</label>
+                                    <input name="frm-hora-fin" id="frm-hora-fin" type="time" min="08:00:00" max="13:00:00" step="15" value="{$perfil.horaFin}">
+                                </p>
+                            {/if}
                         </div>
                         <div class="campos-gestor">
                             <p class="extraextralargo">

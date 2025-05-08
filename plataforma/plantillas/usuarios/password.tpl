@@ -42,11 +42,11 @@
                         </div> 
                         <div class="campos-gestor">
                             <p class="extralargo">
-                                <label for="frm-nuevo-password">Nuevo password:&nbsp;</label>
+                                <label for="frm-nuevo-password"><span>Nuevo password</span>:&nbsp;</label>
                                 <input type="password" name="frm-nuevo-password" id="frm-nuevo-passwordl" placeholder="Inserte nuevo password...">
                             </p>
                             <p class="extralargo">
-                                <label for="frm-repetir-password">Repetir password:&nbsp;</label>
+                                <label for="frm-repetir-password"><span>Repetir password</span>:&nbsp;</label>
                                 <input type="password" name="frm-repetir-password" id="frm-repetir-passwordl" placeholder="Repita el password...">
                             </p>
                         </div>                                                        

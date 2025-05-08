@@ -295,14 +295,20 @@ class Observatorios {
                 unset($_SESSION['listado']);
                 // Recupero observatorio elegido por el usuario que desea eleiminar
                 $observatorio = Observatorio::consultarObservatorio($codigo);
-                // Procedo a eliminar el observatorio y compruebo su resultado
-                if ($observatorio->eliminarObservatorio()) {
-                    // Notifico al usuario que el observatorio se ha eliminado correctamente y lo devuelvo a su vista por defecto
-                    ErrorController::mostrarMensajeInformativo($smarty, "El observatorio indicado se ha elminado correctamente!",
-                        "/plataforma/backoffice.php?comando=observatorios:default");
-                } else {
-                    // Lanzo una excepción para indicar que existe algún problema para dar de baja a un observatorio
-                    throw new AppException("No es posible dar de baja al observatorio indicado!");
+                // Intento eliminar el observatorio deseado de la plataform
+                try {
+                    // Procedo a eliminar el observatorio y compruebo su resultado
+                    if ($observatorio->eliminarObservatorio()) {
+                        // Notifico al usuario que el observatorio se ha eliminado correctamente y lo devuelvo a su vista por defecto
+                        ErrorController::mostrarMensajeInformativo($smarty, "El observatorio indicado se ha elminado correctamente!",
+                            "/plataforma/backoffice.php?comando=observatorios:default");
+                    } else {
+                        // Lanzo una excepción para indicar que existe algún problema para dar de baja a un observatorio
+                        throw new AppException("No es posible dar de baja al observatorio indicado!");
+                    }
+                } catch (AppException $ae) {
+                    ErrorController::handleException($ae, $smarty, '/plataforma/backoffice.php?comando=observatorios:default', 
+                        "No puedes eliminar este observatorio por estár en uso en la plataforma!!");
                 }
             } else {
                 // Lanzo una excepción para notificar que el usuario no eligió un observatorio del listado

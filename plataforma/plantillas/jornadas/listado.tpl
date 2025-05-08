@@ -75,30 +75,36 @@
                         </thead>
                         <!-- Contenido del listado de jornadas -->
                         <tbody>
-                            {foreach $filas as $fila}
-                            <!-- Fila con los datos de cada jornada  -->
-                            <tr>
-                                <!-- Celdas con datos de cada jornada -->
-                                <td>{$fila.titulo}</td>
-                                <td class="visibilidad">{$fila.observatorio}</td>
-                                <td>{$fila.fecha|date_format:"%d-%m-%Y"}</td>
-                                <td class="visibilidad">{$fila.estado}</td>
-                                <!-- Celda con acciones permitidas para cada jornada  -->
-                                <td>
-                                    <form method="post" action="/plataforma/backoffice.php?comando=jornadas:default">
-                                        <input type="hidden" name="idJornada" value="{$fila.idJornada}">
-                                        <button class="boton-accion-listado-gestor" type="submit" name="accion" value="consultar" title="Mostrar detalles"><span class="iconos-acciones-listados">search</span></button>
-                                        {if $fila.estado === 'ABIERTA' || $fila.estado === 'PUBLICADA'}
-                                            <button class="boton-accion-listado-gestor" type="submit" name="accion" value="actualizar" title="Actualizar jornada"><span class="iconos-acciones-listados">edit</span></button>
-                                            
-                                        {/if}
-                                        {if $fila.estado === 'PUBLICADA'}                                                    
-                                            <button class="boton-accion-listado-gestor" type="submit" name="accion" value="eliminar" title="Eliminar jornada"><span class="iconos-acciones-listados">delete</span></button>
-                                        {/if}
-                                    </form>
-                                </td>
-                            </tr>
-                            {/foreach}
+                            {if $filas|@count === 0}
+                                <tr>
+                                    <td colspan="5">Lo sentimos!!! No hay jornadas disponibles para listar</td>
+                                </tr>
+                            {else}                         
+                                {foreach $filas as $fila}
+                                <!-- Fila con los datos de cada jornada  -->
+                                <tr>
+                                    <!-- Celdas con datos de cada jornada -->
+                                    <td>{$fila.titulo}</td>
+                                    <td class="visibilidad">{$fila.observatorio}</td>
+                                    <td>{$fila.fecha|date_format:"%d-%m-%Y"}</td>
+                                    <td class="visibilidad">{$fila.estado}</td>
+                                    <!-- Celda con acciones permitidas para cada jornada  -->
+                                    <td>
+                                        <form method="post" action="/plataforma/backoffice.php?comando=jornadas:default">
+                                            <input type="hidden" name="idJornada" value="{$fila.idJornada}">
+                                            <button class="boton-accion-listado-gestor" type="submit" name="accion" value="consultar" title="Mostrar detalles"><span class="iconos-acciones-listados">search</span></button>
+                                            {if $fila.estado === 'PUBLICADA' || $fila.estado === 'ABIERTA'}
+                                                <button class="boton-accion-listado-gestor" type="submit" name="accion" value="actualizar" title="Actualizar jornada"><span class="iconos-acciones-listados">edit</span></button>
+                                                
+                                            {/if}
+                                            {if $fila.estado === 'PUBLICADA'}                                                    
+                                                <button class="boton-accion-listado-gestor" type="submit" name="accion" value="eliminar" title="Eliminar jornada"><span class="iconos-acciones-listados">delete</span></button>
+                                            {/if}
+                                        </form>
+                                    </td>
+                                </tr>
+                                {/foreach}
+                            {/if}
                         </tbody>
                      </table>
                 </div>

@@ -44,17 +44,17 @@
                         </div>  
                         <div class="campos-gestor">
                             <p class="extralargo">
-                                <label for="frm-comun">Nombre común:&nbsp;</label>
+                                <label for="frm-comun"><span>Nombre común</span>:&nbsp;</label>
                                 <input type="text" name="frm-comun" id="frm-comun" value="{$perfil.comun}" required>
                             </p>                        
                             <p class="extralargo">
-                                <label for="frm-ingles">Nombre inglés:&nbsp;</label>
+                                <label for="frm-ingles"><span>Nombre inglés</span>:&nbsp;</label>
                                 <input type="text" name="frm-ingles" id="frm-ingles" value="{$perfil.ingles}" required>
                             </p> 
                         </div>
                         <div class="campos-gestor">
                             <p class="extraextralargo">
-                                <label for="frm-url">URL:&nbsp;</label>
+                                <label for="frm-url"><span>URL</span>:&nbsp;</label>
                                 <input type="text" name="frm-url" id="frm-url" value="{$perfil.url}" required>
                             </p>
                         </div>

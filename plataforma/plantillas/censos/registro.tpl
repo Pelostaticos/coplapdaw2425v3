@@ -86,7 +86,7 @@
                                 </select>                                
                             </p>
                             <p class="largo">
-                                <label for="frm-dirviento">Dirección viento:&nbsp;</label>
+                                <label for="frm-dirviento"><span>Dirección viento:</span>&nbsp;</label>
                                 <select name="frm-dirviento" id="frm-dirviento" required>                                    
                                     <option value="SIN">Sin viento</option>
                                     <option value="N">Norte</option>
@@ -104,7 +104,7 @@
                         </div>
                         <div class="campos-gestor">
                             <p class="largo">
-                                <label for="frm-velviento">Velocidad viento:&nbsp;</label>
+                                <label for="frm-velviento"><span>Velocidad viento</span>:&nbsp;</label>
                                 <select name="frm-velviento" id="frm-velviento" required>                                    
                                     <option value="0">0-Beaufort</option>
                                     <option value="1">1-Beaufort</option>
@@ -120,7 +120,7 @@
                                 </select>                                
                             </p>
                             <p class="corto">
-                                <label for="frm-procedencia">Procedencia:&nbsp;</label>
+                                <label for="frm-procedencia"><span>Procedencia</span>:&nbsp;</label>
                                 <select name="frm-procedencia" id="frm-procedencia" required>                                    
                                     <option value="N">Norte</option>
                                     <option value="NE">Noreste</option>
@@ -134,7 +134,7 @@
                                 </select>                                
                             </p>
                             <p class="corto">
-                                <label for="frm-destino">Destino:&nbsp;</label>
+                                <label for="frm-destino"><span>Destino</span>:&nbsp;</label>
                                 <select name="frm-destino" id="frm-destino" required>                                    
                                     <option value="N">Norte</option>
                                     <option value="NE">Noreste</option>
@@ -148,7 +148,7 @@
                                 </select>                                
                             </p>
                             <p class="largo">
-                                <label for="frm-altvuelo">Altura vuelo:&nbsp;</label>
+                                <label for="frm-altvuelo"><span>Altura vuelo</span>:&nbsp;</label>
                                 <select name="frm-altvuelo" id="frm-altvuelo" required>                                    
                                     <option value="0">0-(Posada en superficie)</option>
                                     <option value="1">1-(Vuelo rasante-5 metros)</option>
@@ -162,7 +162,7 @@
                         </div>
                         <div class="campos-gestor">
                             <p class="extralargo">
-                                <label for="frm-formavuelo">Formación vuelo:&nbsp;</label>
+                                <label for="frm-formavuelo"><span>Formación vuelo</span>:&nbsp;</label>
                                 <select name="frm-formavuelo" id="frm-formavuelo" required>                                    
                                     <option value="LINHOR">LINHOR-Lineal Formacion Horizontal</option>
                                     <option value="LINVER">LINVER-Lineal Formacion Vertical</option>
@@ -173,7 +173,7 @@
                                 </select>                                
                             </p>
                             <p class="extralargo">
-                                <label for="frm-distcosta">Distancia a costa:&nbsp;</label>
+                                <label for="frm-distcosta"><span>Distancia a costa</span>:&nbsp;</label>
                                 <select name="frm-distcosta" id="frm-distcosta" required>                                    
                                     <option value="DBO">LINHOR-Delante línea boyas o mar adentro</option>
                                     <option value="BO">BO-Linea de boyas</option>
@@ -187,7 +187,7 @@
                         </div>
                         <div class="campos-gestor">
                             <p class="muyextraextraextralargo">
-                                <label for="frm-comentario">Comentarios:&nbsp;</label>
+                                <label for="frm-comentario"><span>Comentarios</span>:&nbsp;</label>
                                 <textarea name="frm-comentario" id="frm-comentarios" rows="3" maxleng="200" placeholder="Deje comentarios adicionales a la observacion (Max: 200 caracteres)..." required></textarea>
                             </p>
                         </div>                                                 
