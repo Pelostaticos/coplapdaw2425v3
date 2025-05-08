@@ -261,6 +261,7 @@ class Participante {
                 WHEN 'CANCELADA' THEN 'NO'
                 WHEN 'CERRADA' THEN 'SI'
                 WHEN 'PUBLICADA' THEN 'NO'                
+                WHEN 'VALIDADA' THEN 'SI'
             END AS realizada
             FROM pdaw_jornadas j 
             JOIN pdaw_observatorios ob ON j.observatorio=ob.codigo
@@ -450,6 +451,34 @@ class Participante {
         }
         else
             // Devuelvo falso porque no hay participantes con su sistencia confirmada
+            return false;
+    }
+
+    /**
+     * Método estático para verificar participación de un usuario a otra jornadas en la misma fecha
+     *
+     * @param [type] $participante Hash del usurio participante a la jornada
+     * @param [type] $fecha Fecha de la jornada a la que desea inscribirse el participante
+     * @return void Verdadero cuando el participanta YA está inscrito a otra jornada en la misma fecha
+     *              Falso cuando el participanta NO está inscrito a otra jornada en la misma fecha
+     */
+    public static function estaInscritoParticipanteOtraJornada($participante, $fecha) {        
+        // Construyo la sentencia SQL base para recuperar a los participantes de una jornada censal de la base de datos     
+        $sql="SELECT pt.usuario, j.fecha FROM pdaw_participantes pt 
+                JOIN pdaw_jornadas j ON j.id_jornada=pt.id_jornada
+                WHERE pt.usuario=:usuario AND j.fecha=:fecha";
+        // Preparo los paŕametros requeridos por la consulta de particioantes a una jornada censal a la base de datos        
+        $datos=[':usuario' => $participante, ':fecha' => $fecha];
+        // Ejecuto la sentencia SQL para recuperar a los participantes a una jornada censal de la base de datos
+        $res=Core::ejecutarSql($sql, $datos);        
+        // Si el resultado devuelto tras ejecución contiene un array de un elemento
+        if (is_array($res) && count($res)>0)        
+        {
+            // Devuelvo verdadero porque tiene ya una inscripción a una jornada el mismo día
+            return true;
+        }
+        else
+            // Devuelvo falso porque no hay inscripciones a jornada en el mismo día
             return false;
     }
 

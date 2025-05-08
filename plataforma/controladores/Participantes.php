@@ -221,8 +221,15 @@ class Participantes {
                             $smarty->assign('permisos', $permisosUsuario);
                             $smarty->assign('perfil', $perfil);
                             $smarty->assign('anyo', date('Y'));
-                            // Muestro la plantilla de inscripción a una jornada con sus datos
-                            $smarty->display('participantes/inscribirse.tpl');                            
+                            // Verifico que el usuario participante no este ya inscrito a otra jornada en la misma fecha
+                            if (Participante::estaInscritoParticipanteOtraJornada($hashParticipante, $jornada->getFechaJornada())) {
+                                // Notifico al usuario que no puede inscribirse a otra jornada en el mismo día
+                                throw new AppException(message: "No puede inscribirse a otra jornada en el mismo día!!! Curse baja en la otra inscripción",
+                                urlAceptar: "/plataforma/backoffice.php?comando=participantes:default");    
+                            } else {
+                                // Muestro la plantilla de inscripción a una jornada con sus datos
+                                $smarty->display('participantes/inscribirse.tpl'); 
+                            }                           
                         } else {
                             // De lo contario, lanzo una excepción para notificar al usuario que el
                             // persona usuaria participante no existe en la base de datos
