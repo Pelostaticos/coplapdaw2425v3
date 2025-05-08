@@ -7,7 +7,7 @@
 * Parámetros de plantilla:
 *
 *   >> usuario: Nombre del usuario logueado.
-*   >> permisos: Conjunto de permisos del usuario logueado.
+*   >> permisosUsuario: Conjunto de permisos del usuario logueado.
 *   >> filas: Conjunto de datos para generar el listado.
 *   >> anyo: Año en curso para copyright y copyleft del sitio web.
 *
@@ -58,6 +58,13 @@
                         <p class="corto"><button type="submit" class="boton-accion-gestor">Buscar</button></p>
                         <small><span>RECUERDA</span>:&nbsp;Puedes hacer búsqueda por el usuario, nombre, apellidos, estado y rol.</small>
                     </form>
+                    <!-- Compruebo si el usuario logueado tiene permiso de administrador para dar de alta usuarios -->
+                    {if $permisosUsuario->hasPermisoGestorCensos()}
+                        <!-- Bóton para la acción de dar alta usuarios en la plataforma -->
+                        <div class="botonera-superior-listados">
+                            <a class="boton-accion-gestor" href="/plataforma/backoffice.php?comando=usuarios:daralta:vista" title="Dar alta usuario">Alta usuario</a>
+                        </div>
+                    {/if}                      
                     <!-- Tabla que representa al listado de usuarios -->
                      <table id="listado-gestor">
                         <!-- Cabecera del listado de usuarios -->

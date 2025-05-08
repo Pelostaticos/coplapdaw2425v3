@@ -213,13 +213,13 @@ function validarEdicionUsuarios(event) {
 
   // Validación para Código postal del usuario
   let codigoPostalRegex = /^(?:0[1-9]|[1-4]\d|5[0-2])\d{3}$/;
-  if (codigoPostal.length > 0 && !codigoPostalRegex.test(codigoPostal)) {
+  if (codigoPostal.length > 0 && codigoPostal.trim() !== '-' && !codigoPostalRegex.test(codigoPostal)) {
     errores.push('Por favor, introduce un código postal correcto.');
   }
 
   // Validación para Código postal del usuario
   let telefonoRegex = /^(?:(?:(?:00|\+)34|34)[\s\-]?(?:[6789]\d{2}[\s\-]?\d{2}[\s\-]?\d{2}[\s\-]?\d{2}))$/;
-  if (telefono.length > 0 && !telefonoRegex.test(telefono)) {
+  if (telefono.length > 0 && telefono.trim() !== '-' && !telefonoRegex.test(telefono)) {
     errores.push('Por favor, introduce un número de teléfono válido.');
   }
 
@@ -657,6 +657,85 @@ function validarAñadirActualizarRegistroCensal(event) {
 
 }
 
+// C.13) Validar el formualrio de alta de un nuevo usuario en plataforma modo administrador
+function validarAltaNuevoUsuarioPlataforma(event) {
+
+  // Obtengo los datos introducidos en los campos del formulario
+  let nombreUsuario = document.getElementById('frm-usuario').value;
+  let password = document.getElementById('frm-password').value;  
+  let dni = document.getElementById('frm-dni').value;
+  let nombre = document.getElementById('frm-nombre').value;
+  let apellido1 = document.getElementById('frm-apellido1').value;
+  let apellido2 = document.getElementById('frm-apellido2').value;
+  let email = document.getElementById('frm-email').value;
+  let localidad = document.getElementById('frm-localidad').value;
+  let rol = document.getElementById('frm-rol').value;
+
+  // Defino los roles admitidos por la plataforma
+  const rolesAdminitidos = ['administrador', 'coordinador', 'voluntario'];
+
+  // Creo un array para almacenar los errores de validación detectados
+  let errores = [];
+
+  // Validación para Nombre de usuario
+  if (!nombreUsuario.trim()) {
+    errores.push('Por favor, introduce tu nombre de usuario.');
+  }
+
+  // Validación para Contraseña del usuario
+  if (!password.trim()) {
+    errores.push('Por favor, una contraseña de usuario.');
+  }
+
+    // Validación de seguridad para nueva contraseña para el perfil de usuario
+    let passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()\-_=+{};:,<.>]).{8,}$/;
+    if (!passwordRegex.test(password)) {
+      errores.push('Por favor, la contraseña debe tener al menos 8 caracteres y contener al menos una letra minúscula, una letra mayúscula, un dígito y un carácter especial.');
+    }
+
+  // Validación del DNI de la persona usuaria
+  if (!validarDNI(dni)) {
+    errores.push('Por favor, introduce tu DNI correctamente.');
+  }
+
+  // Validación del nombre de la persona usuaria
+  if (!nombre.trim()) {
+    errores.push('Por favor, introduce tu nombre.');
+  }
+
+  // Validación del primer apellido de la persona usuaria
+  if (!apellido1.trim()) {
+    errores.push('Por favor, introduce tu primer apellido.');
+  }
+
+  // Validación del segundo apellido de la persona usuaria
+  if (!apellido2.trim()) {
+    errores.push('Por favor, introduce tu segundo apellido.');
+  }
+
+  // Validación de Correo Electrónico
+  let emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!emailRegex.test(email)) {
+    errores.push('Por favor, introduce un correo electrónico válido.');
+  }
+
+  // Validación de la localidad de la persona usuaria
+  if (!localidad.trim()) {
+    errores.push('Por favor, introduce tu localidad.');
+  }
+
+  // Validación del rol del usuario en la plataforma
+  if (!rol.trim() || !rolesAdminitidos.includes(rol)) {
+    errores.push('Por favor, eliga un rol de usuario admitido por la plataforma.');
+  }  
+
+  // Si se detectan error detengo el envio del formulario y se los notifico al usuario.
+  if (errores.length > 0) {
+    event.preventDefault();
+    alert(errores.join('\n'));
+  }
+}
+
 // D) Manipulación de eventos para las validaciones de formularios.
 // D.0) Array asociativos con los formularios disponibles en la plataforma y sus validadores.
 const validadoresFormularios = {'contactenos': validarContactenos, 'login': validarLogin
@@ -665,7 +744,8 @@ const validadoresFormularios = {'contactenos': validarContactenos, 'login': vali
   , 'inscripcion-jornada': validarInscripcionJornada, 'registro-observatorio': validarRegistroObservatorio
   , 'edicion-observatorios': validarRegistroObservatorio, 'registro-ave': validarRegistroAve
   , 'edicion-aves': validarEdicionAve,'añadir-registro-censal': validarAñadirActualizarRegistroCensal
-  , 'edicion-registro-censal': validarAñadirActualizarRegistroCensal};
+  , 'edicion-registro-censal': validarAñadirActualizarRegistroCensal
+  , 'dar-alta-usuario': validarAltaNuevoUsuarioPlataforma};
 // D.1) Cargo el manipulador de evento para válidar el(los) formulario(s) presente en la página actual.
 const formularios = document.querySelectorAll('form');
 formularios.forEach(formulario => {

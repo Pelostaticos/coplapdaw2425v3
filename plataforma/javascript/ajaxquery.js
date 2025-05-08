@@ -45,6 +45,10 @@ function realizarPeticionesAjax(comando, parametro="") {
                     case "usuarios:actualizar":
                         cargarSelectEdicionUsuarios(datos);
                         break;
+                    // Cargo dinamicamente los selectores disponibles en la vista alta de nuevo usuario plataforma
+                    case "usuarios:daralta":
+                        cargarSelectDarAltaUsuario(datos);
+                        break;
                     // Cargo dinámicamente los selectores disponibles en la vista de registro de nueva jornada
                     case "jornadas:registrar":
                         cargarSelectRegistroJornadas(datos);
@@ -308,6 +312,38 @@ function cargarSelectAñadirRegistroCensal(datos) {
     }    
 }
 
+// A.9) Función para cargar dinámicamente los selectores de la vista de alta de ususarios plataforma
+function cargarSelectDarAltaUsuario(datos) {
+    // Intento cargar dinámicamente los elementos select del formulario de edición de usuarios
+    try {
+        // 0º) Obtengo los selectores del formulario de edición de usuarios
+        const selectLocalidad = document.getElementById('frm-localidad');
+        const selectRol = document.getElementById('frm-rol');
+
+        // 1º) Limpio los selectores del formulario de edición de usuarios
+        selectLocalidad.innerHTML = '';
+        selectRol.innerHTML = '';
+
+        // 2º) Cargo las localidades en el selector correspondiente del formualrio
+        datos.localidad.forEach(opcion => {
+            const option = document.createElement('option');
+            option.value = opcion.valor;
+            option.textContent = opcion.nombre;
+            selectLocalidad.appendChild(option);
+        });    
+
+        // 3º) Cargo los roles en el selector correspondiente del formulario
+        datos.rol.forEach(opcion => {
+            const option = document.createElement('option');
+            option.value = opcion.valor;
+            option.textContent = opcion.nombre;
+            selectRol.appendChild(option);
+        });     
+    } catch (error) {
+        console.error(error);
+    }
+}
+
 // B) Funcionaes de actualización dinámica de datos por clic en elemento select.
 // B.1) Funcion para cargar dinamicamente el valor del campo orden al seleccionar una fanilia en el registro/edicion de aves
 function cargarOrdenRegistroEdicionAves(datos) {
@@ -348,7 +384,7 @@ try {
     const peticionesSelectAjax = {'signup':'usuarios:registro', 'edicion-usuario':'usuarios:actualizar',
         'registro-jornada': 'jornadas:registrar', 'registro-observatorio': 'observatorios:registrar',
         'edicion-observatorios': 'observatorios:actualizar', 'registro-ave': 'aves:registrar',
-        'añadir-registro-censal': 'censos:añadir'};
+        'añadir-registro-censal': 'censos:añadir', 'dar-alta-usuario': 'usuarios:daralta'};
     // C.2) Añado el manipulador de evento para controlar que el contenido del DOM se ha cargado.
     document.addEventListener('DOMContentLoaded', function() { 
         // Obtengo todos los formularios disponible en la página actual ya cargada..

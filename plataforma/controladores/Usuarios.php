@@ -736,6 +736,120 @@ class Usuarios {
     /* NO IMPLEMENTO ESTA FUNCIONALIDAD POR FALTA DE TIEMPO EN DESARROLLO: 25/03/2025.
     public static function desactivarUsuarioPlataforma($smarty) {...} */
 
+    // Funcionalidades propuesta por tutor PDAW a fecha del 25/04/205
+
+    /**
+     * Método estático para mostrar la Vista de alta de usuarios nuevos en la plataforma (Administradores)
+     *
+     * @param Smarty $smarty Objeto que contiene al motor de plantillas Smarty
+     * @return void No devuelve valor alguno
+     */
+    public static function mostrarVistaAltaUsuarioPlataforma($smarty) {
+
+        // Obtengo al usuario de la sesión del navegacion
+        $usuario = $_SESSION['usuario'];
+
+        // Recupero los permisos del usuario logueado desde su sesión
+        $permisosUsuario = $_SESSION['permisos'];
+        
+        // Si el usuario logueado tiene permiso para dar de alta a usuarios entonces:
+        if ($permisosUsuario->hasPermisoAdministradorGestor()) { 
+            // Asigno las variables requeridas por la plantila da alta de un nuevo usuario
+            $smarty->assign('usuario', $usuario->getUsuario());
+            $smarty->assign('permisosUsuario', $permisosUsuario);
+            $smarty->assign('anyo', date('Y'));
+            // Muestro la plantilla de alta de usuarios
+            $smarty->display('usuarios/alta.tpl');   
+        } else {
+            // Lanzo una excepción para notificar al usuario que no tiene permisos para dar de alta usuarios
+            throw new AppException(message: "Tu rol no te permite dar de alta usuarios desde la plataforma", 
+                urlAceptar: "/plataforma/backoffice.php?comando=usuarios:default");
+        }
+
+    }
+
+    /**
+     * Método para dar de alta a un nuevo usuario en la plataforma (adminitradores)
+     *
+     * @param Smarty $smarty Objeto que contiene al motor de plantillas Smarty
+     * @return void No devuelve valor alguno
+     */
+    public static function darAltaUsuarioPlataforma($smarty) {
+        // Obtengo al usuario de la sesión del navegacion
+        $usuario = $_SESSION['usuario'];
+
+        // Recupero los permisos del usuario logueado desde su sesión
+        $permisosUsuario = $_SESSION['permisos'];
+        
+        // Si el usuario logueado tiene permiso para dar de alta a usuarios entonces:
+        if ($permisosUsuario->hasPermisoAdministradorGestor()) { 
+            // Recupero los datos del formulario de registro de un nuevo usuario: Datos de usuario
+            $datosUsuario = [':codigo' => '',
+            ':nombre' => filter_input(INPUT_POST,'frm-usuario'),
+            ':contrasenya' => filter_input(INPUT_POST,'frm-password'),
+            ':estado' => 'ACTIVO',
+            ':rol' => filter_input(INPUT_POST,'frm-rol')];
+
+            // Recupero los datos del formulario de registro de un nuevo usuario: Datos de persona usuaria
+            $datosPersona = [':documento' => filter_input(INPUT_POST,'frm-dni'),
+            ':tipo' => 'DNI',
+            ':nombre' => filter_input(INPUT_POST,'frm-nombre'),
+            ':apellido1' => filter_input(INPUT_POST,'frm-apellido1'),
+            ':apellido2' => filter_input(INPUT_POST,'frm-apellido2'),
+            ':email' => filter_input(INPUT_POST,'frm-email'),
+            ':telefono' => '-',
+            ':direccion' => '-',
+            ':localidad' => filter_input(INPUT_POST,'frm-localidad'),
+            ':codigoPostal' => '-',
+            ':usuario' => ''];
+
+            // Genero el hash de la contraseña de usuario
+            $datosUsuario[':contrasenya'] = hash('sha256', $datosUsuario[':nombre'] . $datosUsuario[':contrasenya']);
+
+            // Genero el hash de usuario que identica a la persona usuaria
+            $hashUsuario = $datosUsuario[':nombre'] . $datosPersona[':documento'] . $datosPersona[':nombre'] . $datosPersona[':apellido1'] . $datosPersona[':apellido2'];
+            $hashUsuario = hash('sha256', $hashUsuario);
+
+            // Asigno el hash de usuario generado a los datos de usuario y de la persona usuaria
+            $datosUsuario[':codigo'] = $hashUsuario;
+            $datosPersona[':usuario'] = $hashUsuario;
+
+            // Intento registrar al usuario y su persona usuaria asociada
+            try {
+                // Registro al nuevo usuario en la base de datos
+                $u = Usuario::crearUsuario($datosUsuario);
+
+                // Registro a la nueva persona usuaria en la base de datos
+                $p = Persona::crearPersona($datosPersona);
+
+                // Compruebo que el usuario y su persona asociada se crearon correctamente
+                if ($u && $p) {
+                    // Notifico al usuario el resultado de registrarse en la plataforma
+                    ErrorController::mostrarMensajeInformativo($smarty, "Nuevo usuario dado de alta con éxito!!", 
+                        "/plataforma/backoffice.php?comando=usuarios:default");
+                } else {
+                    // Lanzo excepción para notificar al usuario que hubo algún problema al dar de alta al nuevo usuario en la plataforma
+                    throw new AppException(message: "Uppps!! Hubo un problema al dar de alta al usuario.",
+                        urlAceptar: "/plataforma/backoffice.php?comando=usuarios:default");
+                }                
+
+            // Manejo la excepción que se haya producido para notificarla al usuario
+            } catch (AppException $ae) {
+                // Si se produce una violación de restricción al registrarlos
+                if ($ae->getCode() === AppException::DB_CONSTRAINT_VIOLATION_IN_QUERY)
+                {
+                    ErrorController::handleException($ae, $smarty, '/plataforma/backoffice.php?comando=core:login:vista', "Este usuario ya esta registrado!!");
+                }
+                else
+                    ErrorController::handleException($ae, $smarty, '/plataforma/backoffice.php?comando=usuarios:default');
+            }
+        } else {
+            // Lanzo una excepción para notificar al usuario que no tiene permisos para dar de alta usuarios
+            throw new AppException(message: "Tu rol no te permite dar de alta usuarios desde la plataforma", 
+                urlAceptar: "/plataforma/backoffice.php?comando=usuarios:default");
+        }            
+    }
+
 }
 
  ?>

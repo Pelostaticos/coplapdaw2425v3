@@ -201,6 +201,14 @@ try {
             //     // Solicito al controlador de usuarios que me desactive el perfil de usuario
             //     Usuarios::desactivarUsuarioPlataforma($smarty);
             //     break;
+            case "usuarios:daralta:vista":
+                // Solicito al controlador de usuarios que muestra la vista de alta de usuarios (adminitradores)
+                Usuarios::mostrarVistaAltaUsuarioPlataforma($smarty);
+                break;
+            case "usuarios:daralta:procesa":
+                // Solicito al controlador de usuarios que procese el nuevo alta de usuario (administrador)
+                Usuarios::darAltaUsuarioPlataforma($smarty);
+                break;
             case "jornadas:default":
                 // Solicito al controlador de jornadas que muestre la vista por defecto del gestor jornadas
                 Jornadas::default($smarty);
