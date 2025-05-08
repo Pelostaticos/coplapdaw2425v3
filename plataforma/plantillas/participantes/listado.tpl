@@ -35,6 +35,9 @@
                     <div class="botonera-superior-listados">
                         <form method="post" action="/plataforma/backoffice.php?comando=participantes:default">
                             <button class="boton-accion-gestor" type="submit" name="accion" value="historico" title="Abre el histótico de participación del usuario">Ver Historicos</button>
+                            {if $permisosUsuario->hasPermisoAdministradrGestor()}
+                                <button class="boton-accion-gestor" type="submit" name="accion" value="adminparticipa:entrar" title="Abre el modo participantes">Ver Participantes</button>
+                            {/if}
                         </form>
                     </div>                    
                     <!-- Tabla que representa al listado de jornadas para inscripción -->
