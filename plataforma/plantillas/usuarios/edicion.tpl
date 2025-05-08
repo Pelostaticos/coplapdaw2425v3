@@ -42,7 +42,7 @@
                         </div> 
                         <div class="campos-gestor">
                             <p class="extraextralargo">
-                                <label for="frm-dirección">Tu dirección:&nbsp;</label>
+                                <label for="frm-dirección"><span>Tu dirección</span>:&nbsp;</label>
                                 <input type="text" name="frm-direccion" id="frm-direccion" value="{$perfil.direccion}">        
                                 {* <input type="text" name="frm-localidad" id="frm-localidad" value="{$perfil.localidad}"> *}
                                 <select name="frm-localidad" id="frm-localidad">
@@ -53,11 +53,11 @@
                         </div>                                         
                         <div class="campos-gestor">
                             <p class="extralargo">
-                                <label for="frm-email">Tu email:&nbsp;</label>
+                                <label for="frm-email"><span>Tu email</span>:&nbsp;</label>
                                 <input type="email" name="frm-email" id="frm-email" value="{$perfil.email}">                                
                             </p>
                             <p class="corto">
-                                <label for="frm-telefono">Teléfono:&nbsp;</label>
+                                <label for="frm-telefono"><span>Teléfono</span>:&nbsp;</label>
                                 <input type="phone" name="frm-telefono" id="frm-telefono" value="{$perfil.telefono}">
                             </p>
                         </div>
@@ -65,7 +65,7 @@
                             {if $permisos->hasPermisoAdministradorGestor()}
                             <!-- Selector para editar el estado del perfil de un usuario -->
                             <p class="corto">
-                                <label for="frm-estado">Estado:&nbsp;</label>
+                                <label for="frm-estado"><span>Estado</span>:&nbsp;</label>
                                 <select name="frm-estado">
                                     {foreach $estados as $nombre => $valor}
                                         <option value="{$valor}" {if $perfil.estado === $nombre}selected{/if}>{$nombre}</option>
@@ -74,7 +74,7 @@
                             </p>
                             <!-- Selector para editar el estado del perfil de un usuario -->
                             <p class="corto">
-                                <label for="frm-rol">Rol:&nbsp;</label>
+                                <label for="frm-rol"><span>Rol</span>:&nbsp;</label>
                                 <select name="frm-rol" id="frm-rol">
                                     <option value="{$perfil.rol|lower}" selected>{$perfil.rol}</option>
                                 </select>

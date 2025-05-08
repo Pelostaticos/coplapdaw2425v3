@@ -36,15 +36,15 @@
                     <div class="contenido-gestor">                        
                         <div class="campos-gestor">
                             <p class="extraextralargo">
-                                <label for="frm-nombre">Observatorio:&nbsp;</label>
+                                <label for="frm-nombre"><span>Observatorio</span>:&nbsp;</label>
                                 <input type="text" name="frm-nombre" id="frm-nombre" value="{$perfil.nombre}" required>
                             </p>
                         </div>
                         <div class="campos-gestor">
                             <p class="extraextralargo">
-                                <label for="frm-direccion">Dirección:&nbsp;</label>
+                                <label for="frm-direccion"><span>Dirección</span>:&nbsp;</label>
                                 <input name="frm-direccion" id="frm-direccion" type="text" value="{$perfil.direccion}" required>
-                                <label for="frm-localidad">Localidad:&nbsp;</label>
+                                <label for="frm-localidad"><span>Localidad</span>:&nbsp;</label>
                                 <select id="frm-localidad" name="frm-localidad" required>
                                     <option value="{$perfil.localidad}" selected>{$perfil.localidad}</option>
                                 </select>
@@ -52,15 +52,15 @@
                         </div>
                         <div class="campos-gestor">
                             <p class="extraextralargo">
-                                <label for="frm-gps">GPS:&nbsp;</label>
+                                <label for="frm-gps"><span>GPS</span>:&nbsp;</label>
                                 <input type="text" name="frm-gps" id="frm-gps" value="{$perfil.gps}" required>
-                                <label for="frm-url">URL:&nbsp;</label>
+                                <label for="frm-url"><span>URL</span>:&nbsp;</label>
                                 <input type="text" name="frm-url" id="frm-url" value="{$perfil.url}" required>
                             </p>
                         </div>
                         <div class="campos-gestor">
                             <p class="extraextralargo">
-                                <label for="frm-historia">Historia:&nbsp;</label>
+                                <label for="frm-historia"><span>Historia</span>:&nbsp;</label>
                                 <textarea name="frm-historia" id="frm-historia" rows="3" maxleng="200" >{$perfil.historia}</textarea>
                             </p>
                         </div>

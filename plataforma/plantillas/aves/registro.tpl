@@ -33,11 +33,11 @@
                     <div class="contenido-gestor">                        
                         <div class="campos-gestor">
                             <p class="medio">
-                                <label for="frm-codigo">Código:&nbsp;</label>
+                                <label for="frm-codigo"><span>Código</span>:&nbsp;</label>
                                 <input type="text" name="frm-codigo" id="frm-codigo" placeholder="Código del ave..." required>
                             </p>
                             <p class="extralargo">
-                                <label for="frm-especie">Especie:&nbsp;</label>
+                                <label for="frm-especie"><span>Especie</span>:&nbsp;</label>
                                 <input type="text" name="frm-especie" id="frm-especie" placeholder="Especie del ave..." required>
                             </p>                            
                         </div>
@@ -46,27 +46,27 @@
                         </div>
                         <div class="campos-gestor">
                             <p class="extralargo">
-                                <label for="frm-familia">Familia:&nbsp;</label>
+                                <label for="frm-familia"><span>Familia</span>:&nbsp;</label>
                                 <select name="frm-familia" id="frm-familia" required></select>
                             </p>
                             <p class="extralargo">
-                                <label for="frm-orden">Orden:&nbsp;</label>
+                                <label for="frm-orden"><span>Orden</span>:&nbsp;</label>
                                 <input type="text" name="frm-orden" id="frm-orden" value="Desconocido" required>
                             </p>
                         </div>
                         <div class="campos-gestor">
                             <p class="extralargo">
-                                <label for="frm-comun">Nombre común:&nbsp;</label>
+                                <label for="frm-comun"><span>Nombre común</span>:&nbsp;</label>
                                 <input type="text" name="frm-comun" id="frm-comun" placeholder="Nombre común del ave..." required>
                             </p>                        
                             <p class="extralargo">
-                                <label for="frm-ingles">Nombre inglés:&nbsp;</label>
+                                <label for="frm-ingles"><span>Nombre inglés</span>:&nbsp;</label>
                                 <input type="text" name="frm-ingles" id="frm-ingles" placeholder="Nombre inglés del ave..." required>
                             </p> 
                         </div>
                         <div class="campos-gestor">
                             <p class="extraextralargo">
-                                <label for="frm-url">URL:&nbsp;</label>
+                                <label for="frm-url"><span>URL</span>:&nbsp;</label>
                                 <input type="text" name="frm-url" id="frm-url" placeholder="URL con información adicional del ave..." required>
                             </p>
                         </div>

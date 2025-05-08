@@ -33,25 +33,25 @@
                     <div class="contenido-gestor">                        
                         <div class="campos-gestor">
                             <p class="extraextralargo">
-                                <label for="frm-titulo">Titulo:&nbsp;</label>
+                                <label for="frm-titulo"><span>Titulo</span>:&nbsp;</label>
                                 <input type="text" name="frm-titulo" id="frm-titulo" placeholder="Titulo de la jornada..." required>
-                                <label for="frm-observatorio">Observatorio:&nbsp;</label>
+                                <label for="frm-observatorio"><span>Observatorio</span>:&nbsp;</label>
                                 <select name="frm-observatorio" id="frm-observatorio" required></select>
                             </p>
                         </div>
                         <div class="campos-gestor">
                             <p class="extraextralargo">
-                            <label for="frm-fecha">Fecha:&nbsp;</label>
+                            <label for="frm-fecha"><span>Fecha</span>:&nbsp;</label>
                             <input name="frm-fecha" id="frm-fecha" type="date" min="{$hoy}" value="{$hoy}" required>
-                            <label for="frm-hora-inicio">Hora de inicio:&nbsp;</label>
+                            <label for="frm-hora-inicio"><span>Hora de inicio</span>:&nbsp;</label>
                             <input name="frm-hora-inicio" id="frm-hora-inicio" type="time" min="08:00:00" max="13:00:00" step="15" value="08:00:00" required>
-                            <label for="frm-hora-fin">Hora de fin:&nbsp;</label>
+                            <label for="frm-hora-fin"><span>Hora de fin</span>:&nbsp;</label>
                             <input name="frm-hora-fin" id="frm-hora-fin" type="time" min="08:00:00" max="13:00:00" step="15" value="08:00:00" required>
                             </p>
                         </div>
                         <div class="campos-gestor">
                             <p class="extraextralargo">
-                            <label for="frm-informacion">Información:&nbsp;</label>
+                            <label for="frm-informacion"><span>Información</span>:&nbsp;</label>
                             <textarea name="frm-informacion" id="frm-informacion" rows="3" maxleng="200" placeholder="Escribe aquí información adicional (Max: 200 caracteres; Opcional)..."></textarea>
                             </p>
                         </div>

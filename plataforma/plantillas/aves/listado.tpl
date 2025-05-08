@@ -73,24 +73,30 @@
                         </thead>
                         <!-- Contenido del listado de aves -->
                         <tbody>
-                            {foreach $filas as $fila}
-                            <!-- Fila con los datos de cada ave  -->
-                            <tr>
-                                <!-- Celdas con datos de cada ave -->
-                                <td>{$fila.especie}</td>
-                                <td class="visibilidad">{$fila.familia}</td>
-                                <td class="visibilidad">{$fila.comun}</td>
-                                <!-- Celda con acciones permitidas para cada ave  -->
-                                <td>
-                                    <form method="post" action="/plataforma/backoffice.php?comando=aves:default">
-                                        <input type="hidden" name="especie" value="{$fila.especie}">
-                                        <button class="boton-accion-listado-gestor" type="submit" name="accion" value="consultar" title="Mostrar detalles"><span class="iconos-acciones-listados">search</span></button>
-                                        <button class="boton-accion-listado-gestor" type="submit" name="accion" value="actualizar" title="Actualizar ave"><span class="iconos-acciones-listados">edit</span></button>
-                                        <button class="boton-accion-listado-gestor" type="submit" name="accion" value="eliminar" title="Eliminar ave"><span class="iconos-acciones-listados">delete</span></button>
-                                    </form>
-                                </td>
-                            </tr>
-                            {/foreach}
+                            {if $filas|@count === 0}
+                                <tr>
+                                    <td colspan="4">Lo sentimos!!! No hay aves disponibles para listar</td>
+                                </tr>
+                            {else} 
+                                {foreach $filas as $fila}
+                                <!-- Fila con los datos de cada ave  -->
+                                <tr>
+                                    <!-- Celdas con datos de cada ave -->
+                                    <td>{$fila.especie}</td>
+                                    <td class="visibilidad">{$fila.familia}</td>
+                                    <td class="visibilidad">{$fila.comun}</td>
+                                    <!-- Celda con acciones permitidas para cada ave  -->
+                                    <td>
+                                        <form method="post" action="/plataforma/backoffice.php?comando=aves:default">
+                                            <input type="hidden" name="especie" value="{$fila.especie}">
+                                            <button class="boton-accion-listado-gestor" type="submit" name="accion" value="consultar" title="Mostrar detalles"><span class="iconos-acciones-listados">search</span></button>
+                                            <button class="boton-accion-listado-gestor" type="submit" name="accion" value="actualizar" title="Actualizar ave"><span class="iconos-acciones-listados">edit</span></button>
+                                            <button class="boton-accion-listado-gestor" type="submit" name="accion" value="eliminar" title="Eliminar ave"><span class="iconos-acciones-listados">delete</span></button>
+                                        </form>
+                                    </td>
+                                </tr>
+                                {/foreach}
+                            {/if}
                         </tbody>
                      </table>
                 </div>
