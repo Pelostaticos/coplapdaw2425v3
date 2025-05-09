@@ -311,6 +311,45 @@ class Participante {
             return [];
     }    
 
+
+    /**
+     * 
+     * Método estático para listar a todos los participantes de la plataforma
+     *
+     * @return Array Devuelve un array asociativo con el listado de participantes de la plataforma
+     *               Devuelve un array vacío cuando no es posible listar a los participantes de la plataforma
+     */    
+    public static function listarParticipantes($modoUsuarios=false): Array {
+        // Construyo la sentencia SQL base para recuperar a los participantes de la plataforma de la base de datos
+        // Compruebo si esta habilitado em modo usuarios del listado de participantes
+        if ($modoUsuarios) {
+            // Está habilitado el modo usuarios del listado de participantes. Entonces:
+            // Consulto a la base de datos todos los usuarios registros como posibles participantes
+            $sql="SELECT u.codigo as hashParticipante, u.nombre as usuario, p.localidad as localidad, 
+                u.rol as extra1, p.email as extra2 FROM pdaw_usuarios u
+	                JOIN pdaw_personas p ON p.usuario=u.codigo";
+        } else {
+            // Sentencia SQL para recuperar el listado de participantes disponibles en la plataforma
+            // De lo contrario, consulto a la base de datos por los usuarios realmente participantes
+            $sql="SELECT pt.usuario as hashParticipante, ANY_VALUE(u.nombre) as usuario, ANY_VALUE(p.localidad) as localidad,
+                COUNT(pt.usuario) as extra1, MAX(pt.inscripcion) as extra2 FROM pdaw_usuarios u
+                    JOIN pdaw_personas p ON p.usuario=u.codigo
+                    JOIN pdaw_participantes pt ON pt.usuario=u.codigo
+                    GROUP BY pt.usuario";
+        }
+        // Ejecuto la sentencia SQL para recuperar a los participantes a una jornada censal de la base de datos
+        $res=Core::ejecutarSql($sql);
+        // Si el resultado devuelto tras ejecución contiene un array de un elemento
+        if (is_array($res) && count($res)>0)        
+        {
+            // Devuelvo a los participantes de la jornada censal recuperados de la base de datos
+            return $res;
+        }
+        else
+            // De lo contario devolveré nulo
+            return [];
+    }
+
     /**
      * Método estático para buscar Inscripciones en la base de datos.
      *

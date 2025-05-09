@@ -33,7 +33,7 @@
                 <!-- Información del gestor de jornadas  -->
                 <div class="contenido-gestor">
                     <div class="campos-gestor">
-                        <p class="largo"><span>Titulo</span>:&nbsp;{$perfil.titulo}</p>
+                        <p class="extralargo"><span>Titulo</span>:&nbsp;{$perfil.titulo}</p>
                         <p class="corto"><span>Estado</span>:&nbsp;{$perfil.estado}</p>
                         <p class="corto"><span>Asistencia</span>:&nbsp;{$perfil.asistencia}</p>
                     </div>
