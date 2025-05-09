@@ -31,6 +31,11 @@
                 </div>                
                 <!-- Información del gestor de particpantes  -->
                 <div class="contenido-gestor">
+                    <!-- Encabezado del listado de jornadas abiertas a inscripción de participantes de la plataforma -->                
+                    <h2 class="subtitulo-contenido-gestor">Listado de jornada disponibles</h2>
+                    <p class="texto-contenido-gestor">¡Bienvenido/a {$participante}! A continuación, se presenta el listado de jornadas censales
+                    activas y abiertas para su participación en este momento. Seleccione la jornada de su interés para ver los detalles, 
+                    conocer la ubicación y registrarse como voluntario. Su colaboración es esencial para el éxito de nuestros censos ¡Gracias!</p>
                     <!-- Bóton para la acción de mostrar el histórico de participación en la plataforma -->
                     <div class="botonera-superior-listados">
                         <form method="post" action="/plataforma/backoffice.php?comando=participantes:default">

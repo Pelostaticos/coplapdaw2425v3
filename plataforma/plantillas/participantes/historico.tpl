@@ -31,6 +31,10 @@
                 </div>                
                 <!-- Información del gestor de particpantes  -->
                 <div class="contenido-gestor">
+                    <!-- Encabezado del listado de inscripciones de un participante en la plataforma -->                                
+                    <h2 class="subtitulo-contenido-gestor">Listado de inscripciones registradas</h2>
+                    <p class="texto-contenido-gestor">A continuación, se presenta el registro completo de las inscripciones de [{$participante}] en las jornadas censales.
+                     Aquí podrá consultar el estado de cada participación, las fechas de las jornadas y otros detalles relevantes de su historial en los censos.</p>                
                     <!-- Formulario para busqueda y orden en el histórico de participación de un usuario  -->
                     <form id="busqueda-gestor" name="busqueda-gestor" method="post" action="/plataforma/backoffice.php?comando=participantes:filtrar">
                         <p class="corto">

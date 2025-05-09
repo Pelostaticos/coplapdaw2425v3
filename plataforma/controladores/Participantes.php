@@ -60,7 +60,8 @@ class Participantes {
                 >> modoUsuarios: Controla si se muestra a todos los usuarios o sólo participantes
                 >> volver: URL que fuerza a devolver al usuario a una determinada parte del gestor tras acción */
             $_SESSION['gparticipantes']=['modoAdmin' => false, 'idJornada' => null,
-                'hashParticipantes' => null, 'modoUsuarios' => false, 'volver' => null];
+                'participante' => $usuario,'hashParticipante' => $usuario->getCodigo(), 
+                'modoUsuarios' => false, 'volver' => null];
         // Está ya inicializada entonces: Compruebo si el usuario logueado interactúa con los listados del gestor.
         } else {
                 // Aquí recupero el identificador de jornada elegido por el administrador
@@ -68,16 +69,18 @@ class Participantes {
                 // Aquí recupero el modo del listado de participantes que se le muestra al administrador según su elección
                 if (isset($_POST['modoListado'])) {$_SESSION['gparticipantes']['modoUsuarios'] = filter_input(INPUT_POST, 'modoListado', FILTER_VALIDATE_BOOLEAN);}
         }
-
         // Compruebo si el usuario logueado es administrador y no ha pedido participar en jornadas
         if ($permisosUsuario->hasPermisoAdministradorGestor() && $_SESSION['gparticipantes']['modoAdmin']) {
             // Compruebo si está establecida la accion en el supergobal POST: Modo restringido.
             if (isset($_POST['accion'])) {
                 // Está establecida la acción en el superglobal POST. Entonces:                
                 // Recupero la acción solicitada desde un listado del gestor de participantes
-                $accion = filter_input(INPUT_POST, 'accion');               
+                $accion = $_POST['accion'];               
                 // Aquí recupero el identificador del usuario participante elegido por el administrador
-                if (isset($_POST['hashParticipante'])) {$_SESSION['gparticipantes']['hashParticipante'] = filter_input(INPUT_POST, 'hashParticipante');}
+                if (isset($_POST['hashParticipante'])) {
+                    $_SESSION['gparticipantes']['hashParticipante'] = filter_input(INPUT_POST, 'hashParticipante');
+                    $_SESSION['gparticipantes']['participante'] = Usuario::consultarUsuario($_SESSION['gparticipantes']['hashParticipante']);
+                }
                 // Proceso las acciones solicitadas por el administrador desde el modo restringido
                 switch ($accion) {
                     case "adminparticipa:detalles":
@@ -102,6 +105,13 @@ class Participantes {
                         // Regreso a la vista principal del gestor de participantes en modo restringido tras acción
                         Participantes::listarParticipantesPlataforma($smarty, $_SESSION['gparticipantes']['modoUsuarios']);
                         break;
+                    case "historico":
+                        // Muestro la vista del histórico del participante elegido en modo restringido
+                        Participantes::mostrarHistoricoParticipacionUsuarioPlataforma($smarty);                     
+                        break;                        
+                    case "inscribirse":
+                        // Muestro la vista para inscribir a un usuario participante a una jornada en modo restringido
+                        Participantes::mostrarInscripcionParticipanteJornadaPlataforma($smarty);                        
                     case "inscripcion":
                         // Muestro la vista con los detalles de una determinada inscripción de un participante
                         Participantes::mostrarDetallesIncripciónUsuarioPlataforma($smarty);                        
@@ -114,9 +124,19 @@ class Participantes {
                         // Muestra la confirmación de baja de una inscripción de la plaatforma
                         Participantes::mostrarConfirmacionBajaInscripcionPlataforma($smarty);                        
                         break;
+                    case "volver:historico":
+                        // Desestablezco la variable acción del POST simulado durante la edición 
+                        // y eliminación de inscripciones de la plataforma.
+                        unset($_POST['accion']);
+                        // Vuelvo a mostrar la vista del histórico de participación
+                        Participantes::mostrarHistoricoParticipacionUsuarioPlataforma($smarty);
+                        break;                        
                     default:
                         // La por defecto es salir del modo restringido del gestor participantes
                         $_SESSION['gparticipantes']['modoAdmin']=false;
+                        // Establezco por defecto al hash del participante y participante el correspondiente al usuario logueado
+                        $_SESSION['gparticipantes']['participante']=$usuario;
+                        $_SESSION['gparticipantes']['hashParticipante']=$usuario->getCodigo();                        
                         // Muestro la vista del listado de jornadas abiertas a inscripción en modo normal
                         Participantes::listarJornadasInscripcionPlataforma($smarty);
                         break;
@@ -127,6 +147,9 @@ class Participantes {
             }
         } else {
             // De lo contrario, el usuario logueado no es administrador.
+            // Establezco por defecto al hash del participante y participante el correspondiente al usuario logueado
+            $_SESSION['gparticipantes']['participante']=$usuario;
+            $_SESSION['gparticipantes']['hashParticipante']=$usuario->getCodigo();            
             // Compruebo si está establecida la accion en el supergobal POST.
             // RECUERDA: Aquí un administrador se comporta como un usuario no administrador por restricciones en la 
             // implementación completa del gestor de participantes por cuestión de falta de tiempo por cumplir con 
@@ -134,9 +157,7 @@ class Participantes {
             if (isset($_POST['accion'])) {
                 // Está establecida la acción en el superglobal POST. Entonces:                
                 // Recupero la acción solicitada desde un listado del gestor de participantes
-                $accion = filter_input(INPUT_POST, 'accion');
-                // Establezco por defecto al hash del participante el correspondiente al usuario logueado
-                $_SESSION['gparticipantes']['hashParticipante']=$usuario->getCodigo();
+                $accion = $_POST['accion'];
                 // Proceso la acción solicitadas por usuarios no administradores desde el gestor
                 switch ($accion) {
                     case "historico":
@@ -175,7 +196,9 @@ class Participantes {
                     default:
                         // Establezco la variable de sesión para volver al gestor de participantes 
                         // tras consultar detalles de una jornada disponible a inscripción.
-                        $_SESSION['volver'] = $_SERVER['REQUEST_URI'];                    
+                        $_SESSION['volver'] = $_SERVER['REQUEST_URI'];
+                        // Establezco en la variable de sesión listado el identificador de jornada elegido
+                        $_SESSION['listado']=$_SESSION['gparticipantes']['idJornada'];                                          
                         // Solicito al controlador de jornadas que muestre los detalles de la jornada
                         // abierta a inscripción que el usuario desea consultar.
                         Jornadas::consultarDetallesJornadaPlataforma($smarty);
@@ -208,14 +231,18 @@ class Participantes {
         // Compruebo que el usuario logueado no es administrador o es un administrdor como el modo participación activo
         if (!$permisosUsuario->hasPermisoAdministradorGestor() || isset($_SESSION['gparticipantes']['modoAdmin'])) {
 
-            // Recupero el hash de usuario del usuario participante
-            $participante=$_SESSION['gparticipantes']['hashParticipante'];
+            // Recupero al usuario participante
+            $participante = $_SESSION['gparticipantes']['participante'];
+
+            // Recupero el hash del usuario participante
+            $hashParticipante=$_SESSION['gparticipantes']['hashParticipante'];
 
             // Genero el listado de jornadas  disponibles en la plataforma
-            $datos = Participante::listarJornadasInscripcion($participante);
+            $datos = Participante::listarJornadasInscripcion($hashParticipante);
 
             // Asigno las variables requeridas por la plantila del listado de jornadas
             $smarty->assign('usuario', $usuario->getUsuario());
+            $smarty->assign('participante', $participante->getUsuario());
             $smarty->assign('permisosUsuario', $permisosUsuario);
             $smarty->assign('filas', $datos);
             $smarty->assign('anyo', date('Y'));
@@ -288,12 +315,12 @@ class Participantes {
         if ($permisosUsuario->getPermisoInscribirseJornadas()) {
             // El usuario logueado tiene permisos para inscribirse a jornadas: Entonces:
             // Compruebo que el usuario loqueado eligió una jornada del listado
-            if (isset($_SESSION['gparticipante']) && !is_null($_SESSION['gparticipante']['idJornada'])) { 
+            if (isset($_SESSION['gparticipantes']) && !is_null($_SESSION['gparticipantes']['idJornada'])) { 
                 // Recupero el identificador de la jornada elegida por el usuario desde su sesion
-                $idJornada = $_SESSION['gparticipante']['idJornada'];
+                $idJornada = $_SESSION['gparticipantes']['idJornada'];
                 // Desestablezco el identificador de jornada elegido por el usuario desde la sesion porque
                 // ya ha cumpplido su función aquí
-                $_SESSION['gparticipante']['idJornada']=null;
+                $_SESSION['gparticipantes']['idJornada']=null;
                 // Recupero la jornada elegida por el usuario que desea inscribirse
                 $jornada = Jornada::consultarJornada($idJornada);
                 // Compruebo si la jornada elegida existe en la base de datos
@@ -383,14 +410,18 @@ class Participantes {
         // Compruebo que el usuario logueado no es administrador o es un administrdor como el modo participación activo
         if (!$permisosUsuario->hasPermisoAdministradorGestor() || isset($_SESSION['gparticipantes']['modoAdmin'])) {
 
+            // Recupero al usuario participante desde la variable de sesión del gestor de participantes
+            $participante=$_SESSION['gparticipantes']['participante'];
+
             // Recupero el hash de usuario del usuario participante
-            $participante=$_SESSION['gparticipantes']['hashParticipante'];
+            $hashParticipante=$_SESSION['gparticipantes']['hashParticipante'];
 
             // Genero el listado de jornadas  disponibles en la plataforma
-            $datos = Participante::listarHistoricosInscripcion($participante);
+            $datos = Participante::listarHistoricosInscripcion($hashParticipante);
 
             // Asigno las variables requeridas por la plantila del listado de jornadas
             $smarty->assign('usuario', $usuario->getUsuario());
+            $smarty->assign('participante', $participante->getUsuario());
             $smarty->assign('permisosUsuario', $permisosUsuario);
             $smarty->assign('filas', $datos);
             $smarty->assign('anyo', date('Y'));
@@ -425,12 +456,12 @@ class Participantes {
         if ($permisosUsuario->getPermisoConsultarInscripcion()) {
             // El usuario logueado tiene permisos para inscribirse a jornadas: Entonces:
             // Compruebo que el usuario loqueado eligió una jornada del listado
-            if (isset($_SESSION['gparticipante']) && !is_null($_SESSION['gparticipante']['idJornada'])) {
+            if (isset($_SESSION['gparticipantes']) && !is_null($_SESSION['gparticipantes']['idJornada'])) {
                 // Recupero el identificador de la jornada elegida por el usuario desde su sesion
-                $idJornada = $_SESSION['gparticipante']['idJornada'];
+                $idJornada = $_SESSION['gparticipantes']['idJornada'];
                 // Desestablezco el identificador de jornada elegido por el usuario desde la sesion porque
                 // ya ha cumpplido su función aquí
-                $_SESSION['gparticipante']['idJornada']=null;
+                $_SESSION['gparticipantes']['idJornada']=null;
                 // Recupero la inscripción elegida por el usuario que desea consultar detalles
                 $jornada = Jornada::consultarJornada($idJornada);
                 // Compruebo si la jornada elegida existe en la base de datos
@@ -521,12 +552,12 @@ class Participantes {
         if ($permisosUsuario->getPermisoActualizarInscripcion()) {
             // El usuario logueado tiene permisos para actualizar una inscripcion: Entonces:
             // Compruebo que el usuario loqueado eligió una jornada del listado
-            if (isset($_SESSION['gparticipante']) && !is_null($_SESSION['gparticipante']['idJornada'])) {
+            if (isset($_SESSION['gparticipantes']) && !is_null($_SESSION['gparticipantes']['idJornada'])) {
                 // Recupero el identificador de la jornada elegida por el usuario desde su sesion
-                $idJornada = $_SESSION['gparticipante']['idJornada'];
-                // Desestablezco el identificador de jornada elegido por el usuario desde la sesion porque
-                // ya ha cumpplido su función aquí
-                $_SESSION['gparticipante']['idJornada']=null;
+                $idJornada = $_SESSION['gparticipantes']['idJornada'];
+                // // Desestablezco el identificador de jornada elegido por el usuario desde la sesion porque
+                // // ya ha cumpplido su función aquí
+                // $_SESSION['gparticipantes']['idJornada']=null;
                 // Recupero la inscripción elegida por el usuario que desea consultar detalles
                 $jornada = Jornada::consultarJornada($idJornada);
                 // Compruebo si la jornada elegida existe en la base de datos
@@ -616,7 +647,7 @@ class Participantes {
         if ($permisosUsuario->getPermisoEliminarInscripcion()) {
             // El usuario logueado tiene permiso para eliminar una inscripcion. Entonces:
             // Compruebo que el usuario haya elegido una jornada del listado
-            if (isset($_SESSION['gparticipante']) && !is_null($_SESSION['gparticipante']['idJornada'])) {
+            if (isset($_SESSION['gparticipantes']) && !is_null($_SESSION['gparticipantes']['idJornada'])) {
                 // Establezco la configuración del mensaje de confirmación para el usuario autorizado
                 $mensaje = "Has solicitado eliminar una inscripción de la plataforma";
                 $pregunta = "¿Estás seguro que quieres eliminar a dicha inscripción?";
@@ -707,7 +738,7 @@ class Participantes {
                 $inscripcion->setAsiste(intval(filter_input(INPUT_POST,'frm-asiste', FILTER_SANITIZE_NUMBER_INT)));
                 $inscripcion->setObservacion(filter_input(INPUT_POST,'frm-observacion'));
                 // Actulizo los datos de la jornada y muestro la notificación del resultado
-                if ($inscripcion->actualizarInscripción()) {                   
+                if ($inscripcion->actualizarInscripción()) {                
                     // Notifico al usuario que la actualización de la inscripción fue existosa
                     ErrorController::mostrarMensajeInformativo($smarty, "Inscripción actualizada con éxito!!", 
                         "/plataforma/backoffice.php?comando=participantes:default");
@@ -749,12 +780,12 @@ class Participantes {
         if ($permisosUsuario->getPermisoEliminarInscripcion()) {
             // El usuario logueado tiene permiso para eliminar una inscripción. Entonces:
             // Compruebo que el usuario loqueado eligió una inscripción del listado (idJornada del PK)
-            if (isset($_SESSION['gparticipante']) && !is_null($_SESSION['gparticipante']['idJornada'])) {
+            if (isset($_SESSION['gparticipantes']) && !is_null($_SESSION['gparticipantes']['idJornada'])) {
                 // Recupero el identificador de la jornada elegida por el usuario desde su sesion
-                $idJornada = $_SESSION['gparticipante']['idJornada'];
-                // Desestablezco el identificador de jornada elegido por el usuario desde la sesion porque
-                // ya ha cumpplido su función aquí
-                $_SESSION['gparticipante']['idJornada']=null;
+                $idJornada = $_SESSION['gparticipantes']['idJornada'];
+                // // Desestablezco el identificador de jornada elegido por el usuario desde la sesion porque
+                // // ya ha cumpplido su función aquí
+                // $_SESSION['gparticipantes']['idJornada']=null;
                 // Preparo el identificador de la inscripción deseada del usuario participante
                 $idInscripcion = ['idJornada' => $idJornada, 'usuario' => $hashParticipante]; //PK
                 // Recupero la inscripción elegida por el usuario que desea eleiminar
