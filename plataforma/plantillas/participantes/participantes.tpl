@@ -8,9 +8,9 @@
 *
 *   >> usuario: Nombre del usuario logueado.
 *   >> permisos: Conjunto de permisos del usuario logueado.
-*   >> modoListadoParticipantes: Bandera control del formato del listado de la plantilla
-*       |-> Verdadero: El listado muestra su configuración para listar participantes
-*       \-> Falso: El listado muestra su configración para listar usuarios
+*   >> modoListadoUsuarios: Bandera control del formato del listado de la plantilla
+*       |-> Verdadero: El listado muestra su configración para listar usuarios
+*       \-> Falso: El listado muestra su configuración para listar participantes
 *   >> filas: Conjunto de datos para generar el listado.
 *   >> anyo: Año en curso para copyright y copyleft del sitio web.
 *
@@ -34,11 +34,6 @@
                 </div>                
                 <!-- Información del gestor de particpantes  -->
                 <div class="contenido-gestor">
-                    <!-- Formulario para busqueda y orden en el histórico de participación de un usuario  -->
-                    <form id="modo-listado" name="modo-listado" method="post" action="/plataforma/backoffice.php?comando=participantes:filtrar">
-                        <button type="submit" name="modoListado" value="participantes" class="boton-accion-gestor">Mostrar participantes</button>
-                        <button type="submit" name="modoListado" value="usuarios" class="boton-accion-gestor">Mostrar usuarios</button>
-                    </form>
                     <!-- Encabezado del listado los usuarios participantes de la plataforma -->
                     {if $modoListadoParticipantes}
                         <h2 class="subtitulo-contenido-gestor">Listado de usuarios participantes/h2>
@@ -51,24 +46,32 @@
                         Utilice esta vista para administrar los detalles de su inscripción, su estado de asistencia y cualquier acción específica 
                         relacionada con su participación activa en los censos. ¡Muchas gracias por participar!</p>                      
                     {/if}
+                    <!-- Bóton para la acción de mostrar el histórico de participación en la plataforma -->
+                    <div class="botonera-superior-listados">
+                        <!-- Formulario para busqueda y orden en el histórico de participación de un usuario  -->
+                        <form id="modo-listado" name="modo-listado" method="post" action="/plataforma/backoffice.php?comando=participantes:default">
+                            <button type="submit" name="modoListado" value="false" class="boton-accion-gestor">Participantes</button>
+                            <button type="submit" name="modoListado" value="true" class="boton-accion-gestor">Usuarios</button>
+                        </form>                    
+                    </div>
                     <!-- Tabla que representa al listado de jornadas para inscripción -->
                     <table id="listado-gestor">
                         <!-- Cabecera del listado de jornadas para inscripción -->
-                        {if $modoListadoParticipantes}
-                            <thead>
-                                <th>Usuario</th>
-                                <th>Localidad</th>
-                                <th>Inscripciones</th>
-                                <th>Ultima participación</th>
-                                <th>Acciones</th>
-                            </thead>
-                        {else}
+                        {if $modoListadoUsuarios}
                             <thead>
                                 <th>Usuario</th>
                                 <th>Localidad</th>
                                 <th>Rol</th>
                                 <th>Correo</th>
                                 <th>Acciones</th>
+                            </thead>
+                        {else}
+                            <thead>
+                                <th>Usuario</th>
+                                <th>Localidad</th>
+                                <th>Inscripciones</th>
+                                <th>Ultima participación</th>
+                                <th>Acciones</th>                            
                             </thead>
                         {/if}
                         <!-- Contenido del listado de jornadas para inscripción -->
@@ -103,7 +106,7 @@
                 </div>
                 <!-- Acciones permitidas por el gestor de participantes -->
                 <div class="botonera">
-                    <form name="volverParticipantes" id="volverParticipantes" method="post" action="/plataforma/backoffice.php?comando=censos:default">
+                    <form name="volverParticipantes" id="volverParticipantes" method="post" action="/plataforma/backoffice.php?comando=participantes:default">
                         <button form="volverParticipantes" type="submit" class="boton-accion-gestor" name="accion" value="adminparticipa:volver" title="Volver a jornadas inscripción">Volver</button>
                     </form>
                 </div>

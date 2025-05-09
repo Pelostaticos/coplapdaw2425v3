@@ -35,8 +35,8 @@
                     <div class="botonera-superior-listados">
                         <form method="post" action="/plataforma/backoffice.php?comando=participantes:default">
                             <button class="boton-accion-gestor" type="submit" name="accion" value="historico" title="Abre el histótico de participación del usuario">Ver Historicos</button>
-                            {if $permisosUsuario->hasPermisoAdministradrGestor()}
-                                <button class="boton-accion-gestor" type="submit" name="accion" value="adminparticipa:entrar" title="Abre el modo participantes">Ver Participantes</button>
+                            {if $permisosUsuario->hasPermisoAdministradorGestor()}
+                                <button class="boton-accion-gestor" type="submit" name="accion" value="adminparticipa:entrar" title="Abre el modo participantes">Participantes</button>
                             {/if}
                         </form>
                     </div>                    
