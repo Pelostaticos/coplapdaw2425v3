@@ -41,4 +41,7 @@ define('SMTP_FROM','webmaster@sergiofct.bitgarcia.es');
 define('SMTP_BCC','sgarbut482@g.educaand.es');
 define('SMTP_NOMBRE_BCC','Almuno PDAW2425');
 
+// Datos del configuración del entorno de ejecución de la plataforma
+define('XAMPP_LOCAL', true);
+
  ?>
