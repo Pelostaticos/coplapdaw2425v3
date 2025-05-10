@@ -936,23 +936,21 @@ class Censo {
         }
 
         // Construyo la sentencia SQL base para recuperar el histórico de censos del usuario de la base de datos     
-        $sql="SELECT j.id_jornada as idJornada, j.titulo as titulo, ob.nombre as observatorio, j.fecha as fecha,
-            j.estado as estado, ob.localidad as localidad, cn.especie as esppecie, av.familia as familia, 
-            av.comun as comun, av.ingles as ingles, COUNT(cn.especie) as registros, SUM(cn.cantidad) as censadas
-            FROM pdaw_jornadas j 
-            JOIN pdaw_observatorios ob ON j.observatorio=ob.codigo 
-            JOIN pdaw_censos cn ON cn.id_jornada=j.id_jornada
-            JOIN pdaw_aves av ON av.especie=cn.especie";
-
-        // Defino párametro de la consulta con una subconsulta para obtener los identificadores de las jornadas censales realizadas
-        $parametros = [':subconsulta' => 'SELECT id_jornada FROM pdaw_censos GROUP BY id_jornada'];
+        $sql="SELECT cn.id_jornada, cn.especie as especie, COUNT(cn.especie) as registros, SUM(cn.cantidad) as censadas,
+	        j.id_jornada as idJornada, j.titulo as titulo, j.fecha as fecha, j.estado as estado,
+            ob.nombre as observatorio, ob.localidad as localidad,
+            av.familia as familia, av.comun as comun, av.ingles as ingles
+	            FROM pdaw_censos cn
+                JOIN pdaw_jornadas j ON j.id_jornada=cn.id_jornada
+                JOIN pdaw_observatorios ob ON ob.codigo=j.observatorio
+                JOIN pdaw_aves av ON av.especie=cn.especie";
 
         // Añado las condiciones de búsqueda a la sentencia SQL anterior
         if (!empty($condiciones)) {
             // Genero la cadena completa con todas las condiciones de búsqueda SQL.
-            $sql .= " WHERE j.id_jornada IN (:subconsulta) AND j.estado IN ('CERRADA', 'VALIDADA') AND (" . implode(" OR ", $condiciones) . ")";
+            $sql .= " WHERE j.estado IN ('CERRADA', 'VALIDADA') AND (" . implode(" OR ", $condiciones) . ")";
             // Agrupo los resultado de la búsqueda por el id_jornada de lso registros censales para hacer resumenes
-            $sql .= " GROUP BY cn.id_jornada;";
+            $sql .= " GROUP BY cn.id_jornada, cn.especie";
         }
 
         // Añado la funcionalidad para ordenar el resultado de la búsqueda
@@ -962,7 +960,8 @@ class Censo {
         if (in_array($ordenarPor, $columnasPermitidas) && in_array($orden, $ordenesPemritidos)) {
             $sql .= " ORDER BY $ordenarPor $orden";
         }
-
+        // echo $sql;
+        // exit;
         // Ejecuto la sentencia SQL para recuperar a los censos de la base de datos que coincidan el criterio de búsqueda
         $resultados=Core::ejecutarSql($sql, $parametros);
         // Si el resultado devuelto tras ejecución contiene un array de un elemento

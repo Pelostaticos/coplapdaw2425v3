@@ -221,7 +221,7 @@ class Censos {
 
             // Asigno las variables requeridas por la plantila del listado de jornadas
             $smarty->assign('usuario', $usuario->getUsuario());
-            $smarty->assign('permisos', $permisosUsuario);
+            $smarty->assign('permisosUsuario', $permisosUsuario);
             $smarty->assign('filas', $datos);
             $smarty->assign('anyo', date('Y'));
             // Muestro la plantilla del listado de jornadas
