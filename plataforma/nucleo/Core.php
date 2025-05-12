@@ -83,6 +83,19 @@ class Core {
             try {
                 static::$connDB = new \PDO(\DB_DSN, \DB_USER, \DB_PASSWORD, 
                     array(\PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION));
+                        /* Establezco la zona horaria en el servidor de base de datos, pero he descartado
+                        el comando de configuración porque NO detecta esta zona horaria ni XAMPP y tampoco 
+                        en mi hosting SWHOSTING:
+                        
+                        \PDO::MYSQL_ATTR_INIT_COMMAND => "SET time_zone = 'Europe/Madrid'")); 
+ 
+                        Además, en mi hosting no me permite listar las tablas de las zonas horarias mediante:
+                        
+                        SELECT * FROM mysql.time_zone_name LIMIT 1;                        
+
+                        Todo esto viene a que en mi entorno local el sistema registra corectamente la hora, pero 
+                        cuando hago registro de censos (es cuando me he dado cuenta del fallo) la hora registrada va 
+                        con dos horas de atrasdo. Por tanto, he descartado configurar zona horaria a nivel SGBDR*/                 
             } 
             catch (\PDOException $e)
             {

@@ -74,6 +74,8 @@ class Censos {
                         Jornadas::consultarDetallesJornadaPlataforma($smarty);                        
                         break;
                     case "listado:iniciar:censo":
+                        // Salgo del modo restringido del gestor de censos
+                        $_SESSION['admincensos']=false;                          
                         // Inicio el censo de aves de la jornada censal
                         Censos::mostrarConfirmacionInicioCensoPlataforma($smarty);
                         break;

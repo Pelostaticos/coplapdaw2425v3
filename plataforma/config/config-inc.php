@@ -44,4 +44,7 @@ define('SMTP_NOMBRE_BCC','Almuno PDAW2425');
 // Datos del configuración del entorno de ejecución de la plataforma
 define('XAMPP_LOCAL', true);
 
+// Establezco la zona horaria de la aplicación web
+date_default_timezone_set('Europe/Madrid');
+
  ?>
