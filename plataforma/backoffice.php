@@ -67,6 +67,9 @@ use correplayas\excepciones\AppException;
 use correplayas\nucleo\AjaxQuery;
 use correplayas\nucleo\Core;
 
+// 2.3º) Aplico la configuración del modo de depuración de la plataforma web
+Core::configurarDepuradorPlataforma();
+
 // 3º) Inicio la sesion web en la plataforma web
 session_start();
 

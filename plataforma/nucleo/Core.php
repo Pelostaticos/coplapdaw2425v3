@@ -486,6 +486,20 @@ class Core {
      */
     public static function configurarDepuradorPlataforma() {
 
+        // Compruebo el estado de configuración del modo de depuración PHP para la plataforma
+        if (defined('DEBUG_MODE') && DEBUG_MODE === true) {
+            // La constante de configuración de modo de depuración de la plataforma está definida y activa
+            // Entonces: Aplico la configuración para el modo de desarrollo: Debug PHP Mode habilitado.
+            ini_set('display_errors', 1);
+            ini_set('display_startup_errors', 1);
+            error_reporting(E_ALL);
+        } else {
+            // De lo contrario, aplico la configuración para el modo de producción: Debug PHP Mode deshabilitado.
+            ini_set('display_errors', 0);
+            ini_set('display_startup_errors', 0);
+            error_reporting(0);
+        }
+
     }
 
 }
