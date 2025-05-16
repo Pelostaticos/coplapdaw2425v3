@@ -68,7 +68,10 @@ class Censos {
                     case "listado:detalles":
                         // Establezco la variable de sesión para volver al gestor de participantes 
                         // tras consultar detalles de una jornada disponible a inscripción.
-                        $_SESSION['volver'] = $_SERVER['REQUEST_URI'];                    
+                        $_SESSION['volver'] = $_SERVER['REQUEST_URI'];  
+                        // Emulo que el usuario logueado ha elegido una jornada a consultar sus detalles
+                        // desde un listado del gestor de jornadas
+                        $_SESSION['listado'] = $_SESSION['gcensos'];
                         // Solicito al controlador de jornadas que muestre los detalles de la jornada
                         // abierta a inscripción que el usuario desea consultar.
                         Jornadas::consultarDetallesJornadaPlataforma($smarty);                        
@@ -763,12 +766,8 @@ class Censos {
             // Desestablezco el identificador de jornada elegido por el usuario desde la sesion porque
             // ya ha cumpplido su función aquí
             unset($_SESSION['gcensos']);
-            // Recupero la jornada censal elegida por el usuario que desea editar su registro censal
-            $jornada = Jornada::consultarJornada($idJornada);
-            // Evaluo si la jornada censal deseada es editable por el usuario logueado
-            $jornadaEditable=$jornada->esJornadaCensable($permisosUsuario) xor $jornada->esJornadaValidable($permisosUsuario);
-            // Compruebo si la jornada elegida existe en la base de datos y el usuario loguerado tiene permisos de edición de censos
-            if ($jornada instanceof Jornada && $jornadaEditable) {
+            // Compruebo si el usuario logueado tiene permisos de consulta de los detalles de un registro censal
+            if ($permisosUsuario->getPermisoConsultarCenso()) {
                 // Recupero de los datos adicionales de la clave primaria de un registro censal
                 $especie=filter_input(INPUT_POST, 'especie');
                 $hora=filter_input(INPUT_POST, 'hora');
