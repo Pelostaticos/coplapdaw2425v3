@@ -479,6 +479,15 @@ class Core {
 
     }
 
+    /**
+     * Método para configurar el modo de depuración de la Plataforma Correplayas
+     *
+     * @return void No devulve valor alguno
+     */
+    public static function configurarDepuradorPlataforma() {
+
+    }
+
 }
 
  ?>
