@@ -108,7 +108,17 @@ class Participantes {
                     case "historico":
                         // Muestro la vista del histórico del participante elegido en modo restringido
                         Participantes::mostrarHistoricoParticipacionUsuarioPlataforma($smarty);                     
-                        break;                        
+                        break;
+                    case "detalles":
+                        // Establezco la variable de sesión para volver al gestor de participantes 
+                        // tras consultar detalles de una jornada disponible a inscripción.
+                        $_SESSION['volver'] = $_SERVER['REQUEST_URI'];
+                        // Establezco en la variable de sesión listado el identificador de jornada elegido
+                        $_SESSION['listado']=$_SESSION['gparticipantes']['idJornada'];                                          
+                        // Solicito al controlador de jornadas que muestre los detalles de la jornada
+                        // abierta a inscripción que el usuario desea consultar.
+                        Jornadas::consultarDetallesJornadaPlataforma($smarty);                        
+                        break;                      
                     case "inscribirse":
                         // Muestro la vista para inscribir a un usuario participante a una jornada en modo restringido
                         Participantes::mostrarInscripcionParticipanteJornadaPlataforma($smarty);                        
