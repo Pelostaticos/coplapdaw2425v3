@@ -1403,7 +1403,7 @@ class Censos {
             // Compruebo si la jornada elegida existe en la base de datos y el usuario loguerado tiene permisos de edición de censos
             if ($jornada instanceof Jornada && $jornadaEditable) {
                 // Recupero el registro censal a eliminar de la plataforma
-                // $registroCensal=Censo::consultarRegistroCensal($registroCensal);
+                $registroCensal=Censo::consultarRegistroCensal($registroCensal);
                 // Elimino el registro censal y notifico al usuario del resultado
                 if ($registroCensal->eliminarRegistroCensal()) {
                     // Emulo la elección del usuario logueado de una acción por haberla solicitado previamente
