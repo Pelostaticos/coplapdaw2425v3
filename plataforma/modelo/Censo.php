@@ -81,9 +81,9 @@ class Censo {
         // Preparo los datos del registro censal del ave a actualizar en la base de datos
         $datos = [':cantidad' => $this->cantidad, ':nubosidad' => $this->nubosidad, ':visibilidad' => $this->visibilidad,
             ':dirViento' => $this->dirViento, ':velViento' => $this->velViento, ':procedencia' => $this->procedencia,
-            ':destino' => $this->destino, ':AltVuelo' => $this->altVuelo, ':formaVuelo' => $this->formaVuelo,
+            ':destino' => $this->destino, ':altVuelo' => $this->altVuelo, ':formaVuelo' => $this->formaVuelo,
             ':distCosta' => $this->distCosta, ':comentario' => $this->comentario, ':especie' => $this->especie,
-            ':idJornada' => $this->idJornada, ':hora' => $this->hora];
+            ':idJornada' => $this->idJornada, ':hora' => $this->hora];             
         // Ejecuto la sentencia SQL para actualizar el registro censal del ave en la base de datos
         $res=Core::ejecutarSql($sql,$datos);
         // Si el resultado es mayor de cero entonces:
