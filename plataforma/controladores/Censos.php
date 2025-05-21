@@ -68,7 +68,10 @@ class Censos {
                     case "listado:detalles":
                         // Establezco la variable de sesión para volver al gestor de participantes 
                         // tras consultar detalles de una jornada disponible a inscripción.
-                        $_SESSION['volver'] = $_SERVER['REQUEST_URI'];                    
+                        $_SESSION['volver'] = $_SERVER['REQUEST_URI'];  
+                        // Emulo que el usuario logueado ha elegido una jornada a consultar sus detalles
+                        // desde un listado del gestor de jornadas
+                        $_SESSION['listado'] = $_SESSION['gcensos'];
                         // Solicito al controlador de jornadas que muestre los detalles de la jornada
                         // abierta a inscripción que el usuario desea consultar.
                         Jornadas::consultarDetallesJornadaPlataforma($smarty);                        
@@ -763,12 +766,8 @@ class Censos {
             // Desestablezco el identificador de jornada elegido por el usuario desde la sesion porque
             // ya ha cumpplido su función aquí
             unset($_SESSION['gcensos']);
-            // Recupero la jornada censal elegida por el usuario que desea editar su registro censal
-            $jornada = Jornada::consultarJornada($idJornada);
-            // Evaluo si la jornada censal deseada es editable por el usuario logueado
-            $jornadaEditable=$jornada->esJornadaCensable($permisosUsuario) xor $jornada->esJornadaValidable($permisosUsuario);
-            // Compruebo si la jornada elegida existe en la base de datos y el usuario loguerado tiene permisos de edición de censos
-            if ($jornada instanceof Jornada && $jornadaEditable) {
+            // Compruebo si el usuario logueado tiene permisos de consulta de los detalles de un registro censal
+            if ($permisosUsuario->getPermisoConsultarCenso()) {
                 // Recupero de los datos adicionales de la clave primaria de un registro censal
                 $especie=filter_input(INPUT_POST, 'especie');
                 $hora=filter_input(INPUT_POST, 'hora');
@@ -826,8 +825,12 @@ class Censos {
         // Compruebo que el usuario logueado tiene permiso de acceso al modo restringido del gestor de censos
         if ($permisosUsuario->hasPermisoGestorCensos() && isset($_SESSION['admincensos'])) {
             // El usuario logueado tiene permiso de acceso al modo restringido del gestor de censos. Entonces:
-            // Compruebo que el usuario haya elegido una jornada del listado de la que desea iniciar el censo
+            // Compruebo que el usuario haya elegido un registro censal del listado que desea eliminar del censo
             if (isset($_POST['idJornada'])) {
+                // Establezco la clave primaria del registro censal que se desea aliminar en la variable de sesión
+                $_SESSION['gcensos']=['idJornada' => filter_input(INPUT_POST, 'idJornada'),
+                    'especie' => filter_input(INPUT_POST, 'especie'), 
+                    'hora' => filter_input(INPUT_POST, 'hora')];
                 // Establezco la configuración del mensaje de confirmación para el usuario autorizado
                 $mensaje = "Has solicitado eliminar un registro censal de una jornada de la plataforma";
                 $pregunta = "¿Estás seguro que quieres eliminar dicho registro censal?";
@@ -1328,7 +1331,7 @@ class Censos {
             // Compruebo si la jornada elegida existe en la base de datos y el usuario loguerado tiene permisos de edición de censos
             if ($jornada instanceof Jornada && $jornadaEditable) {
                 // Genero la clave primaria del resgitro censal en edición
-                $registroCensal=['idJornada' => filter_input(INPUT_POST, 'frm-idJornada'), 
+                $registroCensal=['idJornada' => filter_input(INPUT_POST, 'frm-idjornada'), 
                     'especie' => filter_input(INPUT_POST, 'frm-especie'),
                     'hora' => filter_input(INPUT_POST, 'frm-hora')];
                 // Recupero el registro censal en edición
@@ -1344,7 +1347,7 @@ class Censos {
                 $registroCensal->setAlturaVueloAve(filter_input(INPUT_POST, 'frm-altvuelo'));
                 $registroCensal->setFormacionVueloAve(filter_input(INPUT_POST, 'frm-formavuelo'));
                 $registroCensal->setDistanicaCostaAve(filter_input(INPUT_POST, 'frm-distcosta'));
-                $registroCensal->setComentaerio(filter_input(INPUT_POST, 'frm-comentario'));
+                $registroCensal->setComentaerio(filter_input(INPUT_POST, 'frm-comentarios'));              
                 // Actualizo el registro censal y notifico al usuario del resultado
                 if ($registroCensal->actualizarRegistroCensal()) {
                     // Emulo la elección del usuario logueado de una acción por haberla solicitado previamente
@@ -1387,7 +1390,9 @@ class Censos {
         // Compruebo si existe una jornada censal previamente elegida por el usuario logueado
         if (isset($_SESSION['gcensos'])) {
             // Recupero el identificador de la jornada elegida por el usuario desde su sesion
-            $idJornada = $_SESSION['gcensos'];
+            $idJornada = $_SESSION['gcensos']['idJornada'];
+            // Recupero la clave primaria del registro censal que deseo eliminar
+            $registroCensal=$_SESSION['gcensos'];
             // Desestablezco el identificador de jornada elegido por el usuario desde la sesion porque
             // ya ha cumpplido su función aquí
             unset($_SESSION['gcensos']);
@@ -1397,12 +1402,8 @@ class Censos {
             $jornadaEditable=$jornada->esJornadaCensable($permisosUsuario) xor $jornada->esJornadaValidable($permisosUsuario);
             // Compruebo si la jornada elegida existe en la base de datos y el usuario loguerado tiene permisos de edición de censos
             if ($jornada instanceof Jornada && $jornadaEditable) {
-                // Genero la clave primaria del registro censal que se desea eliminar de la plataforma
-                $registroCensal=['idJornada' => filter_input(INPUT_POST, 'frm-idJornada'), 
-                    'especie' => filter_input(INPUT_POST, 'frm-especie'),
-                    'hora' => filter_input(INPUT_POST, 'frm-hora')];
                 // Recupero el registro censal a eliminar de la plataforma
-                $registroCensal=Censo::consultarRegistroCensal($registroCensal);
+                // $registroCensal=Censo::consultarRegistroCensal($registroCensal);
                 // Elimino el registro censal y notifico al usuario del resultado
                 if ($registroCensal->eliminarRegistroCensal()) {
                     // Emulo la elección del usuario logueado de una acción por haberla solicitado previamente

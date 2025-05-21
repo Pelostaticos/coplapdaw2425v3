@@ -30,8 +30,9 @@
                     </div>            
                 </div>
                 <!-- A) Información del gestor de censos: Formulario para la edición de un registro censal.  -->
-                <form id="edicion-registro-censal" method="post" action="/plataforma/backoffice.php?comando=censos:registrar:procesa">
+                <form id="edicion-registro-censal" method="post" action="/plataforma/backoffice.php?comando=censos:actualizar:procesa">
                     <input name="frm-idjornada" id="frm-idjornada" type="hidden" value="{$perfil.idJornada}">
+                    <input name="frm-especie" id="frm-especie" type="hidden" value="{$perfil.especie}">
                     <input name="frm-hora" id="frm-hora" type="hidden" value="{$perfil.hora}">
                     <div class="contenido-gestor">
                         <!-- Encabezado del formulario para la edición de registros censales de la jornada -->
@@ -192,7 +193,7 @@
                 <form name="volverCensoAves" id="volverCensoAves" method="post" action="/plataforma/backoffice.php?comando=censos:default"></form>
                 <div class="botonera">                
                     <button class="boton-accion-gestor" form="volverCensoAves" type="submit" name="accion" value="censo:volver" title="Volver al censo">Volver</button>
-                    <button class="boton-accion-gestor" form="edicion-registro-censal" type="submit" name="accion" value="censo:actualizar" title="Actualizar registro censal">Actualizar</button>              
+                    <button class="boton-accion-gestor" form="edicion-registro-censal" type="submit" title="Actualizar registro censal">Actualizar</button>              
                 </div>
             </article>
         </section>
