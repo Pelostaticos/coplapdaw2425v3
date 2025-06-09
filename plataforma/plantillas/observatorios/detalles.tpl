@@ -24,7 +24,7 @@
                 <!-- Encabezado del gestor de observatorios -->
                 <h1 class="titulo-accion-gestor">Detalles de observatorios</h1>                    
                 <div class="cabecera-gestor">
-                    <img class="logo-gestor" src="/plataforma/imagenes/gestor-observatorios.png" alt="encabezado gestor observatorios"/>
+                    <img class="logo-gestor" src="/imagenes/gestor-observatorios.png" alt="encabezado gestor observatorios"/>
                     <div class="gestor">
                         <small>Gestor</small>
                         <p class="titulo-gestor">Observatorios</p>
