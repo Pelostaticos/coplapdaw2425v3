@@ -24,7 +24,7 @@
                 <!-- Encabezado del gestor de Censos -->
                 <h1 class="titulo-accion-gestor">Jornadas censales</h1>
                 <div class="cabecera-gestor">
-                    <img class="logo-gestor" src="/plataforma/imagenes/gestor-censos.png" alt="encabezado gestor censos"/>
+                    <img class="logo-gestor" src="/imagenes/gestor-censos.png" alt="encabezado gestor censos"/>
                     <div class="gestor">
                         <small>Gestor</small>
                         <p class="titulo-gestor">Censos</p>
