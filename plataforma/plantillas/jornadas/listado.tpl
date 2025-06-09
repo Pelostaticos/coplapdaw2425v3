@@ -23,7 +23,7 @@
                 <!-- Encabezado del gestor de jornadas -->
                 <h1 class="titulo-accion-gestor">Listado de jornadas</h1>                    
                 <div class="cabecera-gestor">
-                    <img class="logo-gestor" src="/plataforma/imagenes/gestor-jornadas.png" alt="encabezado gestor jornadas"/>
+                    <img class="logo-gestor" src="/imagenes/gestor-jornadas.png" alt="encabezado gestor jornadas"/>
                     <div class="gestor">
                         <small>Gestor</small>
                         <p class="titulo-gestor">Jornadas</p>
