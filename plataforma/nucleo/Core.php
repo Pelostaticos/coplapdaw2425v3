@@ -542,6 +542,8 @@ class Core {
                 exit();
             } else {
                 // Notifico al usuario que el tutorial de la plataforma no está disponible
+                ErrorController::mostrarMensajeInformativo($smarty, 
+                    "Lo sentimos... El tutorial de la plataforma no está disponible!!!");
             }
         } else {
             // De lo contrario, lo redirigo a la vista de inicio de sesión
