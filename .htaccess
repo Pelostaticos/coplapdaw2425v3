@@ -1,0 +1,8 @@
+# Si el módulo de reescritura de URL existe
+<IfModule mod_rewrite.c>
+    # activo el motor de reescritura de URL
+    RewriteEngine on
+    # Redirigo cualquier petición al directorio publico
+    RewriteRule ^$ publico/ [L]
+    RewriteRule (.*) publico/$1 [L]
+</IfModule>

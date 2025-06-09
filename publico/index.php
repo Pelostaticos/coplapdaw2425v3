@@ -9,7 +9,7 @@
  * Contiene el código PHP del controlador frontal de la plataforma web del proyecto, encargado de iniciar
  * la plataforma y redirigir los comandos enviados por los usuarios al enrutador principal de Correplayas
  * 
- * @category "Controlador fronal"
+ * @category "Controlador frontal"
  * @package  Correplayas
  * @author   Sergio García Butrón
  * @version  1.0
