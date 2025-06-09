@@ -70,10 +70,13 @@ use correplayas\nucleo\Core;
 // 2.3º) Aplico la configuración del modo de depuración de la plataforma web
 Core::configurarDepuradorPlataforma();
 
-// 2.4) Establezco la ubicación del tutorial de la plataforma correplayas
+// 2.4º) Establezco la ubicación del tutorial de la plataforma correplayas
 define('TUTORIAL_CORREPLAYAS', __DIR__ . '/tutorial.pdf');
 
-// 3º) Inicio la sesion web en la plataforma web
+// 3.0º) Configuuro seguridad cookies sesión
+session_set_cookie_params(['httponly' => true, 'secure' => true]);
+
+// 3.1º) Inicio la sesion web en la plataforma web
 session_start();
 
 // 4.1º) Configuro el motor de plantillas Smarty
