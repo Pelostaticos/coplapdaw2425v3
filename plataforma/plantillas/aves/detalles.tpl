@@ -24,7 +24,7 @@
                 <!-- Encabezado del gestor de aves -->
                 <h1 class="titulo-accion-gestor">Detalles de aves</h1>                    
                 <div class="cabecera-gestor">
-                    <img class="logo-gestor" src="/plataforma/imagenes/gestor-aves.png" alt="encabezado gestor aves"/>
+                    <img class="logo-gestor" src="/imagenes/gestor-aves.png" alt="encabezado gestor aves"/>
                     <div class="gestor">
                         <small>Gestor</small>
                         <p class="titulo-gestor">Aves</p>
