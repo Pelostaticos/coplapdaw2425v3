@@ -24,7 +24,7 @@
                 <!-- Encabezado del gestor de usuarios -->
                 <h1 class="titulo-accion-gestor">Edición del perfil</h1>                    
                 <div class="cabecera-gestor">
-                    <img class="logo-gestor" src="/plataforma/imagenes/gestor-usuarios.png" alt="encabezado gestor usuarios"/>
+                    <img class="logo-gestor" src="/imagenes/gestor-usuarios.png" alt="encabezado gestor usuarios"/>
                     <div class="gestor">
                         <small>Gestor</small>
                         <p class="titulo-gestor">Usuarios</p>
