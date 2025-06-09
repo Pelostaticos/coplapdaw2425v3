@@ -45,11 +45,18 @@ class Core {
      * @return void No devuelve valor alguno
      */
     public static function default(Smarty $smarty) {
-        // Asigno las variables de la plantilla para la página de inicio del backoffice
-        $smarty->assign('usuario', Core::nombreUsuario());
-        $smarty->assign('anyo', date('Y'));
-        // Muestro la plantilla de la página de inicio del backoffice
-        $smarty->display('comunes/backoffice.tpl');
+        // Compruebo si hay usuario logueado en la plataforma
+        if (isset($_SESSION['usuario'])) {
+            // Hay un usuario logueado en la plataforma. Entonces: 
+            // Asigno las variables de la plantilla para la página de inicio del backoffice
+            $smarty->assign('usuario', Core::nombreUsuario());
+            $smarty->assign('anyo', date('Y'));
+            // Muestro la plantilla de la página de inicio del backoffice
+            $smarty->display('comunes/backoffice.tpl');
+        } else {
+            // De lo contario, simplemente muestro la plantilla del portál público de la plataforma corereplayas
+            $smarty->display('comunes/portal.tpl');
+        }
     }
 
     /**
