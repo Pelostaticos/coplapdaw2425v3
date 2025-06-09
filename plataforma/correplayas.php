@@ -136,7 +136,7 @@ try {
                 Core::enviarEmail($smarty, $mail);                
                 break;
             // Muestro el tutorial de la plataforma
-            case "core:tutorial:vista":
+            case "core:tutorial:plataforma":
                 // Solicito al núcleo que muestre el tutorial de la plataforma correplayas
                 Core::mostrarTutorialPlataforma($smarty);
                 break;

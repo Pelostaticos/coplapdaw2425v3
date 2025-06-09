@@ -24,7 +24,7 @@
                 <p>Con tu valiosa contribución, monitoreamos especies, detectamos amenazas y tomamos decisiones para la conservación. Cada observación y censo que realizas es vital. Juntos, ciencia y ciudadanía, construimos un futuro sostenible.</p>
                 <h3 class="cta">¿Cómo podemos ayudarte?</h3>
                 <div class="botonera">                    
-                    <a class="boton" href="/plataforma/backoffice.php?comando=core:tutorial:vista" target="_blank">Ayuda plataforma</a>
+                    <a class="boton" href="/plataforma/backoffice.php?comando=core:tutorial:plataforma" target="_blank">Ayuda plataforma</a>
                     <a class="boton" href="/plataforma/backoffice.php?comando=core:email:vista">Tengo una duda</a>
                 </div>
             </article>
