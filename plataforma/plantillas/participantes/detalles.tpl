@@ -22,7 +22,7 @@
                 <!-- Encabezado del gestor de participantes -->
                 <h1 class="titulo-accion-gestor">Detalles de inscripción</h1>                    
                 <div class="cabecera-gestor">
-                    <img class="logo-gestor" src="/plataforma/imagenes/gestor-jornadas.png" alt="encabezado gestor jornadas"/>
+                    <img class="logo-gestor" src="/imagenes/gestor-jornadas.png" alt="encabezado gestor jornadas"/>
                     <div class="gestor">
                         <small>Gestor</small>
                         <p class="titulo-gestor">Participantes</p>

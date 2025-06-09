@@ -26,7 +26,7 @@
                 <!-- Encabezado del gestor de Participantes -->
                 <h1 class="titulo-accion-gestor">Listado participantes</h1>
                 <div class="cabecera-gestor">
-                    <img class="logo-gestor" src="/plataforma/imagenes/gestor-participantes.png" alt="encabezado gestor participantes"/>
+                    <img class="logo-gestor" src="/imagenes/gestor-participantes.png" alt="encabezado gestor participantes"/>
                     <div class="gestor">
                         <small>Gestor</small>
                         <p class="titulo-gestor">Participantes</p>
