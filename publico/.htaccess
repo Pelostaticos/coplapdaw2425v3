@@ -1,0 +1,9 @@
+# Activar la reescritura de URLs
+RewriteEngine On
+
+# Redireccionar HTTP a HTTPS
+RewriteCond %{HTTPS} off
+RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
+# Redirecccionar URL antiguas al nuevo MVC Correplayas Seguro
+RewriteRule ^plataforma/backoffice\.php$ /index.php [L]

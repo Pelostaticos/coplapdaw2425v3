@@ -14,8 +14,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{$titulo}</title>
-    <link rel="stylesheet" href="/plataforma/estilos/backoffice.css">
-    <link rel="icon" href="/plataforma/imagenes/correplayas.png" type="image/x-icon">
+    <link rel="stylesheet" href="/estilos/backoffice.css">
+    <link rel="icon" href="/imagenes/correplayas.png" type="image/x-icon">
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
 </head>
 <body>
@@ -23,7 +23,7 @@
     <header>
         <!-- Logotipo y titulo del sitio web -->
         <a href="/plataforma/backoffice.php">
-            <img src="/plataforma/imagenes/correplayas.png" alt="logotipo del portal web correplayas"/>
+            <img src="/imagenes/correplayas.png" alt="logotipo del portal web correplayas"/>
             <div class="sitioweb">
                 <small>Plataforma</small>
                 <p class="titulositioweb"><span>Corre</span>playas.es</p>

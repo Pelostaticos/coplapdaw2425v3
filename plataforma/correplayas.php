@@ -365,7 +365,9 @@ try {
                 Observatorios::eliminarObservatorioPlataforma($smarty);
                 break;
             default:
-                // Solicito al núcleo que muestre la página de inicio del backoffice de la plataforma.
+                // Solicito al núcleo que muestre la vista por defecto según contexto.
+                // Contexto: Usuario logueado sin comando o con alguno desconocido. 
+                // Por defecto: Página de inicio del backoffice de la plataforma.
                 Core::default($smarty);
                 break;
         }
@@ -395,10 +397,12 @@ try {
             // Un usuario visitante quiere contactar con los administradores por email
             case "core:email:procesa":
                 Core::enviarEmail($smarty, $mail);
-                break;    
-            // Por defecto para un usuario no logueado y comando desconocido se le lleva al inicio de sesión
+                break;
+            // Solicito al núcleo que muestre la vista por defecto según contexto.
+            // Contexto: usuario no logueado y comando desconocido.
+            // Por defecto: Vista del portal público de la plataforma.
             default:
-                Core::mostrarInicioSesion($smarty);
+                Core::default($smarty);
                 break;
         }
     }    

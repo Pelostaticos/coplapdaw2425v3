@@ -14,8 +14,8 @@
          <small class="copyleft">PDAW2425 AGUADULCE - Sergio García Butrón</small>
     </footer>
     <!-- Incluyo el script de javascript requeridos por el backoffice para validación de formularios -->
-    <script src="/plataforma/javascript/correplayas.js"></script>
+    <script src="/javascript/correplayas.js"></script>
     <!-- Incluo el script de javascript requerido para el intercambio asíncrono de datos en la plataforma -->
-    <script src="/plataforma/javascript/ajaxquery.js"></script>
+    <script src="/javascript/ajaxquery.js"></script>
 </body>
 </html>
