@@ -84,7 +84,7 @@
                 </form>
                 <!-- Acciones permitidas por el gestor de usuario -->
                 <div class="botonera">
-                    <a class="boton-accion-gestor" href="/plataforma/backoffice.php" title="Volver al inicio">Volver</a>
+                    <a class="boton-accion-gestor" href="/plataforma/backoffice.php?comando=usuarios:default" title="Volver al inicio">Volver</a>
                     <button class="boton-accion-gestor" form="dar-alta-usuario" type="submit" title="Crear al usuario">Crear usuario</button>                    
                 </div>
             </article>
