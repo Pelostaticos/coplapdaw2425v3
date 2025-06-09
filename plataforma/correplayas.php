@@ -70,6 +70,9 @@ use correplayas\nucleo\Core;
 // 2.3º) Aplico la configuración del modo de depuración de la plataforma web
 Core::configurarDepuradorPlataforma();
 
+// 2.4) Establezco la ubicación del tutorial de la plataforma correplayas
+define('TUTORIAL_CORREPLAYAS', __DIR__ . '/tutorial.pdf');
+
 // 3º) Inicio la sesion web en la plataforma web
 session_start();
 
@@ -131,6 +134,11 @@ try {
             case "core:email:procesa":
                 // Solicito al nucleo de la plataforma que procese el formulario de contacto
                 Core::enviarEmail($smarty, $mail);                
+                break;
+            // Muestro el tutorial de la plataforma
+            case "core:tutorial:vista":
+                // Solicito al núcleo que muestre el tutorial de la plataforma correplayas
+                Core::mostrarTutorialPlataforma($smarty);
                 break;
             // Muestro el gestor de usuarios
             case "usuarios:default":

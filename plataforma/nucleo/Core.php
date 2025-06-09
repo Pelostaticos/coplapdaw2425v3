@@ -167,7 +167,7 @@ class Core {
         return $ret;
     }
 
-    // Bloque-C: Correo electrónico.
+    // Bloque-B: Correo electrónico.
 
     /**
      * Método estático para mostrarle al usuario el formulario de contacto del backoffice
@@ -258,7 +258,7 @@ class Core {
 
     }
 
-    // Bloque-D: Control de acceso a la plataforma.
+    // Bloque-C: Control de acceso a la plataforma.
     
     /**
      * Método estático que muestra la vista de inicio de sesión al usuario.
@@ -486,6 +486,8 @@ class Core {
 
     }
 
+    // Bloque-D: Funciones complementarias del núcleo de la plataforma
+
     /**
      * Método para configurar el modo de depuración de la Plataforma Correplayas
      *
@@ -505,6 +507,45 @@ class Core {
             ini_set('display_errors', 0);
             ini_set('display_startup_errors', 0);
             error_reporting(0);
+        }
+
+    }
+    
+
+    /**
+     * Método estático para mostrar el tutorial de la plataforma correplayas
+     *
+     * @return void No devuelve valor alguno
+     */
+    public static function mostrarTutorialPlataforma($smarty) {
+
+        // Compruebo que si existe un usuario logueado en la plataforma
+        if (isset($_SESSION['usuario'])) {
+            // Existe un usuario logueado. Entonces:
+            // Compruebo si el fichero del tutorial de la plataforma existe y es legible
+            if (file_exists(TUTORIAL_CORREPLAYAS) && is_readable(TUTORIAL_CORREPLAYAS)) {
+                // Obtengo el tipo MIME del archivo del tutorial de la plataforma
+                $tutorialInfo = finfo_open(FILEINFO_MIME_TYPE);
+                $mimeTipo = finfo_file($tutorialInfo, TUTORIAL_CORREPLAYAS);
+                finfo_close($tutorialInfo);
+                // Fuerzo el MIME a tipo PDF si no se ha detectado correctamente
+                $mimeTipo = ($mimeTipo===false || $mimeTipo!== 'application/pdf') ? 'application/pdf' : $mimeTipo;
+                // Establezco las cabeceras HTTP
+                header('Content-Type: ' . $mimeTipo);
+                header('Content-Length: ' . filesize(TUTORIAL_CORREPLAYAS));
+                header('Content-Disposition: inline; filename="' . basename(TUTORIAL_CORREPLAYAS) . '"');
+                header('Accept-Ranges: bytes');
+                header('Cache-Control: public, must-revalidate, max-age=0');
+                // Envio el contenido del archivo con el tutorial de la plataforma correplayas
+                readfile(TUTORIAL_CORREPLAYAS);
+                // Finalizo la ejecución del método
+                exit();
+            } else {
+                // Notifico al usuario que el tutorial de la plataforma no está disponible
+            }
+        } else {
+            // De lo contrario, lo redirigo a la vista de inicio de sesión
+            Core::iniciarSesion($smarty);
         }
 
     }
