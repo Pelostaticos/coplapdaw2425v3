@@ -1,0 +1,7 @@
+// /.gitignore
+.vscode
+node_modules
+ignore.html
+cache
+configs
+templates_c
