@@ -50,4 +50,10 @@ define('DEBUG_MODE', true);
 // Establezco la zona horaria de la aplicación web
 date_default_timezone_set('Europe/Madrid');
 
+// Configuración de acceso seguro al modo demostracion de la plataforma
+define('IS_DEMO_MODE', true);
+define('DEMO_USERNAME', 'demo');
+define('DEMO_PASSWORD_HASH', '76696ae435ec5e0606e98fd1489406d4735ce9a1cfb05f5995acaacf53519229');
+define('DEMO_USER_ID', '50d96e3ea045a5cee46c6b84b240995c1ce3b6b84d62914d40564b9ca0bbc97c');
+
  ?>
