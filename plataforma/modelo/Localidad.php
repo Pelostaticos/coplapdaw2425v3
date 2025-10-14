@@ -36,7 +36,8 @@ class Localidad {
 
     // B) Defino el constructor privado de la clase auxiliar Localidad
     public function __construct($localidad) {
-        
+        $this->localidad = $localidad['localidad'];
+        $this->provincia = $localidad['provincia'];        
     }
 
     // C) Defino los métodos getter y setter de la clase auxiliar Localidad
