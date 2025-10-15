@@ -325,7 +325,8 @@ class Censos {
                         foreach($participantes as $participante) {
                             $listaParticipantes[]=$participante['usuario'];
                         }
-                        $participantes=implode("|", $listaParticipantes);
+                        // Genero cadena con el conjunto de usuarios participantes a la jornada censal
+                        $participantes=empty($participantes) ? "Sin Participantes" : implode("|", $listaParticipantes);
                         // Genero el lugar donde se desarrolla la jornada donde se inscribe
                         $lugar=$observatorio->getNombreObservatorio() . " - " . $observatorio->getDireccionObservatorio() . 
                             " - " . $observatorio->getLocalidadObservatorio();
