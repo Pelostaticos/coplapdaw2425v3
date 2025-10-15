@@ -282,9 +282,17 @@ class Core {
      * @return void No devuelve valor alguno
      */
     public static function iniciarSesion($smarty) {
-        // Recupero los datos proporcionados en el formulario de inicio de sesión
-        $usuario=filter_input(INPUT_POST,'frm-usuario');
-        $password=filter_input(INPUT_POST,'frm-password');
+        // Si esta definido y activo el modo demostracion
+        if (defined('IS_DEMO_MODE') && IS_DEMO_MODE) {
+            // Entonces asigno credenciales de acceso automatico al modo demostracion
+            $usuario=DEMO_USERNAME;
+            $password=DEMO_PASSWORD_HASH;
+        }
+        else {
+            // Sino recupero los datos proporcionados en el formulario de inicio de sesión    
+            $usuario=filter_input(INPUT_POST,'frm-usuario');
+            $password=filter_input(INPUT_POST,'frm-password');
+        }
         // Compruebo que los campos usuario y contraseña no estén vacios
         if (!empty($usuario) && !empty($password))
         {   
