@@ -192,8 +192,14 @@ class Usuario {
      */
     public static function autenticarUsuario($usuario, $password): ?Usuario
     {   
-        // Construyo la sentencia SQL para recuperar al usuario de la base de datos     
-        $sql="SELECT * from pdaw_usuarios where nombre=:usuario and contrasenya=SHA2(CONCAT(:usuario,:password),256)";
+        // Si esta definido el modo demostración, se encuntra activo y la sesion de usuario iniciada
+        if (defined('IS_DEMO_MODE') && IS_DEMO_MODE && $_SESSION['usuario'] ) {
+            // Entonces: Contruyo la sentencia SQL para autenticar al usuario del modo demostración
+            $sql="SELECT * from pdaw_usuarios where nombre=:usuario and contrasenya=:password";
+        } else {
+            // De lo contrario, construyo la sentencia SQL para autenticar a un usuario real de la base de datos     
+            $sql="SELECT * from pdaw_usuarios where nombre=:usuario and contrasenya=SHA2(CONCAT(:usuario,:password),256)";
+        }
         // Ejecuto la sentencia SQL para recuperar al usuario de la base de datos
         $res=Core::ejecutarSql($sql,[':usuario'=>$usuario,':password'=>$password]);
         // Si el resultado devuelto tras ejecución contiene un array de un elemento
