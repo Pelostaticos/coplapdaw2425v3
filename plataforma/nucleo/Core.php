@@ -173,8 +173,8 @@ class Core {
         * NODEMO  OR    CONSULTA    ACCESIBLE: OR
         * NO(0)         NO(0)       NO(0)
         * NO(0)         SI(1)       SI(1)
-        * 1             0           1
-        * 1             1           1
+        * SI(1)         NO(0)       SI(1)
+        * SI(1)         SI(1)       SI(1)
         * ----------------------------------------------
         * 
         * Esta expresión significa: La sentencia está permitida si NO estamos en Modo Demostración (DEMO=0)
@@ -183,7 +183,7 @@ class Core {
         // Establezco bandera de estado para controlar que el modo demo esta desactivo
         $modoNoDemo=(IS_DEMO_MODE===false);
         // Establezco bandera de estado para controlar que sentencia SQL es de consulta
-        $modoLectura=(preg_match('/^\s*SELECT\s/i', $sql)===true);        
+        $modoLectura=(preg_match('/^\s*SELECT\s/i', $sql)===1);        
         // Evaluo si la base de datos está accesible: No está en modo DEMO y setencia SQL es LECTURA.
         $isAccesibleBaseDatos = ($modoNoDemo || $modoLectura);
         // Compruebo si la base de datos es accesible
@@ -230,7 +230,7 @@ class Core {
         } else {
             // De lo contrario, necesito notificar al usuario que la acción de escritura esta bloqueada
             // Genero la URL que direcciona al usuario tras aceptar advertencia excepcion
-            $url_aceptar = str_replace($_SERVER['REQUEST_URI'], ':vista', ':procesa');
+            $url_aceptar = str_replace(':vista', ':procesa', $_SERVER['REQUEST_URI']);
             // Lanzo excepcion para indicar que la base de datos esta en modo lectura
             throw new AppException('Error DB: La base de datos esta en modo lectura',
             AppException::DB_QUERY_EXECUTION_FAILURE,
