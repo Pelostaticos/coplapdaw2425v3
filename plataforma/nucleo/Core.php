@@ -136,35 +136,108 @@ class Core {
      *               Si la consulta es tipo INSERT/UPDATE/DELETE se obtendrá el número de registros afectados.
      * @throws AppException Si algo en la consulta va mal eleva una excepción tipo AppException con
      * uno de los códigos disponibles en función del problema producido.
-     */
+     */        
     public static function ejecutarSql($sql, $datos = [])
-    {        
+    {
+        // Establezco el retorno de la ejecución de la sentencia SQL por defecto a falso
         $ret = false;
-        $pdo = self::abrirConexionDB();
-        if (!$pdo) throw new AppException('Error DB: no se puede conectar con la base de datos',
-                                          AppException::DB_NOT_CONNECTED);
-        try {
-            $stmt = $pdo->prepare($sql);
-            if ($stmt->execute($datos)) {
-                if (preg_match('/^\s*SELECT\s/i', $sql))
-                    $ret = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+        /* Bloqueo la ejecucion de sentencia SQL cuando el modo demostración esta activo y no
+        se trata de una sentencia de consulta a la base de datos 
+        * 
+        * ------------------------------------
+        * TABLA VERDAD ACCESIBILIDAD A BBDD
+        * ------------------------------------
+        * DEMO CONSULTA    ACCESIBLE:
+        * 0    0           1
+        * 0    1           1
+        * 1    0           0
+        * 1    1           1
+        * -------------------------------------
+        * 
+        * Para obtener la expresión que define el RESULTADO, buscamos la única condición que hace
+        * que el resultado sea 0:
+        * 
+        * RESULTADO=0 cuando (DEMO=1) AND (SELECT=0)
+        * 
+        * La negación de esta condición nos dará la expresión para cuando el RESULTADO es 1 (permitido):
+        * 
+        * PERMITIDO=NOT((DEMO=1) AND (SELECT=0))
+        *
+        * Aplicando las Leyes de De Morgan a la negación, tenemos:
+        * 
+        * PERMITIDO=(DEMO=0) OR (SELECT=1)
+        *
+        * ----------------------------------------------
+        * TABLA VERDAD ACCESIBILIDAD A BBDD
+        * ----------------------------------------------
+        * NODEMO  OR    CONSULTA    ACCESIBLE: OR
+        * NO(0)         NO(0)       NO(0)
+        * NO(0)         SI(1)       SI(1)
+        * 1             0           1
+        * 1             1           1
+        * ----------------------------------------------
+        * 
+        * Esta expresión significa: La sentencia está permitida si NO estamos en Modo Demostración (DEMO=0)
+        * O si la sentencia es de lectura (SELECT=1).
+        */
+        // Establezco bandera de estado para controlar que el modo demo esta desactivo
+        $modoNoDemo=(IS_DEMO_MODE===false);
+        // Establezco bandera de estado para controlar que sentencia SQL es de consulta
+        $modoLectura=(preg_match('/^\s*SELECT\s/i', $sql)===true);        
+        // Evaluo si la base de datos está accesible: No está en modo DEMO y setencia SQL es LECTURA.
+        $isAccesibleBaseDatos = ($modoNoDemo || $modoLectura);
+        // Compruebo si la base de datos es accesible
+        if ($isAccesibleBaseDatos ) {
+            // Entonces: La base de datos no está bloqueda contra escritura.
+            // Abro la conexión con la base de datos        
+            $pdo = self::abrirConexionDB();
+            // Si no se puedo abrir la conexión con la base de datos
+            // Entonces: Lanzo una excepción para notificar del error al usuario.
+            if (!$pdo) throw new AppException('Error DB: no se puede conectar con la base de datos',
+                                            AppException::DB_NOT_CONNECTED);
+            // Una vez abierta la base de datos, intento:                                            
+            try {
+                // Preparo la consulta SQL que se desea realizar a la base de datos
+                $stmt = $pdo->prepare($sql);
+                // Si puedo ejecutar la consulta:
+                if ($stmt->execute($datos)) {
+                    // Entonces: Compruebo si la sentencia SQL es del consulta
+                    if ($modoLectura)
+                        // Entonces: La sentencia SQL es una consulta y devuelvo el array con sus resultados
+                        $ret = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+                    else
+                        // De lo contrario, devuelvo el numero de filas afectadas por la sentencia SQL
+                        $ret = $stmt->rowCount();
+                }
                 else
-                    $ret = $stmt->rowCount();
+                    // De lo contrario, no pued ejecutarse la sentencia SQL y lanzo una exccepción
+                    throw new AppException('Error DB: Fallo al ejecutar la consulta SQL.',
+                        AppException::DB_QUERY_EXECUTION_FAILURE
+                    );
+            // Aquí capturo cualquier excepción del intento de ejctar una consulta SQL.
+            } catch (\PDOException $ex) {
+                // Si código de excepcion es 23000
+                if ($ex->getCode()==='23000') {
+                    // Entonces: Lanzo una excepción para indicar que se incumple las restrincciones de integridad
+                    throw new AppException('Error DB: la consulta realizada incumple las restricciones de la base de datos.',
+                        AppException::DB_CONSTRAINT_VIOLATION_IN_QUERY);
+                }
+                // Por defecto, lanza una excepción indicando que existe un error en la setencia SQL.
+                throw new AppException('Error DB: error en la consulta.',
+                        AppException::DB_ERROR_IN_QUERY);
+        
             }
-            else
-                throw new AppException('Error DB: Fallo al ejecutar la consulta SQL.',
-                    AppException::DB_QUERY_EXECUTION_FAILURE
-                );
-        } catch (\PDOException $ex) {   
-            if ($ex->getCode()==='23000')
-            {
-                throw new AppException('Error DB: la consulta realizada incumple las restricciones de la base de datos.',
-                    AppException::DB_CONSTRAINT_VIOLATION_IN_QUERY);
-            }
-            throw new AppException('Error DB: error en la consulta.',
-                    AppException::DB_ERROR_IN_QUERY);
-      
+        } else {
+            // De lo contrario, necesito notificar al usuario que la acción de escritura esta bloqueada
+            // Genero la URL que direcciona al usuario tras aceptar advertencia excepcion
+            $url_aceptar = str_replace($_SERVER['REQUEST_URI'], ':vista', ':procesa');
+            // Lanzo excepcion para indicar que la base de datos esta en modo lectura
+            throw new AppException('Error DB: La base de datos esta en modo lectura',
+            AppException::DB_QUERY_EXECUTION_FAILURE,
+            urlAceptar: $url_aceptar);
         }
+
+        // Devuelvo el resultado de la consulta SQL realizada
         return $ret;
     }
 
