@@ -294,7 +294,7 @@ class Participante {
         $sql="SELECT u.nombre as usuario, pt.usuario as hashUsuario, pt.asiste as asiste, p.localidad as localidad, 
                 pt.inscripcion as inscrito, pt.observacion as observaciones FROM pdaw_participantes pt 
                 JOIN pdaw_usuarios u ON u.codigo=pt.usuario
-                JOIN pdaw_personas p ON p.usuario=pt.usuario
+                LEFT JOIN pdaw_personas p ON p.usuario=pt.usuario
                 WHERE pt.id_jornada=:idJornada";
         // Preparo los paŕametros requeridos por la consulta de particioantes a una jornada censal a la base de datos        
         $datos=[':idJornada' => $idJornada];
