@@ -50,12 +50,12 @@ class Core {
             // Hay un usuario logueado en la plataforma. Entonces: 
             // Asigno las variables de la plantilla para la página de inicio del backoffice
             $smarty->assign('usuario', Core::nombreUsuario());
-            $smarty->assign('is_demo_mode', IS_DEMO_MODE);
             $smarty->assign('anyo', date('Y'));
             // Muestro la plantilla de la página de inicio del backoffice
             $smarty->display('comunes/backoffice.tpl');
         } else {
             // De lo contario, simplemente muestro la plantilla del portál público de la plataforma corereplayas
+            $smarty->assign('is_demo_mode', IS_DEMO_MODE);
             $smarty->display('comunes/portal.tpl');
         }
     }
