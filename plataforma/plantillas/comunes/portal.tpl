@@ -43,10 +43,18 @@
             <span class="menu-icono">menu</span>
             <!-- Botonera de navegacion del encabezado de página -->
             <div class="botonera-nav">
-                <!-- Botón acceso al backoffice de la plataforma correplayas -->
-                <a id="acceso" href="/plataforma/backoffice.php?comando=core:login:vista" class="boton-nav"><span class="iconos-nav-portal">login</span> Acceso</a> 
-                <!-- Botón CTA invitando a la participación -->
-                <a id="participar" href="/plataforma/backoffice.php?comando=core:signup:vista" class="boton-nav">¡Participa!</a>
+                <!-- Compruebo el estado de modo de demostración de la plataforma -->                 
+                {if $is_demo_mode}
+                    <!-- Estado ACTIVO el modo demostración entonces muestro el boton para su acceso -->
+                    <!-- Botón acceso al backoffice de la plataforma correplayas en modo demostración-->
+                    <a id="demo" href="/plataforma/backoffice.php?comando=core:login:procesa" class="boton-nav"><span class="iconos-nav-portal">login</span> Acceso a Demo</a> 
+                {else}
+                    <!-- De lo contrario, esta DESACTIVO y muestro botones de acceso normales-->
+                    <!-- Botón acceso al backoffice de la plataforma correplayas -->
+                    <a id="acceso" href="/plataforma/backoffice.php?comando=core:login:vista" class="boton-nav"><span class="iconos-nav-portal">login</span> Acceso</a> 
+                    <!-- Botón CTA invitando a la participación -->
+                    <a id="participar" href="/plataforma/backoffice.php?comando=core:signup:vista" class="boton-nav">¡Participa!</a>
+                {/if}
             </div>
         </nav>
     </header>
@@ -119,8 +127,17 @@
                 <h2 id="participa" class="subtitulo">¡Únete a nosotros!</h2>
                 <p>El voluntariado en nuestro proyecto es una experiencia enriquecedora que trasciende la mera recopilación de datos. Es una oportunidad para conectar con la naturaleza, aprender sobre la biodiversidad local y formar parte de una comunidad comprometida con su conservación. Juntos, voluntarios y científicos, construimos un futuro más sostenible, donde la ciencia y la ciudadanía se unen para proteger nuestro patrimonio natural.</p>
                 <div class="botonera">
-                    <a class="boton" href="plataforma/backoffice.php?comando=core:signup:vista">Únete al proyecto</a>
-                    <a class="boton" href="plataforma/backoffice.php?comando=core:login:vista">Accede a la plataforma</a>
+                    <!-- Compruebo el estado de modo de demostración de la plataforma -->                 
+                    {if $is_demo_mode}
+                        <!-- Estado ACTIVO el modo demostración entonces muestro el boton para su acceso -->
+                        <!-- Botón CTA de acceso al backoffice de la plataforma correplayas en modo demostración-->
+                        <a class="boton" href="plataforma/backoffice.php?comando=core:login:procesa">Accede a nuestra Demo</a>
+                    {else}
+                        <!-- De lo contrario, esta DESACTIVO y muestro botones de acceso normales-->
+                        <!-- Botones CTA acceso al backoffice de la plataforma correplayas -->
+                        <a class="boton" href="plataforma/backoffice.php?comando=core:signup:vista">Únete al proyecto</a>
+                        <a class="boton" href="plataforma/backoffice.php?comando=core:login:vista">Accede a la plataforma</a>
+                    {/if}                
                 </div>
             </article>       
          </section>
