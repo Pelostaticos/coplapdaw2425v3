@@ -192,8 +192,8 @@ class Usuario {
      */
     public static function autenticarUsuario($usuario, $password): ?Usuario
     {   
-        // Si esta definido el modo demostración, se encuntra activo y la sesion de usuario iniciada
-        if (defined('IS_DEMO_MODE') && IS_DEMO_MODE && $_SESSION['usuario'] ) {
+        // Si esta definido el modo demostración y se encuntra activo.
+        if (defined('IS_DEMO_MODE') && IS_DEMO_MODE) {
             // Entonces: Contruyo la sentencia SQL para autenticar al usuario del modo demostración
             $sql="SELECT * from pdaw_usuarios where nombre=:usuario and contrasenya=:password";
         } else {
