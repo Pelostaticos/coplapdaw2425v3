@@ -327,20 +327,20 @@ class Participante {
             // Consulto a la base de datos todos los usuarios registros como posibles participantes
             $sql="SELECT u.codigo as hashParticipante, u.nombre as usuario, p.localidad as localidad, 
                 u.rol as extra1, p.email as extra2 FROM pdaw_usuarios u
-	                LEFT JOIN pdaw_personas p ON p.usuario=u.codigo";
+	                JOIN pdaw_personas p ON p.usuario=u.codigo";
         } else {
             // De lo contrario, consulto a la base de datos por los usuarios realmente participantes
             // Sentencia SQL para recuperar el listado de participantes disponibles en la plataforma: Entorno local            
             $consultaLocal="SELECT pt.usuario as hashParticipante, ANY_VALUE(u.nombre) as usuario, ANY_VALUE(p.localidad) as localidad,
                 COUNT(pt.usuario) as extra1, MAX(pt.inscripcion) as extra2 FROM pdaw_participantes pt
                     JOIN pdaw_usuarios u ON pt.usuario=u.codigo
-                    LEFT JOIN pdaw_personas p ON p.usuario=u.codigo
+                    JOIN pdaw_personas p ON p.usuario=u.codigo
                     GROUP BY pt.usuario";
             // Sentencia SQL para recuperar el listado de participantes disponibles en la plataforma: Productivo
             $consultaProductivo="SELECT pt.usuario as hashParticipante, u.nombre as usuario, p.localidad as localidad,
                 COUNT(pt.usuario) as extra1, MAX(pt.inscripcion) as extra2 FROM pdaw_participantes pt
                     JOIN pdaw_usuarios u ON pt.usuario=u.codigo
-                    LEFT JOIN pdaw_personas p ON p.usuario=u.codigo
+                    JOIN pdaw_personas p ON p.usuario=u.codigo
                     GROUP BY pt.usuario";
             // Eligo la consulta definitiva a realizar a la base de datos según la configuración del entorno
             $sql=XAMPP_LOCAL ? $consultaLocal : $consultaProductivo;
