@@ -322,7 +322,7 @@ class Jornadas {
                     throw new AppException("No es posible dar de baja a la jornada indicada!");
                 }
                 } catch (AppException $ae) {
-                    ErrorController::handleException($ae, $smarty, '/plataforma/backoffice.php?comando=aves:default',
+                    ErrorController::handleException($ae, $smarty, '/plataforma/backoffice.php?comando=jornadas:default',
                         "No puedes eliminar a esta jornada porque está en uso en la plataforma!!");
                 }
             } else {
