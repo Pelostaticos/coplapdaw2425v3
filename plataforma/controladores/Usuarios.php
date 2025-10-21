@@ -408,6 +408,7 @@ class Usuarios {
                     $datosUsuario = [':codigo' => $hashUsuario, ':estado' => $estado, ':rol' => $rol];
                     $datosPersonaUsuaria = [':usuario' => $hashUsuario, ':email' => $email,
                         ':direccion' => $direccion, ':localidad' => $localidad, ':telefono' => $telefono, ':codigoPostal'  => $codPostal];
+                        
                     // Actulizo los datos del perfil de usuario y muestro la notificación del resultado
                     if ($usuario->actualizarUsuario($datosUsuario) || $personaUsuaria->actualizarPersona($datosPersonaUsuaria)) {
                         // Notifico al usuario que la actualización del perfil fue existosa
