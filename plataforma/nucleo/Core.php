@@ -229,12 +229,9 @@ class Core {
             }
         } else {
             // De lo contrario, necesito notificar al usuario que la acción de escritura esta bloqueada
-            // Genero la URL que direcciona al usuario tras aceptar advertencia excepcion
-            $url_aceptar = str_replace(':procesa', ':vista', $_SERVER['REQUEST_URI']);
             // Lanzo excepcion para indicar que la base de datos esta en modo lectura
             throw new AppException('Error DB: La base de datos esta en modo lectura',
-            AppException::DB_QUERY_EXECUTION_FAILURE,
-            urlAceptar: $url_aceptar);
+                AppException::DB_READ_ONLY_MODE);
         }
 
         // Devuelvo el resultado de la consulta SQL realizada

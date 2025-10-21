@@ -32,6 +32,7 @@ class AppException extends \Exception
     public const DB_CONSTRAINT_VIOLATION_IN_QUERY=103;
     public const DB_ERROR_IN_QUERY=104;
     public const RESTRICTED_AREA=101;
+    public const DB_READ_ONLY_MODE=105;
  
     // Defino los atributos de la propia clase
     protected $urlAceptar;
