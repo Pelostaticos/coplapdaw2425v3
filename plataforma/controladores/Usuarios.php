@@ -408,15 +408,34 @@ class Usuarios {
                     $datosUsuario = [':codigo' => $hashUsuario, ':estado' => $estado, ':rol' => $rol];
                     $datosPersonaUsuaria = [':usuario' => $hashUsuario, ':email' => $email,
                         ':direccion' => $direccion, ':localidad' => $localidad, ':telefono' => $telefono, ':codigoPostal'  => $codPostal];
-                        
-                    // Actulizo los datos del perfil de usuario y muestro la notificación del resultado
-                    if ($usuario->actualizarUsuario($datosUsuario) || $personaUsuaria->actualizarPersona($datosPersonaUsuaria)) {
-                        // Notifico al usuario que la actualización del perfil fue existosa
-                        ErrorController::mostrarMensajeInformativo($smarty, "Perfil de usuario actualizado con éxito!!", $urlAceptarNotificacion);
-                    } else {
-                        // Lanzo una excepción para indicar que no es posible obtener valores por defecto del perfil de usuario
-                        throw new AppException(message: "No es posible actualizar el perfil de usuario", 
-                            urlAceptar: $urlAceptarNotificacion);
+                    // Intento actualizar el perfil de usuario
+                    try {
+                        // Actulizo los datos del perfil de usuario y muestro la notificación del resultado
+                        if ($usuario->actualizarUsuario($datosUsuario) || $personaUsuaria->actualizarPersona($datosPersonaUsuaria)) {
+                            // Notifico al usuario que la actualización del perfil fue existosa
+                            ErrorController::mostrarMensajeInformativo($smarty, "Perfil de usuario actualizado con éxito!!", $urlAceptarNotificacion);
+                        } else {
+                            // Lanzo una excepción para indicar que no es posible obtener valores por defecto del perfil de usuario
+                            throw new AppException(message: "No es posible actualizar el perfil de usuario", 
+                                urlAceptar: $urlAceptarNotificacion);
+                        }
+                    } catch (AppException $ae) {
+                        switch ($ae->getCode()) {
+                            case AppException::DB_CONSTRAINT_VIOLATION_IN_QUERY:
+                            ErrorController::handleException($ae, $smarty,
+                                '/plataforma/backoffice.php?comando=usuarios:default',
+                                "Este usuario ya esta registrado!!");
+                            break;
+                        case AppException::DB_READ_ONLY_MODE:
+                            ErrorController::handleException($ae, $smarty,
+                                '/plataforma/backoffice.php?comando=usuarios:default',
+                                "Esta acción esta bloqueada en el modo demostración!!");
+                            break;
+                        default:
+                            ErrorController::handleException($ae, $smarty,
+                                '/plataforma/backoffice.php?comando=<gestor>:default');
+                            break;
+                        }
                     }
                 } else {
                     // Lanzo una excepción para indicar que no es posible obtener valores por defecto del perfil de usuario
