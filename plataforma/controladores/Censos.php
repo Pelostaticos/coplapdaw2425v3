@@ -1363,19 +1363,35 @@ class Censos {
                     } 
                 // Manejo la excepción que se haya producido para notificarla al usuario
                 } catch (AppException $ae) {
-                    // Si se produce una violación de restricción al registrarlos
-                    if ($ae->getCode() === AppException::DB_CONSTRAINT_VIOLATION_IN_QUERY) {
-                        // Emulo la elección del usuario logueado de una acción por haberla solicitado previamente
-                        $_SESSION['accion']="censo:volver";
-                        // Emulo que el usuario logueado hizo clic en una jornada censal previamente
-                        $_SESSION['gcensos']=$idJornada;                        
-                        // Notifico al usuario que el registro censal que se desea crear ya existe en la plataforma
-                        ErrorController::handleException($ae, $smarty, '/plataforma/backoffice.php?comando=censos:default', "Este registro censal ya esta registrado!!");
-                    }
-                    else {
-                        ErrorController::handleException($ae, $smarty, '/plataforma/backoffice.php');
-                    }
-                        
+                    switch ($ae->getCode()) {
+                        // Si se produce una violación de restricción al registrarlos
+                        case AppException::DB_CONSTRAINT_VIOLATION_IN_QUERY:
+                            // Emulo la elección del usuario logueado de una acción por haberla solicitado previamente
+                            $_SESSION['accion']="censo:volver";
+                            // Emulo que el usuario logueado hizo clic en una jornada censal previamente
+                            $_SESSION['gcensos']=$idJornada;                        
+                            // Notifico al usuario que el registro censal que se desea crear ya existe en la plataforma                            
+                            ErrorController::handleException($ae, $smarty,
+                                '/plataforma/backoffice.php?comando=censos:default',
+                                "Esta acción viola la integridad de persistencia de datos!!");
+                            break;
+                        // Si la demostración está habilitada por el modo sólo lectura
+                        case AppException::DB_READ_ONLY_MODE:
+                            // Emulo la elección del usuario logueado de una acción por haberla solicitado previamente
+                            $_SESSION['accion']="censo:volver";
+                            // Emulo que el usuario logueado hizo clic en una jornada censal previamente
+                            $_SESSION['gcensos']=$idJornada;                        
+                            // Notifico al usuario que la acción esta bloqueada por el modo demostración 
+                            ErrorController::handleException($ae, $smarty,
+                                '/plataforma/backoffice.php?comando=censos:default',
+                                "Esta acción esta bloqueada en el modo demostración!!");
+                            break;
+                        // Por defecto, para cualquier otra excepción capturada
+                        default:
+                            ErrorController::handleException($ae, $smarty,
+                                '/plataforma/backoffice.php');
+                            break;
+                    }                        
                 }                  
             } else {
                 // lazo una excepción para notificar al usuario que no está autorizado a añadir nuevos registros censales
