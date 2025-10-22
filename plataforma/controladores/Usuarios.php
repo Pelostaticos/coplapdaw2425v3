@@ -424,7 +424,7 @@ class Usuarios {
                             case AppException::DB_CONSTRAINT_VIOLATION_IN_QUERY:
                             ErrorController::handleException($ae, $smarty,
                                 '/plataforma/backoffice.php?comando=usuarios:default',
-                                "Este usuario ya esta registrado!!");
+                                "Este usuario ya está en uso por la plataforma!!");
                             break;
                         case AppException::DB_READ_ONLY_MODE:
                             ErrorController::handleException($ae, $smarty,
@@ -570,7 +570,7 @@ class Usuarios {
                             case AppException::DB_CONSTRAINT_VIOLATION_IN_QUERY:
                             ErrorController::handleException($ae, $smarty,
                                 '/plataforma/backoffice.php?comando=usuarios:default',
-                                "Este usuario ya esta registrado!!");
+                                "Este usuario ya está en uso por la plataforma!!");
                             break;
                         case AppException::DB_READ_ONLY_MODE:
                             ErrorController::handleException($ae, $smarty,
@@ -681,26 +681,46 @@ class Usuarios {
                 // Preparo los datos para la eliminación del perfil de usuario
                 $codigoUsuario = [':usuario' => $hashUsuario];
 
-                // Compruebo si la persona usuario pudo eliminarse de la plataforma para
-                // desvincular sus datos persnales del usuario y dejarlo para fines funcionales.
-                if ($personaUsuaria->eliminarPersona($codigoUsuario)) {
-                    // Modifico el estado del perfil del usuario a BAJA.
-                    $usuario->setEstado('BAJA');
-                    // Preparo la información para actualizar el nuevo estado del perfil de usuario elminiado
-                    $datosUsuario = [':codigo' => $hashUsuario,':estado' => $usuario->getEstado(), ':rol' => $usuario->getRol()];
-                    // Actualizo el estado del perfil de usuario elminado a su nuevo estado en la plataforma
-                    if ($usuario->actualizarUsuario($datosUsuario)) {
-                        // Notifico al usuario que el perfil se ha eliminado correctamente y cierro su sesión
-                        ErrorController::mostrarMensajeInformativo($smarty, "El perfil de usuario se ha elminado correctamente!",
-                            $urlAceptarNotificacion);
+                // Intento dar de baja al usuario deseado               
+                try {
+                    // Compruebo si la persona usuario pudo eliminarse de la plataforma para
+                    // desvincular sus datos persnales del usuario y dejarlo para fines funcionales.
+                    if ($personaUsuaria->eliminarPersona($codigoUsuario)) {
+                        // Modifico el estado del perfil del usuario a BAJA.
+                        $usuario->setEstado('BAJA');
+                        // Preparo la información para actualizar el nuevo estado del perfil de usuario elminiado
+                        $datosUsuario = [':codigo' => $hashUsuario,':estado' => $usuario->getEstado(), ':rol' => $usuario->getRol()];
+                        // Actualizo el estado del perfil de usuario elminado a su nuevo estado en la plataforma
+                        if ($usuario->actualizarUsuario($datosUsuario)) {
+                            // Notifico al usuario que el perfil se ha eliminado correctamente y cierro su sesión
+                            ErrorController::mostrarMensajeInformativo($smarty, "El perfil de usuario se ha elminado correctamente!",
+                                $urlAceptarNotificacion);
+                        } else {
+                            // Lanzo una excepción para indicar que no existe perfil de usuario
+                            throw new AppException(message: $mensajeError, 
+                                urlAceptar: $urlAceptarNotificacion);
+                        }
                     } else {
-                        // Lanzo una excepción para indicar que no existe perfil de usuario
-                        throw new AppException(message: $mensajeError, 
-                            urlAceptar: $urlAceptarNotificacion);
+                        // Lanzo una excepción para indicar que existe algún problema para dar de baja al usuario
+                        throw new AppException("No es posible dar de baja al usuario!");
                     }
-                } else {
-                    // Lanzo una excepción para indicar que existe algún problema para dar de baja al usuario
-                    throw new AppException("No es posible dar de baja al usuario!");
+                } catch (AppException $ae) {
+                    switch ($ae->getCode()) {
+                        case AppException::DB_CONSTRAINT_VIOLATION_IN_QUERY:
+                        ErrorController::handleException($ae, $smarty,
+                            '/plataforma/backoffice.php?comando=usuarios:default',
+                            "Este usuario ya esta en uso por la plataforma!!");
+                        break;
+                    case AppException::DB_READ_ONLY_MODE:
+                        ErrorController::handleException($ae, $smarty,
+                            '/plataforma/backoffice.php?comando=usuarios:default',
+                            "Esta acción esta bloqueada en el modo demostración!!");
+                        break;
+                    default:
+                        ErrorController::handleException($ae, $smarty,
+                            '/plataforma/backoffice.php?comando=usuarios:default');
+                        break;
+                    }
                 }
             } else {
                 // Lanzo una excepción para indicar que no existe perfil de usuario
