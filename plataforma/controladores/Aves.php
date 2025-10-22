@@ -264,7 +264,7 @@ class Aves {
                     }                    
                 } catch (AppException $ae) {
                     switch ($ae->getCode()) {
-                        // Si se produce una violación de restricción al registrarlos
+                        // Si se produce una violación de restricción al actualizarlos
                         case AppException::DB_CONSTRAINT_VIOLATION_IN_QUERY:
                             ErrorController::handleException($ae, $smarty,
                                 '/plataforma/backoffice.php?comando=aves:default',
@@ -334,7 +334,7 @@ class Aves {
                 // Manejo la excepción que se haya producido para notificarla al usuario
                 } catch (AppException $ae) {
                     switch ($ae->getCode()) {
-                        // Si se produce una violación de restricción al registrarlos
+                        // Si se produce una violación de restricción al eliminarlos
                         case AppException::DB_CONSTRAINT_VIOLATION_IN_QUERY:
                             ErrorController::handleException($ae, $smarty,
                                 '/plataforma/backoffice.php?comando=aves:default',
