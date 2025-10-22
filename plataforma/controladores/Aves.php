@@ -333,7 +333,25 @@ class Aves {
                     }
                 // Manejo la excepción que se haya producido para notificarla al usuario
                 } catch (AppException $ae) {
-                    ErrorController::handleException($ae, $smarty, '/plataforma/backoffice.php?comando=aves:default', "No puedes elminiar este ave porque está en uso en la plataforma!!");
+                    switch ($ae->getCode()) {
+                        // Si se produce una violación de restricción al registrarlos
+                        case AppException::DB_CONSTRAINT_VIOLATION_IN_QUERY:
+                            ErrorController::handleException($ae, $smarty,
+                                '/plataforma/backoffice.php?comando=aves:default',
+                                "No puedes elminiar este ave porque está en uso en la plataforma!!");
+                            break;
+                        // Si la demostración está habilitada por el modo sólo lectura
+                        case AppException::DB_READ_ONLY_MODE:
+                            ErrorController::handleException($ae, $smarty,
+                                '/plataforma/backoffice.php?comando=aves:default',
+                                "Esta acción esta bloqueada en el modo demostración!!");
+                            break;
+                        // Por defecto, para cualquier otra excepción capturada
+                        default:
+                            ErrorController::handleException($ae, $smarty,
+                                '/plataforma/backoffice.php?comando=aves:default');
+                            break;
+                    }                    
                 }
             } else {
                 // Lanzo una excepción para notificar que el usuario no eligió un ave del listado
