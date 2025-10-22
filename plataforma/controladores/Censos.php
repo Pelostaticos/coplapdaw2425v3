@@ -1275,8 +1275,42 @@ class Censos {
                         $inscripcion=Participante::consultarInscripcion($idInscripcion);
                         // Marco en la inscripción de participante su asistencia a la jornada censal
                         $inscripcion->setAsiste(true);
-                        // Actualizo la inscripción del participante a la jornada censal
-                        if (!$inscripcion->actualizarInscripción()) {$fallidas += 1;}
+                        // Intento actualizar el perfil de usuario
+                        try {
+                            // Actualizo la inscripción del participante a la jornada censal
+                            if (!$inscripcion->actualizarInscripción()) {$fallidas += 1;}
+                        } catch (AppException $ae) {
+                            switch ($ae->getCode()) {
+                                // Si se produce una violación de restricción al registrarlos
+                                case AppException::DB_CONSTRAINT_VIOLATION_IN_QUERY:
+                                    // Emulo que el usuario logueazo solitico como acción mostrar la vista de censo de aves
+                                    $_SESSION['accion']="historicos:edicion";                        
+                                    // Emulo que el usuario logueado hizo clic en una jornada censal previamente
+                                    $_SESSION['gcensos']=$idJornada;                                    
+                                    // Notifico al usuario que se ha violado una restricción de integridad
+                                    ErrorController::handleException($ae, $smarty,
+                                        '/plataforma/backoffice.php?comando=censos:default',
+                                        "Esta acción viola la integridad de persistencia de datos!!");
+                                    break;
+                                // Si la demostración está habilitada por el modo sólo lectura
+                                case AppException::DB_READ_ONLY_MODE:
+                                    // Emulo que el usuario logueazo solitico como acción mostrar la vista de censo de aves
+                                    $_SESSION['accion']="historicos:edicion";                        
+                                    // Emulo que el usuario logueado hizo clic en una jornada censal previamente
+                                    $_SESSION['gcensos']=$idJornada;                                    
+                                    // Notifico al usuario que la acción se ha bloqueado por el modo demostracion
+                                    ErrorController::handleException($ae, $smarty,
+                                        '/plataforma/backoffice.php?comando=censos:default',
+                                        "Esta acción esta bloqueada en el modo demostración!!");
+                                    break;
+                                // Por defecto, para cualquier otra excepción capturada
+                                default:
+                                    // Notifico al usuario de cualquie rotra excepción capturada
+                                    ErrorController::handleException($ae, $smarty,
+                                        '/plataforma/backoffice.php?comando=censos:default');
+                                    break;
+                            }
+                        }                     
                     }
                     // Notifico al usuario del resultado de la confirmación de asistencia a la jornada censal
                     // para ello compruebo si hay o no actualizaciones de asistencia fallidas.
