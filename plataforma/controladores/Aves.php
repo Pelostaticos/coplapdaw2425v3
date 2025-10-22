@@ -482,18 +482,27 @@ class Aves {
                 // Lanzo excepción para notificar al usuario que hubo algún problema durante el proceso de registro
                 throw new AppException("Fallo al registrar la nueva ave en la plataforma","/plataforma/backoffice.php?comando=aves:default");
             } 
-
         // Manejo la excepción que se haya producido para notificarla al usuario
         } catch (AppException $ae) {
-            // Si se produce una violación de restricción al registrarlos
-            if ($ae->getCode() === AppException::DB_CONSTRAINT_VIOLATION_IN_QUERY)
-            {
-                ErrorController::handleException($ae, $smarty, '/plataforma/backoffice.php?comando=aves:default', "Este ave ya esta registrada!!");
-            }
-            else {
-                ErrorController::handleException($ae, $smarty, '/plataforma/backoffice.php');
-            }
-                
+            switch ($ae->getCode()) {
+                // Si se produce una violación de restricción al registrarlos
+                case AppException::DB_CONSTRAINT_VIOLATION_IN_QUERY:
+                    ErrorController::handleException($ae, $smarty,
+                        '/plataforma/backoffice.php?comando=aves:default',
+                        "Este ave ya esta registrada!!");
+                    break;
+                // Si la demostración está habilitada por el modo sólo lectura
+                case AppException::DB_READ_ONLY_MODE:
+                    ErrorController::handleException($ae, $smarty,
+                        '/plataforma/backoffice.php?comando=aves:default',
+                        "Esta acción esta bloqueada en el modo demostración!!");
+                    break;
+                // Por defecto, para cualquier otra excepción capturada
+                default:
+                    ErrorController::handleException($ae, $smarty,
+                        '/plataforma/backoffice.php');
+                    break;
+            }                
         }     
     }
 
