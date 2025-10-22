@@ -1124,19 +1124,39 @@ class Censos {
                     $observaciones=$jornada->getInformacionJornada();
                     $observaciones .= "<br><<--- El usuario administrador " . $usuario->getUsuario();
                     $observaciones .= " ha validado la jornada a las: " . date('d-m-Y H:i:s');
-                    $jornada->setInformacionJornada($observaciones);                       
-                    // Actualizo la jornada en la base de datos de la plataforma
-                    if ($jornada->actualizarJornada()) {
-                        // Notifico al usuario que la validación de la jornada censal fue existosa
-                        ErrorController::mostrarMensajeInformativo($smarty, "Jornada censal validada con éxito!!", 
-                            "/plataforma/backoffice.php?comando=censos:default");
-                    } else {
-                        // De lo contario, lanzo una excepción para notificar al usuario que NO es 
-                        // posible validar el censo de aves de la jornada deseada
-                        throw new AppException(message: "No es posible validar el censo de aves en la jornada deseada!!!
-                        Conctacte con los administradores para mayor información. ¡Gracias por participar!",
-                        urlAceptar: "/plataforma/backoffice.php?comando=core:email:vista");  
-                    }
+                    $jornada->setInformacionJornada($observaciones);
+                     // Intento actualizar la jornada censal para su validación
+                    try {
+                        // Actualizo la jornada en la base de datos de la plataforma
+                        if ($jornada->actualizarJornada()) {
+                            // Notifico al usuario que la validación de la jornada censal fue existosa
+                            ErrorController::mostrarMensajeInformativo($smarty, "Jornada censal validada con éxito!!", 
+                                "/plataforma/backoffice.php?comando=censos:default");
+                        } else {
+                            // De lo contario, lanzo una excepción para notificar al usuario que NO es 
+                            // posible validar el censo de aves de la jornada deseada
+                            throw new AppException(message: "No es posible validar el censo de aves en la jornada deseada!!!
+                            Conctacte con los administradores para mayor información. ¡Gracias por participar!",
+                            urlAceptar: "/plataforma/backoffice.php?comando=core:email:vista");  
+                        }
+                    } catch (AppException $ae) {
+                        switch ($ae->getCode()) {
+                            case AppException::DB_CONSTRAINT_VIOLATION_IN_QUERY:
+                            ErrorController::handleException($ae, $smarty,
+                                '/plataforma/backoffice.php?comando=censos:default',
+                                "Esta acción viola la integridad de persistencia de datos!!");
+                            break;
+                        case AppException::DB_READ_ONLY_MODE:
+                            ErrorController::handleException($ae, $smarty,
+                                '/plataforma/backoffice.php?comando=censos:default',
+                                "Esta acción esta bloqueada en el modo demostración!!");
+                            break;
+                        default:
+                            ErrorController::handleException($ae, $smarty,
+                                '/plataforma/backoffice.php?comando=censos:default');
+                            break;
+                        }
+                    }                                       
                 } else {
                     // De lo contario, lanzo una excepción para notificar al usuario que la
                     // jornada censal deseada no existe en la base de datos
