@@ -424,7 +424,7 @@ class Usuarios {
                             case AppException::DB_CONSTRAINT_VIOLATION_IN_QUERY:
                             ErrorController::handleException($ae, $smarty,
                                 '/plataforma/backoffice.php?comando=usuarios:default',
-                                "Este usuario ya está en uso por la plataforma!!");
+                                "Esta acción viola la integridad de persistencia de datos!!");
                             break;
                         case AppException::DB_READ_ONLY_MODE:
                             ErrorController::handleException($ae, $smarty,
@@ -570,7 +570,7 @@ class Usuarios {
                             case AppException::DB_CONSTRAINT_VIOLATION_IN_QUERY:
                             ErrorController::handleException($ae, $smarty,
                                 '/plataforma/backoffice.php?comando=usuarios:default',
-                                "Este usuario ya está en uso por la plataforma!!");
+                                "Esta acción viola la integridad de persistencia de datos!!");
                             break;
                         case AppException::DB_READ_ONLY_MODE:
                             ErrorController::handleException($ae, $smarty,
@@ -709,7 +709,7 @@ class Usuarios {
                         case AppException::DB_CONSTRAINT_VIOLATION_IN_QUERY:
                         ErrorController::handleException($ae, $smarty,
                             '/plataforma/backoffice.php?comando=usuarios:default',
-                            "Este usuario ya esta en uso por la plataforma!!");
+                            "Esta acción viola la integridad de persistencia de datos!!");
                         break;
                     case AppException::DB_READ_ONLY_MODE:
                         ErrorController::handleException($ae, $smarty,
