@@ -898,7 +898,7 @@ class Usuarios {
                     case AppException::DB_CONSTRAINT_VIOLATION_IN_QUERY:
                         ErrorController::handleException($ae, $smarty,
                             '/plataforma/backoffice.php?comando=usuarios:default',
-                            "Esta acción viola la integridad de persistencia de datos!!");
+                            "Este usuario ya esta registrado!!");
                         break;
                     case AppException::DB_READ_ONLY_MODE:
                         ErrorController::handleException($ae, $smarty,
