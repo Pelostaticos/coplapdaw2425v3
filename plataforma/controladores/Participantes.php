@@ -830,15 +830,35 @@ class Participantes {
                 $idInscripcion = ['idJornada' => $idJornada, 'usuario' => $hashParticipante]; //PK
                 // Recupero la inscripción elegida por el usuario que desea eleiminar
                 $inscripcion = Participante::consultarInscripcion($idInscripcion);
-                // Procedo a eliminar la jornada y compruebo su resultado
-                if ($inscripcion->eliminarInscripcion()) {
-                    // Notifico al usuario que la inscripción se ha eliminado correctamente y cierro su sesión
-                    ErrorController::mostrarMensajeInformativo($smarty, "La inscripción indicada se ha elminado correctamente!",
-                        "/plataforma/backoffice.php?comando=participantes:default");
-                } else {
-                    // Lanzo una excepción para indicar que existe algún problema para dar de baja a la inscripción
-                    throw new AppException("No es posible dar de baja a la inscripción indicada!");
-                }
+                // Intento eliminar la inscripción
+                try {
+                    // Procedo a eliminar la jornada y compruebo su resultado
+                    if ($inscripcion->eliminarInscripcion()) {
+                        // Notifico al usuario que la inscripción se ha eliminado correctamente y cierro su sesión
+                        ErrorController::mostrarMensajeInformativo($smarty, "La inscripción indicada se ha elminado correctamente!",
+                            "/plataforma/backoffice.php?comando=participantes:default");
+                    } else {
+                        // Lanzo una excepción para indicar que existe algún problema para dar de baja a la inscripción
+                        throw new AppException("No es posible dar de baja a la inscripción indicada!");
+                    }
+                } catch (AppException $ae) {
+                    switch ($ae->getCode()) {
+                        case AppException::DB_CONSTRAINT_VIOLATION_IN_QUERY:
+                            ErrorController::handleException($ae, $smarty,
+                                '/plataforma/backoffice.php?comando=participantes:default',
+                                "Esta acción viola la integridad de persistencia de datos!!");
+                            break;
+                        case AppException::DB_READ_ONLY_MODE:
+                            ErrorController::handleException($ae, $smarty,
+                                '/plataforma/backoffice.php?comando=participantes:default',
+                                "Esta acción esta bloqueada en el modo demostración!!");
+                            break;
+                        default:
+                            ErrorController::handleException($ae, $smarty,
+                                '/plataforma/backoffice.php?comando=participantes:default');
+                            break;
+                    }
+                }               
             } else {
                 // Lanzo una excepción para notificar que el usuario no eligió una jornada del listado
                 throw new AppException("No ha elegido una inscripción del listado. Por favor, eliga una. Gracias!");
