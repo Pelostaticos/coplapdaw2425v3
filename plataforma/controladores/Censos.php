@@ -973,18 +973,38 @@ class Censos {
                     $observaciones .= "<br><<--- El usuario responsable " . $usuario->getUsuario() . " cancelar esta jornada por los motivos: ";
                     $observaciones .= $motivos;
                     $jornada->setInformacionJornada($observaciones);
-                    // Actualizo la jornada en la base de datos de la plataforma
-                    if ($jornada->actualizarJornada()) {
-                        // Notifico al usuario que la cancelación de la jornada censal fue existosa
-                        ErrorController::mostrarMensajeInformativo($smarty, "Jornada censal cancelada con éxito!!", 
-                            "/plataforma/backoffice.php?comando=censos:default");
-                    } else {
-                        // De lo contario, lanzo una excepción para notificar al usuario que NO es 
-                        // posible cancelar el censo de aves de la jornada deseada
-                        throw new AppException(message: "No es posible cancelar el censo de aves en la jornada deseada!!!
-                        Conctacte con los administradores para mayor información. ¡Gracias por participar!",
-                        urlAceptar: "/plataforma/backoffice.php?comando=core:email:vista");  
-                    }
+                     // Intento actualizar la jornada censal para su cancelacion
+                    try {
+                        // Actualizo la jornada en la base de datos de la plataforma
+                        if ($jornada->actualizarJornada()) {
+                            // Notifico al usuario que la cancelación de la jornada censal fue existosa
+                            ErrorController::mostrarMensajeInformativo($smarty, "Jornada censal cancelada con éxito!!", 
+                                "/plataforma/backoffice.php?comando=censos:default");
+                        } else {
+                            // De lo contario, lanzo una excepción para notificar al usuario que NO es 
+                            // posible cancelar el censo de aves de la jornada deseada
+                            throw new AppException(message: "No es posible cancelar el censo de aves en la jornada deseada!!!
+                            Conctacte con los administradores para mayor información. ¡Gracias por participar!",
+                            urlAceptar: "/plataforma/backoffice.php?comando=core:email:vista");  
+                        }
+                    } catch (AppException $ae) {
+                        switch ($ae->getCode()) {
+                            case AppException::DB_CONSTRAINT_VIOLATION_IN_QUERY:
+                            ErrorController::handleException($ae, $smarty,
+                                '/plataforma/backoffice.php?comando=censos:default',
+                                "Esta acción viola la integridad de persistencia de datos!!");
+                            break;
+                        case AppException::DB_READ_ONLY_MODE:
+                            ErrorController::handleException($ae, $smarty,
+                                '/plataforma/backoffice.php?comando=censos:default',
+                                "Esta acción esta bloqueada en el modo demostración!!");
+                            break;
+                        default:
+                            ErrorController::handleException($ae, $smarty,
+                                '/plataforma/backoffice.php?comando=censos:default');
+                            break;
+                        }
+                    }                   
                 } else {
                     // De lo contario, lanzo una excepción para notificar al usuario que la
                     // jornada censal deseada no existe en la base de datos
