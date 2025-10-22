@@ -179,6 +179,10 @@ class Core {
         * 
         * Esta expresión significa: La sentencia está permitida si NO estamos en Modo Demostración (DEMO=0)
         * O si la sentencia es de lectura (SELECT=1).
+        *
+        * OBSERVACION: Esta emulación del bloqueo de la base a modo sólo lectura por estar el modo demostracion 
+        * activo. Esto sería mas correcto implementarlo a nivel de permisos del gestor MySQL/MariaDB que 
+        * tenga permisos restringidos.
         */
         // Establezco bandera de estado para controlar que el modo demo esta desactivo
         $modoNoDemo=(IS_DEMO_MODE===false);
