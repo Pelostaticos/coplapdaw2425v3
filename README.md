@@ -67,6 +67,10 @@ Para iniciar la aplicación, ejecuta la máquina virtual que has creado con el e
 https://correplayas.xampp.ocal
 ```
 
+## ⚠️ Bugs de la Plataforma
+
+Si quieres saber más sobre mi toma de decisión acerca de **Bugs de la Plataforma Correplayas** heredada del Proyecto DAW, puedes leerlo [**en este documento**](/assets/correplayas-bugs.pdf).
+
 ## ⚖️ Licencia
 
 La Plataforma Correplayas, en esta versión de demostración en PHP Puro, se distribuye bajo la **Licencia MIT**.
