@@ -1,4 +1,4 @@
-# Plataforma Correplayas 🌟
+# 🌟 Plataforma Correplayas
 
 Este proyecto representa el desarrollo integral de una aplicación web para la gestión centralizada de datos de ciencia ciudadana relacionados con censos ornitológicos. El objetivo fue crear una herramienta robusta y escalable que permitiera al equipo del proyecto administrar información capturada por voluntarios en observatorios costeros.
 
@@ -11,7 +11,7 @@ Mi contribución directa fue clave para  digitalizar el proceso de recolección
 Dado los requisitos del proyectos y su contexto, no tuve la ocasión de implementar esta solución, bajo un framework PHP como podría ser Laravel, algo que se convierte en un nuevo reto personal en mi inquietud de aprendizaje continuo, su migración.
 
 ## 📖 Tabla de Contenidos
-- 🌟 [Plataforma Correplayas](#plataforma-correplayas)
+- [🌟 Plataforma Correplayas](#-plataforma-correplayas)
   - [📖 Tabla de Contenidos](#-tabla-de-contenidos)
   - [✨ Características Principales](#-características-principales)
   - [📸 Demostración Visual](#-demostración-visual)
@@ -53,6 +53,7 @@ Además me encargue de poner en marcha un entorno de desarrollo local basado en 
 - CSS3
 - JavaScript
 - PHP
+- PHPMailer
 - Motor de plantillas Smarty
 - MySQL/MariaDB
 
