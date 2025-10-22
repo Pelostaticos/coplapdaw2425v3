@@ -69,7 +69,7 @@ https://correplayas.xampp.ocal
 
 ## ⚠️ Bugs de la Plataforma
 
-Si quieres saber más sobre mi toma de decisión acerca de **Bugs de la Plataforma Correplayas** heredada del Proyecto DAW, puedes leerlo [**en este documento**]([assets/correplayas-bugs.pdf](https://github.com/Pelostaticos/coplapdaw2425v3/blob/f7823dc03232d17fae9fdc1955aa68f4979fabcc/assets/correplayas-bugs.pdf)).
+Si quieres saber más sobre mi toma de decisión acerca de **Bugs de la Plataforma Correplayas** heredada del Proyecto DAW, puedes leerlo [**en este documento**](https://github.com/Pelostaticos/coplapdaw2425v3/blob/f7823dc03232d17fae9fdc1955aa68f4979fabcc/assets/correplayas-bugs.pdf).
 
 ## ⚖️ Licencia
 
