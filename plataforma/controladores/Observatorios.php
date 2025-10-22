@@ -475,13 +475,25 @@ class Observatorios {
 
         // Manejo la excepción que se haya producido para notificarla al usuario
         } catch (AppException $ae) {
-            // Si se produce una violación de restricción al registrarlos
-            if ($ae->getCode() === AppException::DB_CONSTRAINT_VIOLATION_IN_QUERY)
-            {
-                ErrorController::handleException($ae, $smarty, '/plataforma/backoffice.php?comando=observatorios:default', "Este observatorio ya esta registrado!!");
+            switch ($ae->getCode()) {
+                // Si se produce una violación de restricción al registrarlos
+                case AppException::DB_CONSTRAINT_VIOLATION_IN_QUERY:
+                    ErrorController::handleException($ae, $smarty,
+                        '/plataforma/backoffice.php?comando=observatorios:default',
+                        "Este observatorio ya esta registrado!!");
+                    break;
+                    // Si la demostración está habilitada por el modo sólo lectura
+                    case AppException::DB_READ_ONLY_MODE:
+                        ErrorController::handleException($ae, $smarty,
+                            '/plataforma/backoffice.php?comando=observatorios:default',
+                            "Esta acción esta bloqueada en el modo demostración!!");
+                        break;
+                    // Por defecto, para cualquier otra excepción capturada
+                    default:
+                        ErrorController::handleException($ae, $smarty,
+                                '/plataforma/backoffice.php?comando=observatorios:default');
+                        break;
             }
-            else
-                ErrorController::handleException($ae, $smarty, '/plataforma/backoffice.php');
         }     
     }
 
