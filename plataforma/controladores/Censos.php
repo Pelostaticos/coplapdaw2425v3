@@ -1340,18 +1340,18 @@ class Censos {
                     ':procedencia' => filter_input(INPUT_POST, 'frm-procedencia'), ':destino' => filter_input(INPUT_POST, 'frm-destino'),
                     ':altVuelo' => filter_input(INPUT_POST, 'frm-altvuelo'), ':formaVuelo' => filter_input(INPUT_POST, 'frm-formavuelo'),
                     ':distCosta' => filter_input(INPUT_POST, 'frm-distcosta'), ':comentario' => filter_input(INPUT_POST, 'frm-comentario')];
-                // Intento registrar a la nueva ave
+                // Intento añadir el censo de una nueva observacion
                 try { 
-                    // Registro a la nueva ave en la base de datos
+                    // Registro al censo de una nueva observacion
                     $rca = Censo::crearRegistroCensal($datosRegistroCensal);            
 
-                    // Compruebo que la nueva ave se creó correctamente
+                    // Compruebo que el censo de una nueva observacion se creó correctamente
                     if ($rca) {
                         // Emulo la elección del usuario logueado de una acción por haberla solicitado previamente
                         $_SESSION['accion']="censo:volver";
                         // Emulo que el usuario logueado hizo clic en una jornada censal previamente
                         $_SESSION['gcensos']=$idJornada;                        
-                        // Notifico al usuario el resultado de registrar una nueva ave en la plataforma
+                        // Notifico al usuario el resultado de registrar al censo de una nueva observacion en la plataforma
                         ErrorController::mostrarMensajeInformativo($smarty, "Nueva registro censal registrado con éxito!!", "/plataforma/backoffice.php?comando=censos:default");
                     } else {
                         // Emulo la elección del usuario logueado de una acción por haberla solicitado previamente
@@ -1444,24 +1444,57 @@ class Censos {
                 $registroCensal->setAlturaVueloAve(filter_input(INPUT_POST, 'frm-altvuelo'));
                 $registroCensal->setFormacionVueloAve(filter_input(INPUT_POST, 'frm-formavuelo'));
                 $registroCensal->setDistanicaCostaAve(filter_input(INPUT_POST, 'frm-distcosta'));
-                $registroCensal->setComentaerio(filter_input(INPUT_POST, 'frm-comentarios'));              
-                // Actualizo el registro censal y notifico al usuario del resultado
-                if ($registroCensal->actualizarRegistroCensal()) {
-                    // Emulo la elección del usuario logueado de una acción por haberla solicitado previamente
-                    $_SESSION['accion']="censo:volver";
-                    // Emulo que el usuario logueado hizo clic en una jornada censal previamente
-                    $_SESSION['gcensos']=$idJornada;                                   
-                    // Notifico al usuario que la actualización del registro censal fue existosa
-                    ErrorController::mostrarMensajeInformativo($smarty, "Registro censal actualizado con éxito!!", 
-                        "/plataforma/backoffice.php?comando=censos:default");
-                } else {
-                    // Emulo la elección del usuario logueado de una acción por haberla solicitado previamente
-                    $_SESSION['accion']="censo:volver";
-                    // Emulo que el usuario logueado hizo clic en una jornada censal previamente
-                    $_SESSION['gcensos']=$idJornada;                      
-                    // Lanzo una excepción para indicar que no es posible actualizar el registro censal
-                    throw new AppException(message: "No es posible actualizar el registro censal", 
-                        urlAceptar: "/plataforma/backoffice.php?comando=censos:default");                    
+                $registroCensal->setComentaerio(filter_input(INPUT_POST, 'frm-comentarios'));
+                // Intento actualizar el perfil de usuario
+                try {
+                    // Actualizo el registro censal y notifico al usuario del resultado
+                    if ($registroCensal->actualizarRegistroCensal()) {
+                        // Emulo la elección del usuario logueado de una acción por haberla solicitado previamente
+                        $_SESSION['accion']="censo:volver";
+                        // Emulo que el usuario logueado hizo clic en una jornada censal previamente
+                        $_SESSION['gcensos']=$idJornada;                                   
+                        // Notifico al usuario que la actualización del registro censal fue existosa
+                        ErrorController::mostrarMensajeInformativo($smarty, "Registro censal actualizado con éxito!!", 
+                            "/plataforma/backoffice.php?comando=censos:default");
+                    } else {
+                        // Emulo la elección del usuario logueado de una acción por haberla solicitado previamente
+                        $_SESSION['accion']="censo:volver";
+                        // Emulo que el usuario logueado hizo clic en una jornada censal previamente
+                        $_SESSION['gcensos']=$idJornada;                      
+                        // Lanzo una excepción para indicar que no es posible actualizar el registro censal
+                        throw new AppException(message: "No es posible actualizar el registro censal", 
+                            urlAceptar: "/plataforma/backoffice.php?comando=censos:default");                    
+                    }
+                } catch (AppException $ae) {
+                    switch ($ae->getCode()) {
+                        // Si se produce una violación de restricción al registrarlos
+                        case AppException::DB_CONSTRAINT_VIOLATION_IN_QUERY:
+                            // Emulo la elección del usuario logueado de una acción por haberla solicitado previamente
+                            $_SESSION['accion']="censo:volver";
+                            // Emulo que el usuario logueado hizo clic en una jornada censal previamente
+                            $_SESSION['gcensos']=$idJornada;
+                            // Notifico al usuario que se ha violado una retsriccion de integridad                              
+                            ErrorController::handleException($ae, $smarty,
+                                '/plataforma/backoffice.php?comando=censos:default',
+                                "Esta acción viola la integridad de persistencia de datos!!");
+                            break;
+                        // Si la demostración está habilitada por el modo sólo lectura
+                        case AppException::DB_READ_ONLY_MODE:
+                            // Emulo la elección del usuario logueado de una acción por haberla solicitado previamente
+                            $_SESSION['accion']="censo:volver";
+                            // Emulo que el usuario logueado hizo clic en una jornada censal previamente
+                            $_SESSION['gcensos']=$idJornada;
+                            // Notifico al usuario que se ha bloqueado la acción por el modo demostracion                           
+                            ErrorController::handleException($ae, $smarty,
+                                '/plataforma/backoffice.php?comando=censos:default',
+                                "Esta acción esta bloqueada en el modo demostración!!");
+                            break;
+                        // Por defecto, para cualquier otra excepción capturada
+                        default:
+                            ErrorController::handleException($ae, $smarty,
+                                '/plataforma/backoffice.php?comando=censos:default');
+                            break;
+                        }
                 }
             }  else {
                 // lazo una excepción para notificar al usuario que no está autorizado a actualizar registros censales
