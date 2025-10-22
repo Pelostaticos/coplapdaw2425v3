@@ -757,16 +757,36 @@ class Participantes {
                 // Recupero del formulario de edición de inscripción los datos y actualizo el objeto
                 $inscripcion->setAsiste(intval(filter_input(INPUT_POST,'frm-asiste', FILTER_SANITIZE_NUMBER_INT)));
                 $inscripcion->setObservacion(filter_input(INPUT_POST,'frm-observacion'));
-                // Actulizo los datos de la jornada y muestro la notificación del resultado
-                if ($inscripcion->actualizarInscripción()) {                
-                    // Notifico al usuario que la actualización de la inscripción fue existosa
-                    ErrorController::mostrarMensajeInformativo($smarty, "Inscripción actualizada con éxito!!", 
-                        "/plataforma/backoffice.php?comando=participantes:default");
-                } else {                 
-                    // Lanzo una excepción para inotificar que NO pudo actualizarse la inscripción deseada
-                    throw new AppException(message: "No es posible actualizar la inscripción deseada!!!", 
-                        urlAceptar: "/plataforma/backoffice.php?comando=participantes:default");
-                }                     
+                // Intento actualizar una inscripción a jornada censal
+                try {
+                    // Actulizo los datos de una inscripción a jornada y muestro la notificación del resultado
+                    if ($inscripcion->actualizarInscripción()) {                
+                        // Notifico al usuario que la actualización de la inscripción fue existosa
+                        ErrorController::mostrarMensajeInformativo($smarty, "Inscripción actualizada con éxito!!", 
+                            "/plataforma/backoffice.php?comando=participantes:default");
+                    } else {                 
+                        // Lanzo una excepción para inotificar que NO pudo actualizarse la inscripción deseada
+                        throw new AppException(message: "No es posible actualizar la inscripción deseada!!!", 
+                            urlAceptar: "/plataforma/backoffice.php?comando=participantes:default");
+                    } 
+                } catch (AppException $ae) {
+                    switch ($ae->getCode()) {
+                        case AppException::DB_CONSTRAINT_VIOLATION_IN_QUERY:
+                            ErrorController::handleException($ae, $smarty,
+                                '/plataforma/backoffice.php?comando=participantes:default',
+                                "Esta acción viola la integridad de persistencia de datos!!");
+                            break;
+                        case AppException::DB_READ_ONLY_MODE:
+                            ErrorController::handleException($ae, $smarty,
+                                '/plataforma/backoffice.php?comando=participantes:default',
+                                "Esta acción esta bloqueada en el modo demostración!!");
+                            break;
+                        default:
+                            ErrorController::handleException($ae, $smarty,
+                                '/plataforma/backoffice.php?comando=participantes:default');
+                            break;
+                    }
+                }                                    
             } else {
                 // De lo contario, lanzo una excepción para notificar al usuario que la
                 // inscripción a actualizar no existe en la base de datos
