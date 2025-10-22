@@ -330,8 +330,25 @@ class Observatorios {
                         throw new AppException("No es posible dar de baja al observatorio indicado!");
                     }
                 } catch (AppException $ae) {
-                    ErrorController::handleException($ae, $smarty, '/plataforma/backoffice.php?comando=observatorios:default', 
-                        "No puedes eliminar este observatorio por estár en uso en la plataforma!!");
+                    switch ($ae->getCode()) {
+                        // Si se produce una violación de restricción al registrarlos
+                        case AppException::DB_CONSTRAINT_VIOLATION_IN_QUERY:
+                            ErrorController::handleException($ae, $smarty,
+                                '/plataforma/backoffice.php?comando=observatorios:default',
+                                "No puedes eliminar este observatorio por estár en uso en la plataforma!!");
+                            break;
+                        // Si la demostración está habilitada por el modo sólo lectura
+                        case AppException::DB_READ_ONLY_MODE:
+                            ErrorController::handleException($ae, $smarty,
+                                '/plataforma/backoffice.php?comando=observatorios:default',
+                                "Esta acción esta bloqueada en el modo demostración!!");
+                            break;
+                        // Por defecto, para cualquier otra excepción capturada
+                        default:
+                            ErrorController::handleException($ae, $smarty,
+                                '/plataforma/backoffice.php?comando=observatorios:default');
+                            break;
+                    }
                 }
             } else {
                 // Lanzo una excepción para notificar que el usuario no eligió un observatorio del listado
