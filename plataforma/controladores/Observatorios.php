@@ -248,16 +248,39 @@ class Observatorios {
                 $observatorio->setHistoriaObservatorio(filter_input(INPUT_POST,'frm-historia'));
                 $observatorio->setImagenObservatorio(filter_input(INPUT_POST,'frm-imagen'));
                 $observatorio->setUrlObservatorio(filter_input(INPUT_POST,'frm-url'));
-                // Actulizo los datos del observatorio y muestro la notificación del resultado
-                if ($observatorio->actualizarObservatorio()) {
-                    // Notifico al usuario que la actualización del observatorio fue existosa
-                    ErrorController::mostrarMensajeInformativo($smarty, "Observatorio actualizado con éxito!!", 
-                        "/plataforma/backoffice.php?comando=observatorios:default");
-                } else {
-                    // Lanzo una excepción para indicar que no es posible obtener valores por defecto del observatorio
-                    throw new AppException(message: "No es posible actualizar el observatorio", 
-                        urlAceptar: "/plataforma/backoffice.php?comando=observatorios:default");
-                }                    
+                // Intento actualizar el observatorio de la plataforma
+                try {
+                    // Actulizo los datos del observatorio y muestro la notificación del resultado
+                    if ($observatorio->actualizarObservatorio()) {
+                        // Notifico al usuario que la actualización del observatorio fue existosa
+                        ErrorController::mostrarMensajeInformativo($smarty, "Observatorio actualizado con éxito!!", 
+                            "/plataforma/backoffice.php?comando=observatorios:default");
+                    } else {
+                        // Lanzo una excepción para indicar que no es posible obtener valores por defecto del observatorio
+                        throw new AppException(message: "No es posible actualizar el observatorio", 
+                            urlAceptar: "/plataforma/backoffice.php?comando=observatorios:default");
+                    }   
+                } catch (AppException $ae) {
+                    switch ($ae->getCode()) {
+                        // Si se produce una violación de restricción al registrarlos
+                        case AppException::DB_CONSTRAINT_VIOLATION_IN_QUERY:
+                            ErrorController::handleException($ae, $smarty,
+                                '/plataforma/backoffice.php?comando=observatorios:default',
+                                "Esta acción viola la integridad de persistencia de datos!!");
+                            break;
+                        // Si la demostración está habilitada por el modo sólo lectura
+                        case AppException::DB_READ_ONLY_MODE:
+                            ErrorController::handleException($ae, $smarty,
+                                '/plataforma/backoffice.php?comando=observatorios:default',
+                                "Esta acción esta bloqueada en el modo demostración!!");
+                            break;
+                        // Por defecto, para cualquier otra excepción capturada
+                        default:
+                            ErrorController::handleException($ae, $smarty,
+                                '/plataforma/backoffice.php?comando=observatorios:default');
+                            break;
+                    }
+                }                                
             } else {
                 // De lo contario, lanzo una excepción para notificar al usuario que el
                 // observatorio deseado no existe en la base de datos
@@ -482,17 +505,17 @@ class Observatorios {
                         '/plataforma/backoffice.php?comando=observatorios:default',
                         "Este observatorio ya esta registrado!!");
                     break;
-                    // Si la demostración está habilitada por el modo sólo lectura
-                    case AppException::DB_READ_ONLY_MODE:
-                        ErrorController::handleException($ae, $smarty,
-                            '/plataforma/backoffice.php?comando=observatorios:default',
-                            "Esta acción esta bloqueada en el modo demostración!!");
-                        break;
-                    // Por defecto, para cualquier otra excepción capturada
-                    default:
-                        ErrorController::handleException($ae, $smarty,
-                                '/plataforma/backoffice.php?comando=observatorios:default');
-                        break;
+                // Si la demostración está habilitada por el modo sólo lectura
+                case AppException::DB_READ_ONLY_MODE:
+                    ErrorController::handleException($ae, $smarty,
+                        '/plataforma/backoffice.php?comando=observatorios:default',
+                        "Esta acción esta bloqueada en el modo demostración!!");
+                    break;
+                // Por defecto, para cualquier otra excepción capturada
+                default:
+                    ErrorController::handleException($ae, $smarty,
+                        '/plataforma/backoffice.php?comando=observatorios:default');
+                    break;
             }
         }     
     }
