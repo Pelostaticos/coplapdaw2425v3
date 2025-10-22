@@ -883,25 +883,45 @@ class Censos {
                     $observaciones=$jornada->getInformacionJornada();
                     $observaciones .= "<br><<--- El usuario responsable " . $usuario->getUsuario();
                     $observaciones .= " ha iniciado la jornada a las: " . date('d-m-Y H:i:s');
-                    $jornada->setInformacionJornada($observaciones);                    
-                    // Actualizo la jornada en la base de datos de la plataforma
-                    if ($jornada->actualizarJornada()) {
-                        // Emulo aquí que el usuario hace clic en el listado de jornadas
-                        $_SESSION['gcensos']=$idJornada;
-                        /* OBSERVACIONES: Se trata solución poco elegante pero funcional dado que mi inexpereciencia
-                        en el desarrollo de aplicaciones web, ha hecho que no tenga en cuenta adecuamdamente la lógica
-                        de navegación por las distintas interfaces del usuario tanto redirección como variables para el
-                        funcionamiento de las acciones que se llaman desde cada una de las vista */
+                    $jornada->setInformacionJornada($observaciones);
+                    // Intento actualizar actualizar la jornada censal para su inicio
+                    try {
+                        // Actualizo la jornada en la base de datos de la plataforma
+                        if ($jornada->actualizarJornada()) {
+                            // Emulo aquí que el usuario hace clic en el listado de jornadas
+                            $_SESSION['gcensos']=$idJornada;
+                            /* OBSERVACIONES: Se trata solución poco elegante pero funcional dado que mi inexpereciencia
+                            en el desarrollo de aplicaciones web, ha hecho que no tenga en cuenta adecuamdamente la lógica
+                            de navegación por las distintas interfaces del usuario tanto redirección como variables para el
+                            funcionamiento de las acciones que se llaman desde cada una de las vista */
 
-                        // Muestro la vista del censo de aves en modo edición
-                        Censos::mostrarVistaCensoAves($smarty, modoEdicion: true);
-                    } else {
-                        // De lo contario, lanzo una excepción para notificar al usuario que NO es 
-                        // posible iniciar el censo de aves de la jornada deseada
-                        throw new AppException(message: "No es posible iniciar el censo de aves en la jornada deseada!!!
-                        Conctacte con los administradores para mayor información. ¡Gracias por participar!",
-                        urlAceptar: "/plataforma/backoffice.php?comando=core:email:vista");  
-                    }
+                            // Muestro la vista del censo de aves en modo edición
+                            Censos::mostrarVistaCensoAves($smarty, modoEdicion: true);
+                        } else {
+                            // De lo contario, lanzo una excepción para notificar al usuario que NO es 
+                            // posible iniciar el censo de aves de la jornada deseada
+                            throw new AppException(message: "No es posible iniciar el censo de aves en la jornada deseada!!!
+                            Conctacte con los administradores para mayor información. ¡Gracias por participar!",
+                            urlAceptar: "/plataforma/backoffice.php?comando=core:email:vista");  
+                        }
+                    } catch (AppException $ae) {
+                        switch ($ae->getCode()) {
+                            case AppException::DB_CONSTRAINT_VIOLATION_IN_QUERY:
+                            ErrorController::handleException($ae, $smarty,
+                                '/plataforma/backoffice.php?comando=censos:default',
+                                "Esta acción viola la integridad de persistencia de datos!!");
+                            break;
+                        case AppException::DB_READ_ONLY_MODE:
+                            ErrorController::handleException($ae, $smarty,
+                                '/plataforma/backoffice.php?comando=censos:default',
+                                "Esta acción esta bloqueada en el modo demostración!!");
+                            break;
+                        default:
+                            ErrorController::handleException($ae, $smarty,
+                                '/plataforma/backoffice.php?comando=censos:default');
+                            break;
+                        }
+                    }                                
                 } else {
                     // De lo contario, lanzo una excepción para notificar al usuario que la
                     // jornada censal deseada no existe en la base de datos
@@ -953,18 +973,38 @@ class Censos {
                     $observaciones .= "<br><<--- El usuario responsable " . $usuario->getUsuario() . " cancelar esta jornada por los motivos: ";
                     $observaciones .= $motivos;
                     $jornada->setInformacionJornada($observaciones);
-                    // Actualizo la jornada en la base de datos de la plataforma
-                    if ($jornada->actualizarJornada()) {
-                        // Notifico al usuario que la cancelación de la jornada censal fue existosa
-                        ErrorController::mostrarMensajeInformativo($smarty, "Jornada censal cancelada con éxito!!", 
-                            "/plataforma/backoffice.php?comando=censos:default");
-                    } else {
-                        // De lo contario, lanzo una excepción para notificar al usuario que NO es 
-                        // posible cancelar el censo de aves de la jornada deseada
-                        throw new AppException(message: "No es posible cancelar el censo de aves en la jornada deseada!!!
-                        Conctacte con los administradores para mayor información. ¡Gracias por participar!",
-                        urlAceptar: "/plataforma/backoffice.php?comando=core:email:vista");  
-                    }
+                     // Intento actualizar la jornada censal para su cancelacion
+                    try {
+                        // Actualizo la jornada en la base de datos de la plataforma
+                        if ($jornada->actualizarJornada()) {
+                            // Notifico al usuario que la cancelación de la jornada censal fue existosa
+                            ErrorController::mostrarMensajeInformativo($smarty, "Jornada censal cancelada con éxito!!", 
+                                "/plataforma/backoffice.php?comando=censos:default");
+                        } else {
+                            // De lo contario, lanzo una excepción para notificar al usuario que NO es 
+                            // posible cancelar el censo de aves de la jornada deseada
+                            throw new AppException(message: "No es posible cancelar el censo de aves en la jornada deseada!!!
+                            Conctacte con los administradores para mayor información. ¡Gracias por participar!",
+                            urlAceptar: "/plataforma/backoffice.php?comando=core:email:vista");  
+                        }
+                    } catch (AppException $ae) {
+                        switch ($ae->getCode()) {
+                            case AppException::DB_CONSTRAINT_VIOLATION_IN_QUERY:
+                            ErrorController::handleException($ae, $smarty,
+                                '/plataforma/backoffice.php?comando=censos:default',
+                                "Esta acción viola la integridad de persistencia de datos!!");
+                            break;
+                        case AppException::DB_READ_ONLY_MODE:
+                            ErrorController::handleException($ae, $smarty,
+                                '/plataforma/backoffice.php?comando=censos:default',
+                                "Esta acción esta bloqueada en el modo demostración!!");
+                            break;
+                        default:
+                            ErrorController::handleException($ae, $smarty,
+                                '/plataforma/backoffice.php?comando=censos:default');
+                            break;
+                        }
+                    }                   
                 } else {
                     // De lo contario, lanzo una excepción para notificar al usuario que la
                     // jornada censal deseada no existe en la base de datos
@@ -1016,19 +1056,39 @@ class Censos {
                     $observaciones=$jornada->getInformacionJornada();
                     $observaciones .= "<br><<--- El usuario responsable " . $usuario->getUsuario();
                     $observaciones .= " ha finalizado la jornada a las: " . date('d-m-Y H:i:s');
-                    $jornada->setInformacionJornada($observaciones);                      
-                    // Actualizo la jornada en la base de datos de la plataforma
-                    if ($jornada->actualizarJornada()) {
-                        // Notifico al usuario que la finalización de la jornada censal fue existosa
-                        ErrorController::mostrarMensajeInformativo($smarty, "Jornada censal finalizada con éxito!!", 
-                            "/plataforma/backoffice.php?comando=censos:default");
-                    } else {
-                        // De lo contario, lanzo una excepción para notificar al usuario que NO es 
-                        // posible finalizar el censo de aves de la jornada deseada
-                        throw new AppException(message: "No es posible finalizar el censo de aves en la jornada deseada!!!
-                        Conctacte con los administradores para mayor información. ¡Gracias por participar!",
-                        urlAceptar: "/plataforma/backoffice.php?comando=core:email:vista");  
-                    }
+                    $jornada->setInformacionJornada($observaciones);
+                    // Intento actualizar la jornada censal para su finalizacion
+                    try {
+                        // Actualizo la jornada en la base de datos de la plataforma
+                        if ($jornada->actualizarJornada()) {
+                            // Notifico al usuario que la finalización de la jornada censal fue existosa
+                            ErrorController::mostrarMensajeInformativo($smarty, "Jornada censal finalizada con éxito!!", 
+                                "/plataforma/backoffice.php?comando=censos:default");
+                        } else {
+                            // De lo contario, lanzo una excepción para notificar al usuario que NO es 
+                            // posible finalizar el censo de aves de la jornada deseada
+                            throw new AppException(message: "No es posible finalizar el censo de aves en la jornada deseada!!!
+                            Conctacte con los administradores para mayor información. ¡Gracias por participar!",
+                            urlAceptar: "/plataforma/backoffice.php?comando=core:email:vista");  
+                        }
+                    } catch (AppException $ae) {
+                        switch ($ae->getCode()) {
+                            case AppException::DB_CONSTRAINT_VIOLATION_IN_QUERY:
+                            ErrorController::handleException($ae, $smarty,
+                                '/plataforma/backoffice.php?comando=censos:default',
+                                "Esta acción viola la integridad de persistencia de datos!!");
+                            break;
+                        case AppException::DB_READ_ONLY_MODE:
+                            ErrorController::handleException($ae, $smarty,
+                                '/plataforma/backoffice.php?comando=censos:default',
+                                "Esta acción esta bloqueada en el modo demostración!!");
+                            break;
+                        default:
+                            ErrorController::handleException($ae, $smarty,
+                                '/plataforma/backoffice.php?comando=censos:default');
+                            break;
+                        }
+                    }                                       
                 } else {
                     // De lo contario, establezco la accion de volver a la vista de censos de aves
                     // en la sesión dado que ña acción solicitada desde ahí no se puede ejecutar
@@ -1084,19 +1144,39 @@ class Censos {
                     $observaciones=$jornada->getInformacionJornada();
                     $observaciones .= "<br><<--- El usuario administrador " . $usuario->getUsuario();
                     $observaciones .= " ha validado la jornada a las: " . date('d-m-Y H:i:s');
-                    $jornada->setInformacionJornada($observaciones);                       
-                    // Actualizo la jornada en la base de datos de la plataforma
-                    if ($jornada->actualizarJornada()) {
-                        // Notifico al usuario que la validación de la jornada censal fue existosa
-                        ErrorController::mostrarMensajeInformativo($smarty, "Jornada censal validada con éxito!!", 
-                            "/plataforma/backoffice.php?comando=censos:default");
-                    } else {
-                        // De lo contario, lanzo una excepción para notificar al usuario que NO es 
-                        // posible validar el censo de aves de la jornada deseada
-                        throw new AppException(message: "No es posible validar el censo de aves en la jornada deseada!!!
-                        Conctacte con los administradores para mayor información. ¡Gracias por participar!",
-                        urlAceptar: "/plataforma/backoffice.php?comando=core:email:vista");  
-                    }
+                    $jornada->setInformacionJornada($observaciones);
+                     // Intento actualizar la jornada censal para su validación
+                    try {
+                        // Actualizo la jornada en la base de datos de la plataforma
+                        if ($jornada->actualizarJornada()) {
+                            // Notifico al usuario que la validación de la jornada censal fue existosa
+                            ErrorController::mostrarMensajeInformativo($smarty, "Jornada censal validada con éxito!!", 
+                                "/plataforma/backoffice.php?comando=censos:default");
+                        } else {
+                            // De lo contario, lanzo una excepción para notificar al usuario que NO es 
+                            // posible validar el censo de aves de la jornada deseada
+                            throw new AppException(message: "No es posible validar el censo de aves en la jornada deseada!!!
+                            Conctacte con los administradores para mayor información. ¡Gracias por participar!",
+                            urlAceptar: "/plataforma/backoffice.php?comando=core:email:vista");  
+                        }
+                    } catch (AppException $ae) {
+                        switch ($ae->getCode()) {
+                            case AppException::DB_CONSTRAINT_VIOLATION_IN_QUERY:
+                            ErrorController::handleException($ae, $smarty,
+                                '/plataforma/backoffice.php?comando=censos:default',
+                                "Esta acción viola la integridad de persistencia de datos!!");
+                            break;
+                        case AppException::DB_READ_ONLY_MODE:
+                            ErrorController::handleException($ae, $smarty,
+                                '/plataforma/backoffice.php?comando=censos:default',
+                                "Esta acción esta bloqueada en el modo demostración!!");
+                            break;
+                        default:
+                            ErrorController::handleException($ae, $smarty,
+                                '/plataforma/backoffice.php?comando=censos:default');
+                            break;
+                        }
+                    }                                       
                 } else {
                     // De lo contario, lanzo una excepción para notificar al usuario que la
                     // jornada censal deseada no existe en la base de datos
@@ -1195,8 +1275,42 @@ class Censos {
                         $inscripcion=Participante::consultarInscripcion($idInscripcion);
                         // Marco en la inscripción de participante su asistencia a la jornada censal
                         $inscripcion->setAsiste(true);
-                        // Actualizo la inscripción del participante a la jornada censal
-                        if (!$inscripcion->actualizarInscripción()) {$fallidas += 1;}
+                        // Intento actualizar el perfil de usuario
+                        try {
+                            // Actualizo la inscripción del participante a la jornada censal
+                            if (!$inscripcion->actualizarInscripción()) {$fallidas += 1;}
+                        } catch (AppException $ae) {
+                            switch ($ae->getCode()) {
+                                // Si se produce una violación de restricción al registrarlos
+                                case AppException::DB_CONSTRAINT_VIOLATION_IN_QUERY:
+                                    // Emulo que el usuario logueazo solitico como acción mostrar la vista de censo de aves
+                                    $_SESSION['accion']="historicos:edicion";                        
+                                    // Emulo que el usuario logueado hizo clic en una jornada censal previamente
+                                    $_SESSION['gcensos']=$idJornada;                                    
+                                    // Notifico al usuario que se ha violado una restricción de integridad
+                                    ErrorController::handleException($ae, $smarty,
+                                        '/plataforma/backoffice.php?comando=censos:default',
+                                        "Esta acción viola la integridad de persistencia de datos!!");
+                                    break;
+                                // Si la demostración está habilitada por el modo sólo lectura
+                                case AppException::DB_READ_ONLY_MODE:
+                                    // Emulo que el usuario logueazo solitico como acción mostrar la vista de censo de aves
+                                    $_SESSION['accion']="historicos:edicion";                        
+                                    // Emulo que el usuario logueado hizo clic en una jornada censal previamente
+                                    $_SESSION['gcensos']=$idJornada;                                    
+                                    // Notifico al usuario que la acción se ha bloqueado por el modo demostracion
+                                    ErrorController::handleException($ae, $smarty,
+                                        '/plataforma/backoffice.php?comando=censos:default',
+                                        "Esta acción esta bloqueada en el modo demostración!!");
+                                    break;
+                                // Por defecto, para cualquier otra excepción capturada
+                                default:
+                                    // Notifico al usuario de cualquie rotra excepción capturada
+                                    ErrorController::handleException($ae, $smarty,
+                                        '/plataforma/backoffice.php?comando=censos:default');
+                                    break;
+                            }
+                        }                     
                     }
                     // Notifico al usuario del resultado de la confirmación de asistencia a la jornada censal
                     // para ello compruebo si hay o no actualizaciones de asistencia fallidas.
@@ -1260,18 +1374,18 @@ class Censos {
                     ':procedencia' => filter_input(INPUT_POST, 'frm-procedencia'), ':destino' => filter_input(INPUT_POST, 'frm-destino'),
                     ':altVuelo' => filter_input(INPUT_POST, 'frm-altvuelo'), ':formaVuelo' => filter_input(INPUT_POST, 'frm-formavuelo'),
                     ':distCosta' => filter_input(INPUT_POST, 'frm-distcosta'), ':comentario' => filter_input(INPUT_POST, 'frm-comentario')];
-                // Intento registrar a la nueva ave
+                // Intento añadir el censo de una nueva observacion
                 try { 
-                    // Registro a la nueva ave en la base de datos
+                    // Registro al censo de una nueva observacion
                     $rca = Censo::crearRegistroCensal($datosRegistroCensal);            
 
-                    // Compruebo que la nueva ave se creó correctamente
+                    // Compruebo que el censo de una nueva observacion se creó correctamente
                     if ($rca) {
                         // Emulo la elección del usuario logueado de una acción por haberla solicitado previamente
                         $_SESSION['accion']="censo:volver";
                         // Emulo que el usuario logueado hizo clic en una jornada censal previamente
                         $_SESSION['gcensos']=$idJornada;                        
-                        // Notifico al usuario el resultado de registrar una nueva ave en la plataforma
+                        // Notifico al usuario el resultado de registrar al censo de una nueva observacion en la plataforma
                         ErrorController::mostrarMensajeInformativo($smarty, "Nueva registro censal registrado con éxito!!", "/plataforma/backoffice.php?comando=censos:default");
                     } else {
                         // Emulo la elección del usuario logueado de una acción por haberla solicitado previamente
@@ -1283,19 +1397,35 @@ class Censos {
                     } 
                 // Manejo la excepción que se haya producido para notificarla al usuario
                 } catch (AppException $ae) {
-                    // Si se produce una violación de restricción al registrarlos
-                    if ($ae->getCode() === AppException::DB_CONSTRAINT_VIOLATION_IN_QUERY) {
-                        // Emulo la elección del usuario logueado de una acción por haberla solicitado previamente
-                        $_SESSION['accion']="censo:volver";
-                        // Emulo que el usuario logueado hizo clic en una jornada censal previamente
-                        $_SESSION['gcensos']=$idJornada;                        
-                        // Notifico al usuario que el registro censal que se desea crear ya existe en la plataforma
-                        ErrorController::handleException($ae, $smarty, '/plataforma/backoffice.php?comando=censos:default', "Este registro censal ya esta registrado!!");
-                    }
-                    else {
-                        ErrorController::handleException($ae, $smarty, '/plataforma/backoffice.php');
-                    }
-                        
+                    switch ($ae->getCode()) {
+                        // Si se produce una violación de restricción al registrarlos
+                        case AppException::DB_CONSTRAINT_VIOLATION_IN_QUERY:
+                            // Emulo la elección del usuario logueado de una acción por haberla solicitado previamente
+                            $_SESSION['accion']="censo:volver";
+                            // Emulo que el usuario logueado hizo clic en una jornada censal previamente
+                            $_SESSION['gcensos']=$idJornada;                        
+                            // Notifico al usuario que el registro censal que se desea crear ya existe en la plataforma                            
+                            ErrorController::handleException($ae, $smarty,
+                                '/plataforma/backoffice.php?comando=censos:default',
+                                "Esta acción viola la integridad de persistencia de datos!!");
+                            break;
+                        // Si la demostración está habilitada por el modo sólo lectura
+                        case AppException::DB_READ_ONLY_MODE:
+                            // Emulo la elección del usuario logueado de una acción por haberla solicitado previamente
+                            $_SESSION['accion']="censo:volver";
+                            // Emulo que el usuario logueado hizo clic en una jornada censal previamente
+                            $_SESSION['gcensos']=$idJornada;                        
+                            // Notifico al usuario que la acción esta bloqueada por el modo demostración 
+                            ErrorController::handleException($ae, $smarty,
+                                '/plataforma/backoffice.php?comando=censos:default',
+                                "Esta acción esta bloqueada en el modo demostración!!");
+                            break;
+                        // Por defecto, para cualquier otra excepción capturada
+                        default:
+                            ErrorController::handleException($ae, $smarty,
+                                '/plataforma/backoffice.php');
+                            break;
+                    }                        
                 }                  
             } else {
                 // lazo una excepción para notificar al usuario que no está autorizado a añadir nuevos registros censales
@@ -1348,24 +1478,57 @@ class Censos {
                 $registroCensal->setAlturaVueloAve(filter_input(INPUT_POST, 'frm-altvuelo'));
                 $registroCensal->setFormacionVueloAve(filter_input(INPUT_POST, 'frm-formavuelo'));
                 $registroCensal->setDistanicaCostaAve(filter_input(INPUT_POST, 'frm-distcosta'));
-                $registroCensal->setComentaerio(filter_input(INPUT_POST, 'frm-comentarios'));              
-                // Actualizo el registro censal y notifico al usuario del resultado
-                if ($registroCensal->actualizarRegistroCensal()) {
-                    // Emulo la elección del usuario logueado de una acción por haberla solicitado previamente
-                    $_SESSION['accion']="censo:volver";
-                    // Emulo que el usuario logueado hizo clic en una jornada censal previamente
-                    $_SESSION['gcensos']=$idJornada;                                   
-                    // Notifico al usuario que la actualización del registro censal fue existosa
-                    ErrorController::mostrarMensajeInformativo($smarty, "Registro censal actualizado con éxito!!", 
-                        "/plataforma/backoffice.php?comando=censos:default");
-                } else {
-                    // Emulo la elección del usuario logueado de una acción por haberla solicitado previamente
-                    $_SESSION['accion']="censo:volver";
-                    // Emulo que el usuario logueado hizo clic en una jornada censal previamente
-                    $_SESSION['gcensos']=$idJornada;                      
-                    // Lanzo una excepción para indicar que no es posible actualizar el registro censal
-                    throw new AppException(message: "No es posible actualizar el registro censal", 
-                        urlAceptar: "/plataforma/backoffice.php?comando=censos:default");                    
+                $registroCensal->setComentaerio(filter_input(INPUT_POST, 'frm-comentarios'));
+                // Intento actualizar el perfil de usuario
+                try {
+                    // Actualizo el registro censal y notifico al usuario del resultado
+                    if ($registroCensal->actualizarRegistroCensal()) {
+                        // Emulo la elección del usuario logueado de una acción por haberla solicitado previamente
+                        $_SESSION['accion']="censo:volver";
+                        // Emulo que el usuario logueado hizo clic en una jornada censal previamente
+                        $_SESSION['gcensos']=$idJornada;                                   
+                        // Notifico al usuario que la actualización del registro censal fue existosa
+                        ErrorController::mostrarMensajeInformativo($smarty, "Registro censal actualizado con éxito!!", 
+                            "/plataforma/backoffice.php?comando=censos:default");
+                    } else {
+                        // Emulo la elección del usuario logueado de una acción por haberla solicitado previamente
+                        $_SESSION['accion']="censo:volver";
+                        // Emulo que el usuario logueado hizo clic en una jornada censal previamente
+                        $_SESSION['gcensos']=$idJornada;                      
+                        // Lanzo una excepción para indicar que no es posible actualizar el registro censal
+                        throw new AppException(message: "No es posible actualizar el registro censal", 
+                            urlAceptar: "/plataforma/backoffice.php?comando=censos:default");                    
+                    }
+                } catch (AppException $ae) {
+                    switch ($ae->getCode()) {
+                        // Si se produce una violación de restricción al registrarlos
+                        case AppException::DB_CONSTRAINT_VIOLATION_IN_QUERY:
+                            // Emulo la elección del usuario logueado de una acción por haberla solicitado previamente
+                            $_SESSION['accion']="censo:volver";
+                            // Emulo que el usuario logueado hizo clic en una jornada censal previamente
+                            $_SESSION['gcensos']=$idJornada;
+                            // Notifico al usuario que se ha violado una retsriccion de integridad                              
+                            ErrorController::handleException($ae, $smarty,
+                                '/plataforma/backoffice.php?comando=censos:default',
+                                "Esta acción viola la integridad de persistencia de datos!!");
+                            break;
+                        // Si la demostración está habilitada por el modo sólo lectura
+                        case AppException::DB_READ_ONLY_MODE:
+                            // Emulo la elección del usuario logueado de una acción por haberla solicitado previamente
+                            $_SESSION['accion']="censo:volver";
+                            // Emulo que el usuario logueado hizo clic en una jornada censal previamente
+                            $_SESSION['gcensos']=$idJornada;
+                            // Notifico al usuario que se ha bloqueado la acción por el modo demostracion                           
+                            ErrorController::handleException($ae, $smarty,
+                                '/plataforma/backoffice.php?comando=censos:default',
+                                "Esta acción esta bloqueada en el modo demostración!!");
+                            break;
+                        // Por defecto, para cualquier otra excepción capturada
+                        default:
+                            ErrorController::handleException($ae, $smarty,
+                                '/plataforma/backoffice.php?comando=censos:default');
+                            break;
+                        }
                 }
             }  else {
                 // lazo una excepción para notificar al usuario que no está autorizado a actualizar registros censales
@@ -1405,24 +1568,57 @@ class Censos {
             if ($jornada instanceof Jornada && $jornadaEditable) {
                 // Recupero el registro censal a eliminar de la plataforma
                 $registroCensal=Censo::consultarRegistroCensal($registroCensal);
-                // Elimino el registro censal y notifico al usuario del resultado
-                if ($registroCensal->eliminarRegistroCensal()) {
-                    // Emulo la elección del usuario logueado de una acción por haberla solicitado previamente
-                    $_SESSION['accion']="censo:volver";
-                    // Emulo que el usuario logueado hizo clic en una jornada censal previamente
-                    $_SESSION['gcensos']=$idJornada;                                   
-                    // Notifico al usuario que la eliminación del registro censal fue existosa
-                    ErrorController::mostrarMensajeInformativo($smarty, "Registro censal eliminado con éxito!!", 
-                        "/plataforma/backoffice.php?comando=censos:default");
-                } else {
-                    // Emulo la elección del usuario logueado de una acción por haberla solicitado previamente
-                    $_SESSION['accion']="censo:volver";
-                    // Emulo que el usuario logueado hizo clic en una jornada censal previamente
-                    $_SESSION['gcensos']=$idJornada;                      
-                    // Lanzo una excepción para indicar que no es posible eliminar el registro censal
-                    throw new AppException(message: "No es posible eliminar el registro censal", 
-                        urlAceptar: "/plataforma/backoffice.php?comando=censos:default");                    
-                }                
+                // Intento eliminar el registro censal
+                try {
+                    // Elimino el registro censal y notifico al usuario del resultado
+                    if ($registroCensal->eliminarRegistroCensal()) {
+                        // Emulo la elección del usuario logueado de una acción por haberla solicitado previamente
+                        $_SESSION['accion']="censo:volver";
+                        // Emulo que el usuario logueado hizo clic en una jornada censal previamente
+                        $_SESSION['gcensos']=$idJornada;                                   
+                        // Notifico al usuario que la eliminación del registro censal fue existosa
+                        ErrorController::mostrarMensajeInformativo($smarty, "Registro censal eliminado con éxito!!", 
+                            "/plataforma/backoffice.php?comando=censos:default");
+                    } else {
+                        // Emulo la elección del usuario logueado de una acción por haberla solicitado previamente
+                        $_SESSION['accion']="censo:volver";
+                        // Emulo que el usuario logueado hizo clic en una jornada censal previamente
+                        $_SESSION['gcensos']=$idJornada;                      
+                        // Lanzo una excepción para indicar que no es posible eliminar el registro censal
+                        throw new AppException(message: "No es posible eliminar el registro censal", 
+                            urlAceptar: "/plataforma/backoffice.php?comando=censos:default");                    
+                    }  
+                } catch (AppException $ae) {
+                    switch ($ae->getCode()) {
+                        // Si se produce una violación de restricción al registrarlos
+                        case AppException::DB_CONSTRAINT_VIOLATION_IN_QUERY:
+                            // Emulo la elección del usuario logueado de una acción por haberla solicitado previamente
+                            $_SESSION['accion']="censo:volver";
+                            // Emulo que el usuario logueado hizo clic en una jornada censal previamente
+                            $_SESSION['gcensos']=$idJornada;                                   
+                            // Notifico al usuario que se ha violado una restricción d eintegridad
+                            ErrorController::handleException($ae, $smarty,
+                                '/plataforma/backoffice.php?comando=censos:default',
+                                "Esta acción viola la integridad de persistencia de datos!!");
+                            break;
+                        // Si la demostración está habilitada por el modo sólo lectura
+                        case AppException::DB_READ_ONLY_MODE:
+                            // Emulo la elección del usuario logueado de una acción por haberla solicitado previamente
+                            $_SESSION['accion']="censo:volver";
+                            // Emulo que el usuario logueado hizo clic en una jornada censal previamente
+                            $_SESSION['gcensos']=$idJornada;                                   
+                            // Notifico al usuario que la acción ha sido bloqueada pro el modo demostracion                             
+                            ErrorController::handleException($ae, $smarty,
+                                '/plataforma/backoffice.php?comando=censos:default',
+                                "Esta acción esta bloqueada en el modo demostración!!");
+                            break;
+                        // Por defecto, para cualquier otra excepción capturada
+                        default:
+                            ErrorController::handleException($ae, $smarty,
+                                '/plataforma/backoffice.php?comando=censos:default');
+                            break;
+                    }
+                }                              
             } else {
                 // lazo una excepción para notificar al usuario que no está autorizado a eliminar registros censales
                 throw new AppException("No está autorizado a eliminar registros censales!!!");   

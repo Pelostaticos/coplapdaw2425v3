@@ -179,6 +179,10 @@ class Core {
         * 
         * Esta expresión significa: La sentencia está permitida si NO estamos en Modo Demostración (DEMO=0)
         * O si la sentencia es de lectura (SELECT=1).
+        *
+        * OBSERVACION: Esta emulación del bloqueo de la base a modo sólo lectura por estar el modo demostracion 
+        * activo. Esto sería mas correcto implementarlo a nivel de permisos del gestor MySQL/MariaDB que 
+        * tenga permisos restringidos.
         */
         // Establezco bandera de estado para controlar que el modo demo esta desactivo
         $modoNoDemo=(IS_DEMO_MODE===false);
@@ -229,12 +233,9 @@ class Core {
             }
         } else {
             // De lo contrario, necesito notificar al usuario que la acción de escritura esta bloqueada
-            // Genero la URL que direcciona al usuario tras aceptar advertencia excepcion
-            $url_aceptar = str_replace(':procesa', ':vista', $_SERVER['REQUEST_URI']);
             // Lanzo excepcion para indicar que la base de datos esta en modo lectura
             throw new AppException('Error DB: La base de datos esta en modo lectura',
-            AppException::DB_QUERY_EXECUTION_FAILURE,
-            urlAceptar: $url_aceptar);
+                AppException::DB_READ_ONLY_MODE);
         }
 
         // Devuelvo el resultado de la consulta SQL realizada
@@ -557,13 +558,22 @@ class Core {
 
         // Manejo la excepción que se haya producido para notificarla al usuario
         } catch (AppException $ae) {
-            // Si se produce una violación de restricción al registrarlos
-            if ($ae->getCode() === AppException::DB_CONSTRAINT_VIOLATION_IN_QUERY)
-            {
-                ErrorController::handleException($ae, $smarty, '/plataforma/backoffice.php?comando=core:login:vista', "Este usuario ya esta registrado!!");
+            switch ($ae->getCode()) {
+                case AppException::DB_CONSTRAINT_VIOLATION_IN_QUERY:
+                    ErrorController::handleException($ae, $smarty,
+                        '/plataforma/backoffice.php?comando=core:login:vista',
+                        "Este usuario ya esta registrado!!");
+                    break;
+                case AppException::DB_READ_ONLY_MODE:
+                    ErrorController::handleException($ae, $smarty,
+                        '/plataforma/backoffice.php?comando=core:signup:vista',
+                        "Esta acción esta bloqueada en el modo demostración!!");
+                    break;
+                default:
+                    ErrorController::handleException($ae, $smarty,
+                        '/plataforma/backoffice.php?comando=core:signup:vista');
+                    break;
             }
-            else
-                ErrorController::handleException($ae, $smarty, '/plataforma/backoffice.php?comando=core:signup:vista');
         }
 
     }

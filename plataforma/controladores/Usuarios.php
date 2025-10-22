@@ -408,14 +408,34 @@ class Usuarios {
                     $datosUsuario = [':codigo' => $hashUsuario, ':estado' => $estado, ':rol' => $rol];
                     $datosPersonaUsuaria = [':usuario' => $hashUsuario, ':email' => $email,
                         ':direccion' => $direccion, ':localidad' => $localidad, ':telefono' => $telefono, ':codigoPostal'  => $codPostal];
-                    // Actulizo los datos del perfil de usuario y muestro la notificación del resultado
-                    if ($usuario->actualizarUsuario($datosUsuario) || $personaUsuaria->actualizarPersona($datosPersonaUsuaria)) {
-                        // Notifico al usuario que la actualización del perfil fue existosa
-                        ErrorController::mostrarMensajeInformativo($smarty, "Perfil de usuario actualizado con éxito!!", $urlAceptarNotificacion);
-                    } else {
-                        // Lanzo una excepción para indicar que no es posible obtener valores por defecto del perfil de usuario
-                        throw new AppException(message: "No es posible actualizar el perfil de usuario", 
-                            urlAceptar: $urlAceptarNotificacion);
+                    // Intento actualizar el perfil de usuario
+                    try {
+                        // Actulizo los datos del perfil de usuario y muestro la notificación del resultado
+                        if ($usuario->actualizarUsuario($datosUsuario) || $personaUsuaria->actualizarPersona($datosPersonaUsuaria)) {
+                            // Notifico al usuario que la actualización del perfil fue existosa
+                            ErrorController::mostrarMensajeInformativo($smarty, "Perfil de usuario actualizado con éxito!!", $urlAceptarNotificacion);
+                        } else {
+                            // Lanzo una excepción para indicar que no es posible obtener valores por defecto del perfil de usuario
+                            throw new AppException(message: "No es posible actualizar el perfil de usuario", 
+                                urlAceptar: $urlAceptarNotificacion);
+                        }
+                    } catch (AppException $ae) {
+                        switch ($ae->getCode()) {
+                            case AppException::DB_CONSTRAINT_VIOLATION_IN_QUERY:
+                            ErrorController::handleException($ae, $smarty,
+                                '/plataforma/backoffice.php?comando=usuarios:default',
+                                "Esta acción viola la integridad de persistencia de datos!!");
+                            break;
+                        case AppException::DB_READ_ONLY_MODE:
+                            ErrorController::handleException($ae, $smarty,
+                                '/plataforma/backoffice.php?comando=usuarios:default',
+                                "Esta acción esta bloqueada en el modo demostración!!");
+                            break;
+                        default:
+                            ErrorController::handleException($ae, $smarty,
+                                '/plataforma/backoffice.php?comando=usuarios:default');
+                            break;
+                        }
                     }
                 } else {
                     // Lanzo una excepción para indicar que no es posible obtener valores por defecto del perfil de usuario
@@ -534,15 +554,35 @@ class Usuarios {
                     $nuevoPassword = hash('sha256', $usuario->getUsuario() . $nuevoPassword);
                     // Preparo los datos para la actualización del perfil de usuario
                     $datosUsuario = [':codigo' => $hashUsuario, ':contrasenya' => $nuevoPassword];
-                    // Actulizo el password del perfil de usuario y muestro la notificación del resultado
-                    if ($usuario->cambiarContraseñaUsuario($datosUsuario)) {
-                        // Notifico al usuario que la actualización del perfil fue existosa
-                        ErrorController::mostrarMensajeInformativo($smarty, "Password del perfil de usuario cambiado con éxito!!", $urlAceptarNotificacion);
-                    } else {
-                        // Lanzo una excepción para indicar que no es posible obtener valores por defecto del perfil de usuario
-                        throw new AppException(message: "No es posible cambiar el password del perfil de usuario", 
-                            urlAceptar: $urlAceptarNotificacion);
-                    }                    
+                    // Intento actualizar el password del perfil de usuario
+                    try {
+                        // Actulizo el password del perfil de usuario y muestro la notificación del resultado
+                        if ($usuario->cambiarContraseñaUsuario($datosUsuario)) {
+                            // Notifico al usuario que la actualización del perfil fue existosa
+                            ErrorController::mostrarMensajeInformativo($smarty, "Password del perfil de usuario cambiado con éxito!!", $urlAceptarNotificacion);
+                        } else {
+                            // Lanzo una excepción para indicar que no es posible obtener valores por defecto del perfil de usuario
+                            throw new AppException(message: "No es posible cambiar el password del perfil de usuario", 
+                                urlAceptar: $urlAceptarNotificacion);
+                        } 
+                    } catch (AppException $ae) {
+                        switch ($ae->getCode()) {
+                            case AppException::DB_CONSTRAINT_VIOLATION_IN_QUERY:
+                            ErrorController::handleException($ae, $smarty,
+                                '/plataforma/backoffice.php?comando=usuarios:default',
+                                "Esta acción viola la integridad de persistencia de datos!!");
+                            break;
+                        case AppException::DB_READ_ONLY_MODE:
+                            ErrorController::handleException($ae, $smarty,
+                                '/plataforma/backoffice.php?comando=usuarios:default',
+                                "Esta acción esta bloqueada en el modo demostración!!");
+                            break;
+                        default:
+                            ErrorController::handleException($ae, $smarty,
+                                '/plataforma/backoffice.php?comando=usuarios:default');
+                            break;
+                        }
+                    }                                       
                 } else {
                     // Lanzo una excepción para indicar que no es posible obtener el perfil de usuario
                     throw new AppException(message: "No es posible recuperar el perfil de usuario", 
@@ -641,26 +681,46 @@ class Usuarios {
                 // Preparo los datos para la eliminación del perfil de usuario
                 $codigoUsuario = [':usuario' => $hashUsuario];
 
-                // Compruebo si la persona usuario pudo eliminarse de la plataforma para
-                // desvincular sus datos persnales del usuario y dejarlo para fines funcionales.
-                if ($personaUsuaria->eliminarPersona($codigoUsuario)) {
-                    // Modifico el estado del perfil del usuario a BAJA.
-                    $usuario->setEstado('BAJA');
-                    // Preparo la información para actualizar el nuevo estado del perfil de usuario elminiado
-                    $datosUsuario = [':codigo' => $hashUsuario,':estado' => $usuario->getEstado(), ':rol' => $usuario->getRol()];
-                    // Actualizo el estado del perfil de usuario elminado a su nuevo estado en la plataforma
-                    if ($usuario->actualizarUsuario($datosUsuario)) {
-                        // Notifico al usuario que el perfil se ha eliminado correctamente y cierro su sesión
-                        ErrorController::mostrarMensajeInformativo($smarty, "El perfil de usuario se ha elminado correctamente!",
-                            $urlAceptarNotificacion);
+                // Intento dar de baja al usuario deseado               
+                try {
+                    // Compruebo si la persona usuario pudo eliminarse de la plataforma para
+                    // desvincular sus datos persnales del usuario y dejarlo para fines funcionales.
+                    if ($personaUsuaria->eliminarPersona($codigoUsuario)) {
+                        // Modifico el estado del perfil del usuario a BAJA.
+                        $usuario->setEstado('BAJA');
+                        // Preparo la información para actualizar el nuevo estado del perfil de usuario elminiado
+                        $datosUsuario = [':codigo' => $hashUsuario,':estado' => $usuario->getEstado(), ':rol' => $usuario->getRol()];
+                        // Actualizo el estado del perfil de usuario elminado a su nuevo estado en la plataforma
+                        if ($usuario->actualizarUsuario($datosUsuario)) {
+                            // Notifico al usuario que el perfil se ha eliminado correctamente y cierro su sesión
+                            ErrorController::mostrarMensajeInformativo($smarty, "El perfil de usuario se ha elminado correctamente!",
+                                $urlAceptarNotificacion);
+                        } else {
+                            // Lanzo una excepción para indicar que no existe perfil de usuario
+                            throw new AppException(message: $mensajeError, 
+                                urlAceptar: $urlAceptarNotificacion);
+                        }
                     } else {
-                        // Lanzo una excepción para indicar que no existe perfil de usuario
-                        throw new AppException(message: $mensajeError, 
-                            urlAceptar: $urlAceptarNotificacion);
+                        // Lanzo una excepción para indicar que existe algún problema para dar de baja al usuario
+                        throw new AppException("No es posible dar de baja al usuario!");
                     }
-                } else {
-                    // Lanzo una excepción para indicar que existe algún problema para dar de baja al usuario
-                    throw new AppException("No es posible dar de baja al usuario!");
+                } catch (AppException $ae) {
+                    switch ($ae->getCode()) {
+                        case AppException::DB_CONSTRAINT_VIOLATION_IN_QUERY:
+                        ErrorController::handleException($ae, $smarty,
+                            '/plataforma/backoffice.php?comando=usuarios:default',
+                            "Esta acción viola la integridad de persistencia de datos!!");
+                        break;
+                    case AppException::DB_READ_ONLY_MODE:
+                        ErrorController::handleException($ae, $smarty,
+                            '/plataforma/backoffice.php?comando=usuarios:default',
+                            "Esta acción esta bloqueada en el modo demostración!!");
+                        break;
+                    default:
+                        ErrorController::handleException($ae, $smarty,
+                            '/plataforma/backoffice.php?comando=usuarios:default');
+                        break;
+                    }
                 }
             } else {
                 // Lanzo una excepción para indicar que no existe perfil de usuario
@@ -832,16 +892,24 @@ class Usuarios {
                     throw new AppException(message: "Uppps!! Hubo un problema al dar de alta al usuario.",
                         urlAceptar: "/plataforma/backoffice.php?comando=usuarios:default");
                 }                
-
             // Manejo la excepción que se haya producido para notificarla al usuario
             } catch (AppException $ae) {
-                // Si se produce una violación de restricción al registrarlos
-                if ($ae->getCode() === AppException::DB_CONSTRAINT_VIOLATION_IN_QUERY)
-                {
-                    ErrorController::handleException($ae, $smarty, '/plataforma/backoffice.php?comando=core:login:vista', "Este usuario ya esta registrado!!");
+                switch ($ae->getCode()) {
+                    case AppException::DB_CONSTRAINT_VIOLATION_IN_QUERY:
+                        ErrorController::handleException($ae, $smarty,
+                            '/plataforma/backoffice.php?comando=usuarios:default',
+                            "Este usuario ya esta registrado!!");
+                        break;
+                    case AppException::DB_READ_ONLY_MODE:
+                        ErrorController::handleException($ae, $smarty,
+                            '/plataforma/backoffice.php?comando=usuarios:default',
+                            "Esta acción esta bloqueada en el modo demostración!!");
+                        break;
+                    default:
+                        ErrorController::handleException($ae, $smarty,
+                            '/plataforma/backoffice.php?comando=usuarios:default');
+                        break;
                 }
-                else
-                    ErrorController::handleException($ae, $smarty, '/plataforma/backoffice.php?comando=usuarios:default');
             }
         } else {
             // Lanzo una excepción para notificar al usuario que no tiene permisos para dar de alta usuarios

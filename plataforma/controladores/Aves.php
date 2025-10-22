@@ -250,16 +250,39 @@ class Aves {
                 $ave->setNombreInglesAve(filter_input(INPUT_POST,'frm-ingles'));
                 $ave->setImagenAve(filter_input(INPUT_POST,'frm-imagen'));
                 $ave->setUrlAve(filter_input(INPUT_POST,'frm-url'));
-                // Actulizo los datos del ave y muestro la notificación del resultado
-                if ($ave->actualizarAve()) {
-                    // Notifico al usuario que la actualización del ave fue existosa
-                    ErrorController::mostrarMensajeInformativo($smarty, "Ave actualizada con éxito!!", 
-                        "/plataforma/backoffice.php?comando=aves:default");
-                } else {
-                    // Lanzo una excepción para indicar que no es posible obtener valores por defecto del ave
-                    throw new AppException(message: "No es posible actualizar el ave", 
-                        urlAceptar: "/plataforma/backoffice.php?comando=aves:default");
-                }                    
+                // Intento actualizar un ave de la plataforma
+                try {
+                    // Actulizo los datos del ave y muestro la notificación del resultado
+                    if ($ave->actualizarAve()) {
+                        // Notifico al usuario que la actualización del ave fue existosa
+                        ErrorController::mostrarMensajeInformativo($smarty, "Ave actualizada con éxito!!", 
+                            "/plataforma/backoffice.php?comando=aves:default");
+                    } else {
+                        // Lanzo una excepción para indicar que no es posible obtener valores por defecto del ave
+                        throw new AppException(message: "No es posible actualizar el ave", 
+                            urlAceptar: "/plataforma/backoffice.php?comando=aves:default");
+                    }                    
+                } catch (AppException $ae) {
+                    switch ($ae->getCode()) {
+                        // Si se produce una violación de restricción al actualizarlos
+                        case AppException::DB_CONSTRAINT_VIOLATION_IN_QUERY:
+                            ErrorController::handleException($ae, $smarty,
+                                '/plataforma/backoffice.php?comando=aves:default',
+                                "Esta acción viola la integridad de persistencia de datos!!");
+                            break;
+                        // Si la demostración está habilitada por el modo sólo lectura
+                        case AppException::DB_READ_ONLY_MODE:
+                            ErrorController::handleException($ae, $smarty,
+                                '/plataforma/backoffice.php?comando=aves:default',
+                                "Esta acción esta bloqueada en el modo demostración!!");
+                            break;
+                        // Por defecto, para cualquier otra excepción capturada
+                        default:
+                            ErrorController::handleException($ae, $smarty,
+                                '/plataforma/backoffice.php?comando=aves:default');
+                            break;
+                    }
+                }                
             } else {
                 // De lo contario, lanzo una excepción para notificar al usuario que el
                 // ave deseada no existe en la base de datos
@@ -310,7 +333,25 @@ class Aves {
                     }
                 // Manejo la excepción que se haya producido para notificarla al usuario
                 } catch (AppException $ae) {
-                    ErrorController::handleException($ae, $smarty, '/plataforma/backoffice.php?comando=aves:default', "No puedes elminiar este ave porque está en uso en la plataforma!!");
+                    switch ($ae->getCode()) {
+                        // Si se produce una violación de restricción al eliminarlos
+                        case AppException::DB_CONSTRAINT_VIOLATION_IN_QUERY:
+                            ErrorController::handleException($ae, $smarty,
+                                '/plataforma/backoffice.php?comando=aves:default',
+                                "No puedes elminiar este ave porque está en uso en la plataforma!!");
+                            break;
+                        // Si la demostración está habilitada por el modo sólo lectura
+                        case AppException::DB_READ_ONLY_MODE:
+                            ErrorController::handleException($ae, $smarty,
+                                '/plataforma/backoffice.php?comando=aves:default',
+                                "Esta acción esta bloqueada en el modo demostración!!");
+                            break;
+                        // Por defecto, para cualquier otra excepción capturada
+                        default:
+                            ErrorController::handleException($ae, $smarty,
+                                '/plataforma/backoffice.php?comando=aves:default');
+                            break;
+                    }                    
                 }
             } else {
                 // Lanzo una excepción para notificar que el usuario no eligió un ave del listado
@@ -482,18 +523,27 @@ class Aves {
                 // Lanzo excepción para notificar al usuario que hubo algún problema durante el proceso de registro
                 throw new AppException("Fallo al registrar la nueva ave en la plataforma","/plataforma/backoffice.php?comando=aves:default");
             } 
-
         // Manejo la excepción que se haya producido para notificarla al usuario
         } catch (AppException $ae) {
-            // Si se produce una violación de restricción al registrarlos
-            if ($ae->getCode() === AppException::DB_CONSTRAINT_VIOLATION_IN_QUERY)
-            {
-                ErrorController::handleException($ae, $smarty, '/plataforma/backoffice.php?comando=aves:default', "Este ave ya esta registrada!!");
-            }
-            else {
-                ErrorController::handleException($ae, $smarty, '/plataforma/backoffice.php');
-            }
-                
+            switch ($ae->getCode()) {
+                // Si se produce una violación de restricción al registrarlos
+                case AppException::DB_CONSTRAINT_VIOLATION_IN_QUERY:
+                    ErrorController::handleException($ae, $smarty,
+                        '/plataforma/backoffice.php?comando=aves:default',
+                        "Este ave ya esta registrada!!");
+                    break;
+                // Si la demostración está habilitada por el modo sólo lectura
+                case AppException::DB_READ_ONLY_MODE:
+                    ErrorController::handleException($ae, $smarty,
+                        '/plataforma/backoffice.php?comando=aves:default',
+                        "Esta acción esta bloqueada en el modo demostración!!");
+                    break;
+                // Por defecto, para cualquier otra excepción capturada
+                default:
+                    ErrorController::handleException($ae, $smarty,
+                        '/plataforma/backoffice.php');
+                    break;
+            }                
         }     
     }
 

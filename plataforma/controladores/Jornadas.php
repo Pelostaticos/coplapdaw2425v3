@@ -263,16 +263,36 @@ class Jornadas {
                 $jornada->setHoraFinJornada(filter_input(INPUT_POST,'frm-hora-fin'));
                 $jornada->setInformacionJornada(filter_input(INPUT_POST,'frm-informacion'));
                 $jornada->setEstadoJornada(filter_input(INPUT_POST,'frm-estado'));
-                // Actulizo los datos de la jornada y muestro la notificación del resultado
-                if ($jornada->actualizarJornada()) {
-                    // Notifico al usuario que la actualización de la jornada fue existosa
-                    ErrorController::mostrarMensajeInformativo($smarty, "Jornada actualizada con éxito!!", 
-                        "/plataforma/backoffice.php?comando=jornadas:default");
-                } else {
-                    // Lanzo una excepción para indicar que no es posible recuperar a la jornada deseada
-                    throw new AppException(message: "No es posible actualizar el perfil de usuario", 
-                        urlAceptar: "/plataforma/backoffice.php?comando=jornadas:default");
-                }                    
+                // Intento actualizar una jornada de la plataforma
+                try {
+                    // Actulizo los datos de la jornada y muestro la notificación del resultado
+                    if ($jornada->actualizarJornada()) {
+                        // Notifico al usuario que la actualización de la jornada fue existosa
+                        ErrorController::mostrarMensajeInformativo($smarty, "Jornada actualizada con éxito!!", 
+                            "/plataforma/backoffice.php?comando=jornadas:default");
+                    } else {
+                        // Lanzo una excepción para indicar que no es posible recuperar a la jornada deseada
+                        throw new AppException(message: "No es posible actualizar el perfil de usuario", 
+                            urlAceptar: "/plataforma/backoffice.php?comando=jornadas:default");
+                    } 
+                } catch (AppException $ae) {
+                    switch ($ae->getCode()) {
+                        case AppException::DB_CONSTRAINT_VIOLATION_IN_QUERY:
+                            ErrorController::handleException($ae, $smarty,
+                                '/plataforma/backoffice.php?comando=jornadas:default',
+                                "Esta acción viola la integridad de persistencia de datos!!");
+                            break;
+                        case AppException::DB_READ_ONLY_MODE:
+                            ErrorController::handleException($ae, $smarty,
+                                '/plataforma/backoffice.php?comando=jornadas:default',
+                                "Esta acción esta bloqueada en el modo demostración!!");
+                            break;
+                        default:
+                            ErrorController::handleException($ae, $smarty,
+                                '/plataforma/backoffice.php?comando=usuarios:default');
+                            break;
+                    }
+                }                   
             } else {
                 // De lo contario, lanzo una excepción para notificar al usuario que la
                 // jornada deseada no existe en la base de datos
@@ -312,18 +332,32 @@ class Jornadas {
                 $jornada = Jornada::consultarJornada($idJornada);
                 // Intento eliminar la jornada deseada de la plataforma
                 try {
-                // Procedo a eliminar la jornada y compruebo su resultado
-                if ($jornada->eliminarJornada()) {
-                    // Notifico al usuario que la jornada se ha eliminado correctamente y cierro su sesión
-                    ErrorController::mostrarMensajeInformativo($smarty, "La jornada indicada se ha elminado correctamente!",
-                        "/plataforma/backoffice.php?comando=jornadas:default");
-                } else {
-                    // Lanzo una excepción para indicar que existe algún problema para dar de baja a la jornada
-                    throw new AppException("No es posible dar de baja a la jornada indicada!");
-                }
+                    // Procedo a eliminar la jornada y compruebo su resultado
+                    if ($jornada->eliminarJornada()) {
+                        // Notifico al usuario que la jornada se ha eliminado correctamente y cierro su sesión
+                        ErrorController::mostrarMensajeInformativo($smarty, "La jornada indicada se ha elminado correctamente!",
+                            "/plataforma/backoffice.php?comando=jornadas:default");
+                    } else {
+                        // Lanzo una excepción para indicar que existe algún problema para dar de baja a la jornada
+                        throw new AppException("No es posible dar de baja a la jornada indicada!");
+                    }
                 } catch (AppException $ae) {
-                    ErrorController::handleException($ae, $smarty, '/plataforma/backoffice.php?comando=jornadas:default',
-                        "No puedes eliminar a esta jornada porque está en uso en la plataforma!!");
+                    switch ($ae->getCode()) {
+                        case AppException::DB_CONSTRAINT_VIOLATION_IN_QUERY:
+                            ErrorController::handleException($ae, $smarty,
+                                '/plataforma/backoffice.php?comando=jornadas:default',
+                                "No puedes eliminar a esta jornada porque está en uso en la plataforma!!");
+                            break;
+                        case AppException::DB_READ_ONLY_MODE:
+                            ErrorController::handleException($ae, $smarty,
+                                '/plataforma/backoffice.php?comando=jornadas:default',
+                                "Esta acción esta bloqueada en el modo demostración!!");
+                            break;
+                        default:
+                            ErrorController::handleException($ae, $smarty,
+                                '/plataforma/backoffice.php?comando=jornadas:default');
+                            break;
+                    }
                 }
             } else {
                 // Lanzo una excepción para notificar que el usuario no eligió una jornada del listado
@@ -510,13 +544,22 @@ class Jornadas {
 
         // Manejo la excepción que se haya producido para notificarla al usuario
         } catch (AppException $ae) {
-            // Si se produce una violación de restricción al registrarlos
-            if ($ae->getCode() === AppException::DB_CONSTRAINT_VIOLATION_IN_QUERY)
-            {
-                ErrorController::handleException($ae, $smarty, '/plataforma/backoffice.php?comando=jornadas:default', "Esta jornada ya esta registrada!!");
+            switch ($ae->getCode()) {
+                case AppException::DB_CONSTRAINT_VIOLATION_IN_QUERY:
+                    ErrorController::handleException($ae, $smarty,
+                        '/plataforma/backoffice.php?comando=jornadas:default',
+                        "Esta jornada ya esta registrada!!");
+                    break;
+                case AppException::DB_READ_ONLY_MODE:
+                    ErrorController::handleException($ae, $smarty,
+                        '/plataforma/backoffice.php?comando=jornadas:default',
+                        "Esta acción esta bloqueada en el modo demostración!!");
+                    break;
+                default:
+                    ErrorController::handleException($ae, $smarty,
+                        '/plataforma/backoffice.phps');
+                    break;
             }
-            else
-                ErrorController::handleException($ae, $smarty, '/plataforma/backoffice.php');
         }     
     }
 
