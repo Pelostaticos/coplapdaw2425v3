@@ -701,21 +701,31 @@ class Participantes {
             // Compruebo que la inscripción se creao correctamente
             if ($ip) {
                 // Notifico al usuario el resultado de registrar una nueva inscripcion a jornada en la plataforma
-                ErrorController::mostrarMensajeInformativo($smarty, "Nueva inscripción a jornadas registrada con éxito!!", "/plataforma/backoffice.php?comando=participantes:default");
+                ErrorController::mostrarMensajeInformativo($smarty, "Nueva inscripción a jornadas registrada con éxito!!", 
+                    "/plataforma/backoffice.php?comando=participantes:default");
             } else {
                 // Lanzo excepción para notificar al usuario que hubo algún problema con su proceso de inscripción a jornadas
-                throw new AppException("Uppps!! Hubo un problema con su registro. Por favor, contacte con los administradores","/plataforma/backoffice.php?comando=core:email:vista");
+                throw new AppException("Uppps!! Hubo un problema con su registro. Por favor, contacte con los administradores",
+                    "/plataforma/backoffice.php?comando=core:email:vista");
             } 
-
         // Manejo la excepción que se haya producido para notificarla al usuario
         } catch (AppException $ae) {
-            // Si se produce una violación de restricción al registrarlos
-            if ($ae->getCode() === AppException::DB_CONSTRAINT_VIOLATION_IN_QUERY)
-            {                
-                ErrorController::handleException($ae, $smarty, '/plataforma/backoffice.php?comando=participantes:default', "Esta inscripción ya esta registrada!!");
+            switch ($ae->getCode()) {
+                case AppException::DB_CONSTRAINT_VIOLATION_IN_QUERY:
+                    ErrorController::handleException($ae, $smarty,
+                        '/plataforma/backoffice.php?comando=participantes:default',
+                        "Esta inscripción ya esta registrada!!");
+                    break;
+                case AppException::DB_READ_ONLY_MODE:
+                    ErrorController::handleException($ae, $smarty,
+                        '/plataforma/backoffice.php?comando=participantes:default',
+                        "Esta acción esta bloqueada en el modo demostración!!");
+                    break;
+                default:
+                    ErrorController::handleException($ae, $smarty,
+                        '/plataforma/backoffice.php');
+                    break;
             }
-            else
-                ErrorController::handleException($ae, $smarty, '/plataforma/backoffice.php');
         }     
     }
     
