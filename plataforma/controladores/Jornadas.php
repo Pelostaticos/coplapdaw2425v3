@@ -332,18 +332,32 @@ class Jornadas {
                 $jornada = Jornada::consultarJornada($idJornada);
                 // Intento eliminar la jornada deseada de la plataforma
                 try {
-                // Procedo a eliminar la jornada y compruebo su resultado
-                if ($jornada->eliminarJornada()) {
-                    // Notifico al usuario que la jornada se ha eliminado correctamente y cierro su sesión
-                    ErrorController::mostrarMensajeInformativo($smarty, "La jornada indicada se ha elminado correctamente!",
-                        "/plataforma/backoffice.php?comando=jornadas:default");
-                } else {
-                    // Lanzo una excepción para indicar que existe algún problema para dar de baja a la jornada
-                    throw new AppException("No es posible dar de baja a la jornada indicada!");
-                }
+                    // Procedo a eliminar la jornada y compruebo su resultado
+                    if ($jornada->eliminarJornada()) {
+                        // Notifico al usuario que la jornada se ha eliminado correctamente y cierro su sesión
+                        ErrorController::mostrarMensajeInformativo($smarty, "La jornada indicada se ha elminado correctamente!",
+                            "/plataforma/backoffice.php?comando=jornadas:default");
+                    } else {
+                        // Lanzo una excepción para indicar que existe algún problema para dar de baja a la jornada
+                        throw new AppException("No es posible dar de baja a la jornada indicada!");
+                    }
                 } catch (AppException $ae) {
-                    ErrorController::handleException($ae, $smarty, '/plataforma/backoffice.php?comando=jornadas:default',
-                        "No puedes eliminar a esta jornada porque está en uso en la plataforma!!");
+                    switch ($ae->getCode()) {
+                        case AppException::DB_CONSTRAINT_VIOLATION_IN_QUERY:
+                            ErrorController::handleException($ae, $smarty,
+                                '/plataforma/backoffice.php?comando=jornadas:default',
+                                "No puedes eliminar a esta jornada porque está en uso en la plataforma!!");
+                            break;
+                        case AppException::DB_READ_ONLY_MODE:
+                            ErrorController::handleException($ae, $smarty,
+                                '/plataforma/backoffice.php?comando=jornadas:default',
+                                "Esta acción esta bloqueada en el modo demostración!!");
+                            break;
+                        default:
+                            ErrorController::handleException($ae, $smarty,
+                                '/plataforma/backoffice.php?comando=jornadas:default');
+                            break;
+                    }
                 }
             } else {
                 // Lanzo una excepción para notificar que el usuario no eligió una jornada del listado
