@@ -436,7 +436,7 @@ class Core {
         setcookie(session_name(), '', time() - 3600, "/");
 
         // Redirigo al usuario a la vista de inicio de sesión
-        header("Location: http://" . $_SERVER['SERVER_NAME']);
+        header("Location: https://" . $_SERVER['SERVER_NAME']);
 
         // Salgo de la ejecución del presente script PHP
         exit;
