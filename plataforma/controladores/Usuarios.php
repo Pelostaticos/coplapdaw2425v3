@@ -892,16 +892,24 @@ class Usuarios {
                     throw new AppException(message: "Uppps!! Hubo un problema al dar de alta al usuario.",
                         urlAceptar: "/plataforma/backoffice.php?comando=usuarios:default");
                 }                
-
             // Manejo la excepción que se haya producido para notificarla al usuario
             } catch (AppException $ae) {
-                // Si se produce una violación de restricción al registrarlos
-                if ($ae->getCode() === AppException::DB_CONSTRAINT_VIOLATION_IN_QUERY)
-                {
-                    ErrorController::handleException($ae, $smarty, '/plataforma/backoffice.php?comando=core:login:vista', "Este usuario ya esta registrado!!");
+                switch ($ae->getCode()) {
+                    case AppException::DB_CONSTRAINT_VIOLATION_IN_QUERY:
+                        ErrorController::handleException($ae, $smarty,
+                            '/plataforma/backoffice.php?comando=usuarios:default',
+                            "Esta acción viola la integridad de persistencia de datos!!");
+                        break;
+                    case AppException::DB_READ_ONLY_MODE:
+                        ErrorController::handleException($ae, $smarty,
+                            '/plataforma/backoffice.php?comando=usuarios:default',
+                            "Esta acción esta bloqueada en el modo demostración!!");
+                        break;
+                    default:
+                        ErrorController::handleException($ae, $smarty,
+                            '/plataforma/backoffice.php?comando=usuarios:default');
+                        break;
                 }
-                else
-                    ErrorController::handleException($ae, $smarty, '/plataforma/backoffice.php?comando=usuarios:default');
             }
         } else {
             // Lanzo una excepción para notificar al usuario que no tiene permisos para dar de alta usuarios
