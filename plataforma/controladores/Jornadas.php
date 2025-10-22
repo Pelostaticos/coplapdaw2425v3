@@ -510,13 +510,22 @@ class Jornadas {
 
         // Manejo la excepción que se haya producido para notificarla al usuario
         } catch (AppException $ae) {
-            // Si se produce una violación de restricción al registrarlos
-            if ($ae->getCode() === AppException::DB_CONSTRAINT_VIOLATION_IN_QUERY)
-            {
-                ErrorController::handleException($ae, $smarty, '/plataforma/backoffice.php?comando=jornadas:default', "Esta jornada ya esta registrada!!");
+            switch ($ae->getCode()) {
+                case AppException::DB_CONSTRAINT_VIOLATION_IN_QUERY:
+                    ErrorController::handleException($ae, $smarty,
+                        '/plataforma/backoffice.php?comando=jornadas:default',
+                        "Esta jornada ya esta registrada!!");
+                    break;
+                case AppException::DB_READ_ONLY_MODE:
+                    ErrorController::handleException($ae, $smarty,
+                        '/plataforma/backoffice.php?comando=jornadas:default',
+                        "Esta acción esta bloqueada en el modo demostración!!");
+                    break;
+                default:
+                    ErrorController::handleException($ae, $smarty,
+                        '/plataforma/backoffice.phps');
+                    break;
             }
-            else
-                ErrorController::handleException($ae, $smarty, '/plataforma/backoffice.php');
         }     
     }
 
