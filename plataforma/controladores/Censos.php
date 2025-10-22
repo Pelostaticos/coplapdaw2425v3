@@ -1534,24 +1534,57 @@ class Censos {
             if ($jornada instanceof Jornada && $jornadaEditable) {
                 // Recupero el registro censal a eliminar de la plataforma
                 $registroCensal=Censo::consultarRegistroCensal($registroCensal);
-                // Elimino el registro censal y notifico al usuario del resultado
-                if ($registroCensal->eliminarRegistroCensal()) {
-                    // Emulo la elección del usuario logueado de una acción por haberla solicitado previamente
-                    $_SESSION['accion']="censo:volver";
-                    // Emulo que el usuario logueado hizo clic en una jornada censal previamente
-                    $_SESSION['gcensos']=$idJornada;                                   
-                    // Notifico al usuario que la eliminación del registro censal fue existosa
-                    ErrorController::mostrarMensajeInformativo($smarty, "Registro censal eliminado con éxito!!", 
-                        "/plataforma/backoffice.php?comando=censos:default");
-                } else {
-                    // Emulo la elección del usuario logueado de una acción por haberla solicitado previamente
-                    $_SESSION['accion']="censo:volver";
-                    // Emulo que el usuario logueado hizo clic en una jornada censal previamente
-                    $_SESSION['gcensos']=$idJornada;                      
-                    // Lanzo una excepción para indicar que no es posible eliminar el registro censal
-                    throw new AppException(message: "No es posible eliminar el registro censal", 
-                        urlAceptar: "/plataforma/backoffice.php?comando=censos:default");                    
-                }                
+                // Intento eliminar el registro censal
+                try {
+                    // Elimino el registro censal y notifico al usuario del resultado
+                    if ($registroCensal->eliminarRegistroCensal()) {
+                        // Emulo la elección del usuario logueado de una acción por haberla solicitado previamente
+                        $_SESSION['accion']="censo:volver";
+                        // Emulo que el usuario logueado hizo clic en una jornada censal previamente
+                        $_SESSION['gcensos']=$idJornada;                                   
+                        // Notifico al usuario que la eliminación del registro censal fue existosa
+                        ErrorController::mostrarMensajeInformativo($smarty, "Registro censal eliminado con éxito!!", 
+                            "/plataforma/backoffice.php?comando=censos:default");
+                    } else {
+                        // Emulo la elección del usuario logueado de una acción por haberla solicitado previamente
+                        $_SESSION['accion']="censo:volver";
+                        // Emulo que el usuario logueado hizo clic en una jornada censal previamente
+                        $_SESSION['gcensos']=$idJornada;                      
+                        // Lanzo una excepción para indicar que no es posible eliminar el registro censal
+                        throw new AppException(message: "No es posible eliminar el registro censal", 
+                            urlAceptar: "/plataforma/backoffice.php?comando=censos:default");                    
+                    }  
+                } catch (AppException $ae) {
+                    switch ($ae->getCode()) {
+                        // Si se produce una violación de restricción al registrarlos
+                        case AppException::DB_CONSTRAINT_VIOLATION_IN_QUERY:
+                            // Emulo la elección del usuario logueado de una acción por haberla solicitado previamente
+                            $_SESSION['accion']="censo:volver";
+                            // Emulo que el usuario logueado hizo clic en una jornada censal previamente
+                            $_SESSION['gcensos']=$idJornada;                                   
+                            // Notifico al usuario que se ha violado una restricción d eintegridad
+                            ErrorController::handleException($ae, $smarty,
+                                '/plataforma/backoffice.php?comando=censos:default',
+                                "Esta acción viola la integridad de persistencia de datos!!");
+                            break;
+                        // Si la demostración está habilitada por el modo sólo lectura
+                        case AppException::DB_READ_ONLY_MODE:
+                            // Emulo la elección del usuario logueado de una acción por haberla solicitado previamente
+                            $_SESSION['accion']="censo:volver";
+                            // Emulo que el usuario logueado hizo clic en una jornada censal previamente
+                            $_SESSION['gcensos']=$idJornada;                                   
+                            // Notifico al usuario que la acción ha sido bloqueada pro el modo demostracion                             
+                            ErrorController::handleException($ae, $smarty,
+                                '/plataforma/backoffice.php?comando=censos:default',
+                                "Esta acción esta bloqueada en el modo demostración!!");
+                            break;
+                        // Por defecto, para cualquier otra excepción capturada
+                        default:
+                            ErrorController::handleException($ae, $smarty,
+                                '/plataforma/backoffice.php?comando=censos:default');
+                            break;
+                    }
+                }                              
             } else {
                 // lazo una excepción para notificar al usuario que no está autorizado a eliminar registros censales
                 throw new AppException("No está autorizado a eliminar registros censales!!!");   
