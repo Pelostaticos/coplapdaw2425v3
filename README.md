@@ -60,7 +60,65 @@ Además me encargue de poner en marcha un entorno de desarrollo local basado en 
 - MySQL/MariaDB
 
 ## ⬇️ Instalación
-...
+
+Poner en marcha la Plataforma Correplayas requiere un entorno de servidor
+web LAMP/XAMPP.
+
+### Requisitos del Sistema:
+Para una ejecución correcta, su entorno local debe cumplir con:
+
+- **Servidor Web**: Apache (o Nginx).
+- **PHP**: Versión 8.4.12 o superior.
+- **Extensiones PHP**: Openssl, mbstring, sockets, iconv, Mbstring, ctype, tokenizer,
+Pdo, json, session, filter, gd, curl, fileinfo, hash.
+- **Base de Datos**: MySQL o MariaDB.
+- **Cliente SQL**: Acceso a línea de comandos (mysql) o herramienta gráfica (MySQL Workbench).
+- **Protocolo de Conexión (CRÍTICO)**: HTTPS con un certificado SSL/TLS. La aplicación utiliza cookies seguras, por lo que no funcionará
+correctamente sobre HTTP.
+- **Entorno Local**: Se requiere y es suficiente un certificado SSL auto-firmado, configurado en su VirtualHost XAMPP.
+
+### Pasos de Configuración:
+
+Siga los siguientes pasos para poner en funcionamiento el entorno local:
+
+1. <u>Configuración del Repositorio</u>.
+
+   1. Clone el repositorio del proyecto en el directorio raíz de su servidor web
+(ej: /opt/lampp/htdocs/).
+
+    ```Bash
+    git clone https://github.com/Pelostaticos/coplapdaw2425v3.git
+    ```
+
+2. <u>Configuración del Servidor Virtual (VirtualHost)</u>
+
+   1. Cree un VirtualHost de Apache y apunte el DocumentRoot al directorio
+   /publico del proyecto.
+   2. Asegúrese de habilitar SSL/HTTPS para el entorno local, ya que la
+   aplicación se desarrolló para operar bajo este protocolo.
+
+3. <u>Configuración de la Aplicación</u>
+
+   1. Localice el fichero de configuración de la base de datos:
+   plataforma/config/config-inc.php.
+   2. Edite este fichero con sus credenciales locales de base de datos (usuario,
+   contraseña y nombre de la BD).
+
+4. <u>Carga de la Base de Datos</u>
+
+   1. Cree una nueva base de datos vacía (ej: correplayas_db) en su servidor
+   MySQL/MariaDB.
+   2. Cargue el dump SQL inicial utilizando el cliente de línea de comandos o
+   su herramienta gráfica preferida:
+
+   ```Bash
+   mysql -u [su_usuario] -p [nombre_bd] < [ruta_al_archivo_dump.sql]
+   ```
+   <u>**NOTA**</u>: El archivo dump.sql se encuentra en la raíz del proyecto. Además recuerde que el usuario debe tener permisos de CREATE y ALTER.
+
+Como **verificación Final**, acceda a la URL configurada en su navegador (ej: https://correplayas.local). Si todo es correcto, la página de inicio debería cargarse.
+
+<u>**OBSERVACIONES**</u>: Las dependencias de las librería PHPMailer y Smarty ya se encuentra integradas en el código de la plataforma.
 
 ## ⚙️ Uso
 
