@@ -44,10 +44,11 @@ datos en servidor y asegurando la integridad referencial con las tablas de jorna
 8. Diseño de la Base de Datos: Optimización del esquema para soportar el almacenamiento escalable de datos de múltiples observatorios y campañas a lo largo del tiempo.
 9.  Desarrollo del Dashboard: Construcción del panel principal de acceso básico a todas las funciones disponibles en el backoffice de la plataforma.
 
-Además me encargue de poner en marcha un entorno de desarrollo local basado en la pila LAMP (Linux, Apache, MySQL/MariaDB y PHP) bajo una máquina virtual y posteriormente el despliegue de mi aplicación web en un hosting web real como entorno de producción final.
+Además me encargue de poner en marcha un entorno de desarrollo local basado en la pila LAMP (Linux, Apache, MySQL/MariaDB y PHP) bajo una máquina virtual y posteriormente el despliegue  en un [**hosting web real**](https://correplayas.bitgarcia.es) como entorno de producción final.
 
 ## 📸 Demostración Visual
-- ...
+
+![Plataforma Correplayas](assets/demostracion.gif)
 
 ## 💻 Tecnologías Utilizadas
 - HTML5
@@ -64,9 +65,12 @@ Además me encargue de poner en marcha un entorno de desarrollo local basado en 
 ## ⚙️ Uso
 
 Para iniciar la aplicación, ejecuta la máquina virtual que has creado con el entorno de desarrollo local desde el manual PDF indicado. Luego, abre tu navegador web y escribe:
+
 ```bash
 https://correplayas.xampp.local
 ```
+
+Como instrucciones para aprender el manejo de la propia plataforma puede consulta la [**presentacion**](https://drive.google.com/file/d/1ZAecZJQvRRfOBocYVzHHAHCaXb80W9co/view?usp=sharing) de defensa del proyecto. Además la ventana de inicio del Backoffice de la plataforma dispone de ayuda online.
 
 ## ⚠️ Bugs de la Plataforma
 
