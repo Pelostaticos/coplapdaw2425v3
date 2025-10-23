@@ -18,6 +18,7 @@ Dado los requisitos del proyectos y su contexto, no tuve la ocasión de implemen
   - [💻 Tecnologías Utilizadas](#-tecnologías-utilizadas)
   - [⬇️ Instalación](#️-instalación)
   - [⚙️ Uso](#️-uso)
+  - [⚠️ Bugs de la Plataforma](#️-bugs-de-la-plataforma)
   - [⚖️ Licencia](#️-licencia)
     - [Atribución](#atribución)
   
@@ -64,12 +65,12 @@ Además me encargue de poner en marcha un entorno de desarrollo local basado en 
 
 Para iniciar la aplicación, ejecuta la máquina virtual que has creado con el entorno de desarrollo local desde el manual PDF indicado. Luego, abre tu navegador web y escribe:
 ```bash
-https://correplayas.xampp.ocal
+https://correplayas.xampp.local
 ```
 
 ## ⚠️ Bugs de la Plataforma
 
-Si quieres saber más sobre mi toma de decisión acerca de **Bugs de la Plataforma Correplayas** heredada del Proyecto DAW, puedes leerlo [**en este documento**](https://github.com/Pelostaticos/coplapdaw2425v3/blob/7047112ff5a27df76d08d7af8c7563d2609a16b7/assets/correplayas-bugs.pdf).
+Si quieres saber más sobre mi toma de decisión acerca de **Bugs de la Plataforma Correplayas** heredada del Proyecto DAW, puedes leerlo [**en este documento**](https://drive.google.com/file/d/17A44amIhN0s93Fmy5pZiacRxP8UvAv6t/view?usp=sharing).
 
 ## ⚖️ Licencia
 
