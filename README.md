@@ -96,11 +96,19 @@ Siga los siguientes pasos para poner en funcionamiento el entorno local:
    /publico del proyecto.
    2. Asegúrese de habilitar SSL/HTTPS para el entorno local, ya que la
    aplicación se desarrolló para operar bajo este protocolo.
+   3. Recuerde crear dentro del directorio **plataforma** las carpetas **cache** y **vistas** requeridas para el funcionamiento de Smarty.
+   
+   ```Bash
+   # Suponemos que estamos en el directorio plataforma:
+   sudo mkdir cache vistas
+   sudo chown daemon:daemon cache vistas
+   sudo chmod 755 cache vistas
+   ```
 
 3. <u>Configuración de la Aplicación</u>
 
    1. Localice el fichero de configuración de la base de datos:
-   plataforma/config/config-inc.php.
+   plataforma/config/config-inc.php.dist y copielo como plataforma/config/config-inc.php
    2. Edite este fichero con sus credenciales locales de base de datos (usuario,
    contraseña y nombre de la BD).
 
