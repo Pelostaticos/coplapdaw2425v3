@@ -5,3 +5,6 @@ ignore.html
 cache
 configs
 templates_c
+
+# Ignora el archivo de configuración real con credenciales
+plataforma/config/config-inc.php
