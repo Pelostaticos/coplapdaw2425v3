@@ -120,9 +120,9 @@ Siga los siguientes pasos para poner en funcionamiento el entorno local:
    su herramienta gráfica preferida:
 
    ```Bash
-   mysql -u [su_usuario] -p [nombre_bd] < [ruta_al_archivo_dump.sql]
+   mysql -u [su_usuario] -p [nombre_bd] < [ruta_al_archivo_correplayas.sql]
    ```
-   <u>**NOTA**</u>: El archivo dump.sql se encuentra en la raíz del proyecto. Además recuerde que el usuario debe tener permisos de CREATE y ALTER.
+   <u>**NOTA**</u>: El archivo **correplayas.sql** se encuentra en la raíz del proyecto. Además recuerde que el usuario debe tener permisos de CREATE y ALTER.
 
 Como **verificación Final**, acceda a la URL configurada en su navegador (ej: https://correplayas.local). Si todo es correcto, la página de inicio debería cargarse.
 
