@@ -55,54 +55,56 @@
                         </form>                    
                     </div>
                     <!-- Tabla que representa al listado de jornadas para inscripción -->
-                    <table id="listado-gestor">
-                        <!-- Cabecera del listado de jornadas para inscripción -->
-                        {if $modoListadoUsuarios}
-                            <thead>
-                                <th>Usuario</th>
-                                <th>Localidad</th>
-                                <th>Rol</th>
-                                <th>Correo</th>
-                                <th>Acciones</th>
-                            </thead>
-                        {else}
-                            <thead>
-                                <th>Usuario</th>
-                                <th>Localidad</th>
-                                <th>Inscripciones</th>
-                                <th>Ultima participación</th>
-                                <th>Acciones</th>                            
-                            </thead>
-                        {/if}
-                        <!-- Contenido del listado de jornadas para inscripción -->
-                        <tbody>
-                            {if $filas|@count === 0}
-                                <tr>
-                                    <td colspan="5">Lo sentimos!!! No hay jornadas disponibles a inscripción</td>
-                                </tr>
-                            {else}                        
-                                {foreach $filas as $fila}
-                                    <!-- Fila con los datos de cada jornada de inscripción  -->
-                                    <tr>
-                                        <!-- Celdas con datos de cada jornada de inscripción -->
-                                        <td>{$fila.usuario}</td>
-                                        <td>{$fila.localidad}</td>
-                                        <td>{$fila.extra1}</td>
-                                        <td>{$fila.extra2}</td>
-                                        <!-- Celda con acciones permitidas para cada jornada de inscripción  -->
-                                        <td>
-                                            <form method="post" action="/plataforma/backoffice.php?comando=participantes:default">
-                                                <input type="hidden" name="hashParticipante" value="{$fila.hashParticipante}">
-                                                <button class="boton-accion-listado-gestor" type="submit" name="accion" value="adminparticipa:detalles" title="Mostrar detalles participante"><span class="iconos-acciones-listados">search</span></button>
-                                                <button class="boton-accion-listado-gestor" type="submit" name="accion" value="adminparticipa:historico" title="Mostrar historico participante"><span class="iconos-acciones-listados">event</span></button>                                                
-                                                <button class="boton-accion-listado-gestor" type="submit" name="accion" value="adminparticipa:inscribirse" title="Inscribir al participante"><span class="iconos-acciones-listados">person_add</span></button>
-                                            </form>
-                                        </td>
-                                    </tr>
-                                {/foreach}
+                    <div class="tabla-responsiva">
+                        <table id="listado-gestor">
+                            <!-- Cabecera del listado de jornadas para inscripción -->
+                            {if $modoListadoUsuarios}
+                                <thead>
+                                    <th>Usuario</th>
+                                    <th>Localidad</th>
+                                    <th>Rol</th>
+                                    <th>Correo</th>
+                                    <th>Acciones</th>
+                                </thead>
+                            {else}
+                                <thead>
+                                    <th>Usuario</th>
+                                    <th>Localidad</th>
+                                    <th>Inscripciones</th>
+                                    <th>Ultima participación</th>
+                                    <th>Acciones</th>                            
+                                </thead>
                             {/if}
-                        </tbody>
-                     </table>
+                            <!-- Contenido del listado de jornadas para inscripción -->
+                            <tbody>
+                                {if $filas|@count === 0}
+                                    <tr>
+                                        <td colspan="5">Lo sentimos!!! No hay jornadas disponibles a inscripción</td>
+                                    </tr>
+                                {else}                        
+                                    {foreach $filas as $fila}
+                                        <!-- Fila con los datos de cada jornada de inscripción  -->
+                                        <tr>
+                                            <!-- Celdas con datos de cada jornada de inscripción -->
+                                            <td>{$fila.usuario}</td>
+                                            <td>{$fila.localidad}</td>
+                                            <td>{$fila.extra1}</td>
+                                            <td>{$fila.extra2}</td>
+                                            <!-- Celda con acciones permitidas para cada jornada de inscripción  -->
+                                            <td>
+                                                <form method="post" action="/plataforma/backoffice.php?comando=participantes:default">
+                                                    <input type="hidden" name="hashParticipante" value="{$fila.hashParticipante}">
+                                                    <button class="boton-accion-listado-gestor" type="submit" name="accion" value="adminparticipa:detalles" title="Mostrar detalles participante"><span class="iconos-acciones-listados">search</span></button>
+                                                    <button class="boton-accion-listado-gestor" type="submit" name="accion" value="adminparticipa:historico" title="Mostrar historico participante"><span class="iconos-acciones-listados">event</span></button>                                                
+                                                    <button class="boton-accion-listado-gestor" type="submit" name="accion" value="adminparticipa:inscribirse" title="Inscribir al participante"><span class="iconos-acciones-listados">person_add</span></button>
+                                                </form>
+                                            </td>
+                                        </tr>
+                                    {/foreach}
+                                {/if}
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
                 <!-- Acciones permitidas por el gestor de participantes -->
                 <div class="botonera">

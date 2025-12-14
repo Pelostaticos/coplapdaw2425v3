@@ -1373,3 +1373,25 @@ footer {
         display: none;
     }
 }
+
+/* Ajustes diseño responsivo para ciertas tablas de la plataforma  */
+.tabla-responsiva {
+    /* Hago que el contenedor se comporte como un bloque */
+    display: block;
+
+    /* Aplico un scrollbar horizontal si el contenido es más ancho que el contenedor */
+    overflow-x: auto; 
+    
+    /* Hago que el contenedor ocupe todo el ancho disponible */
+    width: 100%;
+    
+    /* Permito que el scroll sea más suave en algunos dispositivos táctiles */
+    -webkit-overflow-scrolling: touch;
+}
+.tabla-responsiva table {
+    /* Me aseguro con estas reglas que la tabla no sea forzada a entrar dentro del contenedor */
+    width: auto;
+    min-width: 100%;
+    /* Me aseguro quee no se rompan celdas si existen celdas que no deben hacerlo */
+    white-space: nowrap; 
+}

@@ -38,50 +38,52 @@
                     Por favor, seleccione su jornada asignada para acceder a la información o registrar su participación. Además como responsable
                     dispone de las acciones esenciales para llevarla a cabo, que disfrutes. ¡Muchas gracias por participar!</p>                               
                     <!-- Tabla que representa al listado de jornadas para el censo -->
-                    <table id="listado-gestor">
-                        <!-- Cabecera del listado de jornadas para el censo -->
-                        <thead>
-                            <th>Titulo</th>
-                            <th>Observatorio</th>
-                            <th>Localidad</th>
-                            <th>Fecha</th>
-                            <th>Acciones</th>
-                        </thead>
-                        <!-- Contenido del listado de jornadas para el censo -->
-                        <tbody>
-                            {if $filas|@count === 0}
-                                <tr>
-                                    <td colspan="5">Lo sentimos!!! No hay jornadas disponibles para censar</td>
-                                </tr>
-                            {else}                        
-                                {foreach $filas as $fila}
-                                    <!-- Fila con los datos de cada jornada para el censo  -->
+                    <div class="tabla-responsiva">
+                        <table id="listado-gestor">
+                            <!-- Cabecera del listado de jornadas para el censo -->
+                            <thead>
+                                <th>Titulo</th>
+                                <th>Observatorio</th>
+                                <th>Localidad</th>
+                                <th>Fecha</th>
+                                <th>Acciones</th>
+                            </thead>
+                            <!-- Contenido del listado de jornadas para el censo -->
+                            <tbody>
+                                {if $filas|@count === 0}
                                     <tr>
-                                        <!-- Celdas con datos de cada jornada para el censo -->
-                                        <td>{$fila.jornada->getTituloJornada()}</td>
-                                        <td>{$fila.observatorio}</td>
-                                        <td>{$fila.localidad}</td>
-                                        <td>{$fila.jornada->getFechaJornada()|date_format:"%d-%m-%Y"}</td>
-                                        <!-- Celda con acciones permitidas para cada jornada para el censo  -->
-                                        <td>
-                                            <form method="post" action="/plataforma/backoffice.php?comando=censos:default">
-                                                <input type="hidden" name="idJornada" value="{$fila.jornada->getIdJornada()}">
-                                                <button class="boton-accion-listado-gestor" type="submit" name="accion" value="listado:detalles" title="Mostrar detalles jornada censal"><span class="iconos-acciones-listados">search</span></button>
-                                                {if $fila.jornada->tieneJornadaParticipantes()}
-                                                    {if $fila.jornada->esJornadaIniciada()}
-                                                        <button class="boton-accion-listado-gestor" type="submit" name="accion" value="listado:continuar:censo" title="Continuar censo de aves"><span class="iconos-acciones-listados">not_started</span></button>
-                                                    {else}
-                                                        <button class="boton-accion-listado-gestor" type="submit" name="accion" value="listado:iniciar:censo" title="Iniciar censo de aves"><span class="iconos-acciones-listados">play_circle</span></button>
-                                                    {/if}
-                                                {/if}
-                                                <button class="boton-accion-listado-gestor" type="submit" name="accion" value="listado:cancelar:censo" title="Cancelar censo de aves"><span class="iconos-acciones-listados">cancel</span></button>
-                                            </form>
-                                        </td>
+                                        <td colspan="5">Lo sentimos!!! No hay jornadas disponibles para censar</td>
                                     </tr>
-                                {/foreach}
-                            {/if}
-                        </tbody>
-                     </table>
+                                {else}                        
+                                    {foreach $filas as $fila}
+                                        <!-- Fila con los datos de cada jornada para el censo  -->
+                                        <tr>
+                                            <!-- Celdas con datos de cada jornada para el censo -->
+                                            <td>{$fila.jornada->getTituloJornada()}</td>
+                                            <td>{$fila.observatorio}</td>
+                                            <td>{$fila.localidad}</td>
+                                            <td>{$fila.jornada->getFechaJornada()|date_format:"%d-%m-%Y"}</td>
+                                            <!-- Celda con acciones permitidas para cada jornada para el censo  -->
+                                            <td>
+                                                <form method="post" action="/plataforma/backoffice.php?comando=censos:default">
+                                                    <input type="hidden" name="idJornada" value="{$fila.jornada->getIdJornada()}">
+                                                    <button class="boton-accion-listado-gestor" type="submit" name="accion" value="listado:detalles" title="Mostrar detalles jornada censal"><span class="iconos-acciones-listados">search</span></button>
+                                                    {if $fila.jornada->tieneJornadaParticipantes()}
+                                                        {if $fila.jornada->esJornadaIniciada()}
+                                                            <button class="boton-accion-listado-gestor" type="submit" name="accion" value="listado:continuar:censo" title="Continuar censo de aves"><span class="iconos-acciones-listados">not_started</span></button>
+                                                        {else}
+                                                            <button class="boton-accion-listado-gestor" type="submit" name="accion" value="listado:iniciar:censo" title="Iniciar censo de aves"><span class="iconos-acciones-listados">play_circle</span></button>
+                                                        {/if}
+                                                    {/if}
+                                                    <button class="boton-accion-listado-gestor" type="submit" name="accion" value="listado:cancelar:censo" title="Cancelar censo de aves"><span class="iconos-acciones-listados">cancel</span></button>
+                                                </form>
+                                            </td>
+                                        </tr>
+                                    {/foreach}
+                                {/if}
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
                 <!-- Acciones permitidas por el gestor de censos -->
                 <div class="botonera">

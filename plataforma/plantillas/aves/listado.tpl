@@ -63,42 +63,44 @@
                         <a class="boton-accion-superior" href="/plataforma/backoffice.php?comando=aves:registrar:vista" title="Añadir una nueva ave a la plataforma">Añadir ave</a>                    
                     </div>                    
                     <!-- Tabla que representa al listado de aves -->
-                     <table id="listado-gestor">
-                        <!-- Cabecera del listado de aves -->
-                        <thead>
-                            <th>Especie</th>
-                            <th id="familia">Familia</th>
-                            <th id="comun">Nombre común</th>
-                            <th>Acciones</th>
-                        </thead>
-                        <!-- Contenido del listado de aves -->
-                        <tbody>
-                            {if $filas|@count === 0}
-                                <tr>
-                                    <td colspan="4">Lo sentimos!!! No hay aves disponibles para listar</td>
-                                </tr>
-                            {else} 
-                                {foreach $filas as $fila}
-                                <!-- Fila con los datos de cada ave  -->
-                                <tr>
-                                    <!-- Celdas con datos de cada ave -->
-                                    <td>{$fila.especie}</td>
-                                    <td class="visibilidad">{$fila.familia}</td>
-                                    <td class="visibilidad">{$fila.comun}</td>
-                                    <!-- Celda con acciones permitidas para cada ave  -->
-                                    <td>
-                                        <form method="post" action="/plataforma/backoffice.php?comando=aves:default">
-                                            <input type="hidden" name="especie" value="{$fila.especie}">
-                                            <button class="boton-accion-listado-gestor" type="submit" name="accion" value="consultar" title="Mostrar detalles"><span class="iconos-acciones-listados">search</span></button>
-                                            <button class="boton-accion-listado-gestor" type="submit" name="accion" value="actualizar" title="Actualizar ave"><span class="iconos-acciones-listados">edit</span></button>
-                                            <button class="boton-accion-listado-gestor" type="submit" name="accion" value="eliminar" title="Eliminar ave"><span class="iconos-acciones-listados">delete</span></button>
-                                        </form>
-                                    </td>
-                                </tr>
-                                {/foreach}
-                            {/if}
-                        </tbody>
-                     </table>
+                    <div class="tabla-responsiva">
+                        <table id="listado-gestor">
+                            <!-- Cabecera del listado de aves -->
+                            <thead>
+                                <th>Especie</th>
+                                <th id="familia">Familia</th>
+                                <th id="comun">Nombre común</th>
+                                <th>Acciones</th>
+                            </thead>
+                            <!-- Contenido del listado de aves -->
+                            <tbody>
+                                {if $filas|@count === 0}
+                                    <tr>
+                                        <td colspan="4">Lo sentimos!!! No hay aves disponibles para listar</td>
+                                    </tr>
+                                {else} 
+                                    {foreach $filas as $fila}
+                                    <!-- Fila con los datos de cada ave  -->
+                                    <tr>
+                                        <!-- Celdas con datos de cada ave -->
+                                        <td>{$fila.especie}</td>
+                                        <td>{$fila.familia}</td>
+                                        <td>{$fila.comun}</td>
+                                        <!-- Celda con acciones permitidas para cada ave  -->
+                                        <td>
+                                            <form method="post" action="/plataforma/backoffice.php?comando=aves:default">
+                                                <input type="hidden" name="especie" value="{$fila.especie}">
+                                                <button class="boton-accion-listado-gestor" type="submit" name="accion" value="consultar" title="Mostrar detalles"><span class="iconos-acciones-listados">search</span></button>
+                                                <button class="boton-accion-listado-gestor" type="submit" name="accion" value="actualizar" title="Actualizar ave"><span class="iconos-acciones-listados">edit</span></button>
+                                                <button class="boton-accion-listado-gestor" type="submit" name="accion" value="eliminar" title="Eliminar ave"><span class="iconos-acciones-listados">delete</span></button>
+                                            </form>
+                                        </td>
+                                    </tr>
+                                    {/foreach}
+                                {/if}
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
                 <!-- Acciones permitidas por el gestor de aves -->
                 <div class="botonera">
