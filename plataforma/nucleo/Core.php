@@ -23,6 +23,7 @@ namespace correplayas\nucleo;
 // 1º) Defino los espacios de nombres que voy a utilizar en esta clase
 use PDO;
 use PDOException;
+use finfo;
 use correplayas\modelo\Usuario;
 use correplayas\modelo\Persona;
 use correplayas\modelo\Rol;
@@ -629,9 +630,9 @@ class Core {
             // Compruebo si el fichero del tutorial de la plataforma existe y es legible
             if (file_exists(TUTORIAL_CORREPLAYAS) && is_readable(TUTORIAL_CORREPLAYAS)) {
                 // Obtengo el tipo MIME del archivo del tutorial de la plataforma
-                $tutorialInfo = finfo_open(FILEINFO_MIME_TYPE);
-                $mimeTipo = finfo_file($tutorialInfo, TUTORIAL_CORREPLAYAS);
-                finfo_close($tutorialInfo);
+                $finfo = new finfo(FILEINFO_MIME_TYPE);
+                $mimeTipo = $finfo->file(TUTORIAL_CORREPLAYAS);
+               
                 // Fuerzo el MIME a tipo PDF si no se ha detectado correctamente
                 $mimeTipo = ($mimeTipo===false || $mimeTipo!== 'application/pdf') ? 'application/pdf' : $mimeTipo;
                 // Establezco las cabeceras HTTP
